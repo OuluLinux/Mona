@@ -1,0 +1,13 @@
+description "Maze-learning mouse\377";
+
+uses
+	MonaCtrl;
+
+file
+	MazeMouse.h,
+	MazeMouse.cpp,
+	MazeMouseApplication.cpp,
+	EvolveMouse.h,
+	EvolveMouse.cpp,
+	Socker.cpp;
+

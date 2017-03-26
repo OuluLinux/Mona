@@ -1,0 +1,62 @@
+description "Widgets for Mona library.\377B0,0,255";
+
+uses
+	Mona;
+
+library
+	"GL glut GLU png glpng";
+
+file
+	MonaCtrl.h,
+	BaseObject.h,
+	BaseObject.cpp,
+	Camera.h,
+	Camera.cpp,
+	FrameRate.h,
+	FrameRate.cpp,
+	GLBmp.h,
+	GLBmp.cpp,
+	GLM.h,
+	GLM.cpp,
+	MeshHeightmap.h,
+	MeshHeightmap.cpp,
+	Spacial.h,
+	Spacial.cpp,
+	Texture.h,
+	Texture.cpp,
+	GUI readonly separator,
+	EasyGL.h,
+	Font.h,
+	Font.cpp,
+	GLee.h,
+	GLee.cpp,
+	GUIAlphaElement.cpp,
+	GUIButton.cpp,
+	GUICheckBox.cpp,
+	GUIClippedRectangle.cpp,
+	GUIComboBox.cpp,
+	GUIEvent.cpp,
+	GUIFont.cpp,
+	GUIFontManager.cpp,
+	GUIFrame.cpp,
+	GUILabel.cpp,
+	GUIPanel.cpp,
+	GUIRadioButton.cpp,
+	GUIRectangle.cpp,
+	GUISeparator.cpp,
+	GUISlider.cpp,
+	GUITabbedPanel.cpp,
+	GUITexCoordDescriptor.cpp,
+	GUIText.cpp,
+	GUITextBox.cpp,
+	GenUtils.h,
+	GenUtils.cpp,
+	TextureUtils.h,
+	TextureUtils.cpp,
+	TimeUtils.h,
+	TimeUtils.cpp,
+	XMLUtils.h,
+	XMLUtils.cpp,
+	tinyxml.h,
+	_ readonly separator;
+

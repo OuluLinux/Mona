@@ -1,0 +1,32 @@
+description "Neural networks to learn a nondeterministic automata.\377B128,0,0";
+
+file
+	Mona.h,
+	Mona.cpp,
+	Aux.h,
+	Drive.cpp,
+	Enable.cpp,
+	Learn.cpp,
+	Respond.cpp,
+	Sense.cpp,
+	Homeostat.h,
+	Homeostat.cpp,
+	Common.h,
+	FileIO.h,
+	FileIO.cpp,
+	GetTime.h,
+	GetTime.cpp,
+	Log.h,
+	Log.cpp,
+	Matrix.h,
+	MD5.h,
+	MD5.cpp,
+	Quaternion.h,
+	Quaternion.cpp,
+	Random.h,
+	Random.cpp,
+	RDTree.h,
+	RDTree.cpp,
+	ValueSet.h,
+	Vector.h;
+

@@ -1,0 +1,13 @@
+description "The Pong game world.\3770,255,255";
+
+uses
+	MonaCtrl;
+
+file
+	PongApp.h,
+	PongApp.cpp,
+	Pong.h,
+	Pong.cpp,
+	PongLens.cpp,
+	PongWorld.cpp;
+

@@ -1,0 +1,25 @@
+description "A 3D environment of blocks and ramps.\3770,0,128";
+
+uses
+	MonaCtrl;
+
+file
+	main.cpp,
+	MuzzWorld.h,
+	MuzzWorld.cpp,
+	BlockTerrain.h,
+	BlockTerrain.cpp,
+	EvolveMuzzes.h,
+	EvolveMuzzes.cpp,
+	Mushroom.h,
+	Mushroom.cpp,
+	Muzz.h,
+	Muzz.cpp,
+	Pool.h,
+	Pool.cpp,
+	TmazeTerrain.h,
+	TmazeTerrain.cpp;
+
+mainconfig
+	"" = "GUI MT";
+

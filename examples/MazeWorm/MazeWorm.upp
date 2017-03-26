@@ -1,0 +1,14 @@
+uses
+	CtrlLib;
+
+file
+	main.cpp,
+	MazeWorm.h,
+	MazeWorm.cpp,
+	MazeWorm.iml,
+	Maze.h,
+	Maze.cpp;
+
+mainconfig
+	"" = "GUI MT";
+
