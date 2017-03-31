@@ -184,16 +184,16 @@ void GUIClippedRectangle::setTextureRectangle(float x, float y, float z, float w
   if(x > 1.0f || y > 1.0f || z > 1.0f || w > 1.0f)
   if(texture.getID())
   {
-    x = clamp(x, 0.0f, float(texture.getWidth() ));
-    y = clamp(y, 0.0f, float(texture.getHeight()));
-    z = clamp(z, 0.0f, float(texture.getWidth() ));
-    w = clamp(w, 0.0f, float(texture.getHeight()));
+    x = clamp(x, 0.0f, float(texture.GetWidth() ));
+    y = clamp(y, 0.0f, float(texture.GetHeight()));
+    z = clamp(z, 0.0f, float(texture.GetWidth() ));
+    w = clamp(w, 0.0f, float(texture.GetHeight()));
     
-    x /= texture.getWidth();
-    z /= texture.getWidth();
+    x /= texture.GetWidth();
+    z /= texture.GetWidth();
 
-    w /= texture.getHeight();
-    y /= texture.getHeight();
+    w /= texture.GetHeight();
+    y /= texture.GetHeight();
 
   }
 

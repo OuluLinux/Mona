@@ -40,8 +40,8 @@ bool CFont::Load(const char* fontPath)
 
   unsigned char *data = (unsigned char*)image.getDataBuffer();
 
-  height = image.getHeight();
-  width  = image.getWidth();
+  height = image.GetHeight();
+  width  = image.GetWidth();
 
   int spacey[256];
   memset(spacey, 0, 256);
@@ -206,7 +206,7 @@ void CFont::Print(float xPosition,  float yPosition,
   glColor3f(1,1,1);
 }
 
-int  CFont::getHeight()
+int  CFont::GetHeight()
 {
   return fontHeight;
 }

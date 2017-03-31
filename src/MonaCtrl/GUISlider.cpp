@@ -134,7 +134,7 @@ void    GUISlider::renderVertical()
           center     = getCenter();
 
   discYBounds.x  = windowBounds.w;
-  discYBounds.x -= int(float(getHeight())*progress);
+  discYBounds.x -= int(float(GetHeight())*progress);
   discYBounds.x -= discSizes.y/2;
   discYBounds.y  = discYBounds.x + discSizes.y;
 
@@ -195,7 +195,7 @@ const Tuple4i &GUISlider::getWindowBounds()
    
     if(orientation == OR_HORIZONTAL)
     {
-      int difference = label.getWidth() -  getWidth();
+      int difference = label.GetWidth() -  GetWidth();
         
       realWindowBounds.x -= discSizes.x/2;
       realWindowBounds.z += discSizes.x/2;
@@ -207,7 +207,7 @@ const Tuple4i &GUISlider::getWindowBounds()
         realWindowBounds.z += difference;
       }
 
-      realWindowBounds.w += int(label.getHeight()/1.25f);
+      realWindowBounds.w += int(label.GetHeight()/1.25f);
       offset = clamp(windowBounds.x - realWindowBounds.x, 0, 500);
     }
     else

@@ -92,7 +92,7 @@ public class TmazeDisplay extends JPanel
       g.setFont(font);
       fontMetrics = g.getFontMetrics();
       fw          = fontMetrics.getMaxAdvance() / 8;
-      fh          = fontMetrics.getHeight() / 4;
+      fh          = fontMetrics.GetHeight() / 4;
       g.setColor(Color.white);
       g.fillRect(0, 0, mazeSize.width, mazeSize.height);
       g.setColor(Color.black);

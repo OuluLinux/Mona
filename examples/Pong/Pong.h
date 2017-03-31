@@ -99,7 +99,7 @@ public:
       void setVelocity(float dx, float dy);
 
       // Step ball.
-      STEP_OUTCOME step(Paddle& paddle);
+      STEP_OUTCOME Step(Paddle& paddle);
 
       // Load.
       void Load(FILE *);

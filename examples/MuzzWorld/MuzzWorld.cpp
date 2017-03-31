@@ -151,7 +151,7 @@ void displayControls(void) {
 	vh = viewport[3];
 	// Render the GUI.
 	counter.markFrameStart();
-	enter2DMode(guiFrame->getWidth(), guiFrame->getHeight());
+	enter2DMode(guiFrame->GetWidth(), guiFrame->GetHeight());
 	guiFrame->render(counter.getFrameInterval());
 	counter.markFrameEnd();
 	// Show frame rate.
@@ -774,7 +774,7 @@ void mouseClicked(int button, int state, int x, int y) {
 	// Adjust for GUI viewport.
 	x -= viewports[CONTROLS_VIEWPORT].x;
 	y -= (WindowHeight - viewports[CONTROLS_VIEWPORT].height);
-	MouseEvent event = MouseEvent(MB_BUTTON1, x, y, guiFrame->getHeight() - y);
+	MouseEvent event = MouseEvent(MB_BUTTON1, x, y, guiFrame->GetHeight() - y);
 	guiFrame->checkMouseEvents(event, (state == GLUT_DOWN) ? ME_CLICKED : ME_RELEASED);
 }
 
@@ -782,7 +782,7 @@ void mouseClicked(int button, int state, int x, int y) {
 void mouseDragged(int x, int y) {
 	x -= viewports[CONTROLS_VIEWPORT].x;
 	y -= (WindowHeight - viewports[CONTROLS_VIEWPORT].height);
-	MouseEvent event = MouseEvent(MB_UNKNOWN_BUTTON, x, y, guiFrame->getHeight() - y);
+	MouseEvent event = MouseEvent(MB_UNKNOWN_BUTTON, x, y, guiFrame->GetHeight() - y);
 	guiFrame->checkMouseEvents(event, ME_DRAGGED);
 }
 
@@ -790,7 +790,7 @@ void mouseDragged(int x, int y) {
 void mouseMoved(int x, int y) {
 	x -= viewports[CONTROLS_VIEWPORT].x;
 	y -= (WindowHeight - viewports[CONTROLS_VIEWPORT].height);
-	MouseEvent event = MouseEvent(MB_UNKNOWN_BUTTON, x, y, guiFrame->getHeight() - y);
+	MouseEvent event = MouseEvent(MB_UNKNOWN_BUTTON, x, y, guiFrame->GetHeight() - y);
 	guiFrame->checkMouseEvents(event, ME_MOVED);
 }
 

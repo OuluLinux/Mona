@@ -37,8 +37,8 @@ bool GUIFrame::loadXMLSettings(const TiXmlElement *element)
     {
       if(elementsTexture.loadXMLSettings(outer))
       {
-        GUITexCoordDescriptor::setTextureHeight(elementsTexture.getHeight());
-        GUITexCoordDescriptor::setTextureWidth(elementsTexture.getWidth());
+        GUITexCoordDescriptor::setTextureHeight(elementsTexture.GetHeight());
+        GUITexCoordDescriptor::setTextureWidth(elementsTexture.GetWidth());
       }
       continue;
     }

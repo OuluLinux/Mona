@@ -567,8 +567,8 @@ public class EvolveMoxen
             moxWorlds.Add(moxWorld);
             if (i > 0)
             {
-               if ((moxWorlds.Get(0).getWidth() != moxWorld.getWidth()) ||
-                   (moxWorlds.Get(0).getHeight() != moxWorld.getHeight()))
+               if ((moxWorlds.Get(0).GetWidth() != moxWorld.GetWidth()) ||
+                   (moxWorlds.Get(0).GetHeight() != moxWorld.GetHeight()))
                {
                   System.err.println("Sizes in cells file " +
                                      cells_file_names.Get(i) +
@@ -612,8 +612,8 @@ public class EvolveMoxen
             {
                Predatorpopulation[i] =
                   new EvolveCommon.Member(Mox.SPECIES.PREDATOR.GetValue(), 0,
-                                          moxWorlds.Get(0).getWidth() - 1,
-                                          moxWorlds.Get(0).getHeight() - 1,
+                                          moxWorlds.Get(0).GetWidth() - 1,
+                                          moxWorlds.Get(0).GetHeight() - 1,
                                           Mox.DIRECTION.SOUTH.GetValue(), randomizer);
             }
             else
@@ -933,8 +933,8 @@ public class EvolveMoxen
       bool needBlueFood;
 
       // Locate adjacent cells.
-      w  = moxWorld.getWidth();
-      h  = moxWorld.getHeight();
+      w  = moxWorld.GetWidth();
+      h  = moxWorld.GetHeight();
       nx = mox.x;
       ny = ((mox.y + 1) % h);
       ex = (mox.x + 1) % w;

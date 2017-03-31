@@ -226,7 +226,7 @@ void GUIComboBox::finalizeSize()
     float  width    = 0;
     size_t length   = 0;
 
-    height   =  float(font->getFontObject()->getHeight());
+    height   =  float(font->getFontObject()->GetHeight());
 
     for(size_t l = 0; l < items.GetCount(); l++)
     {
@@ -278,7 +278,7 @@ const void GUIComboBox::computeWindowBounds()
     upperPanel->forceUpdate(false);
     windowBounds = upperPanel->getWindowBounds();
 
-    lowerPanel->setPosition(0.0f, float(upperPanel->getHeight()));
+    lowerPanel->setPosition(0.0f, float(upperPanel->GetHeight()));
     lowerPanel->setParent(upperPanel);
     lowerPanel->forceUpdate(true);
 

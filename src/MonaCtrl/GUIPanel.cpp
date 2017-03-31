@@ -308,7 +308,7 @@ void GUIPanel::packYAxisLayout()
   size_t      t          = 0;
   int         height     = 0,
               xOffset    = 0,
-              panelWidth = getWidth();
+              panelWidth = GetWidth();
 
   for(t = 0; t < elements.GetCount(); t++)
   {

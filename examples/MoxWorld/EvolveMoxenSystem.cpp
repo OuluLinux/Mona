@@ -549,8 +549,8 @@ public class EvolveMoxenSystem
             {
                Predatorpopulation[i] =
                   new EvolveCommon.Member(Mox.SPECIES.PREDATOR.GetValue(), 0,
-                                          moxWorld.getWidth() - 1,
-                                          moxWorld.getHeight() - 1,
+                                          moxWorld.GetWidth() - 1,
+                                          moxWorld.GetHeight() - 1,
                                           Mox.DIRECTION.SOUTH.GetValue(), randomizer);
             }
             else
@@ -893,8 +893,8 @@ public class EvolveMoxenSystem
       {
          mox = forager_population[i].mox;
          mox.SetNeed(blue_food_need_idx, ForagerMox.BLUE_FOOD_NEED_VALUE);
-         x         = randomizer.nextInt(moxWorld.getWidth());
-         y         = randomizer.nextInt(moxWorld.getHeight());
+         x         = randomizer.nextInt(moxWorld.GetWidth());
+         y         = randomizer.nextInt(moxWorld.GetHeight());
          direction = randomizer.nextInt(4);
          mox.setSpacialProperties(x, y, direction);
          moxen.Add(mox);
@@ -906,8 +906,8 @@ public class EvolveMoxenSystem
          {
             mox = Predatorpopulation[i].mox;
             mox.SetNeed(mox_food_need_idx, PredatorMox.MOX_FOOD_NEED_VALUE);
-            x         = randomizer.nextInt(moxWorld.getWidth());
-            y         = randomizer.nextInt(moxWorld.getHeight());
+            x         = randomizer.nextInt(moxWorld.GetWidth());
+            y         = randomizer.nextInt(moxWorld.GetHeight());
             direction = randomizer.nextInt(4);
             mox.setSpacialProperties(x, y, direction);
             moxen.Add(mox);

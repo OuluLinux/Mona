@@ -175,8 +175,8 @@ class Image
    const unsigned char*  getDataBuffer()      const;
    const unsigned int    getFormat()          const;
 
-   const unsigned short getHeight() const;
-   const unsigned short getWidth()  const;
+   const unsigned short GetHeight() const;
+   const unsigned short GetWidth()  const;
    const unsigned short getDepth()  const;
 };
 
@@ -391,8 +391,8 @@ class Texture : public IOXMLObject
     void  setTarget(GLuint target);
     const GLuint  getTarget() const;
 
-    const GLuint  getHeight() const;
-    const GLuint  getWidth()  const;
+    const GLuint  GetHeight() const;
+    const GLuint  GetWidth()  const;
     const GLuint  getDepth()  const;
     void  destroy();
 

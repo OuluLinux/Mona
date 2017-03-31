@@ -49,14 +49,14 @@ public class GameOfLife
 
 
    // Get grid width.
-   public int getWidth()
+   public int GetWidth()
    {
       return (size.width);
    }
 
 
    // Get grid height.
-   public int getHeight()
+   public int GetHeight()
    {
       return (size.height);
    }
@@ -572,7 +572,7 @@ public class GameOfLife
 
 
    // Step N times.
-   public void step(int steps)
+   public void Step(int steps)
    {
       for (int i = 0; i < steps; i++)
       {
@@ -601,7 +601,7 @@ public class GameOfLife
 
 
    // Checkpoint cells.
-   public void checkpoint()
+   public void Checkpoint()
    {
       int x;
       int y;
@@ -620,7 +620,7 @@ public class GameOfLife
 
 
    // Restore cells.
-   public void restore()
+   public void Restore()
    {
       int x;
       int y;

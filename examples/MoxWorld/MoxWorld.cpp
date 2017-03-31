@@ -54,7 +54,7 @@ public class MoxWorld
 
 
    // Initialize cells.
-   public void initCells(int width, int height, float live_cell_prob, int random_seed)
+   public void InitCells(int width, int height, float live_cell_prob, int random_seed)
    {
       int x, y;
 
@@ -74,12 +74,12 @@ public class MoxWorld
          }
       }
       game_of_life.Step();
-      game_of_life.checkpoint();
+      game_of_life.Checkpoint();
    }
 
 
    // Get width.
-   int getWidth()
+   int GetWidth()
    {
       if (game_of_life != null)
       {
@@ -93,7 +93,7 @@ public class MoxWorld
 
 
    // Get height.
-   int getHeight()
+   int GetHeight()
    {
       if (game_of_life != null)
       {
@@ -167,7 +167,7 @@ public class MoxWorld
    {
       if (game_of_life != null)
       {
-         game_of_life.restore();
+         game_of_life.Restore();
       }
       if (moxen != null)
       {
@@ -1215,7 +1215,7 @@ public class MoxWorld
          {
             if (cellsFilename == null)
             {
-               moxWorld.initCells(width, height, live_cell_prob, random_seed);
+               moxWorld.InitCells(width, height, live_cell_prob, random_seed);
             }
             else
             {

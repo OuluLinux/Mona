@@ -11,7 +11,7 @@ public class GameOfLifeCanvas extends Canvas
    GameOfLife game_of_life;
 
    // Buffered display.
-   private Size canvasSize;
+   private Size canvas_size;
    private Graphics  graphics;
    private Image     image;
    private Graphics  imageGraphics;
@@ -31,13 +31,13 @@ public class GameOfLifeCanvas extends Canvas
    private int lastY = -1;
 
    // Constructor.
-   public GameOfLifeCanvas(GameOfLife game_of_life, Size canvasSize)
+   public GameOfLifeCanvas(GameOfLife game_of_life, Size canvas_size)
    {
       this.game_of_life = game_of_life;
 
       // Configure canvas.
-      this.canvasSize = canvasSize;
-      setBounds(0, 0, canvasSize.width, canvasSize.height);
+      this.canvas_size = canvas_size;
+      setBounds(0, 0, canvas_size.width, canvas_size.height);
       addMouseListener(new CanvasMouseListener());
       addMouseMotionListener(new CanvasMouseMotionListener());
    }
@@ -56,13 +56,13 @@ public class GameOfLifeCanvas extends Canvas
       if (graphics == null)
       {
          graphics      = getGraphics();
-         image         = createImage(canvasSize.width, canvasSize.height);
+         image         = createImage(canvas_size.width, canvas_size.height);
          imageGraphics = image.getGraphics();
          graphics.setFont(font);
          fontMetrics = graphics.getFontMetrics();
          fontAscent  = fontMetrics.getMaxAscent();
          fontWidth   = fontMetrics.getMaxAdvance();
-         fontHeight  = fontMetrics.getHeight();
+         fontHeight  = fontMetrics.GetHeight();
       }
 
       if (graphics == null)
@@ -72,15 +72,15 @@ public class GameOfLifeCanvas extends Canvas
 
       // Clear display.
       imageGraphics.setColor(Color.white);
-      imageGraphics.fillRect(0, 0, canvasSize.width, canvasSize.height);
+      imageGraphics.fillRect(0, 0, canvas_size.width, canvas_size.height);
 
       // Draw grid.
       synchronized (game_of_life.lock)
       {
-         cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
-         cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
+         cellWidth  = (double)canvas_size.width / (double)game_of_life.size.width;
+         cellHeight = (double)canvas_size.height / (double)game_of_life.size.height;
          imageGraphics.setColor(Color.black);
-         y2 = canvasSize.height;
+         y2 = canvas_size.height;
 
          for (x = 1, x2 = (int)cellWidth; x < game_of_life.size.width;
               x++, x2 = (int)(cellWidth * (double)x))
@@ -88,7 +88,7 @@ public class GameOfLifeCanvas extends Canvas
             imageGraphics.drawLine(x2, 0, x2, y2);
          }
 
-         x2 = canvasSize.width;
+         x2 = canvas_size.width;
 
          for (y = 1, y2 = (int)cellHeight; y < game_of_life.size.height;
               y++, y2 = (int)(cellHeight * (double)y))
@@ -100,7 +100,7 @@ public class GameOfLifeCanvas extends Canvas
          for (x = x2 = 0; x < game_of_life.size.width;
               x++, x2 = (int)(cellWidth * (double)x))
          {
-            for (y = 0, y2 = canvasSize.height - (int)cellHeight;
+            for (y = 0, y2 = canvas_size.height - (int)cellHeight;
                  y < game_of_life.size.height;
                  y++, y2 = (int)(cellHeight *
                                  (double)(game_of_life.size.height - (y + 1))))
@@ -153,8 +153,8 @@ public class GameOfLifeCanvas extends Canvas
          imageGraphics.setFont(font);
          imageGraphics.setColor(Color.black);
          imageGraphics.drawString(message,
-                                  (canvasSize.width - fontMetrics.stringWidth(message)) / 2,
-                                  canvasSize.height / 2);
+                                  (canvas_size.width - fontMetrics.stringWidth(message)) / 2,
+                                  canvas_size.height / 2);
       }
    }
 
@@ -167,8 +167,8 @@ public class GameOfLifeCanvas extends Canvas
       {
          int    x;
          int    y;
-         double cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
-         double cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
+         double cellWidth  = (double)canvas_size.width / (double)game_of_life.size.width;
+         double cellHeight = (double)canvas_size.height / (double)game_of_life.size.height;
 
          x = (int)((double)evt.getX() / cellWidth);
          y = game_of_life.size.height - (int)((double)evt.getY() / cellHeight) - 1;
@@ -208,8 +208,8 @@ public class GameOfLifeCanvas extends Canvas
       {
          int    x;
          int    y;
-         double cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
-         double cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
+         double cellWidth  = (double)canvas_size.width / (double)game_of_life.size.width;
+         double cellHeight = (double)canvas_size.height / (double)game_of_life.size.height;
 
          x = (int)((double)evt.getX() / cellWidth);
          y = game_of_life.size.height - (int)((double)evt.getY() / cellHeight) - 1;

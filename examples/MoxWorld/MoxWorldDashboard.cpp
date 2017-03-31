@@ -223,7 +223,7 @@ public class MoxWorldDashboard extends JFrame
    public class MoxDisplay extends Canvas
    {
       // Buffered display.
-      private Size canvasSize;
+      private Size canvas_size;
       private Graphics  graphics;
       private Image     image;
       private Graphics  imageGraphics;
@@ -235,11 +235,11 @@ public class MoxWorldDashboard extends JFrame
       private int lastY = -1;
 
       // Constructor.
-      public MoxDisplay(Size canvasSize)
+      public MoxDisplay(Size canvas_size)
       {
          // Configure canvas.
-         this.canvasSize = canvasSize;
-         setBounds(0, 0, canvasSize.width, canvasSize.height);
+         this.canvas_size = canvas_size;
+         setBounds(0, 0, canvas_size.width, canvas_size.height);
          addMouseListener(new CanvasMouseListener());
          addMouseMotionListener(new CanvasMouseMotionListener());
       }
@@ -263,7 +263,7 @@ public class MoxWorldDashboard extends JFrame
          if (graphics == null)
          {
             graphics      = getGraphics();
-            image         = createImage(canvasSize.width, canvasSize.height);
+            image         = createImage(canvas_size.width, canvas_size.height);
             imageGraphics = image.getGraphics();
          }
 
@@ -274,15 +274,15 @@ public class MoxWorldDashboard extends JFrame
 
          // Clear display.
          imageGraphics.setColor(Color.white);
-         imageGraphics.fillRect(0, 0, canvasSize.width, canvasSize.height);
+         imageGraphics.fillRect(0, 0, canvas_size.width, canvas_size.height);
 
          // Draw grid.
          synchronized (game_of_life.lock)
          {
-            cellWidth  = (float)canvasSize.width / (float)game_of_life.size.width;
-            cellHeight = (float)canvasSize.height / (float)game_of_life.size.height;
+            cellWidth  = (float)canvas_size.width / (float)game_of_life.size.width;
+            cellHeight = (float)canvas_size.height / (float)game_of_life.size.height;
             imageGraphics.setColor(Color.black);
-            y2 = canvasSize.height;
+            y2 = canvas_size.height;
 
             for (x = 1, x2 = (int)cellWidth; x < game_of_life.size.width;
                  x++, x2 = (int)(cellWidth * (double)x))
@@ -290,7 +290,7 @@ public class MoxWorldDashboard extends JFrame
                imageGraphics.drawLine(x2, 0, x2, y2);
             }
 
-            x2 = canvasSize.width;
+            x2 = canvas_size.width;
 
             for (y = 1, y2 = (int)cellHeight; y < game_of_life.size.height;
                  y++, y2 = (int)(cellHeight * (double)y))
@@ -302,7 +302,7 @@ public class MoxWorldDashboard extends JFrame
             for (x = x2 = 0; x < game_of_life.size.width;
                  x++, x2 = (int)(cellWidth * (double)x))
             {
-               for (y = 0, y2 = canvasSize.height - (int)cellHeight;
+               for (y = 0, y2 = canvas_size.height - (int)cellHeight;
                     y < game_of_life.size.height;
                     y++, y2 = (int)(cellHeight *
                                     (double)(game_of_life.size.height - (y + 1))))
@@ -423,8 +423,8 @@ public class MoxWorldDashboard extends JFrame
             int     i;
             int     x;
             int     y;
-            double  cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
-            double  cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
+            double  cellWidth  = (double)canvas_size.width / (double)game_of_life.size.width;
+            double  cellHeight = (double)canvas_size.height / (double)game_of_life.size.height;
             Mox     mox;
             bool moxSelected;
 
@@ -502,8 +502,8 @@ public class MoxWorldDashboard extends JFrame
          {
             int    x;
             int    y;
-            double cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
-            double cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
+            double cellWidth  = (double)canvas_size.width / (double)game_of_life.size.width;
+            double cellHeight = (double)canvas_size.height / (double)game_of_life.size.height;
 
             x = (int)((double)evt.getX() / cellWidth);
             y = game_of_life.size.height - (int)((double)evt.getY() / cellHeight) - 1;
@@ -596,7 +596,7 @@ public class MoxWorldDashboard extends JFrame
          // Reset?
          if (evt.getSource() == (Object)resetButton)
          {
-            game_of_life.restore();
+            game_of_life.Restore();
             int numMox = moxen.GetCount();
             for (int i = 0; i < numMox; i++)
             {

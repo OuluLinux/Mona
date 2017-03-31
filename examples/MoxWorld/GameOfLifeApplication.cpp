@@ -298,7 +298,7 @@ public class GameOfLifeApplication implements Runnable
          // Checkpoint?
          if (evt.getSource() == (Object)checkpointButton)
          {
-            game_of_life.checkpoint();
+            game_of_life.Checkpoint();
 
             return;
          }
@@ -306,7 +306,7 @@ public class GameOfLifeApplication implements Runnable
          // Restore?
          if (evt.getSource() == (Object)restoreButton)
          {
-            game_of_life.restore();
+            game_of_life.Restore();
 
             return;
          }

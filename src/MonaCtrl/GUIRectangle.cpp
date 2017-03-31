@@ -200,12 +200,12 @@ bool  GUIRectangle::isAttached()
   return (parent != NULL);
 }
 
-int GUIRectangle::getWidth()
+int GUIRectangle::GetWidth()
 {
   return windowBounds.z - windowBounds.x;
 }
 
-int GUIRectangle::getHeight()
+int GUIRectangle::GetHeight()
 {
   return windowBounds.w - windowBounds.y;
 }

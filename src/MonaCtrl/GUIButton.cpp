@@ -56,25 +56,25 @@ const void GUIButton::computeWindowBounds()
     int width  = windowBounds.z - windowBounds.x,
         height = windowBounds.w - windowBounds.y;
 
-    if(width  <= label.getWidth() + 2*clipSize)
+    if(width  <= label.GetWidth() + 2*clipSize)
     {
       if(anchor == AT_CENTER)
       {
-        width = (label.getWidth() - width)/2 + clipSize + 2;
+        width = (label.GetWidth() - width)/2 + clipSize + 2;
         windowBounds.x -=width;
         windowBounds.z +=width;
       }
       if((anchor == AT_CORNERLU) || (anchor == AT_CORNERLD))
       {
-        width = (label.getWidth() - width)/2 + clipSize + 2;
+        width = (label.GetWidth() - width)/2 + clipSize + 2;
         windowBounds.z +=2*width;
       }
     }
 
-    if(height + 2*clipSize <  label.getHeight())
+    if(height + 2*clipSize <  label.GetHeight())
     {
 
-      height = (label.getHeight() - height)/2 + clipSize + 2;
+      height = (label.GetHeight() - height)/2 + clipSize + 2;
       windowBounds.y -= height;
       windowBounds.w += height;
     }

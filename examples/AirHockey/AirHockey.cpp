@@ -119,7 +119,7 @@ void AirHockeyDQN::Reset(bool init_reward, bool start) {
 	}
 }
 
-void AirHockeyDQN::ReLoad() {
+void AirHockeyDQN::Reload() {
 	String param_str = agent_edit.GetData();
 	
 	world.agents[0].LoadInitJSON(param_str);

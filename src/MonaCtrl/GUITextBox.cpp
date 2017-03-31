@@ -17,7 +17,7 @@ GUITextBox::GUITextBox(const String &callback, const String &text) : GUIAlphaEle
   textEndIndex    = 0;
 
   dimensions.y    = GUIFontManager::getDefaultFont() ?
-                    GUIFontManager::getDefaultFont()->getFontObject()->getHeight() + padding.y : dimensions.y;
+                    GUIFontManager::getDefaultFont()->getFontObject()->GetHeight() + padding.y : dimensions.y;
   widgetType      = WT_TEXT_BOX;
 }
 
@@ -267,7 +267,7 @@ void GUITextBox::setupText(int type, char Char)
     }
   }
   if(type == TE_PARSE_VISIBLE)
-     textEndIndex = font->getFontObject()->getMaxFittingLength(label.getString(), getWidth());
+     textEndIndex = font->getFontObject()->getMaxFittingLength(label.getString(), GetWidth());
 }
 
 const Tuple4i &GUITextBox::getWindowBounds()
@@ -275,7 +275,7 @@ const Tuple4i &GUITextBox::getWindowBounds()
   if(parent && update)
   {
     label.computeSizes();
-    dimensions.y    = label.getHeight() ? label.getHeight() + padding.y : dimensions.y;
+    dimensions.y    = label.GetHeight() ? label.GetHeight() + padding.y : dimensions.y;
 
     GUIRectangle::computeWindowBounds();
     blinkerPosition = !blinkerPosition ? windowBounds.x + padding.x : blinkerPosition;

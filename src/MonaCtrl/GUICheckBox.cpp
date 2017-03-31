@@ -192,8 +192,8 @@ const Tuple4i &GUICheckBox::getWindowBounds()
   if(parent && update)
   {
     label.computeSizes();
-    extra = int(float(label.getHeight())*1.25);
-    dimensions.set(float(label.getWidth() + extra), float(extra));
+    extra = int(float(label.GetHeight())*1.25);
+    dimensions.set(float(label.GetWidth() + extra), float(extra));
     markOffset = extra - int(dimensions.y*markRatio);
     GUIRectangle::computeWindowBounds();
   }

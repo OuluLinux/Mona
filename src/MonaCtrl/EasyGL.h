@@ -274,8 +274,8 @@ class GUIText
     void  setColor(const Tuple3f &color);
     const Tuple3f &getColor();
 
-    int   getHeight();
-    int   getWidth();
+    int   GetHeight();
+    int   GetWidth();
 
     void   setHeightScale(float hs);
     void   setWidthScale(float ws);
@@ -421,8 +421,8 @@ class GUIRectangle
     const    Tuple2f &getPosition();
     virtual  Tuple2i  getCenter();
 
-    int   getWidth();
-    int   getHeight();
+    int   GetWidth();
+    int   GetHeight();
 
     void  setActive(bool active);
     bool  isActive();

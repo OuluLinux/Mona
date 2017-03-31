@@ -140,7 +140,7 @@ void  GUIText::Print(int x, int y, int startIndex, int endIndex)
       s = e + 1;
       e = endIndex;
       if (s >= e) return;
-      y2 += currentFont->getFontObject()->getHeight();
+      y2 += currentFont->getFontObject()->GetHeight();
   }
   currentFont->getFontObject()->printSubString(float(x), float(y2), scales.x, scales.y,
                                                color.x, color.y, color.z,
@@ -194,7 +194,7 @@ void GUIText::computeSizes()
       size.x = int(float(size.x)*scales.x);
       size.y = int(float(size.y)*scales.y);
     } else {
-      size.y = int(float(currentFont->getFontObject()->getHeight())*scales.y);
+      size.y = int(float(currentFont->getFontObject()->GetHeight())*scales.y);
     }
     forceUpdate(false);
   }
@@ -203,8 +203,8 @@ void GUIText::computeSizes()
 void GUIText::setSize(const Tuple2i& sizeArg){ size = sizeArg; }
 void GUIText::setSize(int x, int y){ size.set(x, y); }
 
-int  GUIText::getHeight(){ return abs(size.y); }
-int  GUIText::getWidth() { return abs(size.x); }
+int  GUIText::GetHeight(){ return abs(size.y); }
+int  GUIText::GetWidth() { return abs(size.x); }
 
 const Tuple2i& GUIText::getSize(){ return size; }
 bool  GUIText::needUpdating(){ return update; }

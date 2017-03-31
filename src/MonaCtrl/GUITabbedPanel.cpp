@@ -231,7 +231,7 @@ const void GUITabbedPanel::computeWindowBounds()
     int             widgetCount = (int)widgets.GetCount();
 
     for(int i = 0; i < widgetCount; i++)
-      height = height < widgets[i]->getHeight() ? widgets[i]->getHeight() : height;
+      height = height < widgets[i]->GetHeight() ? widgets[i]->GetHeight() : height;
     lowerPanel->setSizes(1.0f, height);
     upperPanel->setParent(this);
   }

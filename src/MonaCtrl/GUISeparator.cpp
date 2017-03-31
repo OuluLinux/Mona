@@ -55,13 +55,13 @@ void const GUISeparator::computeWindowBounds()
   const Tuple4i &parentBounds = parent->getWindowBounds();
   if(orientation == OR_HORIZONTAL)
   {
-    float offset = (float(parent->getWidth()) - float(ratio*parent->getWidth()))/2.0f;
+    float offset = (float(parent->GetWidth()) - float(ratio*parent->GetWidth()))/2.0f;
     windowBounds.set(int(parentBounds.x + offset), int(parentBounds.y + position.y),
                      int(parentBounds.z - offset), int(parentBounds.y + position.y));
   }
   else
   {
-    float offset = (float(parent->getHeight()) - float(parent->getHeight())*ratio)/2.0f;
+    float offset = (float(parent->GetHeight()) - float(parent->GetHeight())*ratio)/2.0f;
     windowBounds.set(int(parentBounds.x + position.x), int(parentBounds.y + offset),
                      int(parentBounds.x + position.x), int(parentBounds.w - offset));
   }

@@ -91,7 +91,7 @@ void Pong::Ball::setVelocity(float dx, float dy)
 
 
 // Step ball.
-Pong::STEP_OUTCOME Pong::Ball::step(Paddle& paddle)
+Pong::STEP_OUTCOME Pong::Ball::Step(Paddle& paddle)
 {
    Pong::STEP_OUTCOME outcome = Pong::CLEAR;
 
@@ -183,7 +183,7 @@ void Pong::setBallVelocity(float dx, float dy)
 // Step: returns true if ball scores.
 Pong::STEP_OUTCOME Pong::Step()
 {
-   return (ball.step(paddle));
+   return (ball.Step(paddle));
 }
 
 

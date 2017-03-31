@@ -35,7 +35,7 @@ class CFont
     Tuple2i getStringSizes(const String &string);
     bool    Load(const char *fontPath);
     int     getMaxFittingLength(const String &string, int bounds);
-    int     getHeight();
+    int     GetHeight();
     const   int *getCharHorizontalGlyphs() const;
 
   private:

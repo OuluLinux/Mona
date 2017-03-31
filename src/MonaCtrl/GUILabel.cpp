@@ -29,9 +29,9 @@ void GUILabel::render(float clockTick)
   switch(anchor)
   {
     case AT_CORNERLU: label.Print(windowBounds.x, windowBounds.y); break;
-    case AT_CORNERLD: label.Print(windowBounds.x, windowBounds.y - label.getHeight()); break;
+    case AT_CORNERLD: label.Print(windowBounds.x, windowBounds.y - label.GetHeight()); break;
     case AT_CORNERRU: label.Print(windowBounds.z, windowBounds.y); break;
-    case AT_CORNERRD: label.Print(windowBounds.z, windowBounds.y - label.getHeight()); break;
+    case AT_CORNERRD: label.Print(windowBounds.z, windowBounds.y - label.GetHeight()); break;
     default: label.printCenteredXY(center.x, center.y);
   }
 }
@@ -45,14 +45,14 @@ const Tuple4i &GUILabel::getWindowBounds()
     label.computeSizes();
 
     if(dimensions.x > 1)
-      width  = dimensions.x  < label.getWidth() ? label.getWidth() : (int)dimensions.x;
+      width  = dimensions.x  < label.GetWidth() ? label.GetWidth() : (int)dimensions.x;
     else
-      width  = getWidth()    < label.getWidth() ? label.getWidth() : getWidth();
+      width  = GetWidth()    < label.GetWidth() ? label.GetWidth() : GetWidth();
  
     if(dimensions.x > 1)
-      height  = dimensions.y  < label.getHeight() ? label.getHeight() : (int)dimensions.y;
+      height  = dimensions.y  < label.GetHeight() ? label.GetHeight() : (int)dimensions.y;
     else
-      height  = getHeight()   < label.getHeight() ? label.getHeight() : getHeight();
+      height  = GetHeight()   < label.GetHeight() ? label.GetHeight() : GetHeight();
 
     dimensions.set(float(width),  float(height));
     GUIRectangle::computeWindowBounds();

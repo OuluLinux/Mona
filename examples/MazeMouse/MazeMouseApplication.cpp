@@ -199,7 +199,7 @@ MazeMouseApplication::MazeMouseApplication() {
 	fontMetrics = canvasGraphics.getFontMetrics();
 	fontAscent  = fontMetrics.getMaxAscent();
 	fontWidth   = fontMetrics.getMaxAdvance();
-	fontHeight  = fontMetrics.getHeight();
+	fontHeight  = fontMetrics.GetHeight();
 	// Get mouse and cheese images.
 	Image mouse = null;
 	mouse_image = null;
@@ -226,8 +226,8 @@ MazeMouseApplication::MazeMouseApplication() {
 		error = "Cannot get image: " + CHEESE_IMAGE_FILE;
 
 	if (mouse != null) {
-		w1 = mouse.getWidth(this);
-		h1 = mouse.getHeight(this);
+		w1 = mouse.GetWidth(this);
+		h1 = mouse.GetHeight(this);
 
 		if ((w1 <= 0) || (h1 <= 0))
 			error = "Invalid image: " + MOUSE_IMAGE_FILE;
@@ -242,8 +242,8 @@ MazeMouseApplication::MazeMouseApplication() {
 	}
 
 	if (cheese != null) {
-		w1 = cheese.getWidth(this);
-		h1 = cheese.getHeight(this);
+		w1 = cheese.GetWidth(this);
+		h1 = cheese.GetHeight(this);
 
 		if ((w1 <= 0) || (h1 <= 0))
 			error = "Invalid image: " + CHEESE_IMAGE_FILE;

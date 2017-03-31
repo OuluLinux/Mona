@@ -139,8 +139,8 @@ void Texture::setID(GLuint texID)
 
 void Texture::setTarget(GLuint target_){ target = target_;}
 const GLuint Texture::getTarget() const { return target;  }
-const GLuint Texture::getHeight() const { return height;  }
-const GLuint Texture::getWidth()  const { return width;   }
+const GLuint Texture::GetHeight() const { return height;  }
+const GLuint Texture::GetWidth()  const { return width;   }
 const GLuint Texture::getDepth()  const { return depth;   }
 const GLuint Texture::getID()     const { return id;      }
 
@@ -369,8 +369,8 @@ bool Texture::load2DImage(const Image& image,
     return Logger::writeErrorLog(String("Could not load Texture2D file."));
   }
 
-  height = image.getHeight();
-  width  = image.getWidth();
+  height = image.GetHeight();
+  width  = image.GetWidth();
   depth  = 1;
 
   if(finalizeLoading(path))
@@ -455,8 +455,8 @@ bool Texture::loadCube(const char* pathPXdotExtension,
 
     if(i == 5)
     {
-      height = image.getHeight();
-      width  = image.getWidth();
+      height = image.GetHeight();
+      width  = image.GetWidth();
       depth  = 1;
     }
   }
@@ -926,9 +926,9 @@ bool Texture::loadTextureFace(const  Image &image,
         glCompressedTexImage2DARB(target,
                                   0,
                                   GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,
-                                  image.getWidth(), image.getHeight(),
+                                  image.GetWidth(), image.GetHeight(),
                                   0,
-                                  ((image.getWidth() +3)/4)*((image.getHeight() +3)/4)*16,
+                                  ((image.GetWidth() +3)/4)*((image.GetHeight() +3)/4)*16,
                                   image.getDataBuffer());
       }
       else
@@ -952,9 +952,9 @@ bool Texture::loadTextureFace(const  Image &image,
         glCompressedTexImage2DARB(target,
                                   0,
                                   GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
-                                  image.getWidth(), image.getHeight(),
+                                  image.GetWidth(), image.GetHeight(),
                                   0,
-                                  ((image.getWidth() +3)/4)*((image.getHeight() +3)/4)*16,
+                                  ((image.GetWidth() +3)/4)*((image.GetHeight() +3)/4)*16,
                                   image.getDataBuffer());
       }
       else
@@ -977,9 +977,9 @@ bool Texture::loadTextureFace(const  Image &image,
         glCompressedTexImage2DARB(target,
                                   0,
                                   GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
-                                  image.getWidth(), image.getHeight(),
+                                  image.GetWidth(), image.GetHeight(),
                                   0,
-                                  ((image.getWidth() +3)/4)*((image.getHeight() +3)/4)*8,
+                                  ((image.GetWidth() +3)/4)*((image.GetHeight() +3)/4)*8,
                                   image.getDataBuffer());
       }
       else
@@ -993,14 +993,14 @@ bool Texture::loadTextureFace(const  Image &image,
       if(mipmap)
         gluBuild2DMipmaps(target,
                           image.getInternalFormat(),
-                          image.getWidth(),
-                          image.getHeight(),
+                          image.GetWidth(),
+                          image.GetHeight(),
                           image.getFormat(),
                           GL_UNSIGNED_BYTE,
                           image.getDataBuffer());
      else
-       glTexImage2D(target, 0,  image.getInternalFormat(), image.getWidth(),
-                    image.getHeight(), 0, image.getFormat(),
+       glTexImage2D(target, 0,  image.getInternalFormat(), image.GetWidth(),
+                    image.GetHeight(), 0, image.getFormat(),
                     GL_UNSIGNED_BYTE, image.getDataBuffer());
 
   }
@@ -1237,8 +1237,8 @@ const unsigned char*  Image::getDataBuffer()      const { return dataBuffer;    
 const unsigned int    Image::getFormat()          const { return format;         }
 const String    &Image::getPath()            const { return path;           }
 
-const unsigned short Image::getHeight() const {return height;}
-const unsigned short Image::getWidth()  const {return width; }
+const unsigned short Image::GetHeight() const {return height;}
+const unsigned short Image::GetWidth()  const {return width; }
 const unsigned short Image::getDepth()  const {return depth; }
 
 Image::~Image()

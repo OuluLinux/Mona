@@ -185,7 +185,7 @@ class Pong
          fontMetrics = graphics.getFontMetrics();
          fontAscent  = fontMetrics.getMaxAscent();
          fontWidth   = fontMetrics.getMaxAdvance();
-         fontHeight  = fontMetrics.getHeight();
+         fontHeight  = fontMetrics.GetHeight();
 
          // Start thread.
          thread = new Thread(this);

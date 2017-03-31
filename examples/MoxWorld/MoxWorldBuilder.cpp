@@ -78,8 +78,8 @@ public class MoxWorldBuilder
    public void Init(float live_cell_prob)
    {
       int x, y;
-      int width  = game_of_life.getWidth();
-      int height = game_of_life.getHeight();
+      int width  = game_of_life.GetWidth();
+      int height = game_of_life.GetHeight();
 
       synchronized (game_of_life.lock)
       {
@@ -94,7 +94,7 @@ public class MoxWorldBuilder
             }
          }
          game_of_life.Step();
-         game_of_life.checkpoint();
+         game_of_life.Checkpoint();
       }
    }
 
@@ -112,7 +112,7 @@ public class MoxWorldBuilder
       }
       synchronized (game_of_life.lock)
       {
-         game_of_life.checkpoint();
+         game_of_life.Checkpoint();
       }
    }
 
@@ -132,8 +132,8 @@ public class MoxWorldBuilder
                         int min_green_cell_count, int max_green_cell_count)
    {
       int x, y;
-      int width      = game_of_life.getWidth();
-      int height     = game_of_life.getHeight();
+      int width      = game_of_life.GetWidth();
+      int height     = game_of_life.GetHeight();
       int blueCount  = 0;
       int greenCount = 0;
 
