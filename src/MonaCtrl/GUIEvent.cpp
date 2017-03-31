@@ -33,7 +33,7 @@ bool GUIEvent::isConsumed()
   return consumed;
 }
 GUIRectangle      *GUIEvent::getEventSource()   { return eventSource ;   }
-const std::string &GUIEvent::getCallbackString(){ return callbackString; }
+const String &GUIEvent::getCallbackString(){ return callbackString; }
 
 KeyEvent::KeyEvent(int keyID)
 {

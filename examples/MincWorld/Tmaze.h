@@ -20,7 +20,7 @@ public:
    };
 
    // Maze path.
-   vector<Junction> path;
+   Vector<Junction> path;
 
    // Constructor.
    Tmaze();
@@ -29,6 +29,6 @@ public:
    ~Tmaze();
 
    // Is given maze a duplicate?
-   bool isDuplicate(Tmaze *maze);
+   bool IsDuplicate(Tmaze *maze);
 };
 #endif

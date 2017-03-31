@@ -11,25 +11,25 @@
 #include "Quaternion.h"
 
 // Constructors.
-cQuaternion::cQuaternion()
+CQuaternion::CQuaternion()
 {
    m_quat[0]     = 0.0;
    m_quat[1]     = 0.0;
    m_quat[2]     = 0.0;
    m_quat[3]     = 1.0;
-   m_normalCount = 0;
+   m_normal_count = 0;
 }
 
 
-cQuaternion::cQuaternion(float quat[4])
+CQuaternion::CQuaternion(double quat[4])
 {
-   init(quat);
-   m_normalCount = 0;
+   Init(quat);
+   m_normal_count = 0;
 }
 
 
 // Initialize.
-void cQuaternion::init(float quat[4])
+void CQuaternion::Init(double quat[4])
 {
    m_quat[0] = quat[0];
    m_quat[1] = quat[1];
@@ -39,17 +39,17 @@ void cQuaternion::init(float quat[4])
 
 
 // Clear.
-void cQuaternion::clear()
+void CQuaternion::Clear()
 {
    m_quat[0]     = 0.0;
    m_quat[1]     = 0.0;
    m_quat[2]     = 0.0;
    m_quat[3]     = 1.0;
-   m_normalCount = 0;
+   m_normal_count = 0;
 }
 
 
-void cQuaternion::vzero(float *v)
+void CQuaternion::VecZero(double *v)
 {
    v[0] = 0.0;
    v[1] = 0.0;
@@ -57,7 +57,7 @@ void cQuaternion::vzero(float *v)
 }
 
 
-void cQuaternion::vset(float *v, float x, float y, float z)
+void CQuaternion::VecSet(double *v, double x, double y, double z)
 {
    v[0] = x;
    v[1] = y;
@@ -65,7 +65,7 @@ void cQuaternion::vset(float *v, float x, float y, float z)
 }
 
 
-void cQuaternion::vsub(const float *src1, const float *src2, float *dst)
+void CQuaternion::VecSub(const double *src1, const double *src2, double *dst)
 {
    dst[0] = src1[0] - src2[0];
    dst[1] = src1[1] - src2[1];
@@ -73,7 +73,7 @@ void cQuaternion::vsub(const float *src1, const float *src2, float *dst)
 }
 
 
-void cQuaternion::vcopy(const float *v1, float *v2)
+void CQuaternion::VecCopy(const double *v1, double *v2)
 {
    register int i;
 
@@ -84,25 +84,25 @@ void cQuaternion::vcopy(const float *v1, float *v2)
 }
 
 
-void cQuaternion::vcross(const float *v1, const float *v2, float *cross)
+void CQuaternion::VecCross(const double *v1, const double *v2, double *cross)
 {
-   float temp[3];
+   double temp[3];
 
    temp[0] = (v1[1] * v2[2]) - (v1[2] * v2[1]);
    temp[1] = (v1[2] * v2[0]) - (v1[0] * v2[2]);
    temp[2] = (v1[0] * v2[1]) - (v1[1] * v2[0]);
 
-   vcopy(temp, cross);
+   VecCopy(temp, cross);
 }
 
 
-float cQuaternion::vlength(const float *v)
+double CQuaternion::VecLength(const double *v)
 {
-   return((float)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
+   return ((double)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
 }
 
 
-void cQuaternion::vscale(float *v, float div)
+void CQuaternion::VecScale(double *v, double div)
 {
    v[0] *= div;
    v[1] *= div;
@@ -110,19 +110,19 @@ void cQuaternion::vscale(float *v, float div)
 }
 
 
-void cQuaternion::vnormal(float *v)
+void CQuaternion::VecNormal(double *v)
 {
-   vscale(v, 1.0f / vlength(v));
+   VecScale(v, 1.0f / VecLength(v));
 }
 
 
-float cQuaternion::vdot(const float *v1, const float *v2)
+double CQuaternion::VecDot(const double *v1, const double *v2)
 {
-   return(v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
+   return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
 }
 
 
-void cQuaternion::vadd(const float *src1, const float *src2, float *dst)
+void CQuaternion::VecAdd(const double *src1, const double *src2, double *dst)
 {
    dst[0] = src1[0] + src2[0];
    dst[1] = src1[1] + src2[1];
@@ -136,28 +136,28 @@ void cQuaternion::vadd(const float *src1, const float *src2, float *dst)
 
 #define NORMALFREQ    100
 
-void cQuaternion::add_quats(cQuaternion& q1, cQuaternion& q2, cQuaternion& dest)
+void CQuaternion::AddQuats(CQuaternion& q1, CQuaternion& q2, CQuaternion& dest)
 {
-   float t1[4], t2[4], t3[4];
-   float tf[4];
+   double t1[4], t2[4], t3[4];
+   double tf[4];
 
-   vcopy(q1.m_quat, t1);
-   vscale(t1, q2.m_quat[3]);
-   vcopy(q2.m_quat, t2);
-   vscale(t2, q1.m_quat[3]);
-   vcross(q2.m_quat, q1.m_quat, t3);
-   vadd(t1, t2, tf);
-   vadd(t3, tf, tf);
-   tf[3]          = q1.m_quat[3] * q2.m_quat[3] - vdot(q1.m_quat, q2.m_quat);
+   VecCopy(q1.m_quat, t1);
+   VecScale(t1, q2.m_quat[3]);
+   VecCopy(q2.m_quat, t2);
+   VecScale(t2, q1.m_quat[3]);
+   VecCross(q2.m_quat, q1.m_quat, t3);
+   VecAdd(t1, t2, tf);
+   VecAdd(t3, tf, tf);
+   tf[3]          = q1.m_quat[3] * q2.m_quat[3] - VecDot(q1.m_quat, q2.m_quat);
    dest.m_quat[0] = tf[0];
    dest.m_quat[1] = tf[1];
    dest.m_quat[2] = tf[2];
    dest.m_quat[3] = tf[3];
 
-   if (++m_normalCount > NORMALFREQ)
+   if (++m_normal_count > NORMALFREQ)
    {
-      m_normalCount = 0;
-      dest.normalize_quat();
+      m_normal_count = 0;
+      dest.NormalizeQuat();
    }
 }
 
@@ -165,7 +165,7 @@ void cQuaternion::add_quats(cQuaternion& q1, cQuaternion& q2, cQuaternion& dest)
 /*
  * Multiply quaternions, normalizing periodically.
  */
-void cQuaternion::mult_quats(cQuaternion& q1, cQuaternion& q2, cQuaternion& dest)
+void CQuaternion::MulQuats(CQuaternion& q1, CQuaternion& q2, CQuaternion& dest)
 {
    dest.m_quat[3] = q2.m_quat[3] * q1.m_quat[3]
                     - q2.m_quat[0] * q1.m_quat[0]
@@ -187,10 +187,10 @@ void cQuaternion::mult_quats(cQuaternion& q1, cQuaternion& q2, cQuaternion& dest
                     - q2.m_quat[1] * q1.m_quat[0]
                     + q2.m_quat[2] * q1.m_quat[3];
 
-   if (++m_normalCount > NORMALFREQ)
+   if (++m_normal_count > NORMALFREQ)
    {
-      m_normalCount = 0;
-      dest.normalize_quat();
+      m_normal_count = 0;
+      dest.NormalizeQuat();
    }
 }
 
@@ -207,10 +207,10 @@ void cQuaternion::mult_quats(cQuaternion& q1, cQuaternion& q2, cQuaternion& dest
  * - Pletinckx, D., Quaternion calculus as a basic tool in computer
  *   graphics, The Visual Computer 5, 2-13, 1989.
  */
-void cQuaternion::normalize_quat()
+void CQuaternion::NormalizeQuat()
 {
    int   i;
-   float mag;
+   double mag;
 
    mag = (m_quat[0] * m_quat[0] + m_quat[1] * m_quat[1] +
           m_quat[2] * m_quat[2] + m_quat[3] * m_quat[3]);
@@ -224,7 +224,7 @@ void cQuaternion::normalize_quat()
 /*
  * Build a rotation matrix, given a quaternion rotation.
  */
-void cQuaternion::build_rotmatrix(float m[4][4])
+void CQuaternion::BuildRotationMatrix(double m[4][4])
 {
    m[0][0] = 1.0f - 2.0f * (m_quat[1] * m_quat[1] + m_quat[2] * m_quat[2]);
    m[0][1] = 2.0f * (m_quat[0] * m_quat[1] - m_quat[2] * m_quat[3]);
@@ -249,45 +249,45 @@ void cQuaternion::build_rotmatrix(float m[4][4])
 
 
 // Load axis-angle rotation into quaternion.
-void cQuaternion::loadRotation(float angle, float *axis)
+void CQuaternion::LoadRotation(double angle, double *axis)
 {
-   vnormal(axis);
-   vcopy(axis, m_quat);
-   vscale(m_quat, (float)sin(angle / 2.0f));
-   m_quat[3] = (float)cos(angle / 2.0f);
-   normalize_quat();
+   VecNormal(axis);
+   VecCopy(axis, m_quat);
+   VecScale(m_quat, (double)sin(angle / 2.0f));
+   m_quat[3] = (double)cos(angle / 2.0f);
+   NormalizeQuat();
 }
 
 
 // Merge an axis-angle rotation into quaternion.
-void cQuaternion::mergeRotation(float angle, float *axis)
+void CQuaternion::MergeRotation(double angle, double *axis)
 {
-   cQuaternion q1, q2;
+   CQuaternion q1, q2;
 
-   q2.m_quat[0] = axis[0] * (float)sin(angle / 2.0f);
-   q2.m_quat[1] = axis[1] * (float)sin(angle / 2.0f);
-   q2.m_quat[2] = axis[2] * (float)sin(angle / 2.0f);
-   q2.m_quat[3] = (float)cos(angle / 2.0f);
-   q2.normalize_quat();
+   q2.m_quat[0] = axis[0] * (double)sin(angle / 2.0f);
+   q2.m_quat[1] = axis[1] * (double)sin(angle / 2.0f);
+   q2.m_quat[2] = axis[2] * (double)sin(angle / 2.0f);
+   q2.m_quat[3] = (double)cos(angle / 2.0f);
+   q2.NormalizeQuat();
    q1.m_quat[0] = m_quat[0];
    q1.m_quat[1] = m_quat[1];
    q1.m_quat[2] = m_quat[2];
    q1.m_quat[3] = m_quat[3];
-   mult_quats(q2, q1, *this);
-   normalize_quat();
+   MulQuats(q2, q1, *this);
+   NormalizeQuat();
 }
 
 
 // Make quaternion from Euler angles.
-void cQuaternion::makeQFromEulerAngles(float pitch, float yaw, float roll)
+void CQuaternion::MakeQFromEulerAngles(double pitch, double yaw, double roll)
 {
    // Re-orient internally.
-   float iroll  = DegreesToRadians(pitch);
-   float ipitch = DegreesToRadians(yaw);
-   float iyaw   = DegreesToRadians(roll);
+   double iroll  = DegreesToRadians(pitch);
+   double ipitch = DegreesToRadians(yaw);
+   double iyaw   = DegreesToRadians(roll);
 
-   float cyaw, cpitch, croll, syaw, spitch, sroll;
-   float cyawcpitch, syawspitch, cyawspitch, syawcpitch;
+   double cyaw, cpitch, croll, syaw, spitch, sroll;
+   double cyawcpitch, syawspitch, cyawspitch, syawcpitch;
 
    cyaw   = cos(0.5f * iyaw);
    cpitch = cos(0.5f * ipitch);
@@ -301,19 +301,19 @@ void cQuaternion::makeQFromEulerAngles(float pitch, float yaw, float roll)
    cyawspitch = cyaw * spitch;
    syawcpitch = syaw * cpitch;
 
-   m_quat[3] = (float)(cyawcpitch * croll + syawspitch * sroll);
-   m_quat[0] = (float)(cyawcpitch * sroll - syawspitch * croll);
-   m_quat[1] = (float)(cyawspitch * croll + syawcpitch * sroll);
-   m_quat[2] = (float)(syawcpitch * croll - cyawspitch * sroll);
+   m_quat[3] = (double)(cyawcpitch * croll + syawspitch * sroll);
+   m_quat[0] = (double)(cyawcpitch * sroll - syawspitch * croll);
+   m_quat[1] = (double)(cyawspitch * croll + syawcpitch * sroll);
+   m_quat[2] = (double)(syawcpitch * croll - cyawspitch * sroll);
 }
 
 
 // Get Euler angles.
-void cQuaternion::getEulerAngles(float& pitch, float& yaw, float& roll)
+void CQuaternion::GetEulerAngles(double& pitch, double& yaw, double& roll)
 {
-   float r11, r21, r31, r32, r33, r12, r13;
-   float q00, q11, q22, q33;
-   float tmp;
+   double r11, r21, r31, r32, r33, r12, r13;
+   double q00, q11, q22, q33;
+   double tmp;
 
    q00 = m_quat[3] * m_quat[3];
    q11 = m_quat[0] * m_quat[0];
@@ -333,49 +333,49 @@ void cQuaternion::getEulerAngles(float& pitch, float& yaw, float& roll)
       r13 = 2 * (m_quat[0] * m_quat[2] + m_quat[3] * m_quat[1]);
 
       pitch = RadiansToDegrees(0.0f);
-      yaw   = RadiansToDegrees((float)(-(pi / 2) * r31 / tmp));
-      roll  = RadiansToDegrees((float)atan2(-r12, -r31 * r13));
+      yaw   = RadiansToDegrees((double)(-(pi / 2) * r31 / tmp));
+      roll  = RadiansToDegrees((double)atan2(-r12, -r31 * r13));
    }
    else
    {
-      pitch = RadiansToDegrees((float)atan2(r32, r33));
-      yaw   = RadiansToDegrees((float)asin(-r31));
-      roll  = RadiansToDegrees((float)atan2(r21, r11));
+      pitch = RadiansToDegrees((double)atan2(r32, r33));
+      yaw   = RadiansToDegrees((double)asin(-r31));
+      roll  = RadiansToDegrees((double)atan2(r21, r11));
    }
 }
 
 
 // Clone quaternion.
-cQuaternion *cQuaternion::clone()
+CQuaternion *CQuaternion::Clone()
 {
-   cQuaternion *q = new cQuaternion();
+   CQuaternion *q = new CQuaternion();
 
-   assert(q != NULL);
+   ASSERT(q != NULL);
    q->m_quat[0] = m_quat[0];
    q->m_quat[1] = m_quat[1];
    q->m_quat[2] = m_quat[2];
    q->m_quat[3] = m_quat[3];
-   return(q);
+   return (q);
 }
 
 
 // Load quaternion.
-void cQuaternion::load(FILE *fp)
+void CQuaternion::Load(FILE *fp)
 {
    for (int i = 0; i < 4; i++)
    {
       FREAD_FLOAT(&m_quat[i], fp);
    }
-   FREAD_INT(&m_normalCount, fp);
+   FREAD_INT(&m_normal_count, fp);
 }
 
 
 // Save quaternion.
-void cQuaternion::save(FILE *fp)
+void CQuaternion::Store(FILE *fp)
 {
    for (int i = 0; i < 4; i++)
    {
       FWRITE_FLOAT(&m_quat[i], fp);
    }
-   FWRITE_INT(&m_normalCount, fp);
+   FWRITE_INT(&m_normal_count, fp);
 }

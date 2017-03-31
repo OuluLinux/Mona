@@ -6,7 +6,7 @@ public class TmazeViewer extends JFrame
    String        mazeFilename;
 
    // Display.
-   static final Dimension SCREEN_SIZE = new Dimension(600, 700);
+   static final Size SCREEN_SIZE = new Size(600, 700);
    TmazeDisplay           mazeDisplay;
 
    // Constructor.
@@ -21,14 +21,14 @@ public class TmazeViewer extends JFrame
       setTitle("T-maze viewer");
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       mazeDisplay = new TmazeDisplay(SCREEN_SIZE);
-      mazeDisplay.load(mazes);
+      mazeDisplay.Load(mazes);
       JScrollPane scroll = new JScrollPane(mazeDisplay,
                                            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                                            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
       scroll.setPreferredSize(SCREEN_SIZE);
-      getContentPane().add(scroll, BorderLayout.CENTER);
+      getContentPane().Add(scroll, BorderLayout.CENTER);
       pack();
-      setVisible(true);
+      setVisibletrue;
    }
 
 
@@ -51,7 +51,7 @@ public class TmazeViewer extends JFrame
                if (t[0].equals("name:"))
                {
                   maze = new Tmaze();
-                  mazes.add(maze);
+                  mazes.Add(maze);
                }
                else
                {
@@ -74,10 +74,10 @@ public class TmazeViewer extends JFrame
       {
          if (e[i].equals("1"))
          {
-            return(i - 1);
+            return (i - 1);
          }
       }
-      return(-1);
+      return (-1);
    }
 
 
@@ -85,18 +85,18 @@ public class TmazeViewer extends JFrame
    {
       if (e[e.length - 5].equals("1"))
       {
-         return(0);
+         return (0);
       }
       else
       {
-         return(1);
+         return (1);
       }
    }
 
 
    private double getProbability(String[] e)
    {
-      return(Double.parseDouble(e[e.length - 2]));
+      return (Double.parseDouble(e[e.length - 2]));
    }
 
 

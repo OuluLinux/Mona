@@ -1,19 +1,11 @@
 #ifndef EVOLVE_MOUSE
 #define EVOLVE_MOUSE
 
-#ifdef WIN32
-	#include <windows.h>
-	#include <io.h>
-#else
-	#include <errno.h>
-#endif
-
-#include <signal.h>
 #include <Mona/Mona.h>
 #include <Mona/Log.h>
 
-// Version (SCCS "what" format).
-#define MOUSE_EVOLVE_VERSION                "@(#)Mouse evolve version 1.0"
+#include <CtrlLib/CtrlLib.h>
+using namespace Upp;
 
 // Evolution parameters.
 #define FIT_POPULATION_SIZE                 20

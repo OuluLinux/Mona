@@ -11,32 +11,32 @@ public class Genome
    Vector<Gene> genes;
 
    // Mutation rate.
-   double mutationRate;
+   double mutation_rate;
 
    // Probability of random mutation.
-   double randomMutationRate;
+   double random_mutation_rate;
 
    // Random numbers.
-   int    randomSeed;
+   int    random_seed;
    Random randomizer;
 
    // Constructor.
-   Genome(double mutationRate, double randomMutationRate, int randomSeed)
+   Genome(double mutation_rate, double random_mutation_rate, int random_seed)
    {
-      this.mutationRate       = mutationRate;
-      this.randomMutationRate = randomMutationRate;
-      this.randomSeed         = randomSeed;
-      randomizer = new Random(randomSeed);
+      this.mutation_rate       = mutation_rate;
+      this.random_mutation_rate = random_mutation_rate;
+      this.random_seed         = random_seed;
+      randomizer = new Random(random_seed);
       genes      = new Vector<Gene>();
    }
 
 
    // Mutate.
-   void mutate()
+   void Mutate()
    {
-      for (int i = 0; i < genes.size(); i++)
+      for (int i = 0; i < genes.GetCount(); i++)
       {
-         genes.get(i).mutate();
+         genes.Get(i).Mutate();
       }
    }
 
@@ -46,16 +46,16 @@ public class Genome
    {
       Gene gene;
 
-      for (int i = 0; i < genes.size(); i++)
+      for (int i = 0; i < genes.GetCount(); i++)
       {
-         gene = genes.get(i);
+         gene = genes.Get(i);
          if (randomizer.nextBoolean())
          {
-            gene.copyValue(from1.genes.get(i));
+            gene.CopyValue(from1.genes.Get(i));
          }
          else
          {
-            gene.copyValue(from2.genes.get(i));
+            gene.CopyValue(from2.genes.Get(i));
          }
       }
    }
@@ -66,10 +66,10 @@ public class Genome
    {
       Gene gene;
 
-      for (int i = 0; i < genes.size(); i++)
+      for (int i = 0; i < genes.GetCount(); i++)
       {
-         gene = genes.get(i);
-         gene.copyValue(from.genes.get(i));
+         gene = genes.Get(i);
+         gene.CopyValue(from.genes.Get(i));
       }
    }
 
@@ -79,24 +79,24 @@ public class Genome
    {
       Gene gene;
 
-      keys.clear();
-      values.clear();
-      for (int i = 0; i < genes.size(); i++)
+      keys.Clear();
+      values.Clear();
+      for (int i = 0; i < genes.GetCount(); i++)
       {
-         gene = genes.get(i);
-         keys.add(new String(gene.name));
+         gene = genes.Get(i);
+         keys.Add(new String(gene.name));
          switch (gene.type)
          {
          case INTEGER_VALUE:
-            values.add(gene.ivalue + "");
+            values.Add(gene.ivalue + "");
             break;
 
          case FLOAT_VALUE:
-            values.add(gene.fvalue + "");
+            values.Add(gene.fvalue + "");
             break;
 
          case DOUBLE_VALUE:
-            values.add(gene.dvalue + "");
+            values.Add(gene.dvalue + "");
             break;
          }
       }
@@ -106,9 +106,9 @@ public class Genome
    // Load values.
    void loadValues(DataInputStream reader) throws IOException
    {
-      for (int i = 0; i < genes.size(); i++)
+      for (int i = 0; i < genes.GetCount(); i++)
       {
-         genes.get(i).loadValue(reader);
+         genes.Get(i).LoadValue(reader);
       }
    }
 
@@ -116,20 +116,20 @@ public class Genome
    // Save values.
    void saveValues(PrintWriter writer) throws IOException
    {
-      for (int i = 0; i < genes.size(); i++)
+      for (int i = 0; i < genes.GetCount(); i++)
       {
-         genes.get(i).saveValue(writer);
+         genes.Get(i).SaveValue(writer);
       }
       writer.flush();
    }
 
 
    // Print genome.
-   void print()
+   void Print()
    {
-      for (int i = 0; i < genes.size(); i++)
+      for (int i = 0; i < genes.GetCount(); i++)
       {
-         genes.get(i).print();
+         genes.Get(i).Print();
       }
    }
 }

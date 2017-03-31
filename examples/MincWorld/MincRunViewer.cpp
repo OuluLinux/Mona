@@ -4,7 +4,7 @@ public class MincRunViewer
    // Parameters.
    int numMazeMarks;
    int numMazes;
-   int randomSeed;
+   int random_seed;
    int generalizationRuns;
    int discriminationRuns;
    int resultRuns;
@@ -17,7 +17,7 @@ public class MincRunViewer
    int successfulRuns;
 
    // Display.
-   static final Dimension SCREEN_SIZE = new Dimension(600, 700);
+   static final Size SCREEN_SIZE = new Size(600, 700);
    TmazeDisplay           mazeDisplay;
    JScrollPane            displayScroll;
    Vector<Tmaze>          displayMazes;
@@ -89,7 +89,7 @@ public class MincRunViewer
 
       Step newStep()
       {
-         return(new Step());
+         return (new Step());
       }
 
 
@@ -97,7 +97,7 @@ public class MincRunViewer
                    int lensDirection, float lensLeftOutput, float lensRightOutput,
                    int monaDirection, float monaLeftOutput, float monaRightOutput)
       {
-         path.add(new Step(tick, mark, direction,
+         path.Add(new Step(tick, mark, direction,
                            lensDirection, lensLeftOutput, lensRightOutput,
                            monaDirection, monaLeftOutput, monaRightOutput));
       }
@@ -105,7 +105,7 @@ public class MincRunViewer
 
       void addStep(Step step)
       {
-         path.add(step);
+         path.Add(step);
       }
 
 
@@ -115,18 +115,18 @@ public class MincRunViewer
       }
 
 
-      void print()
+      void Print()
       {
          Step step;
 
          System.out.println("Run:");
-         for (int i = 0; i < path.size(); i++)
+         for (int i = 0; i < path.GetCount(); i++)
          {
-            step = path.get(i);
+            step = path.Get(i);
             System.out.println("tick=" + step.tick + " mark=" + step.mark);
-            System.out.print("direction=" + step.direction + " lens=" + step.lensDirection);
-            System.out.print(String.format(" [%f %f]", step.lensLeftOutput, step.lensRightOutput));
-            System.out.print(" mona=" + step.monaDirection);
+            System.out.Print("direction=" + step.direction + " lens=" + step.lensDirection);
+            System.out.Print(String.format(" [%f %f]", step.lensLeftOutput, step.lensRightOutput));
+            System.out.Print(" mona=" + step.monaDirection);
             System.out.println(String.format(" [%f %f]", step.monaLeftOutput, step.monaRightOutput));
          }
          if (result == true)
@@ -154,7 +154,7 @@ public class MincRunViewer
 
 
    // Load from file.
-   public bool load(String resultsFilename)
+   public bool Load(String resultsFilename)
    {
       Scanner scanner = null;
 
@@ -162,11 +162,11 @@ public class MincRunViewer
       {
          File resultsFile = new File(resultsFilename);
          scanner = new Scanner(new FileReader(resultsFile));
-         return(load(scanner));
+         return (Load(scanner));
       }
       catch (Exception e) {
          System.err.println("Error: " + e.getMessage());
-         return(false);
+         return (false);
       }
       finally {
          if (scanner != null)
@@ -178,24 +178,24 @@ public class MincRunViewer
 
 
    // Load from scanner.
-   public bool load(Scanner scanner)
+   public bool Load(Scanner scanner)
    {
       Vector<String> input = new Vector<String>();
       try
       {
          while (scanner.hasNextLine())
          {
-            input.add(scanner.nextLine());
+            input.Add(scanner.nextLine());
          }
       }
       catch (Exception e) {
          System.err.println("Error: " + e.getMessage());
-         return(false);
+         return (false);
       }
-      if (!loadParameters(input)) { return(false); }
-      if (!loadMazes(input)) { return(false); }
-      if (!loadRuns(input)) { return(false); }
-      return(true);
+      if (!loadParameters(input)) { return (false); }
+      if (!loadMazes(input)) { return (false); }
+      if (!loadRuns(input)) { return (false); }
+      return (true);
    }
 
 
@@ -207,24 +207,24 @@ public class MincRunViewer
 
       try
       {
-         if (input.size() > 0)
+         if (input.GetCount() > 0)
          {
-            s = input.get(0).trim();
-            input.remove(0);
+            s = input.Get(0).trim();
+            input.Remove(0);
             if (!s.startsWith("Parameters:"))
             {
                System.err.println("Invalid parameters heading");
-               return(false);
+               return (false);
             }
          }
          else
          {
             System.err.println("Premature end of parameter input");
-            return(false);
+            return (false);
          }
-         while (input.size() > 0)
+         while (input.GetCount() > 0)
          {
-            s          = input.get(0).trim();
+            s          = input.Get(0).trim();
             String[] t = s.split(d);
             if ((t != null) && (t.length == 2))
             {
@@ -240,9 +240,9 @@ public class MincRunViewer
                {
                   numMazes = Integer.parseInt(t[1]);
                }
-               else if (t[0].equals("randomSeed"))
+               else if (t[0].equals("random_seed"))
                {
-                  randomSeed = Integer.parseInt(t[1]);
+                  random_seed = Integer.parseInt(t[1]);
                }
                else if (t[0].equals("generalizationRuns"))
                {
@@ -262,14 +262,14 @@ public class MincRunViewer
             {
                break;
             }
-            input.remove(0);
+            input.Remove(0);
          }
       }
       catch (Exception e) {
          System.err.println("Error loading parameters: " + e.getMessage());
-         return(false);
+         return (false);
       }
-      return(true);
+      return (true);
    }
 
 
@@ -282,33 +282,33 @@ public class MincRunViewer
 
       try
       {
-         if (input.size() > 0)
+         if (input.GetCount() > 0)
          {
-            s = input.get(0).trim();
-            input.remove(0);
+            s = input.Get(0).trim();
+            input.Remove(0);
             if (!s.startsWith("Generalization mazes:"))
             {
                System.err.println("Invalid generalization mazes heading");
-               return(false);
+               return (false);
             }
          }
          else
          {
             System.err.println("Premature end of maze input");
-            return(false);
+            return (false);
          }
          maze = null;
-         while (input.size() > 0)
+         while (input.GetCount() > 0)
          {
-            s = input.get(0).trim();
-            input.remove(0);
+            s = input.Get(0).trim();
+            input.Remove(0);
             String[] t = s.split(d);
             if ((t != null) && (t.length > 0))
             {
                if (t[0].equals("name:"))
                {
                   maze = new Tmaze();
-                  mazes.add(maze);
+                  mazes.Add(maze);
                }
                else if (t[0].startsWith("I:"))
                {
@@ -320,12 +320,12 @@ public class MincRunViewer
          if (!s.startsWith("Discrimination maze:"))
          {
             System.err.println("Invalid maze discrimination maze heading");
-            return(false);
+            return (false);
          }
          maze = null;
-         while (input.size() > 0)
+         while (input.GetCount() > 0)
          {
-            s          = input.get(0).trim();
+            s          = input.Get(0).trim();
             String[] t = s.split(d);
             if ((t != null) && (t.length > 0))
             {
@@ -339,14 +339,14 @@ public class MincRunViewer
                }
                else{ break; }
             }
-            input.remove(0);
+            input.Remove(0);
          }
          discriminationMazeIndex = -1;
          if (maze != null)
          {
-            for (int i = 0; i < mazes.size(); i++)
+            for (int i = 0; i < mazes.GetCount(); i++)
             {
-               if (maze.isDuplicate(mazes.get(i)) == true)
+               if (maze.IsDuplicate(mazes.Get(i)) == true)
                {
                   discriminationMazeIndex = i;
                   break;
@@ -356,14 +356,14 @@ public class MincRunViewer
          if (discriminationMazeIndex == -1)
          {
             System.err.println("Invalid discrimination maze");
-            return(false);
+            return (false);
          }
       }
       catch (Exception e) {
          System.err.println("Error loading mazes: " + e.getMessage());
-         return(false);
+         return (false);
       }
-      return(true);
+      return (true);
    }
 
 
@@ -373,10 +373,10 @@ public class MincRunViewer
       {
          if (e[i].equals("1"))
          {
-            return(i - 1);
+            return (i - 1);
          }
       }
-      return(-1);
+      return (-1);
    }
 
 
@@ -384,18 +384,18 @@ public class MincRunViewer
    {
       if (e[e.length - 5].equals("1"))
       {
-         return(0);
+         return (0);
       }
       else
       {
-         return(1);
+         return (1);
       }
    }
 
 
    private double getProbability(String[] e)
    {
-      return(Double.parseDouble(e[e.length - 2]));
+      return (Double.parseDouble(e[e.length - 2]));
    }
 
 
@@ -418,10 +418,10 @@ public class MincRunViewer
       {
          run  = new Run();
          step = null;
-         while (input.size() > 0)
+         while (input.GetCount() > 0)
          {
-            s = input.get(0).trim();
-            input.remove(0);
+            s = input.Get(0).trim();
+            input.Remove(0);
             if (s.startsWith("tick="))
             {
                String[] t = s.split(deq);
@@ -434,7 +434,7 @@ public class MincRunViewer
                else
                {
                   System.err.println("Invalid run format");
-                  return(false);
+                  return (false);
                }
             }
             else if (s.startsWith("inputs:"))
@@ -455,14 +455,14 @@ public class MincRunViewer
                      if (step.mark < 0)
                      {
                         System.err.println("Invalid run format");
-                        return(false);
+                        return (false);
                      }
                   }
                }
                else
                {
                   System.err.println("Invalid run format");
-                  return(false);
+                  return (false);
                }
             }
             else if (s.startsWith("output="))
@@ -520,7 +520,7 @@ public class MincRunViewer
                else
                {
                   System.err.println("Invalid run format");
-                  return(false);
+                  return (false);
                }
             }
             else if (s.startsWith("Result run="))
@@ -533,14 +533,14 @@ public class MincRunViewer
                   {
                      run.result = true;
                   }
-                  runs.add(run);
+                  runs.Add(run);
                   run  = new Run();
                   step = null;
                }
                else
                {
                   System.err.println("Invalid run format");
-                  return(false);
+                  return (false);
                }
             }
             else if (s.startsWith("Result summary:"))
@@ -561,75 +561,75 @@ public class MincRunViewer
                else
                {
                   System.err.println("Invalid run result summary");
-                  return(false);
+                  return (false);
                }
             }
          }
       }
       catch (Exception e) {
          System.err.println("Error loading runs: " + e.getMessage());
-         return(false);
+         return (false);
       }
-      return(true);
+      return (true);
    }
 
 
    // Run.
-   public void run()
+   public void Run()
    {
       setTitle("Minc run viewer");
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       JPanel content = (JPanel)getContentPane();
       content.setLayout(new BorderLayout());
-      Dimension mazeDisplaySize = new Dimension(SCREEN_SIZE.width,
+      Size mazeDisplaySize = new Size(SCREEN_SIZE.width,
                                                 (int)((double)SCREEN_SIZE.height * .85));
       mazeDisplay  = new TmazeDisplay(mazeDisplaySize);
       displayMazes = mazes;
-      mazeDisplay.load(displayMazes);
+      mazeDisplay.Load(displayMazes);
       displayScroll = new JScrollPane(mazeDisplay,
                                       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                                       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
       displayScroll.setPreferredSize(mazeDisplaySize);
-      content.add(displayScroll, BorderLayout.SOUTH);
+      content.Add(displayScroll, BorderLayout.SOUTH);
       controls = new JPanel();
       controls.setLayout(new FlowLayout());
-      controls.add(new JLabel("View:"));
+      controls.Add(new JLabel("View:"));
       viewChoice = new Choice();
-      viewChoice.add("Maze");
-      viewChoice.add("Run");
+      viewChoice.Add("Maze");
+      viewChoice.Add("Run");
       previousViewIndex = 0;
       viewChoice.addItemListener(this);
-      controls.add(viewChoice);
+      controls.Add(viewChoice);
       itemLabel = new JLabel("Maze:");
-      controls.add(itemLabel);
+      controls.Add(itemLabel);
       itemChoice = new Choice();
-      for (int i = 0; i < mazes.size(); i++)
+      for (int i = 0; i < mazes.GetCount(); i++)
       {
          if (i == discriminationMazeIndex)
          {
-            itemChoice.add(i + "*");
+            itemChoice.Add(i + "*");
          }
          else
          {
-            itemChoice.add(i + "");
+            itemChoice.Add(i + "");
          }
       }
-      itemChoice.add("all");
+      itemChoice.Add("all");
       previousRunIndex = -1;
       itemChoice.addItemListener(this);
-      controls.add(itemChoice);
+      controls.Add(itemChoice);
       stepLabel = new JLabel("Step:");
       stepLabel.setVisible(false);
-      controls.add(stepLabel);
+      controls.Add(stepLabel);
       stepChoice = new Choice();
       stepChoice.setVisible(false);
       stepChoice.addItemListener(this);
-      controls.add(stepChoice);
+      controls.Add(stepChoice);
       stepButton = new JButton("Step");
       stepButton.setVisible(false);
       stepButton.addActionListener(this);
-      controls.add(stepButton);
-      content.add(controls, BorderLayout.NORTH);
+      controls.Add(stepButton);
+      content.Add(controls, BorderLayout.NORTH);
       setState();
       pack();
       setVisible(true);
@@ -671,26 +671,26 @@ public class MincRunViewer
          stepLabel.setVisible(false);
          stepChoice.setVisible(false);
          stepButton.setVisible(false);
-         for (j = 0; j < mazes.size(); j++)
+         for (j = 0; j < mazes.GetCount(); j++)
          {
-            mazes.get(j).clearAnnotations();
+            mazes.Get(j).clearAnnotations();
          }
          if (i != previousViewIndex)
          {
-            itemLabel.setText("Maze:");
+            itemLabel.SetLabel("Maze:");
             itemChoice.removeAll();
-            for (j = 0; j < mazes.size(); j++)
+            for (j = 0; j < mazes.GetCount(); j++)
             {
                if (j == discriminationMazeIndex)
                {
-                  itemChoice.add(j + "*");
+                  itemChoice.Add(j + "*");
                }
                else
                {
-                  itemChoice.add(j + "");
+                  itemChoice.Add(j + "");
                }
             }
-            itemChoice.add("all");
+            itemChoice.Add("all");
          }
          j = itemChoice.getSelectedIndex();
          if (j == itemChoice.getItemCount() - 1)
@@ -700,9 +700,9 @@ public class MincRunViewer
          else
          {
             displayMazes = new Vector<Tmaze>();
-            displayMazes.add(mazes.get(j));
+            displayMazes.Add(mazes.Get(j));
          }
-         mazeDisplay.load(displayMazes);
+         mazeDisplay.Load(displayMazes);
          displayScroll.setViewportView(mazeDisplay);
       }
       else
@@ -710,55 +710,55 @@ public class MincRunViewer
          stepLabel.setVisible(true);
          stepChoice.setVisible(true);
          stepButton.setVisible(true);
-         for (j = 0; j < mazes.size(); j++)
+         for (j = 0; j < mazes.GetCount(); j++)
          {
-            mazes.get(j).clearAnnotations();
+            mazes.Get(j).clearAnnotations();
          }
          if (i != previousViewIndex)
          {
             displayMazes = new Vector<Tmaze>();
-            displayMazes.add(mazes.get(discriminationMazeIndex));
-            mazeDisplay.load(displayMazes);
+            displayMazes.Add(mazes.Get(discriminationMazeIndex));
+            mazeDisplay.Load(displayMazes);
             displayScroll.setViewportView(mazeDisplay);
-            itemLabel.setText("Run:");
+            itemLabel.SetLabel("Run:");
             itemChoice.removeAll();
-            for (j = 0; j < runs.size(); j++)
+            for (j = 0; j < runs.GetCount(); j++)
             {
-               itemChoice.add(j + "");
+               itemChoice.Add(j + "");
             }
             previousRunIndex = -1;
          }
          j = itemChoice.getSelectedIndex();
          if (j >= 0)
          {
-            run = runs.get(j);
+            run = runs.Get(j);
             if (j != previousRunIndex)
             {
                stepChoice.removeAll();
-               for (k = 0; k < run.path.size(); k++)
+               for (k = 0; k < run.path.GetCount(); k++)
                {
-                  stepChoice.add(run.path.get(k).tick + "");
+                  stepChoice.Add(run.path.Get(k).tick + "");
                }
             }
             previousRunIndex = j;
             j = stepChoice.getSelectedIndex();
             if (j >= 0)
             {
-               maze = mazes.get(discriminationMazeIndex);
-               step = run.path.get(j);
-               maze.path.get(step.tick).highlight = true;
-               for (k = 0; k < run.path.size(); k++)
+               maze = mazes.Get(discriminationMazeIndex);
+               step = run.path.Get(j);
+               maze.path.Get(step.tick).highlight = true;
+               for (k = 0; k < run.path.GetCount(); k++)
                {
-                  step = run.path.get(k);
-                  maze.path.get(step.tick).annotations = new Vector<String>();
-                  maze.path.get(step.tick).annotations.add(
+                  step = run.path.Get(k);
+                  maze.path.Get(step.tick).annotations = new Vector<String>();
+                  maze.path.Get(step.tick).annotations.Add(
                      String.format("i: [%f %f]", step.lensLeftOutput, step.lensRightOutput));
                }
                for (k = 0; k <= j; k++)
                {
-                  step = run.path.get(k);
-                  maze.path.get(step.tick).choice = step.direction;
-                  maze.path.get(step.tick).annotations.add(
+                  step = run.path.Get(k);
+                  maze.path.Get(step.tick).choice = step.direction;
+                  maze.path.Get(step.tick).annotations.Add(
                      String.format("e: [%f %f]", step.monaLeftOutput, step.monaRightOutput));
                }
             }
@@ -769,45 +769,45 @@ public class MincRunViewer
    }
 
 
-   public void print()
+   public void Print()
    {
       int i, j;
 
       System.out.println("Parameters:");
       System.out.println("numMazeMarks=" + numMazeMarks);
       System.out.println("numMazes=" + numMazes);
-      System.out.println("randomSeed=" + randomSeed);
+      System.out.println("random_seed=" + random_seed);
       System.out.println("generalizationRuns=" + generalizationRuns);
       System.out.println("discriminationRuns=" + discriminationRuns);
       System.out.println("resultRuns=" + resultRuns);
       System.out.println("Mazes:");
-      for (i = 0; i < mazes.size(); i++)
+      for (i = 0; i < mazes.GetCount(); i++)
       {
-         mazes.get(i).print();
+         mazes.Get(i).Print();
       }
       System.out.println("discriminationMazeIndex=" + discriminationMazeIndex);
       System.out.println("Runs:");
-      for (i = 0; i < runs.size(); i++)
+      for (i = 0; i < runs.GetCount(); i++)
       {
-         runs.get(i).print();
+         runs.Get(i).Print();
       }
       if (resultRuns > 0)
       {
-         System.out.print("Result summary: success/total=" + successfulRuns + "/" + runs.size() +
+         System.out.Print("Result summary: success/total=" + successfulRuns + "/" + runs.GetCount() +
                           " (" + (float)successfulRuns / (float)resultRuns + ")");
       }
       else
       {
-         System.out.print("Result summary: success/total=unknown");
+         System.out.Print("Result summary: success/total=unknown");
       }
-      if (mazes.size() > 0)
+      if (mazes.GetCount() > 0)
       {
-         for (i = j = 0; i < mazes.size(); i++)
+         for (i = j = 0; i < mazes.GetCount(); i++)
          {
-            j += mazes.get(i).path.size();
+            j += mazes.Get(i).path.GetCount();
          }
-         System.out.print("; average maze path length=" + (float)j / (float)mazes.size() +
-                          "; discrimination maze path length=" + mazes.get(discriminationMazeIndex).path.size());
+         System.out.Print("; average maze path length=" + (float)j / (float)mazes.GetCount() +
+                          "; discrimination maze path length=" + mazes.Get(discriminationMazeIndex).path.GetCount());
       }
       System.out.println();
    }
@@ -826,7 +826,7 @@ public class MincRunViewer
       {
          try
          {
-            viewer.load(new Scanner(System.in));
+            viewer.Load(new Scanner(System.in));
          }
          catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -834,8 +834,8 @@ public class MincRunViewer
       }
       else
       {
-         viewer.load(args[0]);
+         viewer.Load(args[0]);
       }
-      viewer.run();
+      viewer.Run();
    }
 }

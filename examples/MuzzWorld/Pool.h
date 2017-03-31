@@ -8,54 +8,42 @@
 #include <MonaCtrl/MonaCtrl.h>
 #include "BlockTerrain.h"
 
-class Pool : public BaseObject
-{
+class Pool : public BaseObject {
 public:
 
-   // Parameters:
+	static double width, height;
 
-   // Dimensions.
-   static GLfloat WIDTH, HEIGHT;
 
-   // Constructor/destructor.
-   Pool(float *color, BlockTerrain *terrain, Random *randomizer);
-   ~Pool();
+	Pool(const Color& color, BlockTerrain& terrain);
+	~Pool();
+	void GetColor(Color& color);
+	void SetColor(const Color& color);
+	void Place(int placement_seed);
+	void Place(int x, int y);
+	void Place(double x, double y);
+	void Place();
 
-   // Color.
-   void getColor(float *color);
-   void setColor(float *color);
-
-   // Place pool on terrain.
-   void place(RANDOM placementSeed);
-   void place(int x, int y);
-   void place(GLfloat x, GLfloat y);
-   void place();
-
-   inline GLfloat getPlaceX() { return(m_placePosition[0]); }
-   inline GLfloat getPlaceY() { return(m_placePosition[2]); }
-
-   // Draw.
-   void draw();
-
-   // Load pool.
-   void load(char *filename);
-   void load(FILE *);
-
-   // Save pool.
-   void save(char *filename);
-   void save(FILE *);
+	inline double GetPlaceX() {return (m_place_position[0]);}
+	inline double GetPlaceY() {return (m_place_position[2]);}
+	
+	void Draw();
+	void Load(String filename);
+	void Load(Stream& s);
+	void Store(String filename);
+	void Store(Stream& s);
 
 private:
 
-   float        m_color[3];
-   GLfloat      m_placePosition[3];
-   BlockTerrain *m_terrain;
-   Random       *m_randomizer;
+	Color         m_color;
+	double        m_place_position[3];
+	BlockTerrain  m_terrain;
+	//Random        m_randomizer;
 
-   // OpenGL display for drawing.
-   GLuint display;
+	// OpenGL display for drawing.
+	/*GLuint display;
 
-   // Components.
-   GLUquadricObj *poolBase, *poolSurface;
+	// Components.
+	GLUquadricObj* poolBase, *poolSurface;*/
+	
 };
 #endif

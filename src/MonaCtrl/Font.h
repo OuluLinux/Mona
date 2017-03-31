@@ -18,23 +18,23 @@ class CFont
     void printProportional(float widthRatio , float heightRatio,
                            float width,       float height,
                            float r,  float g, float b,
-                           const std::string &string);
+                           const String &string);
 
-    void print(float x,     float y,
+    void Print(float x,     float y,
                float width, float height,
                float r,     float g, float b,
-               const std::string &string);
+               const String &string);
 
     void printSubString(float x,     float y,
                         float width, float height,
                         float r,     float g, float b,
                         int   start, int end,
-                        const std::string &string);
+                        const String &string);
 
     
-    Tuple2i getStringDimensions(const std::string &string);
-    bool    load(const char *fontPath);
-    int     getMaxFittingLength(const std::string &string, int bounds);
+    Tuple2i getStringSizes(const String &string);
+    bool    Load(const char *fontPath);
+    int     getMaxFittingLength(const String &string, int bounds);
     int     getHeight();
     const   int *getCharHorizontalGlyphs() const;
 

@@ -1,7 +1,7 @@
 
 class Pong
 {
-   // Dimensions.
+   // Sizes.
    static int DISPLAY_SIZE    = 500;
    static int CONTROLS_HEIGHT = 75;
 
@@ -37,7 +37,7 @@ class Pong
       // Convert degrees to radians.
       float toRadians(float angle)
       {
-         return(angle * ((float)Math.PI / 180.0f));
+         return (angle * ((float)Math.PI / 180.0f));
       }
 
 
@@ -195,16 +195,16 @@ class Pong
 
 
       // Run.
-      public void run()
+      public void Run()
       {
          while (Thread.currentThread() == thread)
          {
             // Update display.
-            update();
+            Update();
 
             try
             {
-               Thread.sleep(DISPLAY_DELAY);
+               Sleep(DISPLAY_DELAY);
             }
             catch (InterruptedException e) { break; }
          }
@@ -212,7 +212,7 @@ class Pong
 
 
       // Update display.
-      synchronized void update()
+      synchronized void Update()
       {
          int i;
 
@@ -321,7 +321,7 @@ class Pong
          {
             if (controlButton.getLabel().equals("Start"))
             {
-               if (playback.current() != -1)
+               if (playback.GetCurrent() != -1)
                {
                   playback.start();
                   display.setMessage(null);
@@ -331,17 +331,17 @@ class Pong
             else
             {
                playing = false;
-               if (playback.size() > 0)
+               if (playback.GetCount() > 0)
                {
-                  if (playback.current() == playback.size() - 1)
+                  if (playback.GetCurrent() == playback.GetCount() - 1)
                   {
-                     playback.rewind();
+                     playback.Rewind();
                   }
                   else
                   {
-                     playback.next();
+                     playback.Next();
                   }
-                  display.setMessage("Game " + playback.current());
+                  display.setMessage("Game " + playback.GetCurrent());
                   controlButton.setLabel("Start");
                }
             }
@@ -357,7 +357,7 @@ class Pong
       // Speed slider listener.
       public void stateChanged(ChangeEvent evt)
       {
-         delay = speedSlider.getValue();
+         delay = speedSlider.GetValue();
       }
    }
 
@@ -406,7 +406,7 @@ class Pong
             currentStep = -1;
             if (s.hasNext())
             {
-               s.next();
+               s.Next();
                if (s.hasNext())
                {
                   game = s.nextInt();
@@ -414,7 +414,7 @@ class Pong
             }
             while (s.hasNext())
             {
-               String label = s.next();
+               String label = s.Next();
                if (label.equals("Step"))
                {
                   if (s.hasNext())
@@ -426,15 +426,15 @@ class Pong
                      float playerX = s.nextFloat();
                      float playerY = s.nextFloat();
                      Step  step    = new Step(n, ballX, ballY, paddleY, playerX, playerY);
-                     steps.add(step);
+                     steps.Add(step);
                   }
                }
                else if (label.equals("Win"))
                {
                   win = true;
-                  if (steps.size() > 0)
+                  if (steps.GetCount() > 0)
                   {
-                     steps.get(steps.size() - 1).last = true;
+                     steps.Get(steps.GetCount() - 1).last = true;
                   }
                   if (s.hasNext()) { s.nextInt(); }
                   break;
@@ -442,9 +442,9 @@ class Pong
                else if (label.equals("Lose"))
                {
                   win = false;
-                  if (steps.size() > 0)
+                  if (steps.GetCount() > 0)
                   {
-                     steps.get(steps.size() - 1).last = true;
+                     steps.Get(steps.GetCount() - 1).last = true;
                   }
                   if (s.hasNext()) { s.nextInt(); }
                   break;
@@ -452,9 +452,9 @@ class Pong
                else if (label.equals("Draw"))
                {
                   win = false;
-                  if (steps.size() > 0)
+                  if (steps.GetCount() > 0)
                   {
-                     steps.get(steps.size() - 1).last = true;
+                     steps.Get(steps.GetCount() - 1).last = true;
                   }
                   if (s.hasNext()) { s.nextInt(); }
                   break;
@@ -470,30 +470,30 @@ class Pong
 
          void start()
          {
-            if (steps.size() > 0)
+            if (steps.GetCount() > 0)
             {
                currentStep = 0;
             }
          }
 
 
-         Step step()
+         Step Step()
          {
             if (currentStep != -1)
             {
-               if (currentStep < steps.size() - 1)
+               if (currentStep < steps.GetCount() - 1)
                {
                   currentStep++;
-                  return(steps.get(currentStep - 1));
+                  return (steps.Get(currentStep - 1));
                }
                else
                {
-                  return(steps.get(currentStep));
+                  return (steps.Get(currentStep));
                }
             }
             else
             {
-               return(null);
+               return (null);
             }
          }
 
@@ -502,16 +502,16 @@ class Pong
          {
             if (currentStep != -1)
             {
-               return(steps.get(currentStep));
+               return (steps.Get(currentStep));
             }
             else
             {
-               return(null);
+               return (null);
             }
          }
 
 
-         void stop()
+         void Stop()
          {
             currentStep = -1;
          }
@@ -519,7 +519,7 @@ class Pong
 
          bool win()
          {
-            return(win);
+            return (win);
          }
       }
 
@@ -537,7 +537,7 @@ class Pong
             s = new Scanner(new BufferedReader(new FileReader(playbackFile)));
             if (s.hasNext())
             {
-               s.next();
+               s.Next();
                if (s.hasNext())
                {
                   dimension = s.nextInt();
@@ -546,7 +546,7 @@ class Pong
             while (s.hasNext())
             {
                Game game = new Game(s);
-               games.add(game);
+               games.Add(game);
             }
          }
          catch (IOException e)
@@ -569,20 +569,20 @@ class Pong
       {
          if (currentGame != -1)
          {
-            games.get(currentGame).start();
+            games.Get(currentGame).start();
          }
       }
 
 
-      Step step()
+      Step Step()
       {
          if (currentGame != -1)
          {
-            return(games.get(currentGame).step());
+            return (games.Get(currentGame).Step());
          }
          else
          {
-            return(null);
+            return (null);
          }
       }
 
@@ -591,53 +591,53 @@ class Pong
       {
          if (currentGame != -1)
          {
-            return(games.get(currentGame).currentStep());
+            return (games.Get(currentGame).currentStep());
          }
          else
          {
-            return(null);
+            return (null);
          }
       }
 
 
-      void stop()
+      void Stop()
       {
          if (currentGame != -1)
          {
-            games.get(currentGame).stop();
+            games.Get(currentGame).Stop();
          }
       }
 
 
-      int next()
+      int Next()
       {
-         if (currentGame < games.size() - 1)
+         if (currentGame < games.GetCount() - 1)
          {
             currentGame++;
          }
-         return(currentGame);
+         return (currentGame);
       }
 
 
-      int rewind()
+      int Rewind()
       {
          if (currentGame > 0)
          {
             currentGame = 0;
          }
-         return(currentGame);
+         return (currentGame);
       }
 
 
-      int current()
+      int GetCurrent()
       {
-         return(currentGame);
+         return (currentGame);
       }
 
 
-      int size()
+      int GetCount()
       {
-         return(games.size());
+         return (games.GetCount());
       }
 
 
@@ -645,11 +645,11 @@ class Pong
       {
          if (currentGame != -1)
          {
-            return(games.get(currentGame).win());
+            return (games.Get(currentGame).win());
          }
          else
          {
-            return(false);
+            return (false);
          }
       }
    }
@@ -674,11 +674,11 @@ class Pong
       // Create display.
       setLayout(new BorderLayout());
       display = new Display();
-      getContentPane().add(display, BorderLayout.NORTH);
+      getContentPane().Add(display, BorderLayout.NORTH);
 
       // Create controls.
       controls = new Controls();
-      getContentPane().add(controls, BorderLayout.SOUTH);
+      getContentPane().Add(controls, BorderLayout.SOUTH);
 
       // Load bounce sound.
       URL url = null;
@@ -695,12 +695,12 @@ class Pong
          // Playing and stopping insures sound completely loaded.
          bounceSound = Applet.newAudioClip(url);
          bounceSound.play();
-         bounceSound.stop();
+         bounceSound.Stop();
       }
 
       // Show app.
       pack();
-      setVisible(true);
+      setVisibletrue;
 
       // Create ball movement thread.
       ballThread = new Thread(this);
@@ -714,9 +714,9 @@ class Pong
       if (playbackFile != null)
       {
          playback = new Playback(playbackFile);
-         if (playback.size() > 0)
+         if (playback.GetCount() > 0)
          {
-            playback.next();
+            playback.Next();
             display.setMessage("Game 0");
          }
          else
@@ -728,7 +728,7 @@ class Pong
 
 
    // Run.
-   public void run()
+   public void Run()
    {
       long t;
 
@@ -742,7 +742,7 @@ class Pong
          {
             if (playback != null)
             {
-               Playback.Step step = playback.step();
+               Playback.Step step = playback.Step();
                if ((step != null) && step.last)
                {
                   controls.controlButton.setLabel("Next");
@@ -766,7 +766,7 @@ class Pong
          try
          {
             t += delay;
-            Thread.sleep(Math.max(0, t - System.currentTimeMillis()));
+            Sleep(Math.max(0, t - System.currentTimeMillis()));
          }
          catch (InterruptedException e) { break; }
       }

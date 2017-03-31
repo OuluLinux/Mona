@@ -1,10 +1,10 @@
 #include "EasyGL.h"
 
-GUITextBox::GUITextBox(const std::string &callback, const std::string &text) : GUIAlphaElement(callback)
+GUITextBox::GUITextBox(const String &callback, const String &text) : GUIAlphaElement(callback)
 
 {
   setBordersColor(0.3f, 0.3f, 0.3f);
-  setDimensions(80, 18);
+  setSizes(80, 18);
   setPadding(2, 2);
   setColor(0.5f, 0.5f, 0.5f);
   label.setString(text);
@@ -100,7 +100,7 @@ void GUITextBox::render(float clockTick)
   glEnd();
   glDisable(GL_BLEND);
 
-  label.print(windowBounds.x + padding.x, windowBounds.y, int(textStartIndex), int(textEndIndex));
+  label.Print(windowBounds.x + padding.x, windowBounds.y, int(textStartIndex), int(textEndIndex));
 
   if(blinkerOn && (blinkerTimer > 0.5f))
   {
@@ -139,7 +139,7 @@ void GUITextBox::checkKeyboardEvents(KeyEvent evt, int extraInfo)
 
   if(extraInfo == KE_PRESSED)
   {
-    size_t length = label.getString().size();
+    size_t length = label.getString().GetCount();
 
     if(evt.displayable())
       setupText(TE_INSERT_CHAR, evt.getKeyChar());
@@ -164,7 +164,7 @@ void    GUITextBox::setupBlinker(size_t x)
     return;
 
   GUIFont *font                = GUIFontManager::getFont(label.getFontIndex());
-  const    std::string &string = label.getString();
+  const    String &string = label.getString();
   const    int         *spaces = NULL;
   blinkerPosition              = getWindowBounds().x + padding.x;
   x -= 1;
@@ -173,7 +173,7 @@ void    GUITextBox::setupBlinker(size_t x)
   {
      spaces = font->getFontObject()->getCharHorizontalGlyphs();
 
-     for(size_t i = 0; i < string.size(); i++)
+     for(size_t i = 0; i < string.GetCount(); i++)
      if(blinkerPosition < x)
        blinkerPosition += spaces[int(string[i])];
   }
@@ -185,8 +185,8 @@ void GUITextBox::setupText(int type, char Char)
 {
   GUIFont     *font   = GUIFontManager::getFont(label.getFontIndex());
   const int   *spaces = font ? font->getFontObject()->getCharHorizontalGlyphs() : NULL;
-  std::string  temp;
-  size_t       length = label.getString().size(),
+  String  temp;
+  size_t       length = label.getString().GetCount(),
                start  = windowBounds.x + padding.x,
                index  = 0;
 
@@ -206,7 +206,7 @@ void GUITextBox::setupText(int type, char Char)
   {
     if(index != length && length)
     {
-      std::string leftSide;
+      String leftSide;
       leftSide  = label.getString().substr(0, index);
       leftSide += Char;
 
@@ -226,7 +226,7 @@ void GUITextBox::setupText(int type, char Char)
   {
     if(index != length)
     {
-      std::string leftSide;
+      String leftSide;
       setupBlinker(blinkerPosition - GUIFontManager::getCharacterWidth(label.getString()[index -1],
                                                                        label.getFontIndex()));
 
@@ -241,11 +241,11 @@ void GUITextBox::setupText(int type, char Char)
 
     temp = label.getString().substr(0, length - 1);
 
-    if(temp.size())
+    if(temp.GetCount())
       label.setString(temp);
     else
     {
-      label.clear();
+      label.Clear();
       blinkerPosition = windowBounds.x + padding.x;
     }
   }
@@ -254,13 +254,13 @@ void GUITextBox::setupText(int type, char Char)
   {
     if((blinkerPosition == windowBounds.x + padding.x) && (length == 1))
     {
-      label.clear();
+      label.Clear();
       return;
     }
 
     if(index < length)
     {
-      std::string leftSide;
+      String leftSide;
       leftSide = label.getString().substr(0, index);
       temp     = label.getString().substr(index + 1, length - index - 1);
       label.setString(leftSide + temp);
@@ -274,7 +274,7 @@ const Tuple4i &GUITextBox::getWindowBounds()
 {
   if(parent && update)
   {
-    label.computeDimensions();
+    label.computeSizes();
     dimensions.y    = label.getHeight() ? label.getHeight() + padding.y : dimensions.y;
 
     GUIRectangle::computeWindowBounds();

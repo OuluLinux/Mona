@@ -17,10 +17,10 @@ class SensorMode
 {
 public:
    SENSOR_MODE         mode;
-   vector<bool>        mask;
+   Vector<bool>        mask;
    SENSOR              resolution;
-   vector<SENSOR_MODE> subsets;
-   vector<SENSOR_MODE> supersets;
+   Vector<SENSOR_MODE> subsets;
+   Vector<SENSOR_MODE> supersets;
 
    // Constructor.
    SensorMode()
@@ -32,66 +32,66 @@ public:
 
    // Initialize.
    // Return mode.
-   int init(vector<bool>& mask, SENSOR resolution,
-            vector<SensorMode *> *sensorModes)
+   int Init(Vector<bool>& mask, SENSOR resolution,
+            Vector<SensorMode *> *sensor_modes)
    {
       int        i, j;
       bool       sub, super;
       SensorMode *s;
 
       // Initialize.
-      this->mask.clear();
-      for (i = 0; i < (int)mask.size(); i++)
+      this->mask.Clear();
+      for (i = 0; i < (int)mask.GetCount(); i++)
       {
-         this->mask.push_back(mask[i]);
+         this->mask.Add(mask[i]);
       }
-      mode             = (int)sensorModes->size();
+      mode             = (int)sensor_modes->GetCount();
       this->resolution = resolution;
 
       // Determine subset/supersets.
-      for (i = 0, j = (int)sensorModes->size(); i < j; i++)
+      for (i = 0, j = (int)sensor_modes->GetCount(); i < j; i++)
       {
-         s = (*sensorModes)[i];
+         s = (*sensor_modes)[i];
          subSuper(s, sub, super);
          if (sub && super) { continue; }
          if (sub)
          {
-            if (!subTransitive(i, sensorModes))
+            if (!subTransitive(i, sensor_modes))
             {
-               subsets.push_back(i);
-               s->supersets.push_back(j);
+               subsets.Add(i);
+               s->supersets.Add(j);
             }
          }
          else if (super)
          {
-            if (!superTransitive(i, sensorModes))
+            if (!superTransitive(i, sensor_modes))
             {
-               supersets.push_back(i);
-               s->subsets.push_back(j);
+               supersets.Add(i);
+               s->subsets.Add(j);
             }
          }
       }
-      sensorModes->push_back(this);
-      return(mode);
+      sensor_modes->Add(this);
+      return (mode);
    }
 
 
    // Given mode is subset/superset?
-   void subSuper(SensorMode *sensorMode, bool& sub, bool& super)
+   void subSuper(SensorMode *sensor_mode, bool& sub, bool& super)
    {
       sub = super = true;
-      for (int i = 0; i < (int)mask.size() && (sub || super); i++)
+      for (int i = 0; i < (int)mask.GetCount() && (sub || super); i++)
       {
          if (mask[i])
          {
-            if (!sensorMode->mask[i])
+            if (!sensor_mode->mask[i])
             {
                sub = false;
             }
          }
          else
          {
-            if (sensorMode->mask[i])
+            if (sensor_mode->mask[i])
             {
                super = false;
             }
@@ -102,85 +102,85 @@ public:
 
    // Given mode is a transitive subset?
    // if A->B and B->C, then C is transitive.
-   bool subTransitive(int idx, vector<SensorMode *> *sensorModes)
+   bool subTransitive(int idx, Vector<SensorMode *> *sensor_modes)
    {
       bool       sub, super;
       SensorMode *s;
 
-      for (int i = 0; i < (int)subsets.size(); i++)
+      for (int i = 0; i < (int)subsets.GetCount(); i++)
       {
-         s = (*sensorModes)[i];
-         s->subSuper((*sensorModes)[idx], sub, super);
-         if (sub || s->subTransitive(idx, sensorModes))
+         s = (*sensor_modes)[i];
+         s->subSuper((*sensor_modes)[idx], sub, super);
+         if (sub || s->subTransitive(idx, sensor_modes))
          {
-            return(true);
+            return true;
          }
       }
-      return(false);
+      return (false);
    }
 
 
    // Given mode is a transitive superset?
    // if A->B and B->C, then C is transitive.
-   bool superTransitive(int idx, vector<SensorMode *> *sensorModes)
+   bool superTransitive(int idx, Vector<SensorMode *> *sensor_modes)
    {
       bool       sub, super;
       SensorMode *s;
 
-      for (int i = 0; i < (int)supersets.size(); i++)
+      for (int i = 0; i < (int)supersets.GetCount(); i++)
       {
-         s = (*sensorModes)[i];
-         s->subSuper((*sensorModes)[idx], sub, super);
-         if (super || s->superTransitive(idx, sensorModes))
+         s = (*sensor_modes)[i];
+         s->subSuper((*sensor_modes)[idx], sub, super);
+         if (super || s->superTransitive(idx, sensor_modes))
          {
-            return(true);
+            return true;
          }
       }
-      return(false);
+      return (false);
    }
 
 
    // Load.
-   void load(FILE *fp)
+   void Load(FILE *fp)
    {
       int  i, j, size;
       bool v;
 
       FREAD_INT(&mode, fp);
-      mask.clear();
-      subsets.clear();
-      supersets.clear();
+      mask.Clear();
+      subsets.Clear();
+      supersets.Clear();
       FREAD_INT(&size, fp);
       for (i = 0; i < size; i++)
       {
          FREAD_BOOL(&v, fp);
-         mask.push_back(v);
+         mask.Add(v);
       }
       FREAD_FLOAT(&resolution, fp);
       FREAD_INT(&size, fp);
       for (i = 0; i < size; i++)
       {
          FREAD_INT(&j, fp);
-         subsets.push_back(j);
+         subsets.Add(j);
       }
       FREAD_INT(&size, fp);
       for (i = 0; i < size; i++)
       {
          FREAD_INT(&j, fp);
-         supersets.push_back(j);
+         supersets.Add(j);
       }
    }
 
 
    // Save.
    // When changing format increment FORMAT in mona.h
-   void save(FILE *fp)
+   void Store(FILE *fp)
    {
       int  i, j, size;
       bool v;
 
       FWRITE_INT(&mode, fp);
-      size = (int)mask.size();
+      size = (int)mask.GetCount();
       FWRITE_INT(&size, fp);
       for (i = 0; i < size; i++)
       {
@@ -188,14 +188,14 @@ public:
          FWRITE_BOOL(&v, fp);
       }
       FWRITE_FLOAT(&resolution, fp);
-      size = (int)subsets.size();
+      size = (int)subsets.GetCount();
       FWRITE_INT(&size, fp);
       for (i = 0; i < size; i++)
       {
          j = subsets[i];
          FWRITE_INT(&j, fp);
       }
-      size = (int)supersets.size();
+      size = (int)supersets.GetCount();
       FWRITE_INT(&size, fp);
       for (i = 0; i < size; i++)
       {
@@ -206,13 +206,13 @@ public:
 
 
    // Print.
-   void print(FILE *out = stdout)
+   void Print(FILE *out = stdout)
    {
       int i, j, size;
 
       fprintf(out, "<mode>%d</mode>", mode);
       fprintf(out, "<mask>");
-      size = (int)mask.size();
+      size = (int)mask.GetCount();
       for (i = 0; i < size; i++)
       {
          j = (int)mask[i];
@@ -221,7 +221,7 @@ public:
       fprintf(out, "</mask>");
       fprintf(out, "<resolution>%f</resolution>", resolution);
       fprintf(out, "<subsets>");
-      size = (int)subsets.size();
+      size = (int)subsets.GetCount();
       for (i = 0; i < size; i++)
       {
          j = subsets[i];
@@ -229,7 +229,7 @@ public:
       }
       fprintf(out, "</subsets>");
       fprintf(out, "<supersets>");
-      size = (int)supersets.size();
+      size = (int)supersets.GetCount();
       for (i = 0; i < size; i++)
       {
          j = supersets[i];
@@ -244,29 +244,29 @@ class GoalValue
 {
 public:
    VALUE_SET values;
-   COUNTER   updateCount;
+   COUNTER   update_count;
    Mona      *mona;
 
    // Constructors.
-   GoalValue(int numGoals, Mona *mona)
+   GoalValue(int goal_count, Mona *mona)
    {
-      values.alloc(numGoals);
-      updateCount = 0;
+      values.Reserve(goal_count);
+      update_count = 0;
       this->mona  = mona;
    }
 
 
    GoalValue()
    {
-      updateCount = 0;
+      update_count = 0;
       mona        = NULL;
    }
 
 
    // Initialize.
-   void init(int numGoals, Mona *mona)
+   void Init(int goal_count, Mona *mona)
    {
-      values.alloc(numGoals);
+      values.Reserve(goal_count);
       this->mona = mona;
    }
 
@@ -274,26 +274,26 @@ public:
    // Destructor.
    ~GoalValue()
    {
-      clear();
+      Clear();
    }
 
 
    // Get total goal value.
-   inline NEED getValue()
+   inline NEED GetValue()
    {
-      return(values.sum());
+      return (values.GetSum());
    }
 
 
    // Get specific goal value.
-   inline NEED getValue(int index)
+   inline NEED GetValue(int index)
    {
-      return(values.get(index));
+      return (values.Get(index));
    }
 
 
    // Set specific goal value.
-   inline void setValue(int index, NEED value)
+   inline void SetValue(int index, NEED value)
    {
       values.set(index, value);
    }
@@ -302,90 +302,90 @@ public:
    // Set initial goals.
    inline void setGoals(VALUE_SET& goals)
    {
-      values.load(goals);
+      values.Load(goals);
    }
 
 
    // Get number of goals.
-   inline int getNumGoals()
+   inline int GetGoalCount()
    {
-      return(values.size());
+      return (values.GetCount());
    }
 
 
    // Update.
-   void update(VALUE_SET& needs, VALUE_SET& needDeltas)
+   void update(VALUE_SET& needs, VALUE_SET& need_deltas)
    {
       int    i, j;
       double v;
 
-      updateCount++;
-      for (i = 0, j = needs.size(); i < j; i++)
+      update_count++;
+      for (i = 0, j = needs.GetCount(); i < j; i++)
       {
-         if (needDeltas.get(i) > 0.0)
+         if (need_deltas.Get(i) > 0.0)
          {
-            v = values.get(i);
-            values.set(i, v - ((v / (double)updateCount) *
+            v = values.Get(i);
+            values.set(i, v - ((v / (double)update_count) *
                                mona->LEARNING_DECREASE_VELOCITY));
             continue;
          }
-         if (needDeltas.get(i) == 0.0)
+         if (need_deltas.Get(i) == 0.0)
          {
-            if (needs.get(i) > 0.0)
+            if (needs.Get(i) > 0.0)
             {
-               v = values.get(i);
-               values.set(i, v - ((v / (double)updateCount) *
+               v = values.Get(i);
+               values.set(i, v - ((v / (double)update_count) *
                                   mona->LEARNING_DECREASE_VELOCITY));
             }
             continue;
          }
-         v = values.get(i) + needDeltas.get(i);
-         if (needs.get(i) == 0.0)
+         v = values.Get(i) + need_deltas.Get(i);
+         if (needs.Get(i) == 0.0)
          {
             if (v >= 0.0)
             {
                continue;
             }
          }
-         values.set(i, values.get(i) + ((-v / (double)updateCount) *
+         values.set(i, values.Get(i) + ((-v / (double)update_count) *
                                         mona->LEARNING_INCREASE_VELOCITY));
       }
    }
 
 
    // Clear.
-   inline void clear()
+   inline void Clear()
    {
-      values.clear();
-      updateCount = 0;
+      values.Clear();
+      update_count = 0;
    }
 
 
    // Load.
-   void load(FILE *fp)
+   void Load(FILE *fp)
    {
-      clear();
-      values.load(fp);
-      FREAD_LONG_LONG(&updateCount, fp);
+      Clear();
+      values.Load(fp);
+      FREAD_LONG_LONG(&update_count, fp);
    }
 
 
    // Save.
-   void save(FILE *fp)
+   void Store(FILE *fp)
    {
-      values.save(fp);
-      FWRITE_LONG_LONG(&updateCount, fp);
+      values.Store(fp);
+      FWRITE_LONG_LONG(&update_count, fp);
    }
 
 
    // Print.
-   void print(FILE *out = stdout)
+   void Print(FILE *out = stdout)
    {
-      for (int i = 0; i < values.size(); i++)
+      for (int i = 0; i < values.GetCount(); i++)
       {
-         fprintf(out, "<value>%f</value>", values.get(i));
+         fprintf(out, "<value>%f</value>", values.Get(i));
       }
-      fprintf(out, "<updateCount>%llu</updateCount>", updateCount);
+      fprintf(out, "<update_count>%llu</update_count>", update_count);
    }
 };
 
@@ -397,42 +397,42 @@ public:
    VALUE_SET        base;
    VALUE_SET        delta;
    WEIGHT           weight;
-   vector<Neuron *> path;
+   Vector<Neuron *> path;
 #ifdef MONA_TRACKING
    struct DriveElem
    {
       Neuron *neuron;
       MOTIVE motive;
    };
-   vector<struct DriveElem> drivers;
+   Vector<struct DriveElem> drivers;
 #endif
 
    // Constructor.
    MotiveAccum()
    {
-      clear();
+      Clear();
    }
 
 
    // Destructor.
    ~MotiveAccum()
    {
-      clear();
+      Clear();
    }
 
 
    // Get value of accumulator.
    // This is the sum of the delta values
    // bounded by the base need values.
-   inline MOTIVE getValue()
+   inline MOTIVE GetValue()
    {
       double b, d, v;
 
       v = 0.0;
-      for (int i = 0; i < delta.size(); i++)
+      for (int i = 0; i < delta.GetCount(); i++)
       {
-         b = base.get(i);
-         d = delta.get(i);
+         b = base.Get(i);
+         d = delta.Get(i);
          if (d < 0.0)
          {
             if ((b + d) < 0.0) { v += b; } else{ v -= d; }
@@ -442,263 +442,262 @@ public:
             if ((b + d) > 1.0) { v -= (1.0 - b); } else{ v -= d; }
          }
       }
-      return(v);
+      return (v);
    }
 
 
    // Initialize accumulator.
-   inline void init(VALUE_SET& needs)
+   inline void Init(VALUE_SET& needs)
    {
-      base.load(needs);
-      delta.alloc(base.size());
-      delta.zero();
+      base.Load(needs);
+      delta.Reserve(base.GetCount());
+      delta.Zero();
       weight = 1.0;
-      path.clear();
+      path.Clear();
    }
 
 
    // Configure accumulator.
-   inline void config(MotiveAccum& accum, WEIGHT weight)
+   inline void Configure(MotiveAccum& accum, WEIGHT weight)
    {
-      init(accum.base);
-      loadNeeds(accum);
-      scale(weight);
+      Init(accum.base);
+      LoadNeeds(accum);
+      Scale(weight);
       this->weight = accum.weight * weight;
-      for (int i = 0; i < (int)accum.path.size(); i++)
+      for (int i = 0; i < (int)accum.path.GetCount(); i++)
       {
-         path.push_back(accum.path[i]);
+         path.Add(accum.path[i]);
       }
    }
 
 
    // Load need delta values.
-   void loadNeeds(MotiveAccum& motiveAccum)
+   void LoadNeeds(MotiveAccum& motiveAccum)
    {
-      delta.load(motiveAccum.delta);
+      delta.Load(motiveAccum.delta);
    }
 
 
    // Accumulate need delta values.
-   void accumNeeds(MotiveAccum& motiveAccum)
+   void AccumulateNeeds(MotiveAccum& motiveAccum)
    {
-      delta.add(motiveAccum.delta);
+      delta.Add(motiveAccum.delta);
    }
 
 
    // Accumulate goal values.
-   inline void accumGoals(GoalValue& goals)
+   inline void AccumulateGoals(GoalValue& goals)
    {
       VALUE_SET v;
 
-      v.load(goals.values);
-      v.multiply(weight);
-      delta.subtract(v);
+      v.Load(goals.values);
+      v.Multiply(weight);
+      delta.Subtract(v);
    }
 
 
    // Add a neuron to the path.
    // Return true if no loop detected.
-   inline bool addPath(Neuron *neuron)
+   inline bool AddPath(Neuron *neuron)
    {
-      for (int i = 0; i < (int)path.size(); i++)
+      for (int i = 0; i < (int)path.GetCount(); i++)
       {
-         if (path[i] == neuron) { return(false); }
+         if (path[i] == neuron) { return (false); }
       }
-      path.push_back(neuron);
-      return(true);
+      path.Add(neuron);
+      return true;
    }
 
 
    // Scale accumulator.
-   inline void scale(WEIGHT weight)
+   inline void Scale(WEIGHT weight)
    {
-      delta.multiply(weight);
+      delta.Multiply(weight);
    }
 
 
    // Reset accumulator.
    inline void reset()
    {
-      delta.zero();
+      delta.Zero();
       weight = 1.0;
    }
 
 
    // Clear accumulator.
-   inline void clear()
+   inline void Clear()
    {
-      base.clear();
-      delta.clear();
+      base.Clear();
+      delta.Clear();
       weight = 1.0;
-      path.clear();
+      path.Clear();
    }
 
 
    // Load.
-   void load(FILE *fp)
+   void Load(FILE *fp)
    {
-      clear();
-      base.load(fp);
-      delta.load(fp);
+      Clear();
+      base.Load(fp);
+      delta.Load(fp);
       FREAD_DOUBLE(&weight, fp);
    }
 
 
    // Save.
    // When changing format increment FORMAT in mona.h
-   void save(FILE *fp)
+   void Store(FILE *fp)
    {
-      base.save(fp);
-      delta.save(fp);
+      base.Store(fp);
+      delta.Store(fp);
       FWRITE_DOUBLE(&weight, fp);
    }
 
 
    // Print.
-   void print(FILE *out = stdout)
+   void Print(FILE *out = stdout)
    {
       int i;
 
       fprintf(out, "<base>");
-      for (i = 0; i < base.size(); i++)
+      for (i = 0; i < base.GetCount(); i++)
       {
-         fprintf(out, "<value>%f</value>", base.get(i));
+         fprintf(out, "<value>%f</value>", base.Get(i));
       }
       fprintf(out, "</base><delta>");
-      for (i = 0; i < delta.size(); i++)
+      for (i = 0; i < delta.GetCount(); i++)
       {
-         fprintf(out, "<value>%f</value>", delta.get(i));
+         fprintf(out, "<value>%f</value>", delta.Get(i));
       }
       fprintf(out, "</delta><weight>%f</weight>", weight);
-      fprintf(out, "<value>%f</value>", getValue());
+      fprintf(out, "<value>%f</value>", GetValue());
    }
 };
 
 
 // Event enabling.
-class Enabling
-{
+class Enabling {
 public:
    ENABLEMENT  value;
    MOTIVE      motive;
    TIME        age;
-   int         timerIndex;
+   int         timer_index;
    EnablingSet *set;
-   bool        newInSet;
-   TIME        causeBegin;
+   bool        new_in_set;
+   TIME        cause_begin;
    VALUE_SET   needs;
 
    // Constructor.
    Enabling(ENABLEMENT value, MOTIVE motive, TIME age,
-            int timerIndex, TIME causeBegin)
+            int timer_index, TIME cause_begin)
    {
-      clear();
+      Clear();
       this->value      = value;
       this->motive     = motive;
       this->age        = age;
-      this->timerIndex = timerIndex;
-      this->causeBegin = causeBegin;
+      this->timer_index = timer_index;
+      this->cause_begin = cause_begin;
    }
 
 
    Enabling()
    {
-      clear();
+      Clear();
    }
 
 
    // Destructor.
    ~Enabling()
    {
-      clear();
+      Clear();
    }
 
 
    // Set needs.
-   void setNeeds(vector<Homeostat *>& homeostats)
+   void SetNeeds(Vector<Homeostat *>& homeostats)
    {
-      int n = (int)homeostats.size();
+      int n = (int)homeostats.GetCount();
 
-      needs.alloc(n);
+      needs.Reserve(n);
       for (int i = 0; i < n; i++)
       {
-         needs.set(i, homeostats[i]->getNeed());
+         needs.set(i, homeostats[i]->GetNeed());
       }
    }
 
 
    // Clone.
-   inline Enabling *clone()
+   inline Enabling *Clone()
    {
       Enabling *enabling;
 
       enabling = new Enabling(value, motive, age,
-                              timerIndex, causeBegin);
-      assert(enabling != NULL);
-      enabling->newInSet = newInSet;
-      enabling->needs.load(needs);
-      return(enabling);
+                              timer_index, cause_begin);
+      ASSERT(enabling != NULL);
+      enabling->new_in_set = new_in_set;
+      enabling->needs.Load(needs);
+      return (enabling);
    }
 
 
    // Clear enabling.
-   inline void clear()
+   inline void Clear()
    {
       value      = 0.0;
       motive     = 0.0;
       age        = 0;
-      timerIndex = -1;
+      timer_index = -1;
       set        = NULL;
-      newInSet   = false;
-      causeBegin = 0;
-      needs.clear();
+      new_in_set   = false;
+      cause_begin = 0;
+      needs.Clear();
    }
 
 
    // Load.
-   void load(FILE *fp)
+   void Load(FILE *fp)
    {
-      clear();
+      Clear();
       FREAD_DOUBLE(&value, fp);
       FREAD_DOUBLE(&motive, fp);
       FREAD_LONG_LONG(&age, fp);
-      FREAD_INT(&timerIndex, fp);
+      FREAD_INT(&timer_index, fp);
       set = NULL;
-      FREAD_BOOL(&newInSet, fp);
-      FREAD_LONG_LONG(&causeBegin, fp);
-      needs.load(fp);
+      FREAD_BOOL(&new_in_set, fp);
+      FREAD_LONG_LONG(&cause_begin, fp);
+      needs.Load(fp);
    }
 
 
    // Save.
    // When changing format increment FORMAT in mona.h
-   void save(FILE *fp)
+   void Store(FILE *fp)
    {
       FWRITE_DOUBLE(&value, fp);
       FWRITE_DOUBLE(&motive, fp);
       FWRITE_LONG_LONG(&age, fp);
-      FWRITE_INT(&timerIndex, fp);
-      FWRITE_BOOL(&newInSet, fp);
-      FWRITE_LONG_LONG(&causeBegin, fp);
-      needs.save(fp);
+      FWRITE_INT(&timer_index, fp);
+      FWRITE_BOOL(&new_in_set, fp);
+      FWRITE_LONG_LONG(&cause_begin, fp);
+      needs.Store(fp);
    }
 
 
    // Print.
-   void print(FILE *out = stdout)
+   void Print(FILE *out = stdout)
    {
       fprintf(out, "<value>%f</value>", value);
       fprintf(out, "<motive>%f</motive>", value);
       fprintf(out, "<age>%llu</age>", age);
-      fprintf(out, "<timerIndex>%d</timerIndex>", timerIndex);
-      fprintf(out, "<newInSet>");
-      if (newInSet) { fprintf(out, "true"); } else{ fprintf(out, "false"); }
-      fprintf(out, "</newInSet><causeBegin>%llu</causeBegin>", causeBegin);
+      fprintf(out, "<timer_index>%d</timer_index>", timer_index);
+      fprintf(out, "<new_in_set>");
+      if (new_in_set) { fprintf(out, "true"); } else{ fprintf(out, "false"); }
+      fprintf(out, "</new_in_set><cause_begin>%llu</cause_begin>", cause_begin);
       fprintf(out, "<needs>");
-      int n = needs.size();
+      int n = needs.GetCount();
       for (int i = 0; i < n; i++)
       {
-         fprintf(out, "<need>%f</need>", needs.get(i));
+         fprintf(out, "<need>%f</need>", needs.Get(i));
       }
       fprintf(out, "/<needs>");
    }
@@ -708,61 +707,61 @@ public:
 class EnablingSet
 {
 public:
-   list<Enabling *> enablings;
+   Vector<Enabling *> enablings;
 
    // Constructor.
    EnablingSet()
    {
-      clear();
+      Clear();
    }
 
 
    // Destructor.
    ~EnablingSet()
    {
-      clear();
+      Clear();
    }
 
 
    // Get size of set.
-   inline int size()
+   inline int GetCount()
    {
-      return((int)enablings.size());
+      return ((int)enablings.GetCount());
    }
 
 
    // Insert an enabling.
-   inline void insert(Enabling *enabling)
+   inline void Insert(Enabling *enabling)
    {
       enabling->set      = this;
-      enabling->newInSet = true;
-      enablings.push_back(enabling);
+      enabling->new_in_set = true;
+      enablings.Add(enabling);
    }
 
 
    // Remove an enabling.
-   inline void remove(Enabling *enabling)
+   inline void Remove(Enabling *enabling)
    {
-      enablings.remove(enabling);
+      enablings.Remove(enabling);
    }
 
 
    // Get enabling value.
-   inline ENABLEMENT getValue()
+   inline ENABLEMENT GetValue()
    {
       Enabling   *enabling;
       ENABLEMENT e;
 
-      list<Enabling *>::iterator listItr;
+      Vector<Enabling *>::Iterator listItr;
 
       e = 0.0;
-      for (listItr = enablings.begin();
-           listItr != enablings.end(); listItr++)
+      for (listItr = enablings.Begin();
+           listItr != enablings.End(); listItr++)
       {
          enabling = *listItr;
          e       += enabling->value;
       }
-      return(e);
+      return (e);
    }
 
 
@@ -772,19 +771,19 @@ public:
       Enabling   *enabling;
       ENABLEMENT e;
 
-      list<Enabling *>::iterator listItr;
+      Vector<Enabling *>::Iterator listItr;
 
       e = 0.0;
-      for (listItr = enablings.begin();
-           listItr != enablings.end(); listItr++)
+      for (listItr = enablings.Begin();
+           listItr != enablings.End(); listItr++)
       {
          enabling = *listItr;
-         if (enabling->newInSet)
+         if (enabling->new_in_set)
          {
             e += enabling->value;
          }
       }
-      return(e);
+      return (e);
    }
 
 
@@ -794,19 +793,19 @@ public:
       Enabling   *enabling;
       ENABLEMENT e;
 
-      list<Enabling *>::iterator listItr;
+      Vector<Enabling *>::Iterator listItr;
 
       e = 0.0;
-      for (listItr = enablings.begin();
-           listItr != enablings.end(); listItr++)
+      for (listItr = enablings.Begin();
+           listItr != enablings.End(); listItr++)
       {
          enabling = *listItr;
-         if (!enabling->newInSet)
+         if (!enabling->new_in_set)
          {
             e += enabling->value;
          }
       }
-      return(e);
+      return (e);
    }
 
 
@@ -815,86 +814,86 @@ public:
    {
       Enabling *enabling;
 
-      list<Enabling *>::iterator listItr;
+      Vector<Enabling *>::Iterator listItr;
 
-      for (listItr = enablings.begin();
-           listItr != enablings.end(); listItr++)
+      for (listItr = enablings.Begin();
+           listItr != enablings.End(); listItr++)
       {
          enabling           = *listItr;
-         enabling->newInSet = false;
+         enabling->new_in_set = false;
       }
    }
 
 
    // Clear.
-   inline void clear()
+   inline void Clear()
    {
       Enabling *enabling;
 
-      list<Enabling *>::iterator listItr;
+      Vector<Enabling *>::Iterator listItr;
 
-      for (listItr = enablings.begin();
-           listItr != enablings.end(); listItr++)
+      for (listItr = enablings.Begin();
+           listItr != enablings.End(); listItr++)
       {
          enabling = *listItr;
          delete enabling;
       }
-      enablings.clear();
+      enablings.Clear();
    }
 
 
    // Load.
-   void load(FILE *fp)
+   void Load(FILE *fp)
    {
       int      size;
       Enabling *enabling;
 
-      clear();
+      Clear();
       FREAD_INT(&size, fp);
       for (int i = 0; i < size; i++)
       {
          enabling = new Enabling();
-         assert(enabling != NULL);
-         enabling->load(fp);
+         ASSERT(enabling != NULL);
+         enabling->Load(fp);
          enabling->set = this;
-         enablings.push_back(enabling);
+         enablings.Add(enabling);
       }
    }
 
 
    // Save.
    // When changing format increment FORMAT in mona.h
-   void save(FILE *fp)
+   void Store(FILE *fp)
    {
       int      size;
       Enabling *enabling;
 
-      list<Enabling *>::iterator listItr;
+      Vector<Enabling *>::Iterator listItr;
 
-      size = (int)enablings.size();
+      size = (int)enablings.GetCount();
       FWRITE_INT(&size, fp);
-      for (listItr = enablings.begin();
-           listItr != enablings.end(); listItr++)
+      for (listItr = enablings.Begin();
+           listItr != enablings.End(); listItr++)
       {
          enabling = *listItr;
-         enabling->save(fp);
+         enabling->Store(fp);
       }
    }
 
 
    // Print.
-   void print(FILE *out = stdout)
+   void Print(FILE *out = stdout)
    {
       Enabling *enabling;
 
-      list<Enabling *>::iterator listItr;
+      Vector<Enabling *>::Iterator listItr;
 
       fprintf(out, "<enablingSet>");
-      for (listItr = enablings.begin();
-           listItr != enablings.end(); listItr++)
+      for (listItr = enablings.Begin();
+           listItr != enablings.End(); listItr++)
       {
          enabling = *listItr;
-         enabling->print(out);
+         enabling->Print(out);
       }
       fprintf(out, "</enablingSet>");
    }
@@ -911,8 +910,8 @@ struct Notify
 struct FiringNotify
 {
    struct Notify *notify;
-   WEIGHT        notifyStrength;
-   TIME          causeBegin;
+   WEIGHT        notify_strength;
+   TIME          cause_begin;
 };
 
 // Learning event.
@@ -920,7 +919,7 @@ class LearningEvent
 {
 public:
    Neuron      *neuron;
-   WEIGHT      firingStrength;
+   WEIGHT      firing_strength;
    TIME        begin;
    TIME        end;
    PROBABILITY probability;
@@ -929,30 +928,30 @@ public:
    LearningEvent(Neuron *neuron)
    {
       this->neuron   = neuron;
-      firingStrength = neuron->firingStrength;
+      firing_strength = neuron->firing_strength;
       if (neuron->type == MEDIATOR)
       {
-         begin = ((Mediator *)neuron)->causeBegin;
+         begin = ((Mediator *)neuron)->cause_begin;
       }
       else
       {
-         begin = neuron->mona->eventClock;
+         begin = neuron->mona->event_clock;
       }
-      end = neuron->mona->eventClock;
-      if (firingStrength > NEARLY_ZERO)
+      end = neuron->mona->event_clock;
+      if (firing_strength > NEARLY_ZERO)
       {
          probability =
-            pow(firingStrength, neuron->mona->FIRING_STRENGTH_LEARNING_DAMPER);
+            pow(firing_strength, neuron->mona->FIRING_STRENGTH_LEARNING_DAMPER);
       }
       else
       {
          probability = 0.0;
       }
-      int n = neuron->mona->numNeeds;
-      needs.alloc(n);
+      int n = neuron->mona->need_count;
+      needs.Reserve(n);
       for (int i = 0; i < n; i++)
       {
-         needs.set(i, neuron->mona->homeostats[i]->getNeed());
+         needs.set(i, neuron->mona->homeostats[i]->GetNeed());
       }
    }
 
@@ -960,42 +959,42 @@ public:
    LearningEvent()
    {
       neuron         = NULL;
-      firingStrength = 0.0;
+      firing_strength = 0.0;
       begin          = end = 0;
       probability    = 0.0;
-      needs.clear();
+      needs.Clear();
    }
 
 
    // Load.
-   void load(FILE *fp)
+   void Load(FILE *fp)
    {
       neuron = (Neuron *)new ID;
-      assert(neuron != NULL);
+      ASSERT(neuron != NULL);
       FREAD_LONG_LONG((ID *)neuron, fp);
-      FREAD_DOUBLE(&firingStrength, fp);
+      FREAD_DOUBLE(&firing_strength, fp);
       FREAD_LONG_LONG(&begin, fp);
       FREAD_LONG_LONG(&end, fp);
       FREAD_DOUBLE(&probability, fp);
-      needs.load(fp);
+      needs.Load(fp);
    }
 
 
    // Save.
    // When changing format increment FORMAT in mona.h
-   void save(FILE *fp)
+   void Store(FILE *fp)
    {
       FWRITE_LONG_LONG(&neuron->id, fp);
-      FWRITE_DOUBLE(&firingStrength, fp);
+      FWRITE_DOUBLE(&firing_strength, fp);
       FWRITE_LONG_LONG(&begin, fp);
       FWRITE_LONG_LONG(&end, fp);
       FWRITE_DOUBLE(&probability, fp);
-      needs.save(fp);
+      needs.Store(fp);
    }
 
 
    // Print.
-   void print(FILE *out = stdout)
+   void Print(FILE *out = stdout)
    {
       if (neuron != NULL)
       {
@@ -1004,32 +1003,32 @@ public:
          {
 #ifdef MONA_TRACKING
          case RECEPTOR:
-            ((Receptor *)neuron)->print((TRACKING_FLAGS)0, out);
+            ((Receptor *)neuron)->Print((TRACKING_FLAGS)0, out);
             fprintf(out, "\n");
             break;
 
          case MOTOR:
-            ((Motor *)neuron)->print((TRACKING_FLAGS)0, out);
+            ((Motor *)neuron)->Print((TRACKING_FLAGS)0, out);
             fprintf(false, false, out, "\n");
             break;
 
          case MEDIATOR:
-            ((Mediator *)neuron)->print((TRACKING_FLAGS)0, out);
+            ((Mediator *)neuron)->Print((TRACKING_FLAGS)0, out);
             break;
 
 #else
          case RECEPTOR:
-            ((Receptor *)neuron)->print(out);
+            ((Receptor *)neuron)->Print(out);
             fprintf(out, "\n");
             break;
 
          case MOTOR:
-            ((Motor *)neuron)->print(out);
+            ((Motor *)neuron)->Print(out);
             fprintf(out, "\n");
             break;
 
          case MEDIATOR:
-            ((Mediator *)neuron)->print(out);
+            ((Mediator *)neuron)->Print(out);
             break;
 #endif
          }
@@ -1039,15 +1038,15 @@ public:
          fprintf(out, "<neuron>NULL");
       }
       fprintf(out, "</neuron>\n");
-      fprintf(out, "<firingStrength>%f</firingStrength>", firingStrength);
+      fprintf(out, "<firing_strength>%f</firing_strength>", firing_strength);
       fprintf(out, "<begin>%llu</begin>", begin);
       fprintf(out, "<end>%llu</end>", end);
       fprintf(out, "<probability>%f</probability>", probability);
       fprintf(out, "<needs>");
-      int n = needs.size();
+      int n = needs.GetCount();
       for (int i = 0; i < n; i++)
       {
-         fprintf(out, "<need>%f</need>", needs.get(i));
+         fprintf(out, "<need>%f</need>", needs.Get(i));
       }
       fprintf(out, "/<needs>");
    }
@@ -1067,13 +1066,13 @@ public:
    {
       this->mediator = mediator;
       this->enabling = enabling;
-      begin          = mediator->causeBegin;
-      end            = mediator->mona->eventClock;
-      int n = mediator->mona->numNeeds;
-      needs.alloc(n);
+      begin          = mediator->cause_begin;
+      end            = mediator->mona->event_clock;
+      int n = mediator->mona->need_count;
+      needs.Reserve(n);
       for (int i = 0; i < n; i++)
       {
-         needs.set(i, mediator->mona->homeostats[i]->getNeed());
+         needs.set(i, mediator->mona->homeostats[i]->GetNeed());
       }
    }
 
@@ -1083,45 +1082,45 @@ public:
       mediator = NULL;
       enabling = 0.0;
       begin    = end = 0;
-      needs.clear();
+      needs.Clear();
    }
 
 
    // Load.
-   void load(FILE *fp)
+   void Load(FILE *fp)
    {
       mediator = (Mediator *)new ID;
-      assert(mediator != NULL);
+      ASSERT(mediator != NULL);
       FREAD_LONG_LONG((ID *)mediator, fp);
       FREAD_DOUBLE(&enabling, fp);
       FREAD_LONG_LONG(&begin, fp);
       FREAD_LONG_LONG(&end, fp);
-      needs.load(fp);
+      needs.Load(fp);
    }
 
 
    // Save.
    // When changing format increment FORMAT in mona.h
-   void save(FILE *fp)
+   void Store(FILE *fp)
    {
       FWRITE_LONG_LONG(&mediator->id, fp);
       FWRITE_DOUBLE(&enabling, fp);
       FWRITE_LONG_LONG(&begin, fp);
       FWRITE_LONG_LONG(&end, fp);
-      needs.save(fp);
+      needs.Store(fp);
    }
 
 
    // Print.
-   void print(FILE *out = stdout)
+   void Print(FILE *out = stdout)
    {
       if (mediator != NULL)
       {
          fprintf(out, "<mediator>\n");
 #ifdef MONA_TRACKING
-         mediator->print((TRACKING_FLAGS)0, out);
+         mediator->Print((TRACKING_FLAGS)0, out);
 #else
-         mediator->print(out);
+         mediator->Print(out);
 #endif
       }
       else
@@ -1132,10 +1131,10 @@ public:
       fprintf(out, "<enabling>%f</enabling>", enabling);
       fprintf(out, "<begin>%llu</begin>", begin);
       fprintf(out, "<end>%llu</end>", end);
-      int n = needs.size();
+      int n = needs.GetCount();
       for (int i = 0; i < n; i++)
       {
-         fprintf(out, "<need>%f</need>", needs.get(i));
+         fprintf(out, "<need>%f</need>", needs.Get(i));
       }
       fprintf(out, "/<needs>");
    }

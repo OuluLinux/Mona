@@ -1,10 +1,15 @@
 description "A 3D environment of blocks and ramps.\3770,0,128";
 
 uses
-	MonaCtrl;
+	MonaCtrl,
+	CtrlLib,
+	Docking;
 
 file
 	main.cpp,
+	TopWindow.h,
+	TopWindow.cpp,
+	ResponseSearch.cpp,
 	MuzzWorld.h,
 	MuzzWorld.cpp,
 	BlockTerrain.h,

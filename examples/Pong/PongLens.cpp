@@ -54,7 +54,7 @@ void lensCallback();
 bool PrintCallback = false;
 
 // Testing target outputs.
-vector<vector<vector<float> > > TestingTargetOutputs;
+Vector<Vector<Vector<float> > > TestingTargetOutputs;
 int   TestNumber;
 int   TickCounter;
 float ErrorAccumulator;
@@ -80,7 +80,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          PongTrainingExamplesFile = argv[i];
          continue;
@@ -92,13 +92,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          TrainingEpochs = atoi(argv[i]);
          if (TrainingEpochs < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -109,34 +109,34 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          PongTestingExamplesFile = argv[i];
          continue;
       }
 
       printUsage();
-      return(1);
+      return (1);
    }
 
    if ((PongTrainingExamplesFile == NULL) || (PongTestingExamplesFile == NULL))
    {
       printUsage();
-      return(1);
+      return (1);
    }
 
    // Start lens.
    if (startLens(argv[0]))
    {
       fprintf(stderr, "Lens failed to start\n");
-      return(1);
+      return (1);
    }
 
    // Determine max intervals.
    if ((fp = fopen(PongTrainingExamplesFile, "r")) == NULL)
    {
       fprintf(stderr, "Cannot open %s\n", PongTrainingExamplesFile);
-      return(1);
+      return (1);
    }
    intervals = 0;
    while (fgets(buf, BUFSIZ, fp) != NULL)
@@ -161,7 +161,7 @@ main(int argc, char *argv[])
    if ((fp = fopen(PongTestingExamplesFile, "r")) == NULL)
    {
       fprintf(stderr, "Cannot open %s\n", PongTestingExamplesFile);
-      return(1);
+      return (1);
    }
    n = -1;
    while (fgets(buf, BUFSIZ, fp) != NULL)
@@ -180,14 +180,14 @@ main(int argc, char *argv[])
                intervals = i;
             }
             n++;
-            TestingTargetOutputs.resize(n + 1);
+            TestingTargetOutputs.SetCount(n + 1);
             s = -1;
          }
       }
       else
       {
          s++;
-         TestingTargetOutputs[n].resize(s + 1);
+         TestingTargetOutputs[n].SetCount(s + 1);
          for (i = 0; buf[i] != 'T' && buf[i] != '\0'; i++)
          {
          }
@@ -197,7 +197,7 @@ main(int argc, char *argv[])
             sscanf(&buf[i], "%d %d %d %d %d %d %d", &t[0], &t[1], &t[2], &t[3], &t[4], &t[5], &t[6]);
             for (i = 0; i < 7; i++)
             {
-               TestingTargetOutputs[n][s].push_back((float)t[i]);
+               TestingTargetOutputs[n][s].Add((float)t[i]);
             }
          }
       }
@@ -226,9 +226,9 @@ main(int argc, char *argv[])
 
    // Set up LENS output callback.
    netInputs = new real *[8];
-   assert(netInputs != NULL);
+   ASSERT(netInputs != NULL);
    netOutputs = new real *[7];
-   assert(netOutputs != NULL);
+   ASSERT(netOutputs != NULL);
    clientProc             = lensCallback;
    suppressLensOutput     = 0;
    PrintCallback          = true;
@@ -277,7 +277,7 @@ main(int argc, char *argv[])
    netInputs  = NULL;
    clientProc = NULL;
 
-   return(0);
+   return (0);
 }
 
 

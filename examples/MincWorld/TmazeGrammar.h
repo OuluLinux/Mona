@@ -36,7 +36,7 @@ class TmazeGrammar
 public:
 
    // Constructor.
-   TmazeGrammar(RANDOM randomSeed, int numMarks);
+   TmazeGrammar(RANDOM random_seed, int numMarks);
 
    // Destructor.
    ~TmazeGrammar();
@@ -46,9 +46,9 @@ public:
 
 private:
 
-   RANDOM              randomSeed;
+   RANDOM              random_seed;
    int                 numMarks;
-   Random              *mazeRandomizer;
+   Random              *mazerandomizer;
    static const double NEAR_ZERO;
    int extendMazePath(Random *, Tmaze *);
 };

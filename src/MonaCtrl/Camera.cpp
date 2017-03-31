@@ -40,7 +40,7 @@ void Camera::setView(GLfloat *eye, GLfloat *lookat, GLfloat *up)
    m_spacial->getBillboard(t, r);
    if ((fabs(r[0]) >= tol) || (fabs(r[1]) >= tol) || (fabs(r[2]) >= tol))
    {
-      m_spacial->loadRotation(DegreesToRadians(r[3]), r);
+      m_spacial->LoadRotation(DegreesToRadians(r[3]), r);
    }
    else
    {
@@ -88,7 +88,7 @@ void Camera::updateView(GLfloat *eye, GLfloat *lookat, GLfloat *up)
    m_spacial->getBillboard(t, r);
    if ((fabs(r[0]) >= tol) || (fabs(r[1]) >= tol) || (fabs(r[2]) >= tol))
    {
-      m_spacial->loadRotation(DegreesToRadians(r[3]), r);
+      m_spacial->LoadRotation(DegreesToRadians(r[3]), r);
    }
    else
    {
@@ -132,7 +132,7 @@ void Camera::updateView(GLfloat *eye, GLfloat *lookat, GLfloat *up)
    m_spacial->getBillboard(t, r);
    if ((fabs(r[0]) >= tol) || (fabs(r[1]) >= tol) || (fabs(r[2]) >= tol))
    {
-      m_spacial->loadRotation(DegreesToRadians(r[3]), r);
+      m_spacial->LoadRotation(DegreesToRadians(r[3]), r);
    }
    else
    {
@@ -242,10 +242,10 @@ bool Camera::pointInFrustum(GLfloat *localPoint)
           frustum[i][2] * worldPoint[2] +
           frustum[i][3] <= 0)
       {
-         return(false);
+         return (false);
       }
    }
-   return(true);
+   return true;
 }
 
 

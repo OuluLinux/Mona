@@ -1,6 +1,6 @@
 #include "EasyGL.h"
 
-GUIPanel::GUIPanel(const std::string &cbs) : GUIRectangle(cbs), GUIClippedRectangle()
+GUIPanel::GUIPanel(const String &cbs) : GUIRectangle(cbs), GUIClippedRectangle()
 {
   setInterval(4, 4);
   widgetType = WT_PANEL;
@@ -9,10 +9,10 @@ GUIPanel::GUIPanel(const std::string &cbs) : GUIRectangle(cbs), GUIClippedRectan
 
 bool GUIPanel::loadXMLSettings(const char *stackPath)
 {
-  std::string xmlFile = MediaPathManager::lookUpMediaPath(stackPath);
+  String xmlFile = MediaPathManager::lookUpMediaPath(stackPath);
   bool        result = false;
 
-  if(!xmlFile.size())
+  if(!xmlFile.GetCount())
     return Logger::writeErrorLog("Failed to locate the XML GUI file");
 
   TiXmlDocument cfgStack(xmlFile);
@@ -31,7 +31,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     return Logger::writeErrorLog("Need a Panel node in the xml file");
 
   const char  *description = element->Attribute("description");
-  std::string  type        = element->Attribute("layout") ? element->Attribute("layout") : "UNKNOWN";
+  String  type        = element->Attribute("layout") ? element->Attribute("layout") : "UNKNOWN";
 
   if(description)
     return  loadXMLSettings(description);
@@ -41,35 +41,35 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
            (type == "XAXIS"    ) ? PL_XAXIS_LAYOUT     :
            (type == "GRID"     ) ? PL_GRID_LAYOUT      : PL_FREE_LAYOUT;
 
-  for(const TiXmlElement *child = element->FirstChildElement();
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    std::string childName  = child->Value();
+    String outerName  = outer->Value();
  
-    if(!childName.size())
+    if(!outerName.GetCount())
       continue;
 
-    if(childName == "CheckBox")
+    if(outerName == "CheckBox")
     {
       GUICheckBox *newCheckBox = new GUICheckBox();
-      if(!newCheckBox->loadXMLSettings(child) || !addWidget(newCheckBox))
+      if(!newCheckBox->loadXMLSettings(outer) || !addWidget(newCheckBox))
         deleteObject(newCheckBox);
       continue;
     }
 
-    if(childName == "TabbedPanel")
+    if(outerName == "TabbedPanel")
     {
       GUITabbedPanel *newTabbedPanel = new GUITabbedPanel();
-      if(!newTabbedPanel->loadXMLSettings(child) || !addWidget(newTabbedPanel))
+      if(!newTabbedPanel->loadXMLSettings(outer) || !addWidget(newTabbedPanel))
         deleteObject(newTabbedPanel);
       continue;
     }
 
-    if(childName == "RadioButton")
+    if(outerName == "RadioButton")
     {
       GUIRadioButton *newRadioButton = new GUIRadioButton();
-      if(!newRadioButton->loadXMLSettings(child) || !addWidget(newRadioButton))
+      if(!newRadioButton->loadXMLSettings(outer) || !addWidget(newRadioButton))
       {
         deleteObject(newRadioButton);
       }
@@ -81,37 +81,37 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
       continue;
     }
 
-    if(childName == "ComboBox")
+    if(outerName == "ComboBox")
     {
       GUIComboBox *newComboBox = new GUIComboBox();
-      if(!newComboBox->loadXMLSettings(child) || !addWidget(newComboBox))
+      if(!newComboBox->loadXMLSettings(outer) || !addWidget(newComboBox))
         deleteObject(newComboBox);
       continue;
     }
 
-    if(childName == "TextBox")
+    if(outerName == "TextBox")
     {
       GUITextBox *newTextBox = new GUITextBox();
-      if(!newTextBox->loadXMLSettings(child) || !addWidget(newTextBox))
+      if(!newTextBox->loadXMLSettings(outer) || !addWidget(newTextBox))
         deleteObject(newTextBox);
       continue;
     }
 
-    if(childName == "Slider")
+    if(outerName == "Slider")
     {
       GUISlider *newSlider = new GUISlider();
-      if(!newSlider->loadXMLSettings(child) || !addWidget(newSlider))
+      if(!newSlider->loadXMLSettings(outer) || !addWidget(newSlider))
         deleteObject(newSlider);
       continue;
     }
 
-    if(childName == "Separator")
+    if(outerName == "Separator")
     {
       GUISeparator *newSeparator = new GUISeparator();
       if((layout != PL_YAXIS_LAYOUT &&
           layout != PL_XAXIS_LAYOUT &&
           layout != PL_YAXIS_CEN_LAYOUT) ||
-         (!newSeparator->loadXMLSettings(child)))
+         (!newSeparator->loadXMLSettings(outer)))
       {
         deleteObject(newSeparator);
       }
@@ -119,35 +119,35 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
       {
         newSeparator->setParent(this);
         newSeparator->setOrientation((layout != PL_YAXIS_LAYOUT && layout != PL_YAXIS_CEN_LAYOUT));
-        elements.push_back(newSeparator);
+        elements.Add(newSeparator);
       }
       continue;
     }
 
-    if(childName == "Button")
+    if(outerName == "Button")
     {
       GUIButton *newButton = new GUIButton();
-      if(!newButton->loadXMLSettings(child) || !addWidget(newButton))
+      if(!newButton->loadXMLSettings(outer) || !addWidget(newButton))
         deleteObject(newButton);
       continue;
     }
 
-    if(childName == "Label")
+    if(outerName == "Label")
     {
       GUILabel *newLabel = new GUILabel();
-      if(!newLabel->loadXMLSettings(child) || !addWidget(newLabel))
+      if(!newLabel->loadXMLSettings(outer) || !addWidget(newLabel))
         deleteObject(newLabel);
       continue;
     }
 
 
-    if(childName == "Interval")
-      setInterval(XMLArbiter::fillComponents2i(child, interval));
+    if(outerName == "Interval")
+      setInterval(XMLArbiter::fillComponents2i(outer, interval));
 
-    if(childName == "Panel")
+    if(outerName == "Panel")
     {
       GUIPanel *panel = new GUIPanel();
-      if(!panel->loadXMLSettings(child) || !addWidget(panel))
+      if(!panel->loadXMLSettings(outer) || !addWidget(panel))
         deleteObject(panel);
       continue;
     }
@@ -157,9 +157,9 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
           GUIClippedRectangle::loadXMLClippedRectangleInfo(element);
 }
 
-GUIRectangle *GUIPanel::getWidgetByCallbackString(const std::string &callbackString)
+GUIRectangle *GUIPanel::getWidgetByCallbackString(const String &callbackString)
 {
-  if(!callbackString.size())
+  if(!callbackString.GetCount())
     return NULL;
 
   GUIRectangle *element = NULL,
@@ -167,13 +167,13 @@ GUIRectangle *GUIPanel::getWidgetByCallbackString(const std::string &callbackStr
 
   size_t t = 0;
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
   {
     if(elements[t]->getCallbackString() == callbackString)
       return elements[t];
   }
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
   {
     if(elements[t]->getWidgetType() == WT_PANEL)
     if(element = ((GUIPanel*)elements[t])->getWidgetByCallbackString(callbackString))
@@ -191,7 +191,7 @@ void GUIPanel::checkMouseEvents(MouseEvent &evt, int extraInfo, bool infoBits)
   if(visible && active)
   {
     GUIRectangle::checkMouseEvents(evt, extraInfo, infoBits);
-    for(size_t t = 0; t < elements.size(); t++)
+    for(size_t t = 0; t < elements.GetCount(); t++)
     {
       if(elements[t]->isActive())
         elements[t]->checkMouseEvents(evt, extraInfo, infoBits);
@@ -203,7 +203,7 @@ void GUIPanel::checkKeyboardEvents(KeyEvent evt, int extraInfo)
   if(visible && active)
   {
     GUIRectangle::checkKeyboardEvents(evt, extraInfo);
-    for(size_t t = 0; t < elements.size(); t++)
+    for(size_t t = 0; t < elements.GetCount(); t++)
     if(elements[t]->isActive())
       elements[t]->checkKeyboardEvents(evt, extraInfo);
   }
@@ -220,7 +220,7 @@ void  GUIPanel::render(float tick)
   if(visible)
   {
     renderClippedBounds();
-    for(int t = (int)elements.size() - 1; t >= 0; t--)
+    for(int t = (int)elements.GetCount() - 1; t >= 0; t--)
       if(elements[t]->getWidgetType() != WT_COMBO_BOX)
         elements[t]->render(tick);
       else
@@ -229,10 +229,10 @@ void  GUIPanel::render(float tick)
         if(!cbPTR->isDeployed())
           cbPTR->render(tick);
         else
-          comboBoxes.push_back(elements[t]);
+          comboBoxes.Add(elements[t]);
       }
 
-    for(size_t t = 0; t < comboBoxes.size(); t++)
+    for(size_t t = 0; t < comboBoxes.GetCount(); t++)
       comboBoxes[t]->render(tick);
   }
 }
@@ -241,12 +241,12 @@ void  GUIPanel::collectZWidgets(ZWidgets &container)
 {
   if(visible)
   {
-    for(size_t t = 0; t < elements.size(); t++)
+    for(size_t t = 0; t < elements.GetCount(); t++)
       if(elements[t]->getWidgetType() != WT_PANEL)
       {
         ZWidget zWidget(elements[t]);
         zWidget.setDistance(float(elements[t]->getZCoordinate()));
-        container.push_back(zWidget);
+        container.Add(zWidget);
       }
       else
       {
@@ -256,7 +256,7 @@ void  GUIPanel::collectZWidgets(ZWidgets &container)
     ZWidget zWidget(this);
     zWidget.setDistance(float(getZCoordinate()));
 
-    container.push_back(zWidget);
+    container.Add(zWidget);
   }
 }
 
@@ -267,7 +267,7 @@ void GUIPanel::pack()
 
   size_t t = 0;
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
     elements[t]->forceUpdate(update);
 
   if(!t)
@@ -288,7 +288,7 @@ void GUIPanel::pack()
     default: packFreeLayout();
   }
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
     elements[t]->forceUpdate(update);
 }
 
@@ -302,21 +302,21 @@ void GUIPanel::packYAxisLayout()
 {
   computeWindowBounds();
 
-  std::vector<int> childrenHeights,
-              childrenWidths;
+  Vector<int> outerrenHeights,
+              outerrenWidths;
 
   size_t      t          = 0;
   int         height     = 0,
               xOffset    = 0,
               panelWidth = getWidth();
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
   {
-    const Tuple4i &childBounds = elements[t]->getWindowBounds();
-    childrenHeights.push_back(childBounds.w - childBounds.y + interval.y);
-    childrenWidths.push_back(childBounds.z - childBounds.x);
-    height       += childrenHeights[t];
-    panelWidth    = childrenWidths[t] > panelWidth ? childrenWidths[t] : panelWidth;
+    const Tuple4i &outerBounds = elements[t]->getWindowBounds();
+    outerrenHeights.Add(outerBounds.w - outerBounds.y + interval.y);
+    outerrenWidths.Add(outerBounds.z - outerBounds.x);
+    height       += outerrenHeights[t];
+    panelWidth    = outerrenWidths[t] > panelWidth ? outerrenWidths[t] : panelWidth;
   }
 
   dimensions.set(float(panelWidth), float(height));
@@ -331,14 +331,14 @@ void GUIPanel::packYAxisLayout()
   correctPosition();
   computeClippedBounds(windowBounds);
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
   {
-    xOffset = (layout == PL_YAXIS_CEN_LAYOUT) * (panelWidth - childrenWidths[t])/2;
+    xOffset = (layout == PL_YAXIS_CEN_LAYOUT) * (panelWidth - outerrenWidths[t])/2;
 
     elements[t]->setAnchorPoint(AT_CORNERLU);
     elements[t]->setPosition(float(interval.x + xOffset), float(height));
     elements[t]->computeWindowBounds();
-    height += childrenHeights[t];
+    height += outerrenHeights[t];
   }
 }
 
@@ -346,22 +346,22 @@ void GUIPanel::packXAxisLayout()
 {
   computeWindowBounds();
 
-  std::vector<int> childrenWidths,
-              childrenHeights;
+  Vector<int> outerrenWidths,
+              outerrenHeights;
   float       offset      = 0;
   size_t      t           = 0;
   int         height      = 0,
               width       = 0,
               panelHeight = windowBounds.w - windowBounds.y;
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
   {
-    const Tuple4i &childBounds = elements[t]->getWindowBounds();
-    childrenHeights.push_back(childBounds.w - childBounds.y);
-    childrenWidths.push_back (childBounds.z - childBounds.x + interval.x);
+    const Tuple4i &outerBounds = elements[t]->getWindowBounds();
+    outerrenHeights.Add(outerBounds.w - outerBounds.y);
+    outerrenWidths.Add (outerBounds.z - outerBounds.x + interval.x);
 
-    width       += childrenWidths[t];
-    height       = childBounds.w - childBounds.y;
+    width       += outerrenWidths[t];
+    height       = outerBounds.w - outerBounds.y;
     panelHeight  = height > panelHeight ? height : panelHeight;
   }
 
@@ -377,13 +377,13 @@ void GUIPanel::packXAxisLayout()
   correctPosition();
   computeClippedBounds(windowBounds);
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
   {
-    offset = clamp(float(panelHeight - childrenHeights[t])/2.0f + interval.y, 0.0f, 1000.0f);
+    offset = clamp(float(panelHeight - outerrenHeights[t])/2.0f + interval.y, 0.0f, 1000.0f);
     elements[t]->setAnchorPoint(AT_CORNERLU);
     elements[t]->setPosition(float(width), offset);
     elements[t]->computeWindowBounds();
-    width += childrenWidths[t];
+    width += outerrenWidths[t];
   }
 }
 
@@ -397,19 +397,19 @@ void GUIPanel::packFreeLayout()
   int     temp1     = 0,
           temp2     = 0;
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
   {
     elements[t]->forceUpdate(update);
-    const Tuple4i &childBounds = elements[t]->getWindowBounds();
+    const Tuple4i &outerBounds = elements[t]->getWindowBounds();
 
-    newBounds.x = (childBounds.x - clipSize) < newBounds.x ?
-                   childBounds.x - clipSize : newBounds.x;
-    newBounds.y = (childBounds.y - clipSize) < newBounds.y ?
-                   childBounds.y - clipSize : newBounds.y;
-    newBounds.z = (childBounds.z + clipSize) > newBounds.z ?
-                   childBounds.z + clipSize: newBounds.z;
-    newBounds.w = (childBounds.w + clipSize) > newBounds.w ?
-                   childBounds.w + clipSize : newBounds.w;
+    newBounds.x = (outerBounds.x - clipSize) < newBounds.x ?
+                   outerBounds.x - clipSize : newBounds.x;
+    newBounds.y = (outerBounds.y - clipSize) < newBounds.y ?
+                   outerBounds.y - clipSize : newBounds.y;
+    newBounds.z = (outerBounds.z + clipSize) > newBounds.z ?
+                   outerBounds.z + clipSize: newBounds.z;
+    newBounds.w = (outerBounds.w + clipSize) > newBounds.w ?
+                   outerBounds.w + clipSize : newBounds.w;
   }
 
   windowBounds = newBounds;
@@ -418,7 +418,7 @@ void GUIPanel::packFreeLayout()
   correctPosition();
   computeClippedBounds(windowBounds);
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
     elements[t]->computeWindowBounds();
 }
 
@@ -457,7 +457,7 @@ void GUIPanel::correctPosition()
   }
 
   if(update)
-    for(size_t t = 0; t < elements.size(); t++)
+    for(size_t t = 0; t < elements.GetCount(); t++)
     {
       elements[t]->forceUpdate(true);
       elements[t]->computeWindowBounds();
@@ -468,25 +468,25 @@ bool  GUIPanel::addWidget(GUIRectangle *element)
 {
   if(element)
   {
-    for(size_t t = 0; t < elements.size(); t++)
+    for(size_t t = 0; t < elements.GetCount(); t++)
       if(elements[t]->getCallbackString() == element->getCallbackString())
-        return Logger::writeErrorLog(std::string("Panel already has a child with CBS -> ")
+        return Logger::writeErrorLog(String("Panel already has a outer with CBS -> ")
                                      + element->getCallbackString());
-    elements.push_back(element);
+    elements.Add(element);
     element->setParent(this);
     return true;
   }
   return false;
 }
 
-void GUIPanel::clear()
+void GUIPanel::Clear()
 {
   parent        = NULL;
 
-  for(size_t t = 0; t < elements.size(); t++)
+  for(size_t t = 0; t < elements.GetCount(); t++)
     deleteObject(elements[t]);
 
-  elements.clear();
+  elements.Clear();
 }
 
 void GUIPanel::notify(GUIRectangle *element)
@@ -497,7 +497,7 @@ void GUIPanel::notify(GUIRectangle *element)
   switch(element->getWidgetType())
   {
     case WT_RADIO_BUTTON:
-      for(size_t t = 0; t < elements.size(); t++)
+      for(size_t t = 0; t < elements.GetCount(); t++)
         if(elements[t]->getWidgetType() == WT_RADIO_BUTTON &&
            elements[t]!= element)
         {
@@ -512,7 +512,7 @@ int  GUIPanel::getWidgetCountByType(int type)
 {
   int  counter =  0;
 
-  for(size_t t = 0; t < elements.size(); t++)
+  for(size_t t = 0; t < elements.GetCount(); t++)
     if(elements[t]->getWidgetType() == type)
       counter++;
 
@@ -523,7 +523,7 @@ int  GUIPanel::getTreeHeight()
 {
   int height = 1;
 
-  for(size_t t = 0; t < elements.size(); t++)
+  for(size_t t = 0; t < elements.GetCount(); t++)
    if(elements[t]->getWidgetType() == WT_PANEL)
      height += ((GUIPanel*)elements[t])->getTreeHeight();
   return height;
@@ -571,6 +571,6 @@ Widgets &GUIPanel::getWidgets()
 
 GUIPanel::~GUIPanel()
 {
-  clear();
+  Clear();
 }
 

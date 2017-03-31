@@ -24,11 +24,11 @@ void cSpacial::initialize(GLfloat pitch, GLfloat yaw, GLfloat roll,
    m_z         = z;
    m_scale     = scale;
    m_speed     = speed;
-   m_qcalc->clear();
+   m_qcalc->Clear();
    setPitch(pitch);
    setYaw(yaw);
    setRoll(roll);
-   m_qcalc->build_rotmatrix(m_rotmatrix);
+   m_qcalc->BuildRotationMatrix(m_rotmatrix);
 }
 
 
@@ -37,8 +37,8 @@ GLfloat cSpacial::getPitch()
 {
    GLfloat p, y, r;
 
-   getEulerAngles(p, y, r);
-   return(p);
+   GetEulerAngles(p, y, r);
+   return (p);
 }
 
 
@@ -46,8 +46,8 @@ GLfloat cSpacial::getYaw()
 {
    GLfloat p, y, r;
 
-   getEulerAngles(p, y, r);
-   return(y);
+   GetEulerAngles(p, y, r);
+   return (y);
 }
 
 
@@ -55,8 +55,8 @@ GLfloat cSpacial::getRoll()
 {
    GLfloat p, y, r;
 
-   getEulerAngles(p, y, r);
-   return(r);
+   GetEulerAngles(p, y, r);
+   return (r);
 }
 
 
@@ -64,12 +64,12 @@ void cSpacial::setPitch(GLfloat pitch)
 {
    GLfloat p, y, r, pr, s;
 
-   getEulerAngles(p, y, r);
+   GetEulerAngles(p, y, r);
    pr          = m_pitchRate;
    s           = m_speed;
    m_speed     = 0.0f;
    m_pitchRate = (pitch - p);
-   update();
+   Update();
    m_pitchRate = pr;
    m_speed     = s;
 }
@@ -79,12 +79,12 @@ void cSpacial::setYaw(GLfloat yaw)
 {
    GLfloat p, y, r, yr, s;
 
-   getEulerAngles(p, y, r);
+   GetEulerAngles(p, y, r);
    yr        = m_yawRate;
    s         = m_speed;
    m_speed   = 0.0f;
    m_yawRate = (yaw - y);
-   update();
+   Update();
    m_yawRate = yr;
    m_speed   = s;
 }
@@ -94,12 +94,12 @@ void cSpacial::setRoll(GLfloat roll)
 {
    GLfloat p, y, r, rr, s;
 
-   getEulerAngles(p, y, r);
+   GetEulerAngles(p, y, r);
    rr         = m_rollRate;
    s          = m_speed;
    m_speed    = 0.0f;
    m_rollRate = (roll - r);
-   update();
+   Update();
    m_rollRate = rr;
    m_speed    = s;
 }
@@ -131,31 +131,31 @@ void cSpacial::getForward(GLfloat *v)
 
 
 // Update rotation and translation state.
-void cSpacial::update()
+void cSpacial::Update()
 {
-   cQuaternion xq, yq, zq, q1, q2;
+   CQuaternion xq, yq, zq, q1, q2;
    GLfloat     v[3];
 
    v[0] = 1.0f;
    v[1] = 0.0f;
    v[2] = 0.0f;
-   xq.loadRotation(DegreesToRadians(m_pitchRate), v);
+   xq.LoadRotation(DegreesToRadians(m_pitchRate), v);
    v[0] = 0.0f;
    v[1] = 1.0f;
    v[2] = 0.0f;
-   yq.loadRotation(DegreesToRadians(m_yawRate), v);
-   m_qcalc->mult_quats(xq, yq, q1);
+   yq.LoadRotation(DegreesToRadians(m_yawRate), v);
+   m_qcalc->MulQuats(xq, yq, q1);
    v[0] = 0.0f;
    v[1] = 0.0f;
    v[2] = 1.0f;
-   zq.loadRotation(DegreesToRadians(m_rollRate), v);
-   m_qcalc->mult_quats(q1, zq, q2);
+   zq.LoadRotation(DegreesToRadians(m_rollRate), v);
+   m_qcalc->MulQuats(q1, zq, q2);
    q1.m_quat[0] = m_qcalc->m_quat[0];
    q1.m_quat[1] = m_qcalc->m_quat[1];
    q1.m_quat[2] = m_qcalc->m_quat[2];
    q1.m_quat[3] = m_qcalc->m_quat[3];
-   m_qcalc->mult_quats(q1, q2, *m_qcalc);
-   m_qcalc->build_rotmatrix(m_rotmatrix);
+   m_qcalc->MulQuats(q1, q2, *m_qcalc);
+   m_qcalc->BuildRotationMatrix(m_rotmatrix);
    v[0] = m_rotmatrix[2][0];
    v[1] = m_rotmatrix[2][1];
    v[2] = m_rotmatrix[2][2];
@@ -194,7 +194,7 @@ void cSpacial::getBillboard(GLfloat *target, GLfloat *rotation)
 // rotation[0-2]=axis, rotation[3]=angle
 void cSpacial::getBillboard(GLfloat *target, GLfloat *source, GLfloat *rotation)
 {
-   Vector  v1, v2, v3;
+   Vector3f  v1, v2, v3;
    GLfloat d;
 
    // Check for invalid condition.
@@ -246,7 +246,7 @@ void cSpacial::getModelTransform(GLfloat *matrix)
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    glTranslatef(m_x, m_y, m_z);
-   m_qcalc->build_rotmatrix(m_rotmatrix);
+   m_qcalc->BuildRotationMatrix(m_rotmatrix);
    glMultMatrixf(&m_rotmatrix[0][0]);
    glScalef(m_scale, m_scale, m_scale);
    glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
@@ -322,18 +322,18 @@ GLfloat cSpacial::pointDistance(GLfloat *p1, GLfloat *p2)
    dy *= dy;
    GLfloat dz = p1[2] - p2[2];
    dz *= dz;
-   return(sqrt(dx + dy + dz));
+   return (sqrt(dx + dy + dz));
 }
 
 
 // Clone spacial.
-cSpacial *cSpacial::clone()
+cSpacial *cSpacial::Clone()
 {
    int i, j;
 
    cSpacial *spacial = new cSpacial();
 
-   assert(spacial != NULL);
+   ASSERT(spacial != NULL);
 
    spacial->m_pitchRate = m_pitchRate;
    spacial->m_yawRate   = m_yawRate;
@@ -346,19 +346,19 @@ cSpacial *cSpacial::clone()
       }
    }
    delete spacial->m_qcalc;
-   spacial->m_qcalc = m_qcalc->clone();
-   assert(spacial->m_qcalc != NULL);
+   spacial->m_qcalc = m_qcalc->Clone();
+   ASSERT(spacial->m_qcalc != NULL);
    spacial->m_x     = m_x;
    spacial->m_y     = m_y;
    spacial->m_z     = m_z;
    spacial->m_scale = m_scale;
    spacial->m_speed = m_speed;
-   return(spacial);
+   return (spacial);
 }
 
 
 // Load.
-void cSpacial::load(FILE *fp)
+void cSpacial::Load(FILE *fp)
 {
    FREAD_FLOAT(&m_pitchRate, fp);
    FREAD_FLOAT(&m_yawRate, fp);
@@ -368,12 +368,12 @@ void cSpacial::load(FILE *fp)
    FREAD_FLOAT(&m_z, fp);
    FREAD_FLOAT(&m_scale, fp);
    FREAD_FLOAT(&m_speed, fp);
-   m_qcalc->load(fp);
+   m_qcalc->Load(fp);
 }
 
 
 // Save object.
-void cSpacial::save(FILE *fp)
+void cSpacial::Store(FILE *fp)
 {
    FWRITE_FLOAT(&m_pitchRate, fp);
    FWRITE_FLOAT(&m_yawRate, fp);
@@ -383,5 +383,5 @@ void cSpacial::save(FILE *fp)
    FWRITE_FLOAT(&m_z, fp);
    FWRITE_FLOAT(&m_scale, fp);
    FWRITE_FLOAT(&m_speed, fp);
-   m_qcalc->save(fp);
+   m_qcalc->Store(fp);
 }

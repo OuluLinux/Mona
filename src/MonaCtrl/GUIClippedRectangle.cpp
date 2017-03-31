@@ -44,23 +44,23 @@ bool GUIClippedRectangle::loadXMLClippedRectangleInfo(const TiXmlElement *elemen
   if(absolutePriority)
     texture.loadXMLSettings(absolutePriority);
 
-  for(const TiXmlElement *child = element->FirstChildElement();	
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();	
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    const char * value = child->Value();
+    const char * value = outer->Value();
 
     if(!value)
       continue;
 
     if(!strcmp(value, "TextureRectangle"))
-      setTextureRectangle(XMLArbiter::fillComponents4f(child, textureRectangle));
+      setTextureRectangle(XMLArbiter::fillComponents4f(outer, textureRectangle));
 
     if(!strcmp(value, "BordersColor"))
-      setBordersColor(XMLArbiter::fillComponents3f(child, bordersColor));
+      setBordersColor(XMLArbiter::fillComponents3f(outer, bordersColor));
  
     if(!strcmp(value, "BGColor"))
-      setBGColor(XMLArbiter::fillComponents4f(child, bgColor));
+      setBGColor(XMLArbiter::fillComponents4f(outer, bgColor));
   }
 
   return true;

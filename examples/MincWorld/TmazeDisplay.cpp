@@ -14,12 +14,12 @@ public class TmazeDisplay extends JPanel
    static final int START = 0;
    static final int GOAL  = 1;
 
-   // Dimensions.
+   // Sizes.
    static final int JUNCTION_SIZE             = 40;
    static final int VERTICAL_CONNECTOR_SIZE   = 40;
    static final int HORIZONTAL_CONNECTOR_SIZE = 160;
-   Dimension        minSize;
-   Dimension        mazeSize;
+   Size        minSize;
+   Size        mazeSize;
 
    // Font.
    Font font;
@@ -28,7 +28,7 @@ public class TmazeDisplay extends JPanel
    Vector<Tmaze> mazes;
 
    // Constructor.
-   public TmazeDisplay(Dimension minSize)
+   public TmazeDisplay(Size minSize)
    {
       this.minSize = minSize;
       font         = new Font("Courier", Font.PLAIN, 12);
@@ -36,7 +36,7 @@ public class TmazeDisplay extends JPanel
 
 
    // Load mazes.
-   public void load(Vector<Tmaze> mazes)
+   public void Load(Vector<Tmaze> mazes)
    {
       int   i, j, k, m, n;
       Tmaze maze;
@@ -46,14 +46,14 @@ public class TmazeDisplay extends JPanel
       this.mazes = mazes;
 
       // Determine maze display size.
-      mazeSize = new Dimension(HORIZONTAL_CONNECTOR_SIZE, VERTICAL_CONNECTOR_SIZE);
+      mazeSize = new Size(HORIZONTAL_CONNECTOR_SIZE, VERTICAL_CONNECTOR_SIZE);
       j        = (HORIZONTAL_CONNECTOR_SIZE / 2) + (JUNCTION_SIZE / 2);
-      for (i = 0; i < mazes.size(); i++)
+      for (i = 0; i < mazes.GetCount(); i++)
       {
-         maze = mazes.get(i);
-         for (k = m = n = 0; k < maze.path.size(); k++)
+         maze = mazes.Get(i);
+         for (k = m = n = 0; k < maze.path.GetCount(); k++)
          {
-            junction = maze.path.get(k);
+            junction = maze.path.Get(k);
             if (junction.mark == GOAL) { break; }
             if (junction.direction == 0) { m--; } else{ m++; }
             if (n < Math.abs(m)) { n = Math.abs(m); }
@@ -66,10 +66,10 @@ public class TmazeDisplay extends JPanel
          mazeSize.width = minSize.width;
       }
       j = VERTICAL_CONNECTOR_SIZE + (JUNCTION_SIZE / 2);
-      for (i = 0; i < mazes.size(); i++)
+      for (i = 0; i < mazes.GetCount(); i++)
       {
-         maze             = mazes.get(i);
-         mazeSize.height += (maze.path.size() * j) + (VERTICAL_CONNECTOR_SIZE * 2);
+         maze             = mazes.Get(i);
+         mazeSize.height += (maze.path.GetCount() * j) + (VERTICAL_CONNECTOR_SIZE * 2);
       }
       if (mazeSize.height < minSize.height)
       {
@@ -98,13 +98,13 @@ public class TmazeDisplay extends JPanel
       g.setColor(Color.black);
       x = mazeSize.width / 2;
       y = VERTICAL_CONNECTOR_SIZE + (JUNCTION_SIZE / 2);
-      for (i = 0; i < mazes.size(); i++)
+      for (i = 0; i < mazes.GetCount(); i++)
       {
          x    = mazeSize.width / 2;
-         maze = mazes.get(i);
-         for (j = 0; j < maze.path.size(); j++)
+         maze = mazes.Get(i);
+         for (j = 0; j < maze.path.GetCount(); j++)
          {
-            junction = maze.path.get(j);
+            junction = maze.path.Get(j);
             if (junction.highlight)
             {
                if (junction.choice != -1)
@@ -167,9 +167,9 @@ public class TmazeDisplay extends JPanel
                }
                if (junction.annotations != null)
                {
-                  for (k = 0; k < junction.annotations.size(); k++)
+                  for (k = 0; k < junction.annotations.GetCount(); k++)
                   {
-                     g.drawString(junction.annotations.get(k),
+                     g.drawString(junction.annotations.Get(k),
                                   (x + 4) - (HORIZONTAL_CONNECTOR_SIZE / 2), ((k + 1) * 15) + y);
                   }
                }

@@ -1,69 +1,50 @@
-// For conditions of distribution and use, see copyright notice in muzz.hpp
-
-// Mushroom.
-
 #ifndef MUSHROOM_HPP
 #define MUSHROOM_HPP
 
-#ifdef WIN32
-#include <windows.h>
-#endif
+
 #include <MonaCtrl/MonaCtrl.h>
 #include "BlockTerrain.h"
 
-class Mushroom : public BaseObject
-{
+class Mushroom : public BaseObject {
 public:
 
-   // Parameters:
+	static double width, height;
 
-   // Dimensions.
-   static GLfloat WIDTH, HEIGHT;
+	Mushroom(Color& color, BlockTerrain& terrain);
+	~Mushroom();
 
-   // Constructor/destructor.
-   Mushroom(float *color, BlockTerrain *terrain, Random *randomizer);
-   ~Mushroom();
+	bool IsAlive() {return m_alive;}
+	void SetAlive(bool alive) {m_alive = alive;}
 
-   // Is mushroom alive?
-   bool isAlive() { return(m_alive); }
-   void setAlive(bool alive) { m_alive = alive; }
+	void GetColor(Color& color);
+	void SetColor(const Color& color);
 
-   // Color.
-   void getColor(float *color);
-   void setColor(float *color);
+	void Place(int placement_seed);
+	void Place(int x, int y);
+	void Place(double x, double y);
+	void Place();
 
-   // Place mushroom on terrain.
-   void place(RANDOM placementSeed);
-   void place(int x, int y);
-   void place(GLfloat x, GLfloat y);
-   void place();
+	inline double GetPlaceX() {return (m_place_position[0]);}
+	inline double GetPlaceY() {return (m_place_position[2]);}
 
-   inline GLfloat getPlaceX() { return(m_placePosition[0]); }
-   inline GLfloat getPlaceY() { return(m_placePosition[2]); }
-
-   // Draw.
-   void draw();
-
-   // Load mushroom.
-   void load(char *filename);
-   void load(FILE *);
-
-   // Save mushroom.
-   void save(char *filename);
-   void save(FILE *);
+	void Draw();
+	void Load(String filename);
+	void Load(Stream& s);
+	void Store(String filename);
+	void Store(Stream& s);
 
 private:
 
-   bool         m_alive;
-   float        m_color[3];
-   GLfloat      m_placePosition[3];
-   BlockTerrain *m_terrain;
-   Random       *m_randomizer;
+	bool          m_alive;
+	Color         m_color;
+	double        m_place_position[3];
+	BlockTerrain* m_terrain;
+	//Random*       m_randomizer;
 
-   // OpenGL display for drawing.
-   GLuint display;
+	// OpenGL display for drawing.
+	/*GLuint display;
 
-   // Components.
-   GLUquadricObj *stem, *cap, *capBorder;
+	// Components.
+	GLUquadricObj* stem, *cap, *capBorder;*/
 };
 #endif

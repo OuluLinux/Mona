@@ -1,3 +1,4 @@
+#if 0
 // Load and store functions.
 
 #ifndef __FILEIO__
@@ -74,4 +75,5 @@ int myfreadBytes(unsigned char *, int size, FILE *);
 int myfwriteBytes(unsigned char *, int size, FILE *);
 int myfreadString(char *, int size, FILE *);
 int myfwriteString(char *, int size, FILE *);
+#endif
 #endif

@@ -8,10 +8,10 @@ import java.awt.event.*;
 public class GameOfLifeCanvas extends Canvas
 {
    // Game of life.
-   GameOfLife gameOfLife;
+   GameOfLife game_of_life;
 
    // Buffered display.
-   private Dimension canvasSize;
+   private Size canvasSize;
    private Graphics  graphics;
    private Image     image;
    private Graphics  imageGraphics;
@@ -31,9 +31,9 @@ public class GameOfLifeCanvas extends Canvas
    private int lastY = -1;
 
    // Constructor.
-   public GameOfLifeCanvas(GameOfLife gameOfLife, Dimension canvasSize)
+   public GameOfLifeCanvas(GameOfLife game_of_life, Size canvasSize)
    {
-      this.gameOfLife = gameOfLife;
+      this.game_of_life = game_of_life;
 
       // Configure canvas.
       this.canvasSize = canvasSize;
@@ -75,14 +75,14 @@ public class GameOfLifeCanvas extends Canvas
       imageGraphics.fillRect(0, 0, canvasSize.width, canvasSize.height);
 
       // Draw grid.
-      synchronized (gameOfLife.lock)
+      synchronized (game_of_life.lock)
       {
-         cellWidth  = (double)canvasSize.width / (double)gameOfLife.size.width;
-         cellHeight = (double)canvasSize.height / (double)gameOfLife.size.height;
+         cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
+         cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
          imageGraphics.setColor(Color.black);
          y2 = canvasSize.height;
 
-         for (x = 1, x2 = (int)cellWidth; x < gameOfLife.size.width;
+         for (x = 1, x2 = (int)cellWidth; x < game_of_life.size.width;
               x++, x2 = (int)(cellWidth * (double)x))
          {
             imageGraphics.drawLine(x2, 0, x2, y2);
@@ -90,24 +90,24 @@ public class GameOfLifeCanvas extends Canvas
 
          x2 = canvasSize.width;
 
-         for (y = 1, y2 = (int)cellHeight; y < gameOfLife.size.height;
+         for (y = 1, y2 = (int)cellHeight; y < game_of_life.size.height;
               y++, y2 = (int)(cellHeight * (double)y))
          {
             imageGraphics.drawLine(0, y2, x2, y2);
          }
 
          // Draw cells.
-         for (x = x2 = 0; x < gameOfLife.size.width;
+         for (x = x2 = 0; x < game_of_life.size.width;
               x++, x2 = (int)(cellWidth * (double)x))
          {
             for (y = 0, y2 = canvasSize.height - (int)cellHeight;
-                 y < gameOfLife.size.height;
+                 y < game_of_life.size.height;
                  y++, y2 = (int)(cellHeight *
-                                 (double)(gameOfLife.size.height - (y + 1))))
+                                 (double)(game_of_life.size.height - (y + 1))))
             {
-               if (gameOfLife.cells[x][y] > 0)
+               if (game_of_life.cells[x][y] > 0)
                {
-                  switch (gameOfLife.cells[x][y])
+                  switch (game_of_life.cells[x][y])
                   {
                   case 2:
                      imageGraphics.setColor(Color.green);
@@ -167,32 +167,32 @@ public class GameOfLifeCanvas extends Canvas
       {
          int    x;
          int    y;
-         double cellWidth  = (double)canvasSize.width / (double)gameOfLife.size.width;
-         double cellHeight = (double)canvasSize.height / (double)gameOfLife.size.height;
+         double cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
+         double cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
 
          x = (int)((double)evt.getX() / cellWidth);
-         y = gameOfLife.size.height - (int)((double)evt.getY() / cellHeight) - 1;
+         y = game_of_life.size.height - (int)((double)evt.getY() / cellHeight) - 1;
 
-         if ((x >= 0) && (x < gameOfLife.size.width) &&
-             (y >= 0) && (y < gameOfLife.size.height))
+         if ((x >= 0) && (x < game_of_life.size.width) &&
+             (y >= 0) && (y < game_of_life.size.height))
          {
             lastX = x;
             lastY = y;
 
-            synchronized (gameOfLife.lock)
+            synchronized (game_of_life.lock)
             {
-               switch (gameOfLife.cells[x][y])
+               switch (game_of_life.cells[x][y])
                {
                case 0:
-                  gameOfLife.cells[x][y] = GameOfLife.BLUE_CELL_COLOR_VALUE;
+                  game_of_life.cells[x][y] = GameOfLife.BLUE_CELL_COLOR_VALUE;
                   break;
 
                case GameOfLife.BLUE_CELL_COLOR_VALUE:
-                  gameOfLife.cells[x][y] = GameOfLife.GREEN_CELL_COLOR_VALUE;
+                  game_of_life.cells[x][y] = GameOfLife.GREEN_CELL_COLOR_VALUE;
                   break;
 
                case GameOfLife.GREEN_CELL_COLOR_VALUE:
-                  gameOfLife.cells[x][y] = 0;
+                  game_of_life.cells[x][y] = 0;
                   break;
                }
             }
@@ -208,34 +208,34 @@ public class GameOfLifeCanvas extends Canvas
       {
          int    x;
          int    y;
-         double cellWidth  = (double)canvasSize.width / (double)gameOfLife.size.width;
-         double cellHeight = (double)canvasSize.height / (double)gameOfLife.size.height;
+         double cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
+         double cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
 
          x = (int)((double)evt.getX() / cellWidth);
-         y = gameOfLife.size.height - (int)((double)evt.getY() / cellHeight) - 1;
+         y = game_of_life.size.height - (int)((double)evt.getY() / cellHeight) - 1;
 
-         if ((x >= 0) && (x < gameOfLife.size.width) &&
-             (y >= 0) && (y < gameOfLife.size.height))
+         if ((x >= 0) && (x < game_of_life.size.width) &&
+             (y >= 0) && (y < game_of_life.size.height))
          {
             if ((x != lastX) || (y != lastY))
             {
                lastX = x;
                lastY = y;
 
-               synchronized (gameOfLife.lock)
+               synchronized (game_of_life.lock)
                {
-                  switch (gameOfLife.cells[x][y])
+                  switch (game_of_life.cells[x][y])
                   {
                   case 0:
-                     gameOfLife.cells[x][y] = GameOfLife.BLUE_CELL_COLOR_VALUE;
+                     game_of_life.cells[x][y] = GameOfLife.BLUE_CELL_COLOR_VALUE;
                      break;
 
                   case GameOfLife.BLUE_CELL_COLOR_VALUE:
-                     gameOfLife.cells[x][y] = GameOfLife.GREEN_CELL_COLOR_VALUE;
+                     game_of_life.cells[x][y] = GameOfLife.GREEN_CELL_COLOR_VALUE;
                      break;
 
                   case GameOfLife.GREEN_CELL_COLOR_VALUE:
-                     gameOfLife.cells[x][y] = 0;
+                     game_of_life.cells[x][y] = 0;
                      break;
                   }
                }

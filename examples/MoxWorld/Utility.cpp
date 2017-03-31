@@ -34,7 +34,7 @@ public abstract class Utility
          throw (new IOException("Invalid integer value " + s));
       }
 
-      return(value);
+      return (value);
    }
 
 
@@ -67,7 +67,7 @@ public abstract class Utility
          throw (new IOException("Invalid float value " + s));
       }
 
-      return(value);
+      return (value);
    }
 
 
@@ -100,7 +100,7 @@ public abstract class Utility
          throw (new IOException("Invalid double value " + s));
       }
 
-      return(value);
+      return (value);
    }
 
 

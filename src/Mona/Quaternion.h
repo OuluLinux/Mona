@@ -1,80 +1,54 @@
-//***************************************************************************//
-//* File Name: quaternion.h                                               *//
-//* Author:    Tom Portegys, portegys@ilstu.edu                             *//
-//* Date Made: 07/25/02                                                     *//
-//* File Desc: Class declaration representing a quaternion.                 *//
-//* Rev. Date:                                                              *//
-//* Rev. Desc:                                                              *//
-//*                                                                         *//
-//***************************************************************************//
-
 #ifndef __QUATERNION_HPP__
 #define __QUATERNION_HPP__
 
 #include "Vector.h"
 
-class cQuaternion
+class CQuaternion
 {
 public:
 
    // Quaternion.
-   float m_quat[4];
+   double m_quat[4];
 
    // Constructors.
-   cQuaternion();
-   cQuaternion(float quat[4]);
+   CQuaternion();
+   CQuaternion(double quat[4]);
 
    // Initialize.
-   void init(float quat[4]);
+   void Init(double quat[4]);
 
    // Clear.
-   void clear();
+   void Clear();
 
-   // Vector operations.
-   void vzero(float *);
-   void vset(float *, float, float, float);
-   void vsub(const float *, const float *, float *);
-   void vcopy(const float *, float *);
-   void vcross(const float *, const float *, float *);
-   float vlength(const float *);
-   void vscale(float *, float);
-   void vnormal(float *);
-   float vdot(const float *, const float *);
-   void vadd(const float *, const float *, float *);
+   // Vector3f operations.
+   void VecZero(double *);
+   void VecSet(double *, double, double, double);
+   void VecSub(const double *, const double *, double *);
+   void VecCopy(const double *, double *);
+   void VecCross(const double *, const double *, double *);
+   double VecLength(const double *);
+   void VecScale(double *, double);
+   void VecNormal(double *);
+   double VecDot(const double *, const double *);
+   void VecAdd(const double *, const double *, double *);
 
-   // Add quaternions.
-   void add_quats(cQuaternion& q1, cQuaternion& q2, cQuaternion& dest);
-
-   // Multiply quaternions.
-   void mult_quats(cQuaternion& q1, cQuaternion& q2, cQuaternion& dest);
-
-   // Normalize a quaternion.
-   void normalize_quat();
-
-   // Build a rotation matrix given a quaternion rotation.
-   void build_rotmatrix(float m[4][4]);
-
-   // Load an axis-angle rotation into quaternion.
-   void loadRotation(float angle, float *axis);
-
-   // Merge an axis-angle rotation into quaternion.
-   void mergeRotation(float angle, float *axis);
-
-   // Make quaternion from Euler angles.
-   void makeQFromEulerAngles(float pitch, float yaw, float roll);
-
-   // Get Euler angles from quaternion.
-   void getEulerAngles(float& pitch, float& yaw, float& roll);
-
-   // Clone.
-   cQuaternion *clone();
+   // Quaternion operations
+   void AddQuats(CQuaternion& q1, CQuaternion& q2, CQuaternion& dest);
+   void MulQuats(CQuaternion& q1, CQuaternion& q2, CQuaternion& dest);
+   void NormalizeQuat();
+   void BuildRotationMatrix(double m[4][4]); // Build a rotation matrix given a quaternion rotation.
+   void LoadRotation(double angle, double *axis); // Load an axis-angle rotation into quaternion.
+   void MergeRotation(double angle, double *axis); // Merge an axis-angle rotation into quaternion.
+   void MakeQFromEulerAngles(double pitch, double yaw, double roll); // Make quaternion from Euler angles.
+   void GetEulerAngles(double& pitch, double& yaw, double& roll); // Get Euler angles from quaternion.
+   CQuaternion *Clone(); // Clone.
 
    // Load and save.
-   void load(FILE *fp);
-   void save(FILE *fp);
+   void Load(FILE *fp);
+   void Store(FILE *fp);
 
 private:
 
-   int m_normalCount;                             // Normalization counter.
+   int m_normal_count;                             // Normalization counter.
 };
 #endif

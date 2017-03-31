@@ -1,9 +1,9 @@
 #include "EasyGL.h"
 
-GUIButton::GUIButton(const std::string &callback) :  GUIAlphaElement(callback), GUIClippedRectangle()
+GUIButton::GUIButton(const String &callback) :  GUIAlphaElement(callback), GUIClippedRectangle()
 {
   setBordersColor(0.0f, 0.0f, 0.0f);
-  setDimensions(40, 22);
+  setSizes(40, 22);
   setPosition(0.5, 0.5);
   setColor(100, 150, 190);
 
@@ -51,7 +51,7 @@ const void GUIButton::computeWindowBounds()
   if(parent && update)
   {
     GUIRectangle::computeWindowBounds();
-    label.computeDimensions();
+    label.computeSizes();
 
     int width  = windowBounds.z - windowBounds.x,
         height = windowBounds.w - windowBounds.y;

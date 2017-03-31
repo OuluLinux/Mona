@@ -1,6 +1,6 @@
 #include "EasyGL.h"
 
-GUIAlphaElement::GUIAlphaElement(const std::string &callback) :  GUIRectangle(callback)
+GUIAlphaElement::GUIAlphaElement(const String &callback) :  GUIRectangle(callback)
 {
   setColor(225.0f, 225.0f, 225.0f);
   alphaFadeScale =     1.0f;
@@ -16,19 +16,19 @@ bool GUIAlphaElement::loadXMLSettings(const TiXmlElement *element)
   setAlphaFadeScale(XMLArbiter::fillComponents1f(element, "alphaFadeScale", alphaFadeScale));
   setMinAlpha(XMLArbiter::fillComponents1f(element, "minAlpha", minAlpha));
 
-  for(const TiXmlElement *child = element->FirstChildElement();	
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();	
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    const char * value = child->Value();
+    const char * value = outer->Value();
 
     if(value)
     {
       if(!strcmp(value, "Color"))
-        XMLArbiter::fillComponents4f(child, color);
+        XMLArbiter::fillComponents4f(outer, color);
  
       if(!strcmp(value, "Text"))
-        label.loadXMLSettings(child);
+        label.loadXMLSettings(outer);
     }
   }
 
@@ -58,7 +58,7 @@ const Tuple4f &GUIAlphaElement::getColor()
   return color;
 }
 
-void  GUIAlphaElement::setLabelString(const std::string &labelArg)
+void  GUIAlphaElement::setLabelString(const String &labelArg)
 {
   label = labelArg;
 }
@@ -68,7 +68,7 @@ GUIText * GUIAlphaElement::getLabel()
   return &label;
 }
 
-const std::string &GUIAlphaElement::getLabelString()
+const String &GUIAlphaElement::getLabelString()
 {
   return label.getString();
 }

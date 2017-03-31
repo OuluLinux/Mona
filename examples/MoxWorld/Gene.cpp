@@ -2,19 +2,17 @@
  * Gene.
  */
 
-import java.util.*;
-import java.io.*;
 
 public class Gene
 {
    // Mutation rate.
-   double mutationRate;
+   double mutation_rate;
 
    // Probability of random mutation.
-   double randomMutationRate;
+   double random_mutation_rate;
 
    // Random numbers.
-   int    randomSeed;
+   int    random_seed;
    Random randomizer;
 
    // Value types.
@@ -31,22 +29,22 @@ public class Gene
    double     dvalue, dmin, dmax, ddelta;
 
    // Constructors.
-   Gene(double mutationRate, double randomMutationRate, int randomSeed)
+   Gene(double mutation_rate, double random_mutation_rate, int random_seed)
    {
       type                    = VALUE_TYPE.DOUBLE_VALUE;
       name                    = null;
       ivalue                  = imin = imax = idelta = 0;
       fvalue                  = fmin = fmax = fdelta = 0.0f;
       dvalue                  = dmin = dmax = ddelta = 0.0;
-      this.mutationRate       = mutationRate;
-      this.randomMutationRate = randomMutationRate;
-      this.randomSeed         = randomSeed;
-      randomizer              = new Random(randomSeed);
+      this.mutation_rate       = mutation_rate;
+      this.random_mutation_rate = random_mutation_rate;
+      this.random_seed         = random_seed;
+      randomizer              = new Random(random_seed);
    }
 
 
    Gene(String name, int value, int min, int max, int delta,
-        double mutationRate, double randomMutationRate, int randomSeed)
+        double mutation_rate, double random_mutation_rate, int random_seed)
    {
       type                    = VALUE_TYPE.INTEGER_VALUE;
       this.name               = new String(name);
@@ -57,15 +55,15 @@ public class Gene
       imin                    = min;
       imax                    = max;
       idelta                  = delta;
-      this.mutationRate       = mutationRate;
-      this.randomMutationRate = randomMutationRate;
-      this.randomSeed         = randomSeed;
-      randomizer              = new Random(randomSeed);
+      this.mutation_rate       = mutation_rate;
+      this.random_mutation_rate = random_mutation_rate;
+      this.random_seed         = random_seed;
+      randomizer              = new Random(random_seed);
    }
 
 
    Gene(String name, float value, float min, float max, float delta,
-        double mutationRate, double randomMutationRate, int randomSeed)
+        double mutation_rate, double random_mutation_rate, int random_seed)
    {
       type                    = VALUE_TYPE.FLOAT_VALUE;
       this.name               = new String(name);
@@ -76,15 +74,15 @@ public class Gene
       fmin                    = min;
       fmax                    = max;
       fdelta                  = delta;
-      this.mutationRate       = mutationRate;
-      this.randomMutationRate = randomMutationRate;
-      this.randomSeed         = randomSeed;
-      randomizer              = new Random(randomSeed);
+      this.mutation_rate       = mutation_rate;
+      this.random_mutation_rate = random_mutation_rate;
+      this.random_seed         = random_seed;
+      randomizer              = new Random(random_seed);
    }
 
 
    Gene(String name, double value, double min, double max, double delta,
-        double mutationRate, double randomMutationRate, int randomSeed)
+        double mutation_rate, double random_mutation_rate, int random_seed)
    {
       type                    = VALUE_TYPE.DOUBLE_VALUE;
       this.name               = new String(name);
@@ -95,21 +93,21 @@ public class Gene
       dmin                    = min;
       dmax                    = max;
       ddelta                  = delta;
-      this.mutationRate       = mutationRate;
-      this.randomMutationRate = randomMutationRate;
-      this.randomSeed         = randomSeed;
-      randomizer              = new Random(randomSeed);
+      this.mutation_rate       = mutation_rate;
+      this.random_mutation_rate = random_mutation_rate;
+      this.random_seed         = random_seed;
+      randomizer              = new Random(random_seed);
    }
 
 
    // Mutate gene.
-   void mutate()
+   void Mutate()
    {
       int    i;
       float  f;
       double d;
 
-      if (randomizer.nextDouble() > mutationRate)
+      if (randomizer.nextDouble() > mutation_rate)
       {
          return;
       }
@@ -117,7 +115,7 @@ public class Gene
       switch (type)
       {
       case INTEGER_VALUE:
-         if (randomizer.nextDouble() <= randomMutationRate)
+         if (randomizer.nextDouble() <= random_mutation_rate)
          {
             i = imax - imin;
             if (i > 0)
@@ -147,7 +145,7 @@ public class Gene
          break;
 
       case FLOAT_VALUE:
-         if (randomizer.nextDouble() <= randomMutationRate)
+         if (randomizer.nextDouble() <= random_mutation_rate)
          {
             fvalue = (randomizer.nextFloat() * (fmax - fmin)) + fmin;
          }
@@ -169,7 +167,7 @@ public class Gene
          break;
 
       case DOUBLE_VALUE:
-         if (randomizer.nextDouble() <= randomMutationRate)
+         if (randomizer.nextDouble() <= random_mutation_rate)
          {
             dvalue = (randomizer.nextDouble() * (dmax - dmin)) + dmin;
          }
@@ -194,7 +192,7 @@ public class Gene
 
 
    // Copy gene value.
-   void copyValue(Gene from)
+   void CopyValue(Gene from)
    {
       switch (type)
       {
@@ -214,7 +212,7 @@ public class Gene
 
 
    // Load value.
-   void loadValue(DataInputStream reader) throws IOException
+   void LoadValue(DataInputStream reader) throws IOException
    {
       int itype = Utility.loadInt(reader);
 
@@ -236,7 +234,7 @@ public class Gene
 
 
    // Save value.
-   void saveValue(PrintWriter writer) throws IOException
+   void SaveValue(PrintWriter writer) throws IOException
    {
       switch (type)
       {
@@ -260,7 +258,7 @@ public class Gene
 
 
    // Print gene.
-   void print()
+   void Print()
    {
       switch (type)
       {

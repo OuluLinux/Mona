@@ -27,7 +27,7 @@ int DISCRIMINATION_SUCCESS_RUNS = 10;
 TmazeGrammar *MazeGrammar;
 
 // T-mazes.
-vector<Tmaze *> GeneralizationMazes;
+Vector<Tmaze *> GeneralizationMazes;
 Tmaze           *DiscriminationMaze;
 
 // LENS examples.
@@ -41,7 +41,7 @@ char *Usage[] =
    (char *)"minc_world\n",
    (char *)"      -numMazeMarks <number of maze marks (must be >= 2)>\n",
    (char *)"      -numMazes <number of T-mazes>\n",
-   (char *)"      -randomSeed <generation seed>\n",
+   (char *)"      -random_seed <generation seed>\n",
    (char *)"      [-generalizationRuns <number of generalization runs>]\n",
    (char *)"      [-discriminationRuns <number of discrimination runs>]\n",
    (char *)"      -resultRuns <number of result runs>\n",
@@ -80,13 +80,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          NumMazeMarks = atoi(argv[i]);
          if (NumMazeMarks < 2)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -97,24 +97,24 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          NumMazes = atoi(argv[i]);
          if (NumMazes < 1)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
 
-      if (strcmp(argv[i], "-randomSeed") == 0)
+      if (strcmp(argv[i], "-random_seed") == 0)
       {
          i++;
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          RandomSeed = atoi(argv[i]);
          continue;
@@ -126,13 +126,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          GeneralizationRuns = atoi(argv[i]);
          if (GeneralizationRuns < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -143,13 +143,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          DiscriminationRuns = atoi(argv[i]);
          if (DiscriminationRuns < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -160,33 +160,33 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          ResultRuns = atoi(argv[i]);
          if (ResultRuns < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
 
       printUsage();
-      return(1);
+      return (1);
    }
 
    if ((NumMazeMarks == -1) || (NumMazes == -1) ||
        (RandomSeed == INVALID_RANDOM) || (ResultRuns == -1))
    {
       printUsage();
-      return(1);
+      return (1);
    }
    else
    {
       printf("Parameters:\n");
       printf("numMazeMarks=%d\n", NumMazeMarks);
       printf("numMazes=%d\n", NumMazes);
-      printf("randomSeed=%lu\n", RandomSeed);
+      printf("random_seed=%lu\n", RandomSeed);
       printf("generalizationRuns=%d\n", GeneralizationRuns);
       printf("discriminationRuns=%d\n", DiscriminationRuns);
       printf("resultRuns=%d\n", ResultRuns);
@@ -194,35 +194,35 @@ main(int argc, char *argv[])
 
    // Get random numbers.
    randomizer = new Random(RandomSeed);
-   assert(randomizer != NULL);
+   ASSERT(randomizer != NULL);
 
    // Generate mazes.
    MazeGrammar = new TmazeGrammar(RandomSeed, NumMazeMarks);
-   assert(MazeGrammar != NULL);
-   for (i = 0; i < (NumMazes * 100) && (int)GeneralizationMazes.size() < NumMazes; i++)
+   ASSERT(MazeGrammar != NULL);
+   for (i = 0; i < (NumMazes * 100) && (int)GeneralizationMazes.GetCount() < NumMazes; i++)
    {
       maze = MazeGrammar->generateMaze();
-      assert(maze != NULL);
-      for (j = 0; j < (int)GeneralizationMazes.size(); j++)
+      ASSERT(maze != NULL);
+      for (j = 0; j < (int)GeneralizationMazes.GetCount(); j++)
       {
-         if (GeneralizationMazes[j]->isDuplicate(maze))
+         if (GeneralizationMazes[j]->IsDuplicate(maze))
          {
             break;
          }
       }
-      if (j == (int)GeneralizationMazes.size())
+      if (j == (int)GeneralizationMazes.GetCount())
       {
-         GeneralizationMazes.push_back(maze);
+         GeneralizationMazes.Add(maze);
       }
       else
       {
          delete maze;
       }
    }
-   if ((int)GeneralizationMazes.size() < NumMazes)
+   if ((int)GeneralizationMazes.GetCount() < NumMazes)
    {
       fprintf(stderr, "Cannot create %d unique files\n", NumMazes);
-      return(1);
+      return (1);
    }
 
    // Create generalization example file.
@@ -235,26 +235,26 @@ main(int argc, char *argv[])
    if ((fp = fopen(GeneralizationFileName, "w")) == NULL)
    {
       fprintf(stderr, "Cannot create generalization example file %s\n", GeneralizationFileName);
-      return(1);
+      return (1);
    }
    intervals = 0;
    for (i = 0; i < NumMazes; i++)
    {
       maze = GeneralizationMazes[i];
-      if (intervals < (int)maze->path.size())
+      if (intervals < (int)maze->path.GetCount())
       {
-         intervals = (int)maze->path.size();
+         intervals = (int)maze->path.GetCount();
       }
       printf("name: { ");
       fprintf(fp, "name: { ");
-      for (j = 0; j < (int)maze->path.size(); j++)
+      for (j = 0; j < (int)maze->path.GetCount(); j++)
       {
          printf("%d ", maze->path[j].mark);
          fprintf(fp, "%d ", maze->path[j].mark);
       }
-      printf("} %d\n", (int)maze->path.size());
-      fprintf(fp, "} %d\n", (int)maze->path.size());
-      for (j = 0; j < (int)maze->path.size(); j++)
+      printf("} %d\n", (int)maze->path.GetCount());
+      fprintf(fp, "} %d\n", (int)maze->path.GetCount());
+      for (j = 0; j < (int)maze->path.GetCount(); j++)
       {
          printf("I:");
          fprintf(fp, "I:");
@@ -284,7 +284,7 @@ main(int argc, char *argv[])
             fprintf(fp, "1 0");
          }
          printf(" P: %f %f", maze->path[j].probability, 1.0 - maze->path[j].probability);
-         if (j < (int)maze->path.size() - 1)
+         if (j < (int)maze->path.GetCount() - 1)
          {
             printf("\n");
             fprintf(fp, "\n");
@@ -309,18 +309,18 @@ main(int argc, char *argv[])
    if ((fp = fopen(DiscriminationFileName, "w")) == NULL)
    {
       fprintf(stderr, "Cannot create discrimination example file %s\n", DiscriminationFileName);
-      return(1);
+      return (1);
    }
    printf("name: { ");
    fprintf(fp, "name: { ");
-   for (i = 0; i < (int)maze->path.size(); i++)
+   for (i = 0; i < (int)maze->path.GetCount(); i++)
    {
       printf("%d ", maze->path[i].mark);
       fprintf(fp, "%d ", maze->path[i].mark);
    }
-   printf("} %d\n", (int)maze->path.size());
-   fprintf(fp, "} %d\n", (int)maze->path.size());
-   for (i = 0; i < (int)maze->path.size(); i++)
+   printf("} %d\n", (int)maze->path.GetCount());
+   fprintf(fp, "} %d\n", (int)maze->path.GetCount());
+   for (i = 0; i < (int)maze->path.GetCount(); i++)
    {
       printf("I:");
       fprintf(fp, "I:");
@@ -350,7 +350,7 @@ main(int argc, char *argv[])
          fprintf(fp, "1 0");
       }
       printf(" P: %f %f", maze->path[i].probability, 1.0 - maze->path[i].probability);
-      if (i < (int)maze->path.size() - 1)
+      if (i < (int)maze->path.GetCount() - 1)
       {
          printf("\n");
          fprintf(fp, "\n");
@@ -367,7 +367,7 @@ main(int argc, char *argv[])
    if (startLens(argv[0]))
    {
       fprintf(stderr, "Lens failed to start\n");
-      return(1);
+      return (1);
    }
 
    // Load maze examples.
@@ -387,7 +387,7 @@ main(int argc, char *argv[])
 
    // Create minc.
    Minc *minc = new Minc(NumMazeMarks, intervals, RandomSeed);
-   assert(minc != NULL);
+   ASSERT(minc != NULL);
 
    // Generalization runs.
    if (GeneralizationRuns > 0)
@@ -398,7 +398,7 @@ main(int argc, char *argv[])
    // Discrimination runs.
    if (DiscriminationRuns > 0)
    {
-      Minc::startTick = randomizer->RAND_CHOICE((int)DiscriminationMaze->path.size());
+      Minc::startTick = randomizer->RAND_CHOICE((int)DiscriminationMaze->path.GetCount());
       Minc::tickCount = -1;
       for (i = 0; i < DiscriminationRuns; i++)
       {
@@ -431,11 +431,11 @@ main(int argc, char *argv[])
       for (i = j = 0; i < NumMazes; i++)
       {
          maze = GeneralizationMazes[i];
-         j   += (int)maze->path.size();
+         j   += (int)maze->path.GetCount();
       }
       printf("; average maze path length=%f; discrimination maze path length=%d",
-             (float)j / (float)NumMazes, (int)DiscriminationMaze->path.size());
+             (float)j / (float)NumMazes, (int)DiscriminationMaze->path.GetCount());
    }
    printf("\n");
-   return(0);
+   return (0);
 }

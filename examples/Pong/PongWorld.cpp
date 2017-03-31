@@ -31,7 +31,7 @@ char *Usage[] =
    (char *)"      -testingRuns <number of test runs>\n",
    (char *)"      [-recordTestingPlayback <playback file name>]\n",
    (char *)"      [-testingRandomSeed <generation seed>]\n",
-   (char *)"      [-gridDimensions <game grid dimensions (odd X odd)>]\n",
+   (char *)"      [-gridSizes <game grid dimensions (odd X odd)>]\n",
    (char *)"      [-startPosition <x> <y> (starting position on game grid)]\n",
    (char *)"      [-ballSpeed <grid cells/step>]\n",
    (char *)"      [-load <load file name>]\n",
@@ -55,10 +55,10 @@ int TestingRuns       = -1;
 int TestingRandomSeed = 3605;
 
 // Game properties.
-int   GridDimensions = 5;
-float CellSize       = 1.0f / (float)GridDimensions;
-int   StartX         = GridDimensions / 2;
-int   StartY         = GridDimensions / 2;
+int   GridSizes = 5;
+float CellSize       = 1.0f / (float)GridSizes;
+int   StartX         = GridSizes / 2;
+int   StartY         = GridSizes / 2;
 float BallSpeed      = 0.0f;
 
 // Files.
@@ -70,7 +70,7 @@ char           *MoxWorxInputFile     = NULL;
 FILE           *LensFp;
 FILE           *NuPICfp;
 FILE           *MoxWorxFp;
-vector<string> LensGame;
+Vector<String> LensGame;
 char           *LoadFile = NULL;
 char           *SaveFile = NULL;
 
@@ -113,7 +113,7 @@ const float PADDLE_PRESENT    = 0.5f;
 const float PADDLE_NULL       = 1.0f;
 
 // Cycle.
-int cycle(bool overrideResponse = false);
+int Cycle(bool overrideResponse = false);
 
 // Mona response.
 enum MONA_RESPONSE
@@ -156,10 +156,10 @@ enum OUTCOME
 };
 
 // Execute response.
-OUTCOME execute(int response);
+OUTCOME Execute(int response);
 
 // Step pong.
-OUTCOME stepPong();
+OUTCOME StepPong();
 
 // Mona needs.
 enum MONA_NEEDS
@@ -179,9 +179,9 @@ enum RESET_TYPE
 };
 void reset(RESET_TYPE);
 
-// Randomizers.
-Random *TrainingRandomizer;
-Random *TestingRandomizer;
+// randomizers.
+Random *Trainingrandomizer;
+Random *Testingrandomizer;
 
 // Verbose mode.
 bool Verbose = false;
@@ -209,7 +209,7 @@ main(int argc, char *argv[])
    char pongfile[128];
 #endif
 
-   vector<float> sensors;
+   Vector<float> sensors;
    int           pongTest         = 0;
    bool          gotTestingRandom = false;
 
@@ -221,13 +221,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          TrainingRuns = atoi(argv[i]);
          if (TrainingRuns < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -238,13 +238,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          UnforcedTrainingRunModulo = atoi(argv[i]);
          if (UnforcedTrainingRunModulo <= 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -255,7 +255,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          TrainingPlaybackFile = argv[i];
          continue;
@@ -267,7 +267,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          TrainingRandomSeed = atoi(argv[i]);
          continue;
@@ -279,13 +279,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          TestingRuns = atoi(argv[i]);
          if (TestingRuns < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -296,7 +296,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          TestingPlaybackFile = argv[i];
          continue;
@@ -308,33 +308,33 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          TestingRandomSeed = atoi(argv[i]);
          gotTestingRandom  = true;
          continue;
       }
 
-      if (strcmp(argv[i], "-gridDimensions") == 0)
+      if (strcmp(argv[i], "-gridSizes") == 0)
       {
          i++;
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
-         GridDimensions = atoi(argv[i]);
-         if (GridDimensions < 1)
+         GridSizes = atoi(argv[i]);
+         if (GridSizes < 1)
          {
             printUsage();
-            return(1);
+            return (1);
          }
-         if ((GridDimensions % 2) == 0)
+         if ((GridSizes % 2) == 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
-         CellSize = 1.0f / (float)GridDimensions;
+         CellSize = 1.0f / (float)GridSizes;
          continue;
       }
 
@@ -344,25 +344,25 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          StartX = atoi(argv[i]);
          if (StartX < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          i++;
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          StartY = atoi(argv[i]);
          if (StartY < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -373,13 +373,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          BallSpeed = (float)atof(argv[i]);
          if (BallSpeed <= 0.0f)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -390,7 +390,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          LoadFile = argv[i];
          continue;
@@ -402,7 +402,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          SaveFile = argv[i];
          continue;
@@ -420,13 +420,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             fprintf(stderr, "Invalid pongTest option\n");
-            return(1);
+            return (1);
          }
          pongTest = atoi(argv[i]);
          if ((pongTest < 0) || (pongTest > 2))
          {
             fprintf(stderr, "Invalid pongTest value\n");
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -437,7 +437,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          LensInputFile = argv[i];
          continue;
@@ -449,7 +449,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          NuPICinputFile = argv[i];
          continue;
@@ -461,20 +461,20 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          MoxWorxInputFile = argv[i];
          continue;
       }
 
       printUsage();
-      return(1);
+      return (1);
    }
 
    if (TrainingRuns == -1)
    {
       printUsage();
-      return(1);
+      return (1);
    }
 
    if ((LensInputFile != NULL) || (NuPICinputFile != NULL) || (MoxWorxInputFile != NULL))
@@ -482,12 +482,12 @@ main(int argc, char *argv[])
       if ((TestingRuns != -1) || (pongTest != 0))
       {
          printUsage();
-         return(1);
+         return (1);
       }
       if ((TestingPlaybackFile != NULL) || gotTestingRandom)
       {
          printUsage();
-         return(1);
+         return (1);
       }
    }
    else
@@ -495,14 +495,14 @@ main(int argc, char *argv[])
       if ((TestingRuns == -1) && (pongTest == 0))
       {
          printUsage();
-         return(1);
+         return (1);
       }
    }
 
-   if ((StartX >= GridDimensions) || (StartY >= GridDimensions))
+   if ((StartX >= GridSizes) || (StartY >= GridSizes))
    {
       printUsage();
-      return(1);
+      return (1);
    }
 
    if (BallSpeed == 0.0f)
@@ -511,38 +511,38 @@ main(int argc, char *argv[])
    }
 
    // Get random numbers.
-   TrainingRandomizer = new Random(TrainingRandomSeed);
-   assert(TrainingRandomizer != NULL);
-   TestingRandomizer = new Random(TestingRandomSeed);
-   assert(TestingRandomizer != NULL);
+   Trainingrandomizer = new Random(TrainingRandomSeed);
+   ASSERT(Trainingrandomizer != NULL);
+   Testingrandomizer = new Random(TestingRandomSeed);
+   ASSERT(Testingrandomizer != NULL);
 
    // Create Pong game.
    pong = new Pong();
-   assert(pong != NULL);
+   ASSERT(pong != NULL);
    pong->paddle.setLength(CellSize);
 
    // Create Mona.
    if (LoadFile == NULL)
    {
       mona = new Mona(NUM_SENSORS, NUM_RESPONSES, NUM_NEEDS);
-      assert(mona != NULL);
-      mona->setNeed(TRACK_BALL_NEED, 1.0);
-      sensors.resize(NUM_SENSORS, 0.0f);
+      ASSERT(mona != NULL);
+      mona->SetNeed(TRACK_BALL_NEED, 1.0);
+      sensors.SetCount(NUM_SENSORS, 0.0f);
       sensors[BALL_SENSOR]   = BALL_PRESENT;
       sensors[PADDLE_SENSOR] = PADDLE_ABSENT;
-      mona->addGoal(TRACK_BALL_NEED, sensors, 0, 0.5);
+      mona->AddGoal(TRACK_BALL_NEED, sensors, 0, 0.5);
       sensors[BALL_SENSOR]   = BALL_PRESENT;
       sensors[PADDLE_SENSOR] = PADDLE_PRESENT;
-      mona->addGoal(TRACK_BALL_NEED, sensors, 0, 0.5);
+      mona->AddGoal(TRACK_BALL_NEED, sensors, 0, 0.5);
    }
    else
    {
       mona = new Mona();
-      assert(mona != NULL);
-      if (!mona->load(LoadFile))
+      ASSERT(mona != NULL);
+      if (!mona->Load(LoadFile))
       {
          fprintf(stderr, "Cannot load from file %s\n", LoadFile);
-         return(1);
+         return (1);
       }
    }
 
@@ -553,11 +553,11 @@ main(int argc, char *argv[])
       if (trainingPlaybackFp == NULL)
       {
          fprintf(stderr, "Cannot open training playback file %s\n", TrainingPlaybackFile);
-         return(1);
+         return (1);
       }
       else
       {
-         fprintf(trainingPlaybackFp, "Dimension %d\n", GridDimensions);
+         fprintf(trainingPlaybackFp, "Size %d\n", GridSizes);
       }
    }
    else
@@ -570,7 +570,7 @@ main(int argc, char *argv[])
       if (NuPICfp == NULL)
       {
          fprintf(stderr, "Cannot open NuPIC file %s\n", NuPICinputFile);
-         return(1);
+         return (1);
       }
       else
       {
@@ -589,7 +589,7 @@ main(int argc, char *argv[])
       if (LensFp == NULL)
       {
          fprintf(stderr, "Cannot open Lens file %s\n", LensInputFile);
-         return(1);
+         return (1);
       }
    }
    else
@@ -602,9 +602,9 @@ main(int argc, char *argv[])
       if (MoxWorxFp == NULL)
       {
          fprintf(stderr, "Cannot open MoxWorx file %s\n", MoxWorxInputFile);
-         return(1);
+         return (1);
       }
-      fprintf(MoxWorxFp, "%d\n", GridDimensions);
+      fprintf(MoxWorxFp, "%d\n", GridSizes);
    }
    else
    {
@@ -636,7 +636,7 @@ main(int argc, char *argv[])
       }
       if (LensFp != NULL)
       {
-         LensGame.clear();
+         LensGame.Clear();
       }
       for (j = 0; j < MAX_GAME_STEPS; j++)
       {
@@ -651,11 +651,11 @@ main(int argc, char *argv[])
             if ((UnforcedTrainingRunModulo > 0) && (i > 0) &&
                 ((i % UnforcedTrainingRunModulo) == 0))
             {
-               outcome = execute(cycle());
+               outcome = Execute(Cycle());
             }
             else
             {
-               outcome = execute(cycle(true));
+               outcome = Execute(Cycle(true));
             }
             if (trainingPlaybackFp != NULL)
             {
@@ -666,7 +666,7 @@ main(int argc, char *argv[])
          }
          else
          {
-            outcome = stepPong();
+            outcome = StepPong();
             if (pongTest == 1)
             {
                PaddleY = (int)(pong->ball.position.y / CellSize);
@@ -696,7 +696,7 @@ main(int argc, char *argv[])
          }
          if (outcome == WIN)
          {
-            cycle(true);
+            Cycle(true);
             win++;
             if (trainingPlaybackFp != NULL)
             {
@@ -708,11 +708,11 @@ main(int argc, char *argv[])
             }
             if (LensFp != NULL)
             {
-               fprintf(LensFp, "name: { game_%d } %d\n", i, (int)LensGame.size());
-               for (k = 0; k < (int)LensGame.size(); k++)
+               fprintf(LensFp, "name: { game_%d } %d\n", i, (int)LensGame.GetCount());
+               for (k = 0; k < (int)LensGame.GetCount(); k++)
                {
                   fprintf(LensFp, "%s", LensGame[k].c_str());
-                  if (k == (int)LensGame.size() - 1)
+                  if (k == (int)LensGame.GetCount() - 1)
                   {
                      fprintf(LensFp, ";");
                   }
@@ -754,7 +754,7 @@ main(int argc, char *argv[])
    }
    if (pongTest != 0)
    {
-      return(0);
+      return (0);
    }
 
    if (trainingPlaybackFp != NULL)
@@ -780,17 +780,17 @@ main(int argc, char *argv[])
 
    if (SaveFile != NULL)
    {
-      if (!mona->save(SaveFile))
+      if (!mona->Store(SaveFile))
       {
          fprintf(stderr, "Cannot save to file %s\n", SaveFile);
-         return(1);
+         return (1);
       }
    }
 
    // Testing runs?
    if (TestingRuns == -1)
    {
-      return(0);
+      return (0);
    }
    if (TestingPlaybackFile != NULL)
    {
@@ -798,11 +798,11 @@ main(int argc, char *argv[])
       if (testingPlaybackFp == NULL)
       {
          fprintf(stderr, "Cannot open testing playback file %s\n", TestingPlaybackFile);
-         return(1);
+         return (1);
       }
       else
       {
-         fprintf(testingPlaybackFp, "Dimension %d\n", GridDimensions);
+         fprintf(testingPlaybackFp, "Size %d\n", GridSizes);
       }
    }
    else
@@ -815,12 +815,12 @@ main(int argc, char *argv[])
 #else
    sprintf(pongfile, "/tmp/pong_%d.mona", getpid());
 #endif
-   mona->save(pongfile);
+   mona->Store(pongfile);
    for (i = 0; i < TestingRuns; i++)
    {
       // Reset game.
       CurrentGame = i;
-      mona->load(pongfile);
+      mona->Load(pongfile);
       reset(TESTING);
 
       // Run game.
@@ -848,7 +848,7 @@ main(int argc, char *argv[])
          }
 
          // Cycle Mona and execute response.
-         outcome = execute(cycle());
+         outcome = Execute(Cycle());
          if (testingPlaybackFp != NULL)
          {
             fprintf(testingPlaybackFp, "Step %d %0.2f %0.2f %0.2f %0.2f %0.2f\n", j + 1,
@@ -878,7 +878,7 @@ main(int argc, char *argv[])
          }
          if (outcome == WIN)
          {
-            execute(cycle());
+            Execute(Cycle());
             win++;
             if (testingPlaybackFp != NULL)
             {
@@ -895,7 +895,7 @@ main(int argc, char *argv[])
          }
          else if (outcome == LOSE)
          {
-            execute(cycle());
+            Execute(Cycle());
             lose++;
             if (testingPlaybackFp != NULL)
             {
@@ -940,7 +940,7 @@ main(int argc, char *argv[])
       testingPlaybackFp = NULL;
    }
 
-   return(0);
+   return (0);
 }
 
 
@@ -955,11 +955,11 @@ void reset(RESET_TYPE type)
    pong->setBallPosition(x, y);
    if (type == TRAINING)
    {
-      randomizer = TrainingRandomizer;
+      randomizer = Trainingrandomizer;
    }
    else
    {
-      randomizer = TestingRandomizer;
+      randomizer = Testingrandomizer;
    }
    pong->setBallVelocity((float)randomizer->RAND_INTERVAL(0.1, 1.0),
                          (float)randomizer->RAND_INTERVAL(-1.0, 1.0));
@@ -974,67 +974,67 @@ void reset(RESET_TYPE type)
       pong->ball.velocity.y = v;
    }
    pong->setBallSpeed(BallSpeed);
-   PaddleY = GridDimensions / 2;
+   PaddleY = GridSizes / 2;
    pong->paddle.setPosition(0.5f);
    ShowBallNext = false;
    MonaX        = StartX;
    MonaY        = StartY;
-   mona->clearWorkingMemory();
-   mona->inflateNeed(TRACK_BALL_NEED);
+   mona->ClearWorkingMemory();
+   mona->InflateNeed(TRACK_BALL_NEED);
    MoxWorxOrientation = NORTH;
 }
 
 
 // Cycle Mona and return response.
-int cycle(bool overrideResponse)
+int Cycle(bool overrideResponse)
 {
    int        response;
    Pong::Ball ball;
    char       buf[BUFSIZ];
 
-   vector<float> sensors;
-   sensors.resize(NUM_SENSORS);
+   Vector<float> sensors;
+   sensors.SetCount(NUM_SENSORS);
 
    BallPositionX = (int)(pong->ball.position.x / CellSize);
    if (BallPositionX < 0)
    {
       BallPositionX = 0;
    }
-   if (BallPositionX >= GridDimensions)
+   if (BallPositionX >= GridSizes)
    {
-      BallPositionX = GridDimensions - 1;
+      BallPositionX = GridSizes - 1;
    }
    BallPositionY = (int)(pong->ball.position.y / CellSize);
    if (BallPositionY < 0)
    {
       BallPositionY = 0;
    }
-   if (BallPositionY >= GridDimensions)
+   if (BallPositionY >= GridSizes)
    {
-      BallPositionY = GridDimensions - 1;
+      BallPositionY = GridSizes - 1;
    }
 
    Vector p = pong->ball.position;
    Vector d = pong->ball.velocity;
    ball = pong->ball;
-   pong->step();
+   pong->Step();
    BallNextPositionX = (int)(pong->ball.position.x / CellSize);
    if (BallNextPositionX < 0)
    {
       BallNextPositionX = 0;
    }
-   if (BallNextPositionX >= GridDimensions)
+   if (BallNextPositionX >= GridSizes)
    {
-      BallNextPositionX = GridDimensions - 1;
+      BallNextPositionX = GridSizes - 1;
    }
    BallNextPositionY = (int)(pong->ball.position.y / CellSize);
    if (BallNextPositionY < 0)
    {
       BallNextPositionY = 0;
    }
-   if (BallNextPositionY >= GridDimensions)
+   if (BallNextPositionY >= GridSizes)
    {
-      BallNextPositionY = GridDimensions - 1;
+      BallNextPositionY = GridSizes - 1;
    }
    pong->ball = ball;
 
@@ -1078,7 +1078,7 @@ int cycle(bool overrideResponse)
 
    sensors[PADDLE_SENSOR] = PADDLE_ABSENT;
    PaddlePosition         = (int)(pong->paddle.position / CellSize);
-   if (MonaX == GridDimensions - 1)
+   if (MonaX == GridSizes - 1)
    {
       if (MonaY == PaddlePosition)
       {
@@ -1138,66 +1138,66 @@ int cycle(bool overrideResponse)
          {
             if (MonaY > BallNextPositionY)
             {
-               mona->overrideResponse(MOVE_PADDLE_DOWN);
+               mona->OverrideResponse(MOVE_PADDLE_DOWN);
             }
             else if (MonaY < BallNextPositionY)
             {
-               mona->overrideResponse(MOVE_PADDLE_UP);
+               mona->OverrideResponse(MOVE_PADDLE_UP);
             }
             else
             {
-               mona->overrideResponse(PAN_LEFT);
+               mona->OverrideResponse(PAN_LEFT);
             }
          }
          else
          {
             if (MonaX < BallPositionX)
             {
-               mona->overrideResponse(PAN_RIGHT);
+               mona->OverrideResponse(PAN_RIGHT);
             }
             else
             {
-               mona->overrideResponse(PAN_LEFT);
+               mona->OverrideResponse(PAN_LEFT);
             }
          }
       }
       else if (sensors[BALL_SENSOR] == BALL_PRESENT)
       {
-         mona->overrideResponse(CHECK_BALL);
+         mona->OverrideResponse(CHECK_BALL);
       }
       else if (sensors[BALL_SENSOR] == BALL_MOVING_LEFT)
       {
-         mona->overrideResponse(TRACK_BALL_LEFT);
+         mona->OverrideResponse(TRACK_BALL_LEFT);
       }
       else if (sensors[BALL_SENSOR] == BALL_MOVING_RIGHT)
       {
-         mona->overrideResponse(TRACK_BALL_RIGHT);
+         mona->OverrideResponse(TRACK_BALL_RIGHT);
       }
       else if (sensors[BALL_SENSOR] == BALL_MOVING_UP)
       {
          if (sensors[PADDLE_SENSOR] == PADDLE_PRESENT)
          {
-            mona->overrideResponse(MOVE_PADDLE_UP);
+            mona->OverrideResponse(MOVE_PADDLE_UP);
          }
          else
          {
-            mona->overrideResponse(PAN_RIGHT);
+            mona->OverrideResponse(PAN_RIGHT);
          }
       }
       else if (sensors[BALL_SENSOR] == BALL_MOVING_DOWN)
       {
          if (sensors[PADDLE_SENSOR] == PADDLE_PRESENT)
          {
-            mona->overrideResponse(MOVE_PADDLE_DOWN);
+            mona->OverrideResponse(MOVE_PADDLE_DOWN);
          }
          else
          {
-            mona->overrideResponse(PAN_RIGHT);
+            mona->OverrideResponse(PAN_RIGHT);
          }
       }
    }
 
-   response = mona->cycle(sensors);
+   response = mona->Cycle(sensors);
    if (NuPICfp != NULL)
    {
       fprintf(NuPICfp, "%d,%0.2f,%0.2f,%0.2f\n", CurrentGame,
@@ -1268,7 +1268,7 @@ int cycle(bool overrideResponse)
          strcat(buf, "T: 0 0 0 0 0 0 1");
          break;
       }
-      LensGame.push_back(buf);
+      LensGame.Add(buf);
    }
    if (MoxWorxFp != NULL)
    {
@@ -1330,9 +1330,9 @@ int cycle(bool overrideResponse)
                   break;
                }
                MoxWorxOrientation = WEST;
-               for (int i = GridDimensions - 1; i > BallPositionX; i--)
+               for (int i = GridSizes - 1; i > BallPositionX; i--)
                {
-                  if (i == GridDimensions - 1)
+                  if (i == GridSizes - 1)
                   {
                      fprintf(MoxWorxFp, "%s,%d\n", buf, FORWARD);
                   }
@@ -1422,7 +1422,7 @@ int cycle(bool overrideResponse)
                MoxWorxOrientation = EAST;
                break;
             }
-            for (int i = BallPositionX, j = GridDimensions - 1; i < j; i++)
+            for (int i = BallPositionX, j = GridSizes - 1; i < j; i++)
             {
                if (i == BallPositionX)
                {
@@ -1475,15 +1475,15 @@ int cycle(bool overrideResponse)
          printf("(overridden)");
       }
       printf("\n");
-      printf("Need=%f\n", mona->getNeed(TRACK_BALL_NEED));
+      printf("Need=%f\n", mona->GetNeed(TRACK_BALL_NEED));
    }
-   mona->inflateNeed(TRACK_BALL_NEED);
-   return(response);
+   mona->InflateNeed(TRACK_BALL_NEED);
+   return (response);
 }
 
 
 // Execute response.
-OUTCOME execute(int response)
+OUTCOME Execute(int response)
 {
    switch (response)
    {
@@ -1493,7 +1493,7 @@ OUTCOME execute(int response)
          if ((BallPositionX == BallNextPositionX) &&
              (BallPositionY == BallNextPositionY))
          {
-            stepPong();
+            StepPong();
          }
       }
       ShowBallNext = true;
@@ -1505,15 +1505,15 @@ OUTCOME execute(int response)
       {
          MonaX--;
       }
-      return(stepPong());
+      return (StepPong());
 
    case TRACK_BALL_RIGHT:
       ShowBallNext = false;
-      if (MonaX < GridDimensions - 1)
+      if (MonaX < GridSizes - 1)
       {
          MonaX++;
       }
-      return(stepPong());
+      return (StepPong());
 
    case PAN_LEFT:
       if (MonaX > 0)
@@ -1531,10 +1531,10 @@ OUTCOME execute(int response)
       break;
 
    case PAN_RIGHT:
-      if (MonaX < GridDimensions - 1)
+      if (MonaX < GridSizes - 1)
       {
          MonaX++;
-         while (MonaX < GridDimensions - 1)
+         while (MonaX < GridSizes - 1)
          {
             if ((MonaX == BallPositionX) && (MonaY == BallPositionY))
             {
@@ -1547,20 +1547,20 @@ OUTCOME execute(int response)
 
    case MOVE_PADDLE_UP:
       ShowBallNext = false;
-      if ((MonaX == GridDimensions - 1) && (MonaY == PaddleY))
+      if ((MonaX == GridSizes - 1) && (MonaY == PaddleY))
       {
-         if (PaddleY < GridDimensions - 1)
+         if (PaddleY < GridSizes - 1)
          {
             PaddleY++;
             pong->paddle.position = ((float)PaddleY * CellSize) + (CellSize * 0.5f);
             MonaY = PaddleY;
          }
       }
-      return(stepPong());
+      return (StepPong());
 
    case MOVE_PADDLE_DOWN:
       ShowBallNext = false;
-      if ((MonaX == GridDimensions - 1) && (MonaY == PaddleY))
+      if ((MonaX == GridSizes - 1) && (MonaY == PaddleY))
       {
          if (PaddleY > 0)
          {
@@ -1569,43 +1569,43 @@ OUTCOME execute(int response)
             MonaY = PaddleY;
          }
       }
-      return(stepPong());
+      return (StepPong());
    }
-   return(CONTINUE);
+   return (CONTINUE);
 }
 
 
 // Step pong.
-OUTCOME stepPong()
+OUTCOME StepPong()
 {
-   switch (pong->step())
+   switch (pong->Step())
    {
    case Pong::CLEAR:
-      if ((MonaX == GridDimensions - 1) &&
+      if ((MonaX == GridSizes - 1) &&
           (MonaX == (int)(pong->ball.position.x / CellSize)) &&
           (MonaY == (int)(pong->ball.position.y / CellSize)))
       {
-         return(WIN);
+         return (WIN);
       }
       else
       {
-         return(CONTINUE);
+         return (CONTINUE);
       }
 
    case Pong::SCORE:
-      if ((MonaX == GridDimensions - 1) &&
+      if ((MonaX == GridSizes - 1) &&
           (MonaX == (int)(pong->ball.position.x / CellSize)) &&
           (MonaY == (int)(pong->ball.position.y / CellSize)))
       {
-         return(WIN);
+         return (WIN);
       }
       else
       {
-         return(LOSE);
+         return (LOSE);
       }
 
    case Pong::STRIKE:
-      return(WIN);
+      return (WIN);
    }
-   return(CONTINUE);
+   return (CONTINUE);
 }

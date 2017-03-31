@@ -23,7 +23,7 @@ public:
    BaseObject()
    {
       m_spacial = new cSpacial();
-      assert(m_spacial != NULL);
+      ASSERT(m_spacial != NULL);
    }
 
 
@@ -35,7 +35,7 @@ public:
 
 
    // Set spacial state.
-   cSpacial *getSpacial() { return(m_spacial); }
+   cSpacial *getSpacial() { return (m_spacial); }
 
    // Set spacial state.
    void setSpacial(GLfloat pitch, GLfloat yaw, GLfloat roll,
@@ -44,12 +44,12 @@ public:
    void setSpacial(cSpacial *spacial);
 
    // Clear spacial.
-   void clearSpacial() { m_spacial->clear(); }
+   void clearSpacial() { m_spacial->Clear(); }
 
    // Rotations.
-   GLfloat getPitch() { return(m_spacial->getPitch()); }
-   GLfloat getYaw()   { return(m_spacial->getYaw()); }
-   GLfloat getRoll()  { return(m_spacial->getRoll()); }
+   GLfloat getPitch() { return (m_spacial->getPitch()); }
+   GLfloat getYaw()   { return (m_spacial->getYaw()); }
+   GLfloat getRoll()  { return (m_spacial->getRoll()); }
    void setPitch(GLfloat pitch) { m_spacial->setPitch(pitch); }
    void setYaw(GLfloat yaw) { m_spacial->setYaw(yaw); }
    void setRoll(GLfloat roll) { m_spacial->setRoll(roll); }
@@ -94,11 +94,11 @@ public:
 
 
    // Scale.
-   GLfloat getScale() { return(m_spacial->getScale()); }
+   GLfloat getScale() { return (m_spacial->getScale()); }
    void setScale(GLfloat scale) { m_spacial->setScale(scale); }
 
    // Speed.
-   GLfloat getSpeed() { return(m_spacial->getSpeed()); }
+   GLfloat getSpeed() { return (m_spacial->getSpeed()); }
    void setSpeed(GLfloat speed) { m_spacial->setSpeed(speed); }
    void addSpeed(GLfloat speed)
    {
@@ -107,7 +107,7 @@ public:
 
 
    // Update.
-   void update() { m_spacial->update(); }
+   void Update() { m_spacial->Update(); }
 
    // Get model transformation matrix.
    void getModelTransform(GLfloat *matrix)
@@ -156,16 +156,16 @@ public:
 
 
    // Load an axis-angle rotation into quaternion.
-   void loadRotation(GLfloat angle, GLfloat *axis)
+   void LoadRotation(GLfloat angle, GLfloat *axis)
    {
-      m_spacial->loadRotation(angle, axis);
+      m_spacial->LoadRotation(angle, axis);
    }
 
 
    // Merge an axis-angle rotation into quaternion.
-   void mergeRotation(GLfloat angle, GLfloat *axis)
+   void MergeRotation(GLfloat angle, GLfloat *axis)
    {
-      m_spacial->mergeRotation(angle, axis);
+      m_spacial->MergeRotation(angle, axis);
    }
 
 
@@ -173,7 +173,7 @@ public:
    void drawAxes(GLfloat span = 1.0f);
 
    // Set block vertices.
-   static void setBlockVertices(Vector *vertices, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
+   static void setBlockVertices(Vector3f *vertices, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
 
    // Draw a block.
    static void drawBlock(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
@@ -182,12 +182,12 @@ public:
    static void drawBlockEdges(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
 
    // Load object.
-   void load(char *filename);
-   void load(FILE *fp);
+   void Load(char *filename);
+   void Load(FILE *fp);
 
    // Save object.
-   void save(char *filename);
-   void save(FILE *fp);
+   void Store(char *filename);
+   void Store(FILE *fp);
 
    // Spacial properties.
    cSpacial *m_spacial;

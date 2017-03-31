@@ -19,12 +19,12 @@ public class MoxWorld
       "      -steps <steps>\n" +
       "     [-stepGameOfLife]\n" +
       "        -gridSize <width> <height>\n" +
-      "        -liveCellProbability <0.0-1.0>\n" +
+      "        -live_cell_probability <0.0-1.0>\n" +
       "      |\n" +
       "        -loadCells <file name>\n" +
       "     [-foragerMoxen <quantity>]\n" +
       "     [-predatorMoxen <quantity>]\n" +
-      "     [-randomSeed <random number seed>]\n" +
+      "     [-random_seed <random number seed>]\n" +
       "     [-save <file name>]\n" +
       "     [-dashboard]\n" +
       "  Resume run:\n" +
@@ -42,9 +42,9 @@ public class MoxWorld
    ArrayList<Mox> moxen;
 
    // Game of Life.
-   GameOfLife gameOfLife;
+   GameOfLife game_of_life;
 
-   // Dashboard display.
+   // dashboard display.
    MoxWorldDashboard dashboard;
 
    // Constructor.
@@ -54,40 +54,40 @@ public class MoxWorld
 
 
    // Initialize cells.
-   public void initCells(int width, int height, float liveCellProb, int randomSeed)
+   public void initCells(int width, int height, float live_cell_prob, int random_seed)
    {
       int x, y;
 
       // Random numbers.
-      Random random = new Random(randomSeed);
+      Random random = new Random(random_seed);
 
       // Create Game of Life.
-      gameOfLife = new GameOfLife(new Dimension(width, height));
+      game_of_life = new GameOfLife(new Size(width, height));
       for (x = 0; x < width; x++)
       {
          for (y = 0; y < height; y++)
          {
-            if (random.nextFloat() < liveCellProb)
+            if (random.nextFloat() < live_cell_prob)
             {
-               gameOfLife.cells[x][y] = 1;
+               game_of_life.cells[x][y] = 1;
             }
          }
       }
-      gameOfLife.step();
-      gameOfLife.checkpoint();
+      game_of_life.Step();
+      game_of_life.checkpoint();
    }
 
 
    // Get width.
    int getWidth()
    {
-      if (gameOfLife != null)
+      if (game_of_life != null)
       {
-         return(gameOfLife.size.width);
+         return (game_of_life.size.width);
       }
       else
       {
-         return(0);
+         return (0);
       }
    }
 
@@ -95,13 +95,13 @@ public class MoxWorld
    // Get height.
    int getHeight()
    {
-      if (gameOfLife != null)
+      if (game_of_life != null)
       {
-         return(gameOfLife.size.height);
+         return (game_of_life.size.height);
       }
       else
       {
-         return(0);
+         return (0);
       }
    }
 
@@ -109,9 +109,9 @@ public class MoxWorld
    // Load cells from file.
    public void loadCells(String cellsFilename) throws IOException
    {
-      gameOfLife = new GameOfLife();
+      game_of_life = new GameOfLife();
       try {
-         gameOfLife.load(cellsFilename);
+         game_of_life.Load(cellsFilename);
       }
       catch (Exception e) {
          throw new IOException("Cannot open cells file " + cellsFilename +
@@ -121,31 +121,31 @@ public class MoxWorld
 
 
    // Create moxen.
-   public void createMoxen(int numForagers, int numPredators, int randomSeed)
+   public void createMoxen(int numForagers, int numPredators, int random_seed)
    {
       int i, x, y, w, h;
 
       // Random numbers.
-      Random random = new Random(randomSeed);
+      Random random = new Random(random_seed);
 
       // Create moxen.
-      w     = gameOfLife.size.width;
-      h     = gameOfLife.size.height;
+      w     = game_of_life.size.width;
+      h     = game_of_life.size.height;
       moxen = new ArrayList<Mox>(numForagers + numPredators);
       for (i = 0; i < numForagers; i++)
       {
          x = random.nextInt(w);
          y = random.nextInt(h);
-         moxen.add(i, new ForagerMox(i, x, y,
-                                     random.nextInt(Mox.DIRECTION.NUM_DIRECTIONS.getValue()),
+         moxen.Add(i, new ForagerMox(i, x, y,
+                                     random.nextInt(Mox.DIRECTION.NUM_DIRECTIONS.GetValue()),
                                      random.nextInt()));
       }
       for (i = 0; i < numPredators; i++)
       {
          x = random.nextInt(w);
          y = random.nextInt(h);
-         moxen.add(numForagers + i, new PredatorMox(numForagers + i, x, y,
-                                                    random.nextInt(Mox.DIRECTION.NUM_DIRECTIONS.getValue()),
+         moxen.Add(numForagers + i, new PredatorMox(numForagers + i, x, y,
+                                                    random.nextInt(Mox.DIRECTION.NUM_DIRECTIONS.GetValue()),
                                                     random.nextInt()));
       }
    }
@@ -165,16 +165,16 @@ public class MoxWorld
    // Reset.
    public void reset()
    {
-      if (gameOfLife != null)
+      if (game_of_life != null)
       {
-         gameOfLife.restore();
+         game_of_life.restore();
       }
       if (moxen != null)
       {
-         int numMox = moxen.size();
+         int numMox = moxen.GetCount();
          for (int i = 0; i < numMox; i++)
          {
-            moxen.get(i).reset();
+            moxen.Get(i).reset();
          }
       }
       if (dashboard != null)
@@ -185,20 +185,20 @@ public class MoxWorld
 
 
    // Clear.
-   public void clear()
+   public void Clear()
    {
       if (dashboard != null)
       {
          dashboard.setVisible(false);
          dashboard = null;
       }
-      gameOfLife = null;
+      game_of_life = null;
       if (moxen != null)
       {
-         int numMox = moxen.size();
+         int numMox = moxen.GetCount();
          for (int i = 0; i < numMox; i++)
          {
-            moxen.get(i).clear();
+            moxen.Get(i).Clear();
          }
          moxen = null;
       }
@@ -206,7 +206,7 @@ public class MoxWorld
 
 
    // Load from file.
-   public void load(String filename) throws IOException
+   public void Load(String filename) throws IOException
    {
       FileInputStream      input;
       NativeFileDescriptor fd;
@@ -223,7 +223,7 @@ public class MoxWorld
       }
 
       // Load world.
-      load(input, fd);
+      Load(input, fd);
 
       input.close();
       fd.close();
@@ -231,14 +231,14 @@ public class MoxWorld
 
 
    // Load.
-   public void load(FileInputStream input, NativeFileDescriptor fd) throws IOException
+   public void Load(FileInputStream input, NativeFileDescriptor fd) throws IOException
    {
       // DataInputStream is for unbuffered input.
       DataInputStream reader = new DataInputStream(input);
 
       // Load Game of Life.
-      gameOfLife = new GameOfLife();
-      gameOfLife.load(reader);
+      game_of_life = new GameOfLife();
+      game_of_life.Load(reader);
 
       // Load moxen.
       int numMox = Utility.loadInt(reader);
@@ -247,24 +247,24 @@ public class MoxWorld
       PredatorMox predator;
       for (int i = 0; i < numMox; i++)
       {
-         if (Utility.loadInt(reader) == Mox.SPECIES.FORAGER.getValue())
+         if (Utility.loadInt(reader) == Mox.SPECIES.FORAGER.GetValue())
          {
             forager = new ForagerMox();
-            forager.load(input, fd);
-            moxen.add(i, forager);
+            forager.Load(input, fd);
+            moxen.Add(i, forager);
          }
          else
          {
             predator = new PredatorMox();
-            predator.load(input, fd);
-            moxen.add(i, predator);
+            predator.Load(input, fd);
+            moxen.Add(i, predator);
          }
       }
    }
 
 
    // Save to file.
-   public void save(String filename) throws IOException
+   public void Store(String filename) throws IOException
    {
       FileOutputStream     output;
       NativeFileDescriptor fd;
@@ -281,7 +281,7 @@ public class MoxWorld
       }
 
       // Save world.
-      save(output, fd);
+      Store(output, fd);
 
       output.close();
       fd.close();
@@ -289,35 +289,35 @@ public class MoxWorld
 
 
    // Save.
-   public void save(FileOutputStream output, NativeFileDescriptor fd) throws IOException
+   public void Store(FileOutputStream output, NativeFileDescriptor fd) throws IOException
    {
       PrintWriter writer = new PrintWriter(output);
 
       // Save Game of Life.
-      gameOfLife.save(writer);
+      game_of_life.Store(writer);
 
       // Save moxen.
-      int numMox = moxen.size();
+      int numMox = moxen.GetCount();
       Utility.saveInt(writer, numMox);
       writer.flush();
       Mox mox;
       for (int i = 0; i < numMox; i++)
       {
-         mox = moxen.get(i);
+         mox = moxen.Get(i);
          Utility.saveInt(writer, mox.species);
          writer.flush();
-         mox.save(output, fd);
+         mox.Store(output, fd);
       }
    }
 
 
    // Run.
-   public void run(int steps, boolean stepGameOfLife)
+   public void Run(int steps, bool stepGameOfLife)
    {
       for (int i = 0; i < steps; i++)
       {
          // Update dashboard.
-         updateDashboard(i + 1, steps);
+         updatedashboard(i + 1, steps);
 
          // Step moxen.
          stepMoxen();
@@ -337,29 +337,29 @@ public class MoxWorld
       int i, x, y, numMox;
       Mox mox;
 
-      int width  = gameOfLife.size.width;
-      int height = gameOfLife.size.height;
+      int width  = game_of_life.size.width;
+      int height = game_of_life.size.height;
 
       int[][] moveTo      = new int[width][height];
       boolean[][] eatCell = new boolean[width][height];
 
-      numMox = moxen.size();
+      numMox = moxen.GetCount();
 
-      synchronized (gameOfLife.lock)
+      synchronized (game_of_life.lock)
       {
          // Load moxen into cells.
          for (i = 0; i < numMox; i++)
          {
-            mox = moxen.get(i);
+            mox = moxen.Get(i);
             if (mox.isAlive)
             {
-               if (mox.species == Mox.SPECIES.FORAGER.getValue())
+               if (mox.species == Mox.SPECIES.FORAGER.GetValue())
                {
-                  gameOfLife.cells[mox.x][mox.y] = ForagerMox.FORAGER_COLOR_VALUE;
+                  game_of_life.cells[mox.x][mox.y] = ForagerMox.FORAGER_COLOR_VALUE;
                }
                else
                {
-                  gameOfLife.cells[mox.x][mox.y] = PredatorMox.PREDATOR_COLOR_VALUE;
+                  game_of_life.cells[mox.x][mox.y] = PredatorMox.PREDATOR_COLOR_VALUE;
                }
             }
          }
@@ -377,8 +377,8 @@ public class MoxWorld
          // Step forager moxen.
          for (i = 0; i < numMox; i++)
          {
-            mox = moxen.get(i);
-            if (mox.isAlive && (mox.species == Mox.SPECIES.FORAGER.getValue()))
+            mox = moxen.Get(i);
+            if (mox.isAlive && (mox.species == Mox.SPECIES.FORAGER.GetValue()))
             {
                stepMox(i, moveTo, eatCell);
             }
@@ -388,8 +388,8 @@ public class MoxWorld
          // This is done after foragers since predators may eat foragers.
          for (i = 0; i < numMox; i++)
          {
-            mox = moxen.get(i);
-            if (mox.isAlive && (mox.species == Mox.SPECIES.PREDATOR.getValue()))
+            mox = moxen.Get(i);
+            if (mox.isAlive && (mox.species == Mox.SPECIES.PREDATOR.GetValue()))
             {
                stepMox(i, moveTo, eatCell);
             }
@@ -402,25 +402,25 @@ public class MoxWorld
             {
                if (moveTo[x][y] >= 0)
                {
-                  mox = moxen.get(moveTo[x][y]);
-                  gameOfLife.cells[mox.x][mox.y] = 0;
+                  mox = moxen.Get(moveTo[x][y]);
+                  game_of_life.cells[mox.x][mox.y] = 0;
                   mox.x = x;
                   mox.y = y;
                   if (mox.isAlive)
                   {
-                     if (mox.species == Mox.SPECIES.FORAGER.getValue())
+                     if (mox.species == Mox.SPECIES.FORAGER.GetValue())
                      {
-                        gameOfLife.cells[mox.x][mox.y] = ForagerMox.FORAGER_COLOR_VALUE;
+                        game_of_life.cells[mox.x][mox.y] = ForagerMox.FORAGER_COLOR_VALUE;
                      }
                      else
                      {
-                        gameOfLife.cells[mox.x][mox.y] = PredatorMox.PREDATOR_COLOR_VALUE;
+                        game_of_life.cells[mox.x][mox.y] = PredatorMox.PREDATOR_COLOR_VALUE;
                      }
                   }
                }
                if (eatCell[x][y] == true)
                {
-                  gameOfLife.cells[x][y] = 0;
+                  game_of_life.cells[x][y] = 0;
                }
             }
          }
@@ -435,21 +435,21 @@ public class MoxWorld
       int     range, rangeIndex, colorHueIndex, colorIntensityIndex, response, numMox;
       float   distance;
       Mox     mox, preyMox;
-      boolean gotGoal;
+      bool gotGoal;
 
-      float[] sensors     = new float[Mox.SENSOR_CONFIG.NUM_SENSORS.getValue()];
-      rangeIndex          = Mox.SENSOR_CONFIG.RANGE_SENSOR_INDEX.getValue();
-      colorHueIndex       = Mox.SENSOR_CONFIG.COLOR_HUE_SENSOR_INDEX.getValue();
-      colorIntensityIndex = Mox.SENSOR_CONFIG.COLOR_INTENSITY_SENSOR_INDEX.getValue();
+      Vector<double> sensors     = new float[Mox.SENSOR_CONFIG.NUM_SENSORS.GetValue()];
+      rangeIndex          = Mox.SENSOR_CONFIG.RANGE_SENSOR_INDEX.GetValue();
+      colorHueIndex       = Mox.SENSOR_CONFIG.COLOR_HUE_SENSOR_INDEX.GetValue();
+      colorIntensityIndex = Mox.SENSOR_CONFIG.COLOR_INTENSITY_SENSOR_INDEX.GetValue();
 
       // Detect color ahead.
-      int width  = gameOfLife.size.width;
-      int height = gameOfLife.size.height;
+      int width  = game_of_life.size.width;
+      int height = game_of_life.size.height;
 
-      mox = moxen.get(moxIndex);
+      mox = moxen.Get(moxIndex);
       mx  = mox.x;
       my  = mox.y;
-      if (mox.direction == Mox.DIRECTION.NORTH.getValue())
+      if (mox.direction == Mox.DIRECTION.NORTH.GetValue())
       {
          for (range = 0, x = mox.x, y = ((mox.y + 1) % height);
               range < height - 2; range++, y = ((y + 1) % height))
@@ -459,10 +459,10 @@ public class MoxWorld
                mx = x;
                my = y;
             }
-            if (gameOfLife.cells[x][y] > 0) { break; }
+            if (game_of_life.cells[x][y] > 0) { break; }
          }
       }
-      else if (mox.direction == Mox.DIRECTION.EAST.getValue())
+      else if (mox.direction == Mox.DIRECTION.EAST.GetValue())
       {
          for (range = 0, x = (mox.x + 1) % width, y = mox.y;
               range < width - 2; range++, x = ((x + 1) % width))
@@ -472,10 +472,10 @@ public class MoxWorld
                mx = x;
                my = y;
             }
-            if (gameOfLife.cells[x][y] > 0) { break; }
+            if (game_of_life.cells[x][y] > 0) { break; }
          }
       }
-      else if (mox.direction == Mox.DIRECTION.SOUTH.getValue())
+      else if (mox.direction == Mox.DIRECTION.SOUTH.GetValue())
       {
          x = mox.x;
          y = mox.y - 1;
@@ -487,7 +487,7 @@ public class MoxWorld
                mx = x;
                my = y;
             }
-            if (gameOfLife.cells[x][y] > 0) { break; }
+            if (game_of_life.cells[x][y] > 0) { break; }
             y -= 1;
             if (y < 0) { y += height; }
          }
@@ -504,12 +504,12 @@ public class MoxWorld
                mx = x;
                my = y;
             }
-            if (gameOfLife.cells[x][y] > 0) { break; }
+            if (game_of_life.cells[x][y] > 0) { break; }
             x -= 1;
             if (x < 0) { x += width; }
          }
       }
-      if (mox.species == Mox.SPECIES.FORAGER.getValue())
+      if (mox.species == Mox.SPECIES.FORAGER.GetValue())
       {
          if ((ForagerMox.MAX_SENSOR_RANGE >= 0.0f) &&
              ((float)range > ForagerMox.MAX_SENSOR_RANGE))
@@ -519,7 +519,7 @@ public class MoxWorld
          }
          else
          {
-            sensors[colorHueIndex]       = (float)gameOfLife.cells[x][y];
+            sensors[colorHueIndex]       = (float)game_of_life.cells[x][y];
             sensors[colorIntensityIndex] = 1.0f / (float)(range + 1);
          }
       }
@@ -533,13 +533,13 @@ public class MoxWorld
          }
          else
          {
-            sensors[colorHueIndex]       = (float)gameOfLife.cells[x][y];
+            sensors[colorHueIndex]       = (float)game_of_life.cells[x][y];
             sensors[colorIntensityIndex] = 1.0f / (float)(range + 1);
          }
       }
 
       // Get distance to nearest goal.
-      if (mox.species == Mox.SPECIES.FORAGER.getValue())
+      if (mox.species == Mox.SPECIES.FORAGER.GetValue())
       {
          if (ForagerMox.MAX_SENSOR_RANGE >= 0.0f)
          {
@@ -575,7 +575,7 @@ public class MoxWorld
                   y3 = y;
                   if (y < 0) { y3 += height; }
                   if (y >= height) { y3 = y % height; }
-                  if (gameOfLife.cells[x3][y3] == GameOfLife.BLUE_CELL_COLOR_VALUE)
+                  if (game_of_life.cells[x3][y3] == GameOfLife.BLUE_CELL_COLOR_VALUE)
                   {
                      distance  = (float)((mx - x) * (mx - x));
                      distance += (float)((my - y) * (my - y));
@@ -609,7 +609,7 @@ public class MoxWorld
                   y3 = y;
                   if (y < 0) { y3 += height; }
                   if (y >= height) { y3 = y % height; }
-                  if (gameOfLife.cells[x3][y3] == GameOfLife.BLUE_CELL_COLOR_VALUE)
+                  if (game_of_life.cells[x3][y3] == GameOfLife.BLUE_CELL_COLOR_VALUE)
                   {
                      distance  = (float)((mx - x) * (mx - x));
                      distance += (float)((my - y) * (my - y));
@@ -623,7 +623,7 @@ public class MoxWorld
             sensors[rangeIndex] = (float)Math.sqrt(sensors[rangeIndex]);
          }
       }
-      else if (mox.species == Mox.SPECIES.PREDATOR.getValue())
+      else if (mox.species == Mox.SPECIES.PREDATOR.GetValue())
       {
          if (PredatorMox.MAX_SENSOR_RANGE >= 0.0f)
          {
@@ -659,7 +659,7 @@ public class MoxWorld
                   y3 = y;
                   if (y < 0) { y3 += height; }
                   if (y >= height) { y3 = y % height; }
-                  if (gameOfLife.cells[x3][y3] == ForagerMox.FORAGER_COLOR_VALUE)
+                  if (game_of_life.cells[x3][y3] == ForagerMox.FORAGER_COLOR_VALUE)
                   {
                      distance  = (float)((mx - x) * (mx - x));
                      distance += (float)((my - y) * (my - y));
@@ -693,7 +693,7 @@ public class MoxWorld
                   y3 = y;
                   if (y < 0) { y3 += height; }
                   if (y >= height) { y3 = y % height; }
-                  if (gameOfLife.cells[x3][y3] == ForagerMox.FORAGER_COLOR_VALUE)
+                  if (game_of_life.cells[x3][y3] == ForagerMox.FORAGER_COLOR_VALUE)
                   {
                      distance  = (float)((mx - x) * (mx - x));
                      distance += (float)((my - y) * (my - y));
@@ -710,7 +710,7 @@ public class MoxWorld
 
       // Check for goal.
       gotGoal = false;
-      if (mox.species == Mox.SPECIES.FORAGER.getValue())
+      if (mox.species == Mox.SPECIES.FORAGER.GetValue())
       {
          if ((range == 0) &&
              (sensors[colorHueIndex] == GameOfLife.BLUE_CELL_COLOR_VALUE))
@@ -718,7 +718,7 @@ public class MoxWorld
             gotGoal = true;
          }
       }
-      else if (mox.species == Mox.SPECIES.PREDATOR.getValue())
+      else if (mox.species == Mox.SPECIES.PREDATOR.GetValue())
       {
          if ((range == 0) &&
              (sensors[colorHueIndex] == ForagerMox.FORAGER_COLOR_VALUE))
@@ -728,10 +728,10 @@ public class MoxWorld
       }
 
       // Cycle mox.
-      response = mox.cycle(sensors);
+      response = mox.Cycle(sensors);
 
       // Process response.
-      if (response == Mox.RESPONSE_TYPE.FORWARD.getValue())
+      if (response == Mox.RESPONSE_TYPE.FORWARD.GetValue())
       {
          if (range > 0)
          {
@@ -745,24 +745,24 @@ public class MoxWorld
             }
          }
       }
-      else if (response == Mox.RESPONSE_TYPE.RIGHT.getValue())
+      else if (response == Mox.RESPONSE_TYPE.RIGHT.GetValue())
       {
-         mox.direction = (mox.direction + 1) % Mox.DIRECTION.NUM_DIRECTIONS.getValue();
+         mox.direction = (mox.direction + 1) % Mox.DIRECTION.NUM_DIRECTIONS.GetValue();
       }
-      else if (response == Mox.RESPONSE_TYPE.LEFT.getValue())
+      else if (response == Mox.RESPONSE_TYPE.LEFT.GetValue())
       {
          mox.direction -= 1;
          if (mox.direction < 0)
          {
-            mox.direction += Mox.DIRECTION.NUM_DIRECTIONS.getValue();
+            mox.direction += Mox.DIRECTION.NUM_DIRECTIONS.GetValue();
          }
       }
 
       if (gotGoal)
       {
-         if (mox.species == Mox.SPECIES.FORAGER.getValue())
+         if (mox.species == Mox.SPECIES.FORAGER.GetValue())
          {
-            if (gameOfLife.cells[mx][my] == GameOfLife.BLUE_CELL_COLOR_VALUE)
+            if (game_of_life.cells[mx][my] == GameOfLife.BLUE_CELL_COLOR_VALUE)
             {
                eatCell[mx][my] = true;
             }
@@ -770,16 +770,16 @@ public class MoxWorld
          else
          {
             // Predator eats forager.
-            numMox = moxen.size();
+            numMox = moxen.GetCount();
             for (int i = 0; i < numMox; i++)
             {
-               preyMox = moxen.get(i);
+               preyMox = moxen.Get(i);
                if ((preyMox.x == mx) && (preyMox.y == my))
                {
                   preyMox.isAlive = false;
                   if (dashboard != null)
                   {
-                     dashboard.closeMoxDashboard(i);
+                     dashboard.closeMoxdashboard(i);
                   }
                   eatCell[mx][my] = true;
                   break;
@@ -793,32 +793,32 @@ public class MoxWorld
    // Step Game Of Life.
    public void stepGameOfLife()
    {
-      synchronized (gameOfLife.lock)
+      synchronized (game_of_life.lock)
       {
-         gameOfLife.step();
+         game_of_life.Step();
       }
    }
 
 
    // Create dashboard.
-   public void createDashboard()
+   public void createdashboard()
    {
       if (dashboard == null)
       {
          if (moxen == null)
          {
-            dashboard = new MoxWorldDashboard(gameOfLife);
+            dashboard = new MoxWorldDashboard(game_of_life);
          }
          else
          {
-            dashboard = new MoxWorldDashboard(gameOfLife, moxen);
+            dashboard = new MoxWorldDashboard(game_of_life, moxen);
          }
       }
    }
 
 
    // Destroy dashboard.
-   public void destroyDashboard()
+   public void destroydashboard()
    {
       if (dashboard != null)
       {
@@ -831,7 +831,7 @@ public class MoxWorld
 
    // Update dashboard.
    // Return true if dashboard operational.
-   public boolean updateDashboard(int step, int steps, String message)
+   public bool updatedashboard(int step, int steps, String message)
    {
       if (dashboard != null)
       {
@@ -840,44 +840,44 @@ public class MoxWorld
          if (dashboard.quit)
          {
             dashboard = null;
-            return(false);
+            return (false);
          }
          else
          {
-            return(true);
+            return true;
          }
       }
       else
       {
-         return(false);
+         return (false);
       }
    }
 
 
-   public boolean updateDashboard(int step, int steps)
+   public bool updatedashboard(int step, int steps)
    {
-      return(updateDashboard(step, steps, ""));
+      return (updatedashboard(step, steps, ""));
    }
 
 
-   public boolean updateDashboard()
+   public bool updatedashboard()
    {
       if (dashboard != null)
       {
-         dashboard.update();
+         dashboard.Update();
          if (dashboard.quit)
          {
             dashboard = null;
-            return(false);
+            return (false);
          }
          else
          {
-            return(true);
+            return true;
          }
       }
       else
       {
-         return(false);
+         return (false);
       }
    }
 
@@ -887,17 +887,17 @@ public class MoxWorld
    {
       // Get options.
       int     steps          = -1;
-      boolean stepGameOfLife = false;
+      bool stepGameOfLife = false;
       int     width          = -1;
       int     height         = -1;
-      float   liveCellProb   = -1.0f;
+      float   live_cell_prob   = -1.0f;
       int     numForagers    = 0;
       int     numPredators   = 0;
-      int     randomSeed     = DEFAULT_RANDOM_SEED;
+      int     random_seed     = DEFAULT_RANDOM_SEED;
       String  cellsFilename  = null;
       String  loadfile       = null;
       String  savefile       = null;
-      boolean dashboard      = false;
+      bool dashboard      = false;
 
       for (int i = 0; i < args.length; i++)
       {
@@ -980,27 +980,27 @@ public class MoxWorld
             }
             continue;
          }
-         if (args[i].equals("-liveCellProbability"))
+         if (args[i].equals("-live_cell_probability"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid liveCellProbability option");
+               System.err.println("Invalid live_cell_probability option");
                System.err.println(MoxWorld.Usage);
                System.exit(1);
             }
             try
             {
-               liveCellProb = Float.parseFloat(args[i]);
+               live_cell_prob = Float.parseFloat(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid liveCellProbability option");
+               System.err.println("Invalid live_cell_probability option");
                System.err.println(MoxWorld.Usage);
                System.exit(1);
             }
-            if ((liveCellProb < 0.0f) || (liveCellProb > 1.0f))
+            if ((live_cell_prob < 0.0f) || (live_cell_prob > 1.0f))
             {
-               System.err.println("Invalid liveCellProbability option");
+               System.err.println("Invalid live_cell_probability option");
                System.err.println(MoxWorld.Usage);
                System.exit(1);
             }
@@ -1079,21 +1079,21 @@ public class MoxWorld
             }
             continue;
          }
-         if (args[i].equals("-randomSeed"))
+         if (args[i].equals("-random_seed"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid randomSeed option");
+               System.err.println("Invalid random_seed option");
                System.err.println(MoxWorld.Usage);
                System.exit(1);
             }
             try
             {
-               randomSeed = Integer.parseInt(args[i]);
+               random_seed = Integer.parseInt(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid randomSeed option");
+               System.err.println("Invalid random_seed option");
                System.err.println(MoxWorld.Usage);
                System.exit(1);
             }
@@ -1160,7 +1160,7 @@ public class MoxWorld
       {
          if (cellsFilename == null)
          {
-            if ((width == -1) || (height == -1) || (liveCellProb < 0.0f))
+            if ((width == -1) || (height == -1) || (live_cell_prob < 0.0f))
             {
                System.err.println(MoxWorld.Usage);
                System.exit(1);
@@ -1168,7 +1168,7 @@ public class MoxWorld
          }
          else
          {
-            if ((width != -1) || (height != -1) || (liveCellProb >= 0.0f))
+            if ((width != -1) || (height != -1) || (live_cell_prob >= 0.0f))
             {
                System.err.println(MoxWorld.Usage);
                System.exit(1);
@@ -1179,7 +1179,7 @@ public class MoxWorld
       {
          if ((numForagers != 0) || (numPredators != 0) ||
              (width != -1) || (height != -1) ||
-             (liveCellProb >= 0.0f) || (cellsFilename != null))
+             (live_cell_prob >= 0.0f) || (cellsFilename != null))
          {
             System.err.println(MoxWorld.Usage);
             System.exit(1);
@@ -1201,7 +1201,7 @@ public class MoxWorld
       {
          try
          {
-            moxWorld.load(loadfile);
+            moxWorld.Load(loadfile);
          }
          catch (Exception e)
          {
@@ -1215,13 +1215,13 @@ public class MoxWorld
          {
             if (cellsFilename == null)
             {
-               moxWorld.initCells(width, height, liveCellProb, randomSeed);
+               moxWorld.initCells(width, height, live_cell_prob, random_seed);
             }
             else
             {
                moxWorld.loadCells(cellsFilename);
             }
-            moxWorld.createMoxen(numForagers, numPredators, randomSeed);
+            moxWorld.createMoxen(numForagers, numPredators, random_seed);
          }
          catch (Exception e)
          {
@@ -1233,18 +1233,18 @@ public class MoxWorld
       // Create dashboard?
       if (dashboard)
       {
-         moxWorld.createDashboard();
+         moxWorld.createdashboard();
       }
 
       // Run.
-      moxWorld.run(steps, stepGameOfLife);
+      moxWorld.Run(steps, stepGameOfLife);
 
       // Save?
       if (savefile != null)
       {
          try
          {
-            moxWorld.save(savefile);
+            moxWorld.Store(savefile);
          }
          catch (Exception e)
          {

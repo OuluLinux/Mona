@@ -73,10 +73,10 @@ public:
       void move(float position);
 
       // Load.
-      void load(FILE *);
+      void Load(FILE *);
 
       // Save.
-      void save(FILE *);
+      void Store(FILE *);
    };
    Paddle paddle;
 
@@ -102,10 +102,10 @@ public:
       STEP_OUTCOME step(Paddle& paddle);
 
       // Load.
-      void load(FILE *);
+      void Load(FILE *);
 
       // Save.
-      void save(FILE *);
+      void Store(FILE *);
    };
    Ball ball;
 
@@ -121,14 +121,14 @@ public:
    void setBallVelocity(float dx, float dy);
 
    // Step.
-   STEP_OUTCOME step();
+   STEP_OUTCOME Step();
 
    // Load.
-   void load(char *filename);
-   void load(FILE *);
+   void Load(char *filename);
+   void Load(FILE *);
 
    // Save.
-   void save(char *filename);
-   void save(FILE *);
+   void Store(char *filename);
+   void Store(FILE *);
 };
 #endif

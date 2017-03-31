@@ -42,57 +42,57 @@ public class Tmaze
 
    void addJunction(int mark, int direction, double probability)
    {
-      path.add(new Junction(mark, direction, probability));
+      path.Add(new Junction(mark, direction, probability));
    }
 
 
    void addJunction(Junction junction)
    {
-      path.add(junction);
+      path.Add(junction);
    }
 
 
    // Is given maze a duplicate?
-   bool isDuplicate(Tmaze maze)
+   bool IsDuplicate(Tmaze maze)
    {
-      if (path.size() != maze.path.size())
+      if (path.GetCount() != maze.path.GetCount())
       {
-         return(false);
+         return (false);
       }
-      for (int i = 0; i < path.size(); i++)
+      for (int i = 0; i < path.GetCount(); i++)
       {
-         if (path.get(i).mark != maze.path.get(i).mark)
+         if (path.Get(i).mark != maze.path.Get(i).mark)
          {
-            return(false);
+            return (false);
          }
-         if (path.get(i).direction != maze.path.get(i).direction)
+         if (path.Get(i).direction != maze.path.Get(i).direction)
          {
-            return(false);
+            return (false);
          }
       }
-      return(true);
+      return true;
    }
 
 
    void clearAnnotations()
    {
-      for (int i = 0; i < path.size(); i++)
+      for (int i = 0; i < path.GetCount(); i++)
       {
-         path.get(i).highlight   = false;
-         path.get(i).choice      = -1;
-         path.get(i).annotations = null;
+         path.Get(i).highlight   = false;
+         path.Get(i).choice      = -1;
+         path.Get(i).annotations = null;
       }
    }
 
 
-   void print()
+   void Print()
    {
       Junction junction;
 
       System.out.println("Mark\tDirection\tProbabilities");
-      for (int i = 0; i < path.size(); i++)
+      for (int i = 0; i < path.GetCount(); i++)
       {
-         junction = path.get(i);
+         junction = path.Get(i);
          if (junction.direction == 0)
          {
             System.out.println(junction.mark + "\tleft\t" +

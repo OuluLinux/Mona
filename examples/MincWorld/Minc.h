@@ -62,7 +62,7 @@ public:
    Mona *mona;
 
    // Constructors.
-   Minc(int numMarks, int intervals, RANDOM randomSeed);
+   Minc(int numMarks, int intervals, RANDOM random_seed);
    Minc();
 
    // Destructor.
@@ -90,18 +90,18 @@ public:
    Tmaze       *maze;
 
    // Load minc.
-   void load(char *filename);
-   void load(FILE *);
+   void Load(char *filename);
+   void Load(FILE *);
 
    // Save minc.
-   void save(char *filename);
-   void save(FILE *);
+   void Store(char *filename);
+   void Store(FILE *);
 
    // Random numbers.
-   RANDOM randomSeed;
+   RANDOM random_seed;
    Random *randomizer;
 
    // Identifier dispenser.
-   static int idDispenser;
+   static int id_dispenser;
 };
 #endif

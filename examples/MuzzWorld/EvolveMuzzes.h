@@ -1,3 +1,4 @@
+#if 0
 // For conditions of distribution and use, see copyright notice in muzz.hpp
 
 // Evolve muzzes.
@@ -6,10 +7,10 @@
 #define EVOLVE_MUZZES
 
 #ifdef WIN32
-#include <windows.h>
-#include <io.h>
+	#include <windows.h>
+	#include <io.h>
 #else
-#include <errno.h>
+	#include <errno.h>
 #endif
 #include <signal.h>
 #include "MuzzWorld.h"
@@ -26,6 +27,7 @@
 #define DEFAULT_MIN_TRAINING_TRIALS    5
 #define DEFAULT_MAX_TRAINING_TRIALS    10
 #define DEFAULT_MUTATION_RATE          0.25
-#define DEFAULT_MUZZ_CYCLES            500
+#define default_MUZZ_CYCLES            500
 #define SAVE_FREQUENCY                 10
+#endif
 #endif

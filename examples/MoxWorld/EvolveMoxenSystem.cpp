@@ -17,14 +17,14 @@ public class EvolveMoxenSystem
       "      -generations <evolution generations>\n" +
       "      -steps <moxen steps>\n" +
       "     [-stepGameOfLife]\n" +
-      "      -moxPopulations \"" + EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.getName() +
-      "\" | \"" + EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS.getName() + "\"\n" +
+      "      -moxPopulations \"" + EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.GetName() +
+      "\" | \"" + EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS.GetName() + "\"\n" +
       "      -loadCells <file name>\n" +
       "      -output <evolution output file name>\n" +
-      "     [-mutationRate <mutation rate>]\n" +
-      "     [-randomMutationRate <random mutation rate>]\n" +
+      "     [-mutation_rate <mutation rate>]\n" +
+      "     [-random_mutation_rate <random mutation rate>]\n" +
       "     [-maxSensorRange <maximum sensor range>]\n" +
-      "     [-randomSeed <random seed> (for new run)]\n" +
+      "     [-random_seed <random seed> (for new run)]\n" +
       "     [-logfile <log file name>]\n" +
       "     [-dashboard (run with mox world dashboard)]\n" +
       "  Resume run:\n" +
@@ -34,10 +34,10 @@ public class EvolveMoxenSystem
       "     [-stepGameOfLife]\n" +
       "      -input <evolution input file name>\n" +
       "      -output <evolution output file name>\n" +
-      "     [-mutationRate <mutation rate>]\n" +
-      "     [-randomMutationRate <random mutation rate>]\n" +
+      "     [-mutation_rate <mutation rate>]\n" +
+      "     [-random_mutation_rate <random mutation rate>]\n" +
       "     [-maxSensorRange <maximum sensor range>]\n" +
-      "     [-randomSeed <random seed> (for new run)]\n" +
+      "     [-random_seed <random seed> (for new run)]\n" +
       "     [-logfile <log file name>]\n" +
       "     [-dashboard (run with mox world dashboard)]\n" +
       "  Extract into mox_world_forager|predator_<mox id>.mw files:\n" +
@@ -49,37 +49,37 @@ public class EvolveMoxenSystem
       "      -print\n" +
       "      -input <evolution input file name>";
 
-   // Generations.
-   int Generation;
-   int Generations;
+   // generation_count.
+   int generation;
+   int generation_count;
 
    // Steps.
    int Steps;
 
    // Step Game of Life?
-   boolean StepGameOfLife;
+   bool StepGameOfLife;
 
    // Mox populations.
    EvolveCommon.MOX_POPULATIONS MoxPopulations;
 
    // File names.
-   String      CellsFileName;
-   String      InputFileName;
-   String      OutputFileName;
-   String      LogFileName;
-   PrintWriter LogWriter;
+   String      cells_file_name;
+   String      input_file_name;
+   String      output_file_name;
+   String      log_file_name;
+   PrintWriter log_writer;
 
    // Random numbers.
-   Random Randomizer;
+   Random randomizer;
 
    // Run with dashboard.
-   boolean Dashboard;
+   bool dashboard;
 
    // Extract moxen files.
-   boolean Extract;
+   bool Extract;
 
    // Print moxen property values.
-   boolean PrintProperties;
+   bool PrintProperties;
 
    // Maximum mox cycle time.
    long MaxMoxCycleTime;
@@ -97,23 +97,23 @@ public class EvolveMoxenSystem
       int i;
 
       // Get options.
-      Generation     = 0;
-      Generations    = -1;
+      generation     = 0;
+      generation_count    = -1;
       Steps          = -1;
       StepGameOfLife = false;
-      boolean gotStepGameOfLife = false;
+      bool gotStepGameOfLife = false;
       MoxPopulations = EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY;
-      boolean gotMoxPopulations = false;
-      CellsFileName = null;
-      InputFileName = OutputFileName = LogFileName = null;
-      LogWriter     = null;
-      boolean gotMutationRate       = false;
-      boolean gotRandomMutationRate = false;
-      boolean gotMaxSensorRange     = false;
-      boolean gotRandomSeed         = false;
+      bool gotMoxPopulations = false;
+      cells_file_name = null;
+      input_file_name = output_file_name = log_file_name = null;
+      log_writer     = null;
+      bool has_mutation_rate       = false;
+      bool has_random_mutation_rate = false;
+      bool has_max_sensor_range     = false;
+      bool has_random_seed         = false;
       Extract         = false;
       PrintProperties = false;
-      Dashboard       = false;
+      dashboard       = false;
       for (i = 0; i < args.length; i++)
       {
          if (args[i].equals("-generations"))
@@ -124,8 +124,8 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            Generations = Integer.parseInt(args[i]);
-            if (Generations < 0)
+            generation_count = Integer.parseInt(args[i]);
+            if (generation_count < 0)
             {
                System.err.println(Usage);
                System.exit(1);
@@ -165,11 +165,11 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            if (args[i].equals(EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.getName()))
+            if (args[i].equals(EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.GetName()))
             {
                MoxPopulations = EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY;
             }
-            else if (args[i].equals(EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS.getName()))
+            else if (args[i].equals(EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS.GetName()))
             {
                MoxPopulations = EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS;
             }
@@ -190,9 +190,9 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            if (CellsFileName == null)
+            if (cells_file_name == null)
             {
-               CellsFileName = new String(args[i]);
+               cells_file_name = new String(args[i]);
             }
             else
             {
@@ -210,7 +210,7 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            InputFileName = new String(args[i]);
+            input_file_name = new String(args[i]);
             continue;
          }
 
@@ -222,11 +222,11 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            OutputFileName = new String(args[i]);
+            output_file_name = new String(args[i]);
             continue;
          }
 
-         if (args[i].equals("-mutationRate"))
+         if (args[i].equals("-mutation_rate"))
          {
             i++;
             if (i >= args.length)
@@ -234,17 +234,17 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            EvolveCommon.MutationRate = Double.parseDouble(args[i]);
-            if ((EvolveCommon.MutationRate < 0.0) || (EvolveCommon.MutationRate > 1.0))
+            EvolveCommon.mutation_rate = Double.parseDouble(args[i]);
+            if ((EvolveCommon.mutation_rate < 0.0) || (EvolveCommon.mutation_rate > 1.0))
             {
                System.err.println(Usage);
                System.exit(1);
             }
-            gotMutationRate = true;
+            has_mutation_rate = true;
             continue;
          }
 
-         if (args[i].equals("-randomMutationRate"))
+         if (args[i].equals("-random_mutation_rate"))
          {
             i++;
             if (i >= args.length)
@@ -252,13 +252,13 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            EvolveCommon.RandomMutationRate = Double.parseDouble(args[i]);
-            if ((EvolveCommon.RandomMutationRate < 0.0) || (EvolveCommon.RandomMutationRate > 1.0))
+            EvolveCommon.Randommutation_rate = Double.parseDouble(args[i]);
+            if ((EvolveCommon.Randommutation_rate < 0.0) || (EvolveCommon.Randommutation_rate > 1.0))
             {
                System.err.println(Usage);
                System.exit(1);
             }
-            gotRandomMutationRate = true;
+            has_random_mutation_rate = true;
             continue;
          }
 
@@ -276,11 +276,11 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            gotMaxSensorRange = true;
+            has_max_sensor_range = true;
             continue;
          }
 
-         if (args[i].equals("-randomSeed"))
+         if (args[i].equals("-random_seed"))
          {
             i++;
             if (i >= args.length)
@@ -289,7 +289,7 @@ public class EvolveMoxenSystem
                System.exit(1);
             }
             EvolveCommon.RandomSeed = Integer.parseInt(args[i]);
-            gotRandomSeed           = true;
+            has_random_seed           = true;
             continue;
          }
 
@@ -301,13 +301,13 @@ public class EvolveMoxenSystem
                System.err.println(Usage);
                System.exit(1);
             }
-            LogFileName = new String(args[i]);
+            log_file_name = new String(args[i]);
             continue;
          }
 
          if (args[i].equals("-dashboard"))
          {
-            Dashboard = true;
+            dashboard = true;
             continue;
          }
 
@@ -330,11 +330,11 @@ public class EvolveMoxenSystem
       // Extract moxen files or print properties?
       if (Extract || PrintProperties)
       {
-         if ((Generations != -1) || (Steps != -1) || gotStepGameOfLife ||
-             gotMoxPopulations || (InputFileName == null) ||
-             (OutputFileName != null) || (CellsFileName != null) ||
-             (LogFileName != null) || gotMutationRate || gotRandomMutationRate ||
-             gotMaxSensorRange || gotRandomSeed || Dashboard)
+         if ((generation_count != -1) || (Steps != -1) || gotStepGameOfLife ||
+             gotMoxPopulations || (input_file_name == null) ||
+             (output_file_name != null) || (cells_file_name != null) ||
+             (log_file_name != null) || has_mutation_rate || has_random_mutation_rate ||
+             has_max_sensor_range || has_random_seed || dashboard)
          {
             System.err.println(Usage);
             System.exit(1);
@@ -347,9 +347,9 @@ public class EvolveMoxenSystem
       }
       else
       {
-         if (Generations == -1)
+         if (generation_count == -1)
          {
-            System.err.println("Generations option required");
+            System.err.println("generation_count option required");
             System.err.println(Usage);
             System.exit(1);
          }
@@ -361,16 +361,16 @@ public class EvolveMoxenSystem
             System.exit(1);
          }
 
-         if (OutputFileName == null)
+         if (output_file_name == null)
          {
             System.err.println("Output file required");
             System.err.println(Usage);
             System.exit(1);
          }
 
-         if (InputFileName != null)
+         if (input_file_name != null)
          {
-            if (gotMoxPopulations || (CellsFileName != null))
+            if (gotMoxPopulations || (cells_file_name != null))
             {
                System.err.println(Usage);
                System.exit(1);
@@ -378,7 +378,7 @@ public class EvolveMoxenSystem
          }
          else
          {
-            if (!gotMoxPopulations || (CellsFileName == null))
+            if (!gotMoxPopulations || (cells_file_name == null))
             {
                System.err.println(Usage);
                System.exit(1);
@@ -391,17 +391,17 @@ public class EvolveMoxenSystem
       PredatorMox.MAX_SENSOR_RANGE = EvolveCommon.MaxSensorRange;
 
       // Seed random numbers.
-      Randomizer = new Random(EvolveCommon.RandomSeed);
+      randomizer = new Random(EvolveCommon.RandomSeed);
 
       // Open log file?
-      if (LogFileName != null)
+      if (log_file_name != null)
       {
          try
          {
-            LogWriter = new PrintWriter(new FileOutputStream(new File(LogFileName)));
+            log_writer = new PrintWriter(new FileOutputStream(new File(log_file_name)));
          }
          catch (Exception e) {
-            System.err.println("Cannot open log file " + LogFileName +
+            System.err.println("Cannot open log file " + log_file_name +
                                ":" + e.getMessage());
             System.exit(1);
          }
@@ -413,20 +413,20 @@ public class EvolveMoxenSystem
    public void start()
    {
       // Initialize populations?
-      if (InputFileName == null)
+      if (input_file_name == null)
       {
-         init();
+         Init();
       }
       else
       {
          // Load populations.
-         load();
+         Load();
       }
 
       // Log run.
       log("Initializing evolve:");
       log("  Options:");
-      log("    generations=" + Generations);
+      log("    generations=" + generation_count);
       log("    steps=" + Steps);
       if (StepGameOfLife)
       {
@@ -436,25 +436,25 @@ public class EvolveMoxenSystem
       {
          log("    stepGameOfLife=false");
       }
-      if (InputFileName == null)
+      if (input_file_name == null)
       {
          if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY)
          {
-            log("    MoxPopulations=" + EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.getName());
+            log("    MoxPopulations=" + EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.GetName());
          }
          else
          {
-            log("    MoxPopulations=" + EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS.getName());
+            log("    MoxPopulations=" + EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS.GetName());
          }
-         log("    loadCells=" + CellsFileName);
+         log("    loadCells=" + cells_file_name);
       }
       else
       {
-         log("    input=" + InputFileName);
+         log("    input=" + input_file_name);
       }
-      log("    output=" + OutputFileName);
-      log("    MutationRate=" + EvolveCommon.MutationRate);
-      log("    RandomMutationRate=" + EvolveCommon.RandomMutationRate);
+      log("    output=" + output_file_name);
+      log("    mutation_rate=" + EvolveCommon.mutation_rate);
+      log("    Randommutation_rate=" + EvolveCommon.Randommutation_rate);
       log("    MaxSensorRange=" + EvolveCommon.MaxSensorRange);
       log("    RandomSeed=" + EvolveCommon.RandomSeed);
       log("  Parameters:");
@@ -487,39 +487,39 @@ public class EvolveMoxenSystem
 
       // Evolution loop.
       log("Begin evolve:");
-      for (Generations += Generation; Generation < Generations; Generation++)
+      for (generation_count += generation; generation < generation_count; generation++)
       {
-         log("Generation=" + Generation);
+         log("generation=" + generation);
 
-         evolve(Generation);
+         evolve(generation);
 
          // Save populations?
-         if ((Generation % EvolveCommon.SAVE_FREQUENCY) == 0)
+         if ((generation % EvolveCommon.SAVE_FREQUENCY) == 0)
          {
-            save(Generation);
+            Store(generation);
          }
       }
 
       // Save populations.
-      save(Generation - 1);
+      Store(generation - 1);
 
       log("End evolve");
    }
 
 
    // Initialize evolution.
-   void init()
+   void Init()
    {
       int i;
 
       try
       {
          moxWorld = new MoxWorld();
-         moxWorld.loadCells(CellsFileName);
+         moxWorld.loadCells(cells_file_name);
       }
       catch (Exception e) {
          System.err.println("Cannot load cells file " +
-                            CellsFileName +
+                            cells_file_name +
                             ":" + e.getMessage());
          System.exit(1);
       }
@@ -529,15 +529,15 @@ public class EvolveMoxenSystem
       {
          if (i == 0)
          {
-            ForagerPopulation[i] =
-               new EvolveCommon.Member(Mox.SPECIES.FORAGER.getValue(), 0,
-                                       0, 0, Mox.DIRECTION.NORTH.getValue(), Randomizer);
+            forager_population[i] =
+               new EvolveCommon.Member(Mox.SPECIES.FORAGER.GetValue(), 0,
+                                       0, 0, Mox.DIRECTION.NORTH.GetValue(), randomizer);
          }
          else
          {
             // Mutate parameters.
-            ForagerPopulation[i] =
-               new EvolveCommon.Member(ForagerPopulation[0], 0, Randomizer);
+            forager_population[i] =
+               new EvolveCommon.Member(forager_population[0], 0, randomizer);
          }
       }
       if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS)
@@ -547,17 +547,17 @@ public class EvolveMoxenSystem
          {
             if (i == 0)
             {
-               PredatorPopulation[i] =
-                  new EvolveCommon.Member(Mox.SPECIES.PREDATOR.getValue(), 0,
+               Predatorpopulation[i] =
+                  new EvolveCommon.Member(Mox.SPECIES.PREDATOR.GetValue(), 0,
                                           moxWorld.getWidth() - 1,
                                           moxWorld.getHeight() - 1,
-                                          Mox.DIRECTION.SOUTH.getValue(), Randomizer);
+                                          Mox.DIRECTION.SOUTH.GetValue(), randomizer);
             }
             else
             {
                // Mutate parameters.
-               PredatorPopulation[i] =
-                  new EvolveCommon.Member(PredatorPopulation[0], 0, Randomizer);
+               Predatorpopulation[i] =
+                  new EvolveCommon.Member(Predatorpopulation[0], 0, randomizer);
             }
          }
       }
@@ -565,7 +565,7 @@ public class EvolveMoxenSystem
 
 
    // Load evolution.
-   void load()
+   void Load()
    {
       int                  i;
       FileInputStream      input  = null;
@@ -575,23 +575,23 @@ public class EvolveMoxenSystem
       // Open the file.
       try
       {
-         input  = new FileInputStream(new File(InputFileName));
+         input  = new FileInputStream(new File(input_file_name));
          reader = new DataInputStream(input);
-         fd     = new NativeFileDescriptor(InputFileName, "r");
+         fd     = new NativeFileDescriptor(input_file_name, "r");
          fd.open();
       }
       catch (Exception e) {
-         System.err.println("Cannot open input file " + InputFileName +
+         System.err.println("Cannot open input file " + input_file_name +
                             ":" + e.getMessage());
       }
 
       try
       {
-         Generation = Utility.loadInt(reader);
-         Generation++;
+         generation = Utility.loadInt(reader);
+         generation++;
       }
       catch (Exception e) {
-         System.err.println("Cannot load from file " + InputFileName +
+         System.err.println("Cannot load from file " + input_file_name +
                             ":" + e.getMessage());
          System.exit(1);
       }
@@ -600,10 +600,10 @@ public class EvolveMoxenSystem
       try
       {
          moxWorld = new MoxWorld();
-         moxWorld.load(input, fd);
+         moxWorld.Load(input, fd);
       }
       catch (Exception e) {
-         System.err.println("Cannot load mox world from file " + InputFileName +
+         System.err.println("Cannot load mox world from file " + input_file_name +
                             ":" + e.getMessage());
          System.exit(1);
       }
@@ -611,7 +611,7 @@ public class EvolveMoxenSystem
       // Load populations.
       try
       {
-         if (Utility.loadInt(reader) == EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.getValue())
+         if (Utility.loadInt(reader) == EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.GetValue())
          {
             MoxPopulations = EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY;
          }
@@ -622,18 +622,18 @@ public class EvolveMoxenSystem
          ForagerPopulation = new EvolveCommon.Member[EvolveCommon.FORAGER_POPULATION_SIZE];
          for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
          {
-            ForagerPopulation[i] =
-               new EvolveCommon.Member(Mox.SPECIES.FORAGER.getValue(), 0, 0, 0, 0, Randomizer);
-            ForagerPopulation[i].load(input, fd);
+            forager_population[i] =
+               new EvolveCommon.Member(Mox.SPECIES.FORAGER.GetValue(), 0, 0, 0, 0, randomizer);
+            forager_population[i].Load(input, fd);
          }
          if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS)
          {
             PredatorPopulation = new EvolveCommon.Member[EvolveCommon.PREDATOR_POPULATION_SIZE];
             for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
             {
-               PredatorPopulation[i] =
-                  new EvolveCommon.Member(Mox.SPECIES.PREDATOR.getValue(), 0, 0, 0, 0, Randomizer);
-               PredatorPopulation[i].load(input, fd);
+               Predatorpopulation[i] =
+                  new EvolveCommon.Member(Mox.SPECIES.PREDATOR.GetValue(), 0, 0, 0, 0, randomizer);
+               Predatorpopulation[i].Load(input, fd);
             }
          }
 
@@ -641,7 +641,7 @@ public class EvolveMoxenSystem
          fd.close();
       }
       catch (Exception e) {
-         System.err.println("Cannot load populations from file " + InputFileName +
+         System.err.println("Cannot load populations from file " + input_file_name +
                             ":" + e.getMessage());
          System.exit(1);
       }
@@ -649,7 +649,7 @@ public class EvolveMoxenSystem
 
 
    // Save evolution.
-   void save(int generation)
+   void Store(int generation)
    {
       int                  i;
       FileOutputStream     output = null;
@@ -658,13 +658,13 @@ public class EvolveMoxenSystem
 
       try
       {
-         output = new FileOutputStream(new File(OutputFileName));
+         output = new FileOutputStream(new File(output_file_name));
          writer = new PrintWriter(output);
-         fd     = new NativeFileDescriptor(OutputFileName, "w");
+         fd     = new NativeFileDescriptor(output_file_name, "w");
          fd.open();
       }
       catch (Exception e) {
-         System.err.println("Cannot open output file " + OutputFileName +
+         System.err.println("Cannot open output file " + output_file_name +
                             ":" + e.getMessage());
          System.exit(1);
       }
@@ -675,7 +675,7 @@ public class EvolveMoxenSystem
          writer.flush();
       }
       catch (Exception e) {
-         System.err.println("Cannot save to file " + OutputFileName +
+         System.err.println("Cannot save to file " + output_file_name +
                             ":" + e.getMessage());
          System.exit(1);
       }
@@ -683,10 +683,10 @@ public class EvolveMoxenSystem
       // Save mox world.
       try
       {
-         moxWorld.save(output, fd);
+         moxWorld.Store(output, fd);
       }
       catch (Exception e) {
-         System.err.println("Cannot save mox world to file " + OutputFileName +
+         System.err.println("Cannot save mox world to file " + output_file_name +
                             ":" + e.getMessage());
          System.exit(1);
       }
@@ -696,22 +696,22 @@ public class EvolveMoxenSystem
       {
          if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY)
          {
-            Utility.saveInt(writer, EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.getValue());
+            Utility.saveInt(writer, EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY.GetValue());
          }
          else
          {
-            Utility.saveInt(writer, EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS.getValue());
+            Utility.saveInt(writer, EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS.GetValue());
          }
          writer.flush();
          for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
          {
-            ForagerPopulation[i].save(output, fd);
+            forager_population[i].Store(output, fd);
          }
          if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS)
          {
             for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
             {
-               PredatorPopulation[i].save(output, fd);
+               Predatorpopulation[i].Store(output, fd);
             }
          }
 
@@ -719,7 +719,7 @@ public class EvolveMoxenSystem
          fd.close();
       }
       catch (Exception e) {
-         System.err.println("Cannot save populations to file " + OutputFileName +
+         System.err.println("Cannot save populations to file " + output_file_name +
                             ":" + e.getMessage());
          System.exit(1);
       }
@@ -730,24 +730,24 @@ public class EvolveMoxenSystem
    void evolve(int generation)
    {
       // Evaluate member fitness.
-      evaluate(generation);
+      Evaluate(generation);
 
       // Prune unfit members.
-      prune();
+      Prune();
 
       // Create new members by mutation.
-      mutate();
+      Mutate();
 
       // Create new members by mating.
-      mate();
+      DoMating();
    }
 
 
    // Evaluate member fitnesses.
-   void evaluate(int generation)
+   void Evaluate(int generation)
    {
       int i, step;
-      int blueFoodNeedIdx, moxFoodNeedIdx;
+      int blue_food_need_idx, mox_food_need_idx;
       Mox mox;
 
       ArrayList<Mox> moxen;
@@ -765,36 +765,36 @@ public class EvolveMoxenSystem
 
       for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
       {
-         ForagerPopulation[i].fitness = 0.0;
+         forager_population[i].fitness = 0.0;
       }
       if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS)
       {
          for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
          {
-            PredatorPopulation[i].fitness = 0.0;
+            Predatorpopulation[i].fitness = 0.0;
          }
       }
-      blueFoodNeedIdx = ForagerMox.NEED_TYPE.BLUE_FOOD.getValue();
-      moxFoodNeedIdx  = PredatorMox.NEED_TYPE.MOX_FOOD.getValue();
+      blue_food_need_idx = ForagerMox.NEED_TYPE.BLUE_FOOD.GetValue();
+      mox_food_need_idx  = PredatorMox.NEED_TYPE.MOX_FOOD.GetValue();
 
       // Step world.
-      if (Dashboard)
+      if (dashboard)
       {
-         moxWorld.createDashboard();
-         Dashboard = moxWorld.updateDashboard(0, Steps);
+         moxWorld.createdashboard();
+         dashboard = moxWorld.updatedashboard(0, Steps);
       }
       for (step = 0; step < Steps; step++)
       {
          for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
          {
-            mox = ForagerPopulation[i].mox;
+            mox = forager_population[i].mox;
             mox.startCycleTimeAccumulation();
          }
          if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS)
          {
             for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
             {
-               mox = PredatorPopulation[i].mox;
+               mox = Predatorpopulation[i].mox;
                mox.startCycleTimeAccumulation();
             }
          }
@@ -805,14 +805,14 @@ public class EvolveMoxenSystem
          // Update forager fitness.
          for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
          {
-            mox = ForagerPopulation[i].mox;
+            mox = forager_population[i].mox;
             if (mox.isAlive)
             {
                // Increase fitness when food found.
-               if (mox.getNeed(blueFoodNeedIdx) == 0.0)
+               if (mox.GetNeed(blue_food_need_idx) == 0.0)
                {
-                  ForagerPopulation[i].fitness += 1.0;
-                  mox.setNeed(blueFoodNeedIdx, ForagerMox.BLUE_FOOD_NEED_VALUE);
+                  forager_population[i].fitness += 1.0;
+                  mox.SetNeed(blue_food_need_idx, ForagerMox.BLUE_FOOD_NEED_VALUE);
                }
 
                // Kill sluggish mox?
@@ -828,14 +828,14 @@ public class EvolveMoxenSystem
          {
             for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
             {
-               mox = PredatorPopulation[i].mox;
+               mox = Predatorpopulation[i].mox;
                if (mox.isAlive)
                {
                   // Increase fitness when food found.
-                  if (mox.getNeed(moxFoodNeedIdx) == 0.0)
+                  if (mox.GetNeed(mox_food_need_idx) == 0.0)
                   {
-                     PredatorPopulation[i].fitness += 1.0;
-                     mox.setNeed(moxFoodNeedIdx, PredatorMox.MOX_FOOD_NEED_VALUE);
+                     Predatorpopulation[i].fitness += 1.0;
+                     mox.SetNeed(mox_food_need_idx, PredatorMox.MOX_FOOD_NEED_VALUE);
                   }
 
                   // Kill sluggish mox?
@@ -854,26 +854,26 @@ public class EvolveMoxenSystem
          }
 
          // Update dashboard?
-         if (Dashboard)
+         if (dashboard)
          {
-            Dashboard = moxWorld.updateDashboard(step + 1, Steps);
+            dashboard = moxWorld.updatedashboard(step + 1, Steps);
          }
       }
-      moxWorld.destroyDashboard();
+      moxWorld.destroydashboard();
       moxWorld.setMoxen(new ArrayList<Mox>());
       moxWorld.reset();
 
       log("  Foragers:");
       for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
       {
-         log("    member=" + i + ", " + ForagerPopulation[i].getInfo());
+         log("    member=" + i + ", " + forager_population[i].getInfo());
       }
       if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS)
       {
          log("  Predators:");
          for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
          {
-            log("    member=" + i + ", " + PredatorPopulation[i].getInfo());
+            log("    member=" + i + ", " + Predatorpopulation[i].getInfo());
          }
       }
    }
@@ -883,34 +883,34 @@ public class EvolveMoxenSystem
    void populateMoxen(ArrayList<Mox> moxen)
    {
       int i, x, y, direction;
-      int blueFoodNeedIdx, moxFoodNeedIdx;
+      int blue_food_need_idx, mox_food_need_idx;
       Mox mox;
 
-      blueFoodNeedIdx = ForagerMox.NEED_TYPE.BLUE_FOOD.getValue();
-      moxFoodNeedIdx  = PredatorMox.NEED_TYPE.MOX_FOOD.getValue();
+      blue_food_need_idx = ForagerMox.NEED_TYPE.BLUE_FOOD.GetValue();
+      mox_food_need_idx  = PredatorMox.NEED_TYPE.MOX_FOOD.GetValue();
 
       for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
       {
-         mox = ForagerPopulation[i].mox;
-         mox.setNeed(blueFoodNeedIdx, ForagerMox.BLUE_FOOD_NEED_VALUE);
-         x         = Randomizer.nextInt(moxWorld.getWidth());
-         y         = Randomizer.nextInt(moxWorld.getHeight());
-         direction = Randomizer.nextInt(4);
+         mox = forager_population[i].mox;
+         mox.SetNeed(blue_food_need_idx, ForagerMox.BLUE_FOOD_NEED_VALUE);
+         x         = randomizer.nextInt(moxWorld.getWidth());
+         y         = randomizer.nextInt(moxWorld.getHeight());
+         direction = randomizer.nextInt(4);
          mox.setSpacialProperties(x, y, direction);
-         moxen.add(mox);
+         moxen.Add(mox);
       }
 
       if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS)
       {
          for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
          {
-            mox = PredatorPopulation[i].mox;
-            mox.setNeed(moxFoodNeedIdx, PredatorMox.MOX_FOOD_NEED_VALUE);
-            x         = Randomizer.nextInt(moxWorld.getWidth());
-            y         = Randomizer.nextInt(moxWorld.getHeight());
-            direction = Randomizer.nextInt(4);
+            mox = Predatorpopulation[i].mox;
+            mox.SetNeed(mox_food_need_idx, PredatorMox.MOX_FOOD_NEED_VALUE);
+            x         = randomizer.nextInt(moxWorld.getWidth());
+            y         = randomizer.nextInt(moxWorld.getHeight());
+            direction = randomizer.nextInt(4);
             mox.setSpacialProperties(x, y, direction);
-            moxen.add(mox);
+            moxen.Add(mox);
          }
       }
    }
@@ -921,7 +921,7 @@ public class EvolveMoxenSystem
    void prepareEvaluation()
    {
       int i, step;
-      int blueFoodNeedIdx, moxFoodNeedIdx;
+      int blue_food_need_idx, mox_food_need_idx;
       Mox mox;
 
       ArrayList<Mox> moxen;
@@ -934,22 +934,22 @@ public class EvolveMoxenSystem
       moxWorld.setMoxen(moxen);
       moxWorld.reset();
 
-      blueFoodNeedIdx = ForagerMox.NEED_TYPE.BLUE_FOOD.getValue();
-      moxFoodNeedIdx  = PredatorMox.NEED_TYPE.MOX_FOOD.getValue();
+      blue_food_need_idx = ForagerMox.NEED_TYPE.BLUE_FOOD.GetValue();
+      mox_food_need_idx  = PredatorMox.NEED_TYPE.MOX_FOOD.GetValue();
 
       // Step world.
       for (step = 0; step < Steps; step++)
       {
          for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
          {
-            mox = ForagerPopulation[i].mox;
+            mox = forager_population[i].mox;
             mox.startCycleTimeAccumulation();
          }
          if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_AND_PREDATORS)
          {
             for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
             {
-               mox = PredatorPopulation[i].mox;
+               mox = Predatorpopulation[i].mox;
                mox.startCycleTimeAccumulation();
             }
          }
@@ -959,7 +959,7 @@ public class EvolveMoxenSystem
 
          for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
          {
-            mox = ForagerPopulation[i].mox;
+            mox = forager_population[i].mox;
             if (mox.isAlive)
             {
                if (mox.getCycleTimeAccumulator() > MaxMoxCycleTime)
@@ -968,9 +968,9 @@ public class EvolveMoxenSystem
                }
                else
                {
-                  if (mox.getNeed(blueFoodNeedIdx) == 0.0)
+                  if (mox.GetNeed(blue_food_need_idx) == 0.0)
                   {
-                     mox.setNeed(blueFoodNeedIdx, ForagerMox.BLUE_FOOD_NEED_VALUE);
+                     mox.SetNeed(blue_food_need_idx, ForagerMox.BLUE_FOOD_NEED_VALUE);
                   }
                }
             }
@@ -980,7 +980,7 @@ public class EvolveMoxenSystem
          {
             for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
             {
-               mox = PredatorPopulation[i].mox;
+               mox = Predatorpopulation[i].mox;
                if (mox.isAlive)
                {
                   if (mox.getCycleTimeAccumulator() > MaxMoxCycleTime)
@@ -989,9 +989,9 @@ public class EvolveMoxenSystem
                   }
                   else
                   {
-                     if (mox.getNeed(moxFoodNeedIdx) == 0.0)
+                     if (mox.GetNeed(mox_food_need_idx) == 0.0)
                      {
-                        mox.setNeed(moxFoodNeedIdx, PredatorMox.MOX_FOOD_NEED_VALUE);
+                        mox.SetNeed(mox_food_need_idx, PredatorMox.MOX_FOOD_NEED_VALUE);
                      }
                   }
                }
@@ -1011,7 +1011,7 @@ public class EvolveMoxenSystem
 
 
    // Prune unfit members.
-   void prune()
+   void Prune()
    {
       double max;
       int    i, j, m;
@@ -1028,7 +1028,7 @@ public class EvolveMoxenSystem
          m = -1;
          for (j = 0; j < EvolveCommon.FORAGER_POPULATION_SIZE; j++)
          {
-            member = ForagerPopulation[j];
+            member = forager_population[j];
             if (member == null)
             {
                continue;
@@ -1039,23 +1039,23 @@ public class EvolveMoxenSystem
                max = member.fitness;
             }
          }
-         member = ForagerPopulation[m];
-         ForagerPopulation[m] = null;
-         fitPopulation[i]     = member;
+         member = forager_population[m];
+         forager_population[m] = null;
+         fitpopulation[i]     = member;
          log("    " + member.getInfo());
       }
       for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
       {
-         if (ForagerPopulation[i] != null)
+         if (forager_population[i] != null)
          {
-            ForagerPopulation[i].clear();
-            ForagerPopulation[i] = null;
+            forager_population[i].Clear();
+            forager_population[i] = null;
          }
       }
       for (i = 0; i < EvolveCommon.FORAGER_FIT_POPULATION_SIZE; i++)
       {
-         ForagerPopulation[i] = fitPopulation[i];
-         fitPopulation[i]     = null;
+         forager_population[i] = fitpopulation[i];
+         fitpopulation[i]     = null;
       }
 
       if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY)
@@ -1071,7 +1071,7 @@ public class EvolveMoxenSystem
          m = -1;
          for (j = 0; j < EvolveCommon.PREDATOR_POPULATION_SIZE; j++)
          {
-            member = PredatorPopulation[j];
+            member = Predatorpopulation[j];
             if (member == null)
             {
                continue;
@@ -1082,27 +1082,27 @@ public class EvolveMoxenSystem
                max = member.fitness;
             }
          }
-         member = PredatorPopulation[m];
-         PredatorPopulation[m] = null;
-         fitPopulation[i]      = member;
+         member = Predatorpopulation[m];
+         Predatorpopulation[m] = null;
+         fitpopulation[i]      = member;
          log("    " + member.getInfo());
       }
       for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
       {
-         if (PredatorPopulation[i] != null)
+         if (Predatorpopulation[i] != null)
          {
-            PredatorPopulation[i] = null;
+            Predatorpopulation[i] = null;
          }
       }
       for (i = 0; i < EvolveCommon.PREDATOR_FIT_POPULATION_SIZE; i++)
       {
-         PredatorPopulation[i] = fitPopulation[i];
+         Predatorpopulation[i] = fitpopulation[i];
       }
    }
 
 
    // Mutate members.
-   void mutate()
+   void Mutate()
    {
       int i, j;
 
@@ -1113,12 +1113,12 @@ public class EvolveMoxenSystem
       for (i = 0; i < EvolveCommon.FORAGER_NUM_MUTANTS; i++)
       {
          // Select a fit member to mutate.
-         j      = Randomizer.nextInt(EvolveCommon.FORAGER_FIT_POPULATION_SIZE);
-         member = ForagerPopulation[j];
+         j      = randomizer.nextInt(EvolveCommon.FORAGER_FIT_POPULATION_SIZE);
+         member = forager_population[j];
 
          // Create mutant member.
-         mutant = new EvolveCommon.Member(member, member.generation + 1, Randomizer);
-         ForagerPopulation[EvolveCommon.FORAGER_FIT_POPULATION_SIZE + i] = mutant;
+         mutant = new EvolveCommon.Member(member, member.generation + 1, randomizer);
+         forager_population[EvolveCommon.FORAGER_FIT_POPULATION_SIZE + i] = mutant;
          log("    member=" + j + ", " + member.getInfo() +
              " -> member=" + (EvolveCommon.FORAGER_FIT_POPULATION_SIZE + i) +
              ", " + mutant.getInfo());
@@ -1133,12 +1133,12 @@ public class EvolveMoxenSystem
       for (i = 0; i < EvolveCommon.PREDATOR_NUM_MUTANTS; i++)
       {
          // Select a fit member to mutate.
-         j      = Randomizer.nextInt(EvolveCommon.PREDATOR_FIT_POPULATION_SIZE);
-         member = PredatorPopulation[j];
+         j      = randomizer.nextInt(EvolveCommon.PREDATOR_FIT_POPULATION_SIZE);
+         member = Predatorpopulation[j];
 
          // Create mutant member.
-         mutant = new EvolveCommon.Member(member, member.generation + 1, Randomizer);
-         PredatorPopulation[EvolveCommon.PREDATOR_FIT_POPULATION_SIZE + i] = mutant;
+         mutant = new EvolveCommon.Member(member, member.generation + 1, randomizer);
+         Predatorpopulation[EvolveCommon.PREDATOR_FIT_POPULATION_SIZE + i] = mutant;
          log("    member=" + j + ", " + member.getInfo() +
              " -> member=" + (EvolveCommon.PREDATOR_FIT_POPULATION_SIZE + i) +
              ", " + mutant.getInfo());
@@ -1147,7 +1147,7 @@ public class EvolveMoxenSystem
 
 
    // Produce offspring by melding parent parameters.
-   void mate()
+   void DoMating()
    {
       int i, j, k;
 
@@ -1160,16 +1160,16 @@ public class EvolveMoxenSystem
          for (i = 0; i < EvolveCommon.FORAGER_NUM_OFFSPRING; i++)
          {
             // Select a pair of fit members to mate.
-            j       = Randomizer.nextInt(EvolveCommon.FORAGER_FIT_POPULATION_SIZE);
-            member1 = ForagerPopulation[j];
-            while ((k = Randomizer.nextInt(EvolveCommon.FORAGER_FIT_POPULATION_SIZE)) == j) {}
-            member2 = ForagerPopulation[k];
+            j       = randomizer.nextInt(EvolveCommon.FORAGER_FIT_POPULATION_SIZE);
+            member1 = forager_population[j];
+            while ((k = randomizer.nextInt(EvolveCommon.FORAGER_FIT_POPULATION_SIZE)) == j) {}
+            member2 = forager_population[k];
 
             // Create offspring.
             offspring = new EvolveCommon.Member(member1, member2,
                                                 (member1.generation > member2.generation ?
-                                                 member1.generation : member2.generation) + 1, Randomizer);
-            ForagerPopulation[EvolveCommon.FORAGER_FIT_POPULATION_SIZE +
+                                                 member1.generation : member2.generation) + 1, randomizer);
+            forager_population[EvolveCommon.FORAGER_FIT_POPULATION_SIZE +
                               EvolveCommon.FORAGER_NUM_MUTANTS + i] = offspring;
             log("    member=" + j + ", " + member1.getInfo() + " + member=" +
                 k + ", " + member2.getInfo() +
@@ -1190,16 +1190,16 @@ public class EvolveMoxenSystem
          for (i = 0; i < EvolveCommon.PREDATOR_NUM_OFFSPRING; i++)
          {
             // Select a pair of fit members to mate.
-            j       = Randomizer.nextInt(EvolveCommon.PREDATOR_FIT_POPULATION_SIZE);
-            member1 = PredatorPopulation[j];
-            while ((k = Randomizer.nextInt(EvolveCommon.PREDATOR_FIT_POPULATION_SIZE)) == j) {}
-            member2 = PredatorPopulation[k];
+            j       = randomizer.nextInt(EvolveCommon.PREDATOR_FIT_POPULATION_SIZE);
+            member1 = Predatorpopulation[j];
+            while ((k = randomizer.nextInt(EvolveCommon.PREDATOR_FIT_POPULATION_SIZE)) == j) {}
+            member2 = Predatorpopulation[k];
 
             // Create offspring.
             offspring = new EvolveCommon.Member(member1, member2,
                                                 (member1.generation > member2.generation ?
-                                                 member1.generation : member2.generation) + 1, Randomizer);
-            PredatorPopulation[EvolveCommon.PREDATOR_FIT_POPULATION_SIZE +
+                                                 member1.generation : member2.generation) + 1, randomizer);
+            Predatorpopulation[EvolveCommon.PREDATOR_FIT_POPULATION_SIZE +
                                EvolveCommon.PREDATOR_NUM_MUTANTS + i] = offspring;
             log("    member=" + j + ", " + member1.getInfo() + " + member=" +
                 k + ", " + member2.getInfo() +
@@ -1215,19 +1215,19 @@ public class EvolveMoxenSystem
    void extract()
    {
       int    i;
-      int    blueFoodNeedIdx, moxFoodNeedIdx;
+      int    blue_food_need_idx, mox_food_need_idx;
       Mox    mox;
       String filename;
 
       // Extract foragers.
-      blueFoodNeedIdx = ForagerMox.NEED_TYPE.BLUE_FOOD.getValue();
+      blue_food_need_idx = ForagerMox.NEED_TYPE.BLUE_FOOD.GetValue();
       for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
       {
          // Set up mox world.
-         mox = ForagerPopulation[i].mox;
-         mox.setNeed(blueFoodNeedIdx, ForagerMox.BLUE_FOOD_NEED_VALUE);
+         mox = forager_population[i].mox;
+         mox.SetNeed(blue_food_need_idx, ForagerMox.BLUE_FOOD_NEED_VALUE);
          ArrayList<Mox> moxen = new ArrayList<Mox>(1);
-         moxen.add(0, mox);
+         moxen.Add(0, mox);
 
          // Save mox world.
          filename = "mox_world_forager_" + mox.id + ".mw";
@@ -1235,7 +1235,7 @@ public class EvolveMoxenSystem
          moxWorld.reset();
          try
          {
-            moxWorld.save(filename);
+            moxWorld.Store(filename);
          }
          catch (Exception e) {
             System.err.println("Cannot save mox world to file " + filename +
@@ -1250,14 +1250,14 @@ public class EvolveMoxenSystem
       }
 
       // Extract predators.
-      moxFoodNeedIdx = PredatorMox.NEED_TYPE.MOX_FOOD.getValue();
+      mox_food_need_idx = PredatorMox.NEED_TYPE.MOX_FOOD.GetValue();
       for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
       {
          // Set up mox world.
-         mox = PredatorPopulation[i].mox;
-         mox.setNeed(moxFoodNeedIdx, PredatorMox.MOX_FOOD_NEED_VALUE);
+         mox = Predatorpopulation[i].mox;
+         mox.SetNeed(mox_food_need_idx, PredatorMox.MOX_FOOD_NEED_VALUE);
          ArrayList<Mox> moxen = new ArrayList<Mox>(1);
-         moxen.add(0, mox);
+         moxen.Add(0, mox);
 
          // Save mox world.
          filename = "mox_world_predator_" + mox.id + ".mw";
@@ -1265,7 +1265,7 @@ public class EvolveMoxenSystem
          moxWorld.reset();
          try
          {
-            moxWorld.save(filename);
+            moxWorld.Store(filename);
          }
          catch (Exception e) {
             System.err.println("Cannot save mox world to file " + filename +
@@ -1289,7 +1289,7 @@ public class EvolveMoxenSystem
       for (i = 0; i < EvolveCommon.FORAGER_POPULATION_SIZE; i++)
       {
          System.out.println("-----------------------------");
-         ForagerPopulation[i].printProperties();
+         forager_population[i].printProperties();
       }
 
       if (MoxPopulations == EvolveCommon.MOX_POPULATIONS.FORAGERS_ONLY)
@@ -1303,7 +1303,7 @@ public class EvolveMoxenSystem
       for (i = 0; i < EvolveCommon.PREDATOR_POPULATION_SIZE; i++)
       {
          System.out.println("-----------------------------");
-         PredatorPopulation[i].printProperties();
+         Predatorpopulation[i].printProperties();
       }
    }
 
@@ -1311,10 +1311,10 @@ public class EvolveMoxenSystem
    // Logging.
    void log(String message)
    {
-      if (LogWriter != null)
+      if (log_writer != null)
       {
-         LogWriter.println(message);
-         LogWriter.flush();
+         log_writer.println(message);
+         log_writer.flush();
       }
    }
 

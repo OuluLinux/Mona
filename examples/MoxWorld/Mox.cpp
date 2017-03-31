@@ -18,13 +18,13 @@ public abstract class Mox
    public int     direction;
    public int     x2, y2;
    public int     direction2;
-   public boolean isAlive;
+   public bool isAlive;
    public int     driverType;
    public int     driverResponse;
 
    // Neural network.
    public Mona mona;
-   float[] sensors;
+   Vector<double> sensors;
    int response;
 
    // Mox species.
@@ -40,13 +40,13 @@ public abstract class Mox
          this.value = value;
       }
 
-      public int getValue()
+      public int GetValue()
       {
-         return(value);
+         return (value);
       }
 
 
-      public void setValue(int value)
+      public void SetValue(int value)
       {
          this.value = value;
       }
@@ -68,13 +68,13 @@ public abstract class Mox
          this.value = value;
       }
 
-      public int getValue()
+      public int GetValue()
       {
-         return(value);
+         return (value);
       }
 
 
-      public void setValue(int value)
+      public void SetValue(int value)
       {
          this.value = value;
       }
@@ -104,9 +104,9 @@ public abstract class Mox
          this.value = value;
       }
 
-      public int getValue()
+      public int GetValue()
       {
-         return(value);
+         return (value);
       }
    }
 
@@ -128,9 +128,9 @@ public abstract class Mox
          this.value = value;
       }
 
-      public int getValue()
+      public int GetValue()
       {
-         return(value);
+         return (value);
       }
    }
 
@@ -139,7 +139,7 @@ public abstract class Mox
 
    // Needs.
    public double[] needValues;
-   public double[] goalValues;
+   public double[] goal_values;
    public          String[] needNames;
 
    // Driver type.
@@ -156,9 +156,9 @@ public abstract class Mox
          this.value = value;
       }
 
-      public int getValue()
+      public int GetValue()
       {
-         return(value);
+         return (value);
       }
    }
 
@@ -166,24 +166,24 @@ public abstract class Mox
    protected Object mutex;
 
    // Cycle time accumulator.
-   boolean accumulateCycleTime;
+   bool accumulateCycleTime;
    long    cycleTimeAccumulator;
 
    // Constructor.
    public Mox()
    {
       mutex   = new Object();
-      sensors = new float[SENSOR_CONFIG.NUM_SENSORS.getValue()];
+      sensors = new float[SENSOR_CONFIG.NUM_SENSORS.GetValue()];
       mona    = null;
-      clear();
+      Clear();
    }
 
 
    // Set properties.
    void setProperties(int id, int species, int x, int y,
-                      int direction, boolean isAlive)
+                      int direction, bool isAlive)
    {
-      clear();
+      Clear();
       this.id      = id;
       this.species = species;
       setSpacialProperties(x, y, direction);
@@ -207,35 +207,35 @@ public abstract class Mox
       y              = y2;
       direction      = direction2;
       isAlive        = true;
-      driverType     = DRIVER_TYPE.MOX.getValue();
-      driverResponse = RESPONSE_TYPE.NULL_RESPONSE.getValue();
-      for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.getValue(); i++)
+      driverType     = DRIVER_TYPE.MOX.GetValue();
+      driverResponse = RESPONSE_TYPE.NULL_RESPONSE.GetValue();
+      for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++)
       {
          sensors[i] = 0.0f;
       }
-      response = RESPONSE_TYPE.NULL_RESPONSE.getValue();
+      response = RESPONSE_TYPE.NULL_RESPONSE.GetValue();
 
       synchronized (mutex)
       {
-         mona.clearWorkingMemory();
+         mona.ClearWorkingMemory();
       }
    }
 
 
    // Clear state.
-   void clear()
+   void Clear()
    {
       id             = -1;
       x              = y = x2 = y2 = 0;
-      direction      = direction2 = DIRECTION.NORTH.getValue();
+      direction      = direction2 = DIRECTION.NORTH.GetValue();
       isAlive        = true;
-      driverType     = DRIVER_TYPE.MOX.getValue();
-      driverResponse = RESPONSE_TYPE.NULL_RESPONSE.getValue();
-      for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.getValue(); i++)
+      driverType     = DRIVER_TYPE.MOX.GetValue();
+      driverResponse = RESPONSE_TYPE.NULL_RESPONSE.GetValue();
+      for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++)
       {
          sensors[i] = 0.0f;
       }
-      response             = RESPONSE_TYPE.NULL_RESPONSE.getValue();
+      response             = RESPONSE_TYPE.NULL_RESPONSE.GetValue();
       accumulateCycleTime  = false;
       cycleTimeAccumulator = 0;
 
@@ -251,7 +251,7 @@ public abstract class Mox
 
 
    // Create mona.
-   abstract void createMona(int randomSeed);
+   abstract void createMona(int random_seed);
 
    // Create mona with parameters.
    void createMona(Vector<String> parmKeys, Vector<Object> parmVals)
@@ -264,24 +264,24 @@ public abstract class Mox
 
 
    // Add goal.
-   public void addGoal(int needIndex, float[] sensors,
-                       int sensorMode, int response, double goalValue)
+   public void AddGoal(int need_index, Vector<double> sensors,
+                       int sensor_mode, int response, double goal_value)
    {
-      mona.addGoal(needIndex, sensors, sensorMode, response, goalValue);
+      mona.AddGoal(need_index, sensors, sensor_mode, response, goal_value);
    }
 
 
-   public void addGoal(int needIndex, float[] sensors,
-                       int sensorMode, int response, double goalValue,
-                       int frequency, double periodicNeed)
+   public void AddGoal(int need_index, Vector<double> sensors,
+                       int sensor_mode, int response, double goal_value,
+                       int frequency, double periodic_need)
    {
-      mona.addGoal(needIndex, sensors, sensorMode, response, goalValue);
-      mona.setPeriodicNeed(needIndex, frequency, periodicNeed);
+      mona.AddGoal(need_index, sensors, sensor_mode, response, goal_value);
+      mona.SetPeriodicNeed(need_index, frequency, periodic_need);
    }
 
 
    // Load mox from file.
-   public void load(String filename) throws IOException
+   public void Load(String filename) throws IOException
    {
       FileInputStream      input;
       NativeFileDescriptor fd;
@@ -298,7 +298,7 @@ public abstract class Mox
       }
 
       // Load the file.
-      load(input, fd);
+      Load(input, fd);
 
       input.close();
       fd.close();
@@ -306,7 +306,7 @@ public abstract class Mox
 
 
    // Load mox.
-   public void load(FileInputStream input, NativeFileDescriptor fd) throws IOException
+   public void Load(FileInputStream input, NativeFileDescriptor fd) throws IOException
    {
       // Load the properties.
       // DataInputStream is for unbuffered input.
@@ -334,14 +334,14 @@ public abstract class Mox
       fd.seek(channel.position());
       synchronized (mutex)
       {
-         mona.load(fd);
+         mona.Load(fd);
       }
       channel.position(fd.tell() + 1);
    }
 
 
    // Save mox to file.
-   public void save(String filename) throws IOException
+   public void Store(String filename) throws IOException
    {
       FileOutputStream     output;
       NativeFileDescriptor fd;
@@ -358,7 +358,7 @@ public abstract class Mox
       }
 
       // Save to the file.
-      save(output, fd);
+      Store(output, fd);
 
       output.close();
       fd.close();
@@ -366,7 +366,7 @@ public abstract class Mox
 
 
    // Save mox.
-   public void save(FileOutputStream output, NativeFileDescriptor fd) throws IOException
+   public void Store(FileOutputStream output, NativeFileDescriptor fd) throws IOException
    {
       // Save the properties.
       PrintWriter writer = new PrintWriter(new OutputStreamWriter(output));
@@ -394,19 +394,19 @@ public abstract class Mox
       fd.seek(channel.position());
       synchronized (mutex)
       {
-         mona.save(fd);
+         mona.Store(fd);
       }
       channel.position(fd.tell());
    }
 
 
    // Sensor/response cycle.
-   public int cycle(float[] sensors)
+   public int Cycle(Vector<double> sensors)
    {
       long startTime, stopTime;
 
       this.sensors = sensors;
-      if (driverType == DRIVER_TYPE.HIJACK.getValue())
+      if (driverType == DRIVER_TYPE.HIJACK.GetValue())
       {
          response = driverResponse;
       }
@@ -414,79 +414,79 @@ public abstract class Mox
       {
          synchronized (mutex)
          {
-            if (driverType == DRIVER_TYPE.OVERRIDE.getValue())
+            if (driverType == DRIVER_TYPE.OVERRIDE.GetValue())
             {
-               mona.overrideResponse(driverResponse);
+               mona.OverrideResponse(driverResponse);
             }
             if (accumulateCycleTime)
             {
                startTime             = ProcessInformation.getProcessCPUTime();
-               response              = mona.cycle(sensors);
+               response              = mona.Cycle(sensors);
                stopTime              = ProcessInformation.getProcessCPUTime();
                cycleTimeAccumulator += stopTime - startTime;
             }
             else
             {
-               response = mona.cycle(sensors);
+               response = mona.Cycle(sensors);
             }
          }
       }
-      return(response);
+      return (response);
    }
 
 
    // Override response.
-   public void overrideResponse(int response)
+   public void OverrideResponse(int response)
    {
       synchronized (mutex)
       {
-         mona.overrideResponse(response);
+         mona.OverrideResponse(response);
       }
    }
 
 
    // Clear response override.
-   public void clearResponseOverride()
+   public void ClearResponseOverride()
    {
       synchronized (mutex)
       {
-         mona.clearResponseOverride();
+         mona.ClearResponseOverride();
       }
    }
 
 
    // Get/set needs.
-   public double getNeed(int needType)
+   public double GetNeed(int need_type)
    {
       double ret = 0.0;
 
       synchronized (mutex)
       {
-         ret = mona.getNeed(needType);
+         ret = mona.GetNeed(need_type);
       }
-      return(ret);
+      return (ret);
    }
 
 
-   public void setNeed(int needType, double value)
+   public void SetNeed(int need_type, double value)
    {
       synchronized (mutex)
       {
-         mona.setNeed(needType, value);
+         mona.SetNeed(need_type, value);
       }
    }
 
 
    // Print mona to file (XML).
-   public boolean printMona(String filename)
+   public bool PrintMona(String filename)
    {
-      boolean ret = true;
+      bool ret = true;
 
       synchronized (mutex)
       {
-         ret = mona.print(filename);
+         ret = mona.Print(filename);
       }
-      return(ret);
+      return (ret);
    }
 
 
@@ -518,7 +518,7 @@ public abstract class Mox
       {
          t = cycleTimeAccumulator;
       }
-      return(t);
+      return (t);
    }
 
 
@@ -533,6 +533,6 @@ public abstract class Mox
          j = (i + 1) / 2;
       }
       long stopTime = ProcessInformation.getProcessCPUTime();
-      return((stopTime - startTime) * 10);
+      return ((stopTime - startTime) * 10);
    }
 }

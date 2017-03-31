@@ -113,7 +113,7 @@ void BaseObject::drawAxes(GLfloat span)
 
 
 // Set block vertices.
-void BaseObject::setBlockVertices(Vector *vertices, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax)
+void BaseObject::setBlockVertices(Vector3f *vertices, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax)
 {
    vertices[0].x = xmax;
    vertices[0].y = ymax;
@@ -153,7 +153,7 @@ void BaseObject::setBlockVertices(Vector *vertices, float xmin, float xmax, floa
 void BaseObject::drawBlock(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax)
 {
    GLfloat x, y, z;
-   Vector  vertices[8];
+   Vector3f  vertices[8];
 
    // Set the vertices.
    setBlockVertices(vertices, xmin, xmax, ymin, ymax, zmin, zmax);
@@ -326,7 +326,7 @@ void BaseObject::drawBlock(float xmin, float xmax, float ymin, float ymax, float
 void BaseObject::drawBlockEdges(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax)
 {
    GLfloat x, y, z;
-   Vector  vertices[8];
+   Vector3f  vertices[8];
 
    // Set the vertices.
    setBlockVertices(vertices, xmin, xmax, ymin, ymax, zmin, zmax);
@@ -496,7 +496,7 @@ void BaseObject::drawBlockEdges(float xmin, float xmax, float ymin, float ymax, 
 
 
 // Load object.
-void BaseObject::load(char *filename)
+void BaseObject::Load(char *filename)
 {
    FILE *fp;
 
@@ -505,18 +505,18 @@ void BaseObject::load(char *filename)
       fprintf(stderr, "Cannot load object from file %s\n", filename);
       exit(1);
    }
-   load(fp);
+   Load(fp);
 }
 
 
-void BaseObject::load(FILE *fp)
+void BaseObject::Load(FILE *fp)
 {
-   m_spacial->load(fp);
+   m_spacial->Load(fp);
 }
 
 
 // Save object.
-void BaseObject::save(char *filename)
+void BaseObject::Store(char *filename)
 {
    FILE *fp;
 
@@ -525,11 +525,11 @@ void BaseObject::save(char *filename)
       fprintf(stderr, "Cannot save object to file %s\n", filename);
       exit(1);
    }
-   save(fp);
+   Store(fp);
 }
 
 
-void BaseObject::save(FILE *fp)
+void BaseObject::Store(FILE *fp)
 {
-   m_spacial->save(fp);
+   m_spacial->Store(fp);
 }

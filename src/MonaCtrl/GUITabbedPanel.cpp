@@ -1,6 +1,6 @@
 #include "EasyGL.h"
 
-GUITabbedPanel::GUITabbedPanel(const std::string &callback) : GUIRectangle(callback)
+GUITabbedPanel::GUITabbedPanel(const String &callback) : GUIRectangle(callback)
 {
   setTabButtonsBordersColor(0.0f, 0.0f, 0.0f);
   setTabButtonsColor(100, 150, 190);
@@ -71,33 +71,33 @@ bool GUITabbedPanel::loadXMLSettings(const TiXmlElement *element)
   fontScales.x  = XMLArbiter::fillComponents1f(element,   "wScale",    fontScales.x);
   fontIndex     = XMLArbiter::fillComponents1i(element,   "fontIndex", fontIndex);
 
-  for(const TiXmlElement *child = element->FirstChildElement();	
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();	
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    const char *value = child->Value();
+    const char *value = outer->Value();
     if(!value)
       continue;
 
     if(!strcmp(value, "Panel"))
     {
       GUIPanel *panel = new GUIPanel();
-      if(!panel->loadXMLSettings(child) || !addPanel(panel))
+      if(!panel->loadXMLSettings(outer) || !addPanel(panel))
         deleteObject(panel);
       continue;
     }
 
     if(!strcmp(value, "TabButtonsBordersColor"))
-      XMLArbiter::fillComponents3f(child, tabButtonsBordersColor);
+      XMLArbiter::fillComponents3f(outer, tabButtonsBordersColor);
 
     if(!strcmp(value, "TabButtonsColor"))
-      XMLArbiter::fillComponents3f(child, tabButtonsColor);
+      XMLArbiter::fillComponents3f(outer, tabButtonsColor);
 
     if(!strcmp(value, "BordersColor"))
-      XMLArbiter::fillComponents3f(child, bordersColor);
+      XMLArbiter::fillComponents3f(outer, bordersColor);
 
     if(!strcmp(value, "BGColor"))
-      XMLArbiter::fillComponents4f(child, bgColor);
+      XMLArbiter::fillComponents4f(outer, bgColor);
   }
 
   upperPanel->setBordersColor(bordersColor);
@@ -108,7 +108,7 @@ bool GUITabbedPanel::loadXMLSettings(const TiXmlElement *element)
 
   setFontScales(fontScales);
 
-  return GUIRectangle::loadXMLSettings(element) && lowerPanel->getWidgets().size();
+  return GUIRectangle::loadXMLSettings(element) && lowerPanel->getWidgets().GetCount();
 }
 
 bool GUITabbedPanel::addPanel(GUIPanel *panel)
@@ -119,7 +119,7 @@ bool GUITabbedPanel::addPanel(GUIPanel *panel)
   if(lowerPanel->addWidget(panel))
   {
     char buffer[256];
-    int  count = int(lowerPanel->getWidgets().size()) - 1;
+    int  count = int(lowerPanel->getWidgets().GetCount()) - 1;
     sprintf(buffer, "count_tb %d", count);
     GUIButton *tabButton = new GUIButton(buffer);
     tabButton->setBordersColor(tabButtonsBordersColor);
@@ -139,7 +139,7 @@ bool GUITabbedPanel::addPanel(GUIPanel *panel)
 const   GUIPanel*  GUITabbedPanel::getCurrentPanel() const
 {
   const Widgets &widgets = lowerPanel->getWidgets();
-  int   count  = int(widgets.size());
+  int   count  = int(widgets.GetCount());
  
   for(int t = 0; t < count; t++)
     if(widgets[t]->isVisible())
@@ -151,7 +151,7 @@ const   GUIPanel*  GUITabbedPanel::getCurrentPanel() const
 const   int  GUITabbedPanel::getCurrentPanelIndex() const
 {
   const Widgets &widgets = lowerPanel->getWidgets();
-  int   count  = int(widgets.size());
+  int   count  = int(widgets.GetCount());
  
   for(int t = 0; t < count; t++)
     if(widgets[t]->isVisible())
@@ -174,7 +174,7 @@ void GUITabbedPanel::checkMouseEvents(MouseEvent &evt, int extraInfo, bool rBits
 
 void GUITabbedPanel::actionPerformed(GUIEvent &evt)
 {
-  const std::string &cbs             = evt.getCallbackString();
+  const String &cbs             = evt.getCallbackString();
   GUIRectangle      *sourceRectangle = evt.getEventSource();
   int                widgetType      = sourceRectangle->getWidgetType();
 
@@ -183,7 +183,7 @@ void GUITabbedPanel::actionPerformed(GUIEvent &evt)
     const Widgets &widgets   = lowerPanel->getWidgets(), 
                   &buttons   = upperPanel->getWidgets();
     int   target = atoi(sourceRectangle->getCallbackString().c_str() + 9),
-          count  = int(widgets.size());
+          count  = int(widgets.GetCount());
 
     for(int t = 0; t < count; t++)
     {
@@ -196,7 +196,7 @@ void GUITabbedPanel::actionPerformed(GUIEvent &evt)
 GUIButton *GUITabbedPanel::getTabButton(int index)
 {
   const Widgets &widgets = upperPanel->getWidgets();
-  int   count  = int(widgets.size());
+  int   count  = int(widgets.GetCount());
  
   for(int t = 0; t < count; t++)
     if(t == index)
@@ -228,11 +228,11 @@ const void GUITabbedPanel::computeWindowBounds()
 
     const Widgets & widgets     = lowerPanel->getWidgets();
     float           height      = 0;
-    int             widgetCount = (int)widgets.size();
+    int             widgetCount = (int)widgets.GetCount();
 
     for(int i = 0; i < widgetCount; i++)
       height = height < widgets[i]->getHeight() ? widgets[i]->getHeight() : height;
-    lowerPanel->setDimensions(1.0f, height);
+    lowerPanel->setSizes(1.0f, height);
     upperPanel->setParent(this);
   }
 }

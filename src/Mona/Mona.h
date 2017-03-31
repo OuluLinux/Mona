@@ -73,14 +73,12 @@ public:
 
    // Construct/initialize.
    Mona();
-   Mona(int numSensors, int numResponses, int numNeeds,
-        RANDOM randomSeed = DEFAULT_RANDOM_SEED);
-   void initParms();
-   void initNet(int numSensors, int numResponses, int numNeeds,
-                RANDOM randomSeed = DEFAULT_RANDOM_SEED);
-   bool setSensorResolution(SENSOR sensorResolution);
-   int addSensorMode(vector<bool>& sensorMask);
-   int addSensorMode(vector<bool>& sensorMask, SENSOR sensorResolution);
+   Mona(int sensor_count, int response_count, int need_count, int random_seed = DEFAULT_RANDOM_SEED);
+   void InitParms();
+   void InitNet(int sensor_count, int response_count, int need_count, RANDOM random_seed = DEFAULT_RANDOM_SEED);
+   bool SetSensorResolution(SENSOR sensorResolution);
+   int AddSensorMode(Vector<bool>& sensorMask);
+   int AddSensorMode(Vector<bool>& sensorMask, SENSOR sensorResolution);
 
    // Destructor.
    ~Mona();
@@ -110,16 +108,16 @@ public:
 
 #ifdef MONA_TRACE
    // Tracing.
-   bool traceSense;
-   bool traceEnable;
-   bool traceLearn;
-   bool traceDrive;
-   bool traceRespond;
+   bool trace_sense;
+   bool trace_enable;
+   bool trace_learn;
+   bool trace_drive;
+   bool trace_respond;
 #endif
 
    // Sensors.
-   vector<SENSOR> sensors;
-   int            numSensors;
+   Vector<SENSOR> sensors;
+   int            sensor_count;
 
    // Sensor modes.
    // A sensor mode is a set of sensors related
@@ -129,63 +127,63 @@ public:
    // receptor in a set reserved for the mode. This
    // provides the network with selective attention
    // capabilities.
-   vector<SensorMode *> sensorModes;
-   void                 applySensorMode(vector<SENSOR> &in, vector<SENSOR> &out, SENSOR_MODE);
-   void                 applySensorMode(vector<SENSOR> &sensors, SENSOR_MODE);
+   Vector<SensorMode *> sensor_modes;
+   void                 ApplySensorMode(Vector<SENSOR> &in, Vector<SENSOR> &out, SENSOR_MODE);
+   void                 ApplySensorMode(Vector<SENSOR> &sensors, SENSOR_MODE);
 
    // Sensor centroid search spaces.
    // Each sensor mode defines a space.
-   vector<RDtree *> sensorCentroids;
+   Vector<RDTree *> sensor_centroids;
 
    // Find the receptor having the centroid closest to
    // the sensor vector for the give sensor mode.
-   Receptor *getCentroidReceptor(vector<SENSOR>& sensors,
-                                 SENSOR_MODE sensorMode, SENSOR& distance);
+   Receptor *GetCentroidReceptor(Vector<SENSOR>& sensors,
+                                 SENSOR_MODE sensor_mode, SENSOR& distance);
 
    // Response.
    RESPONSE response;
-   int      numResponses;
-   RESPONSE addResponse();
+   int      response_count;
+   RESPONSE AddResponse();
 
-   vector<RESPONSE_POTENTIAL> responsePotentials;
-   RESPONSE_POTENTIAL         getResponsePotential(RESPONSE);
-   RESPONSE           responseOverride;
-   RESPONSE_POTENTIAL responseOverridePotential;
-   bool               overrideResponse(RESPONSE);
-   bool               overrideResponseConditional(RESPONSE, RESPONSE_POTENTIAL);
-   void clearResponseOverride();
-   Motor *findMotorByResponse(RESPONSE response);
+   Vector<RESPONSE_POTENTIAL> response_potentials;
+   RESPONSE_POTENTIAL         GetResponsePotential(RESPONSE);
+   RESPONSE           response_override;
+   RESPONSE_POTENTIAL response_override_potential;
+   bool               OverrideResponse(RESPONSE);
+   bool               OverrideResponseConditional(RESPONSE, RESPONSE_POTENTIAL);
+   void ClearResponseOverride();
+   Motor *FindMotorByResponse(RESPONSE response);
 
    // Needs.
-   int                 numNeeds;
-   vector<Homeostat *> homeostats;
+   int                 need_count;
+   Vector<Homeostat *> homeostats;
 
    // Need management.
-   NEED getNeed(int index);
-   void setNeed(int index, NEED value);
-   void inflateNeed(int index);
-   void setPeriodicNeed(int needIndex,
-                        int frequency, NEED periodicNeed);
-   void clearPeriodicNeed(int needIndex);
-   void printNeed(int index);
+   NEED GetNeed(int index);
+   void SetNeed(int index, NEED value);
+   void InflateNeed(int index);
+   void SetPeriodicNeed(int need_index,
+                        int frequency, NEED periodic_need);
+   void ClearPeriodicNeed(int need_index);
+   void PrintNeed(int index);
 
    // Goal management.
-   int addGoal(int needIndex, vector<SENSOR>& sensors,
-               SENSOR_MODE sensorMode, RESPONSE response, NEED goalValue);
-   int addGoal(int needIndex, vector<SENSOR>& sensors,
-               SENSOR_MODE sensorMode, NEED goalValue);
-   int findGoal(int needIndex, vector<SENSOR>& sensors,
-                SENSOR_MODE sensorMode, RESPONSE response);
-   int findGoal(int needIndex, vector<SENSOR>& sensors,
-                SENSOR_MODE sensorMode);
-   int getNumGoals(int needIndex);
-   bool getGoalInfo(int needIndex, int goalIndex,
-                    vector<SENSOR>& sensors, SENSOR_MODE& sensorMode,
-                    RESPONSE& response, NEED& goalValue, bool& enabled);
-   bool isGoalEnabled(int needIndex, int goalIndex);
-   bool enableGoal(int needIndex, int goalIndex);
-   bool disableGoal(int needIndex, int goalIndex);
-   bool removeGoal(int needIndex, int goalIndex);
+   int AddGoal(int need_index, Vector<SENSOR>& sensors,
+               SENSOR_MODE sensor_mode, RESPONSE response, NEED goal_value);
+   int AddGoal(int need_index, Vector<SENSOR>& sensors,
+               SENSOR_MODE sensor_mode, NEED goal_value);
+   int FindGoal(int need_index, Vector<SENSOR>& sensors,
+                SENSOR_MODE sensor_mode, RESPONSE response);
+   int FindGoal(int need_index, Vector<SENSOR>& sensors,
+                SENSOR_MODE sensor_mode);
+   int GetGoalCount(int need_index);
+   bool GetGoalInfo(int need_index, int goal_index,
+                    Vector<SENSOR>& sensors, SENSOR_MODE& sensor_mode,
+                    RESPONSE& response, NEED& goal_value, bool& enabled);
+   bool IsGoalEnabled(int need_index, int goal_index);
+   bool EnableGoal(int need_index, int goal_index);
+   bool DisableGoal(int need_index, int goal_index);
+   bool RemoveGoal(int need_index, int goal_index);
 
    // Effect event intervals.
    // The maximum time for an effect event to fire after a cause fires.
@@ -193,7 +191,7 @@ public:
    // 2. Response-equipped mediators are considered "immediate" mediators
    //    for which only the first interval is applicable with 100% weight.
    // 3. Customizable by application at initialization time. See initEffectIntervals.
-   vector<vector<TIME> > effectEventIntervals;
+   Vector<Vector<TIME> > effect_event_intervals;
 
    // Effect interval weights determine how enablement is distributed to enablings
    // timed by the effect event intervals. Causes that have more immediate effects
@@ -201,7 +199,7 @@ public:
    // effects. This can be represented by weighting smaller intervals more heavily
    // than larger ones. effectIntervalWeights[n] must sum to 1.0
    // Customizable by application at initialization time. See initEffectIntervals.
-   vector<vector<WEIGHT> > effectEventIntervalWeights;
+   Vector<Vector<WEIGHT> > effect_event_interval_weights;
 
    // Maximum learning effect event intervals.
    // 1. These are the maximum firing intervals between events allowable
@@ -210,50 +208,50 @@ public:
    //     existing mediators as a means of improving the quality and throttling
    //     the quantity of learned mediators.
    // 3. Customizable by application at initialization time. See initEffectIntervals.
-   vector<TIME> maxLearningEffectEventIntervals;
+   Vector<TIME> max_learning_effect_event_intervals;
 
    // Initialize effect event intervals and weights.
-   void initEffectEventIntervals();
-   void initEffectEventInterval(int level, int numIntervals);
-   void initEffectEventIntervalWeights();
-   void initEffectEventIntervalWeight(int level);
-   void initMaxLearningEffectEventIntervals();
-   bool auditDefaultEffectEventIntervals();
+   void InitEffectEventIntervals();
+   void InitEffectEventInterval(int level, int numIntervals);
+   void InitEffectEventIntervalWeights();
+   void InitEffectEventIntervalWeight(int level);
+   void InitMaxLearningEffectEventIntervals();
+   bool AuditDefaultEffectEventIntervals();
 
    // Behavior cycle.
-   RESPONSE cycle(vector<SENSOR>& sensors);
-   void sense();
-   void enable();
-   void learn();
-   void drive();
-   void respond();
+   RESPONSE Cycle(Vector<SENSOR>& sensors);
+   void Sense();
+   void Enable();
+   void Learn();
+   void Drive();
+   void Respond();
 
    // Cause event firing notifications.
-   list<struct FiringNotify> causeFirings;
+   Vector<FiringNotify> cause_firings;
 
    // Motive.
-   MOTIVE maxMotive;
-   void clearMotiveWork();
-   void setMotives();
-   void finalizeMotives();
+   MOTIVE max_motive;
+   void ClearMotiveWork();
+   void SetMotives();
+   void FinalizeMotives();
 
    // Unique identifier dispenser.
-   COUNTER idDispenser;
+   COUNTER id_dispenser;
 
    // Event clock.
-   TIME eventClock;
+   TIME event_clock;
 
    // Learning event lists.
-   vector<list<LearningEvent *> > learningEvents;
-   vector<GeneralizationEvent *>  generalizationEvents;
+   Vector<Vector<LearningEvent *> > learning_events;
+   Vector<GeneralizationEvent *>  generalization_events;
 
    // Mediator generation.
-   void createMediator(LearningEvent *event);
-   void generalizeMediator(GeneralizationEvent *event);
-   bool isDuplicateMediator(Mediator *);
+   void CreateMediator(LearningEvent *event);
+   void GeneralizeMediator(GeneralizationEvent *event);
+   bool IsDuplicateMediator(Mediator *);
 
    // Random numbers.
-   RANDOM randomSeed;
+   RANDOM random_seed;
    Random random;
 
 #ifdef MONA_TRACKING
@@ -267,8 +265,8 @@ public:
    {
 public:
       // Initialize/clear.
-      void init(Mona *mona);
-      void clear();
+      void Init(Mona *mona);
+      void Clear();
 
       // Identifier.
       ID id;
@@ -277,44 +275,44 @@ public:
       NEURON_TYPE type;
 
       // Creation time.
-      TIME creationTime;
+      TIME creation_time;
 
       // Firing strength.
-      ENABLEMENT firingStrength;
+      ENABLEMENT firing_strength;
 
       // Goal value.
       GoalValue goals;
 
       // Motive.
       MOTIVE motive;
-      bool   motiveValid;
-      void   drive(MotiveAccum);
-      void initDrive(VALUE_SET& needs);
-      void clearMotiveWork();
-      void setMotive();
-      void finalizeMotive();
+      bool   motive_valid;
+      void   Drive(MotiveAccum);
+      void InitDrive(VALUE_SET& needs);
+      void ClearMotiveWork();
+      void SetMotive();
+      void FinalizeMotive();
 
-      MotiveAccum           motiveWork;
-      bool                  motiveWorkValid;
-      map<Neuron *, double> driveWeights;
+      MotiveAccum           motive_work;
+      bool                  motive_work_valid;
+      VectorMap<Neuron*, double> drive_weights;
 
       // Instinct?
       bool instinct;
 
       // Parent is instinct?
-      bool hasParentInstinct();
+      bool HasInnerInstinct();
 
       // Event notification.
-      vector<struct Notify *> notifyList;
+      Vector<struct Notify *> notify_list;
 
       // Neural network.
       Mona *mona;
 
       // Load.
-      void load(FILE *fp);
+      void Load(FILE *fp);
 
       // Save.
-      void save(FILE *fp);
+      void Store(FILE *fp);
 
 #ifdef MONA_TRACKING
       // Track neuron activity.
@@ -327,27 +325,26 @@ public:
          MOTIVE motive;
          struct DrivePath
          {
-            vector<struct MotiveAccum::DriveElem> drivers;
-            MotiveAccum                           motiveWork;
+            Vector<struct MotiveAccum::DriveElem> drivers;
+            MotiveAccum                           motive_work;
             MOTIVE                                motive;
          };
-         vector<struct DrivePath> motivePaths;
-         vector<struct DrivePath> motiveWorkPaths;
-         void clear()
-         {
+         Vector<struct DrivePath> motive_paths;
+         Vector<struct DrivePath> motive_work_paths;
+         void Clear() {
             fire   = enable = drive = false;
             motive = 0.0;
-            motivePaths.clear();
-            motiveWorkPaths.clear();
+            motive_paths.Clear();
+            motive_work_paths.Clear();
          }
       }
       tracker;
 
       // Track driven motive.
-      bool trackMotive(MotiveAccum& in, MotiveAccum& out);
+      bool TrackMotive(MotiveAccum& in, MotiveAccum& out);
 
       // Accumulate motive tracking.
-      void accumMotiveTracking();
+      void AccumMotiveTracking();
 #endif
    };
 
@@ -360,50 +357,49 @@ public:
 public:
 
       // Construct/destruct.
-      Receptor(vector<SENSOR>& centroid, SENSOR_MODE sensorMode, Mona *mona);
+      Receptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode, Mona *mona);
       ~Receptor();
 
       // Centroid sensor vector.
-      vector<SENSOR> centroid;
+      Vector<SENSOR> centroid;
 
       // Sensor mode and links to receptors
       // with subset and superset sensor modes.
-      SENSOR_MODE        sensorMode;
-      vector<Receptor *> subSensorModes;
-      vector<Receptor *> superSensorModes;
+      SENSOR_MODE        sensor_mode;
+      Vector<Receptor *> sub_sensor_modes;
+      Vector<Receptor *> super_sensor_modes;
 
       // Get distance from centroid to given sensor vector.
-      SENSOR centroidDistance(vector<SENSOR>& sensors);
+      SENSOR GetCentroidDistance(Vector<SENSOR>& sensors);
 
       // Get distance between sensor vectors.
-      static SENSOR sensorDistance(vector<SENSOR> *sensorsA,
-                                   vector<SENSOR> *sensorsB);
+      static SENSOR GetSensorDistance(Vector<SENSOR> *sensorsA, Vector<SENSOR> *sensorsB);
 
       // Is given receptor a duplicate of this?
-      bool isDuplicate(Receptor *);
+      bool IsDuplicate(Receptor *);
 
       // Update goal value.
-      void updateGoalValue();
+      void UpdateGoalValue();
 
       // Load receptor.
-      void load(FILE *fp);
+      void Load(FILE *fp);
 
       // Save receptor.
-      void save(FILE *fp);
+      void Store(FILE *fp);
 
-      // RDtree sensor vector search.
+      // RDTree sensor vector search.
       static SENSOR patternDistance(void *sensorsA, void *sensorsB);
-      static void *loadPattern(void *mona, FILE *fp);
-      static void savePattern(void *sensors, FILE *fp);
-      static void *loadClient(void *mona, FILE *fp);
-      static void saveClient(void *receptor, FILE *fp);
-      static void deletePattern(void *pattern);
+      static void *LoadPattern(void *mona, FILE *fp);
+      static void StorePattern(void *sensors, FILE *fp);
+      static void *LoadClient(void *mona, FILE *fp);
+      static void StoreClient(void *receptor, FILE *fp);
+      static void DeletePattern(void *pattern);
 
       // Print receptor.
-      void print(FILE *out = stdout);
+      void Print(FILE *out = stdout);
 
 #ifdef MONA_TRACKING
-      void print(TRACKING_FLAGS tracking, FILE *out = stdout);
+      void Print(TRACKING_FLAGS tracking, FILE *out = stdout);
 #endif
    };
 
@@ -420,19 +416,19 @@ public:
       RESPONSE response;
 
       // Is given motor a duplicate of this?
-      bool isDuplicate(Motor *);
+      bool IsDuplicate(Motor *);
 
       // Load motor.
-      void load(FILE *fp);
+      void Load(FILE *fp);
 
       // Save motor.
-      void save(FILE *fp);
+      void Store(FILE *fp);
 
       // Print motor.
-      void print(FILE *out = stdout);
+      void Print(FILE *out = stdout);
 
 #ifdef MONA_TRACKING
-      void print(TRACKING_FLAGS tracking, FILE *out = stdout);
+      void Print(TRACKING_FLAGS tracking, FILE *out = stdout);
 #endif
    };
 
@@ -450,136 +446,135 @@ public:
       int level;
 
       // Enablement.
-      ENABLEMENT baseEnablement;
-      ENABLEMENT getEnablement();
-      void updateEnablement(EVENT_OUTCOME outcome,
-                            WEIGHT        updateWeight);
+      ENABLEMENT base_enablement;
+      ENABLEMENT GetEnablement();
+      void UpdateEnablement(EVENT_OUTCOME outcome, WEIGHT updateWeight);
 
       // Effective enablement.
-      ENABLEMENT effectiveEnablement;
-      WEIGHT     effectiveEnablingWeight;
-      bool       effectiveEnablementValid;
-      void updateEffectiveEnablement();
+      ENABLEMENT effective_enablement;
+      WEIGHT     effective_enabling_weight;
+      bool       effective_enablement_valid;
+      void UpdateEffectiveEnablement();
 
       // Utility.
       UTILITY utility;
-      WEIGHT  utilityWeight;
-      void updateUtility(WEIGHT updateWeight);
-      UTILITY getEffectiveUtility();
+      WEIGHT  utility_weight;
+      void UpdateUtility(WEIGHT updateWeight);
+      UTILITY GetEffectiveUtility();
 
       // Update goal value.
-      void updateGoalValue(VALUE_SET& needs);
+      void UpdateGoalValue(VALUE_SET& needs);
 
       // Is goal value subsumed by component?
-      bool goalValueSubsumed();
+      bool IsGoalValueSubsumed();
 
       // Events.
       Neuron *cause;
       Neuron *response;
       Neuron *effect;
-      void   addEvent(EVENT_TYPE, Neuron *);
+      void   AddEvent(EVENT_TYPE, Neuron *);
 
       // Enablings.
-      EnablingSet responseEnablings;
-      EnablingSet effectEnablings;
+      EnablingSet response_enablings;
+      EnablingSet effect_enablings;
 
       // Time of causation.
-      TIME causeBegin;
+      TIME cause_begin;
 
       // Event firing.
-      void causeFiring(WEIGHT notifyStrength, TIME causeBegin);
-      void responseFiring(WEIGHT notifyStrength);
-      void effectFiring(WEIGHT notifyStrength);
-      void retireEnablings(bool force = false);
+      void CauseFiring(WEIGHT notify_strength, TIME cause_begin);
+      void ResponseFiring(WEIGHT notify_strength);
+      void EffectFiring(WEIGHT notify_strength);
+      void RetireEnablings(bool force = false);
 
       // Drive.
-      void driveCause(MotiveAccum);
+      void DriveCause(MotiveAccum);
 
       // Is given mediator a duplicate of this?
-      bool isDuplicate(Mediator *);
+      bool IsDuplicate(Mediator *);
 
       // Load mediator.
-      void load(FILE *fp);
+      void Load(FILE *fp);
 
       // Save mediator.
-      void save(FILE *fp);
+      void Store(FILE *fp);
 
       // Print mediator.
-      void print(FILE *out = stdout);
-      void printBrief(FILE *out = stdout);
+      void Print(FILE *out = stdout);
+      void PrintBrief(FILE *out = stdout);
 
 #ifdef MONA_TRACKING
-      void print(TRACKING_FLAGS tracking, FILE *out = stdout);
-      void printBrief(TRACKING_FLAGS tracking, FILE *out = stdout);
-      void print(TRACKING_FLAGS tracking, bool brief, int level, FILE *out);
+      void Print(TRACKING_FLAGS tracking, FILE *out = stdout);
+      void PrintBrief(TRACKING_FLAGS tracking, FILE *out = stdout);
+      void Print(TRACKING_FLAGS tracking, bool brief, int level, FILE *out);
 
 #else
-      void print(bool brief, int level, FILE *out);
+      void Print(bool brief, int level, FILE *out);
 #endif
    };
 
    // Network.
-   vector<Receptor *> receptors;
-   vector<Motor *>    motors;
-   list<Mediator *>   mediators;
+   Vector<Receptor *> receptors;
+   Vector<Motor *>    motors;
+   Vector<Mediator *>   mediators;
 
    // Add/delete neurons to/from network.
-   Receptor *newReceptor(vector<SENSOR>& centroid, SENSOR_MODE sensorMode);
-   Motor *newMotor(RESPONSE response);
-   Mediator *newMediator(ENABLEMENT enablement);
-   void deleteNeuron(Neuron *);
+   Receptor *NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode);
+   Motor *NewMotor(RESPONSE response);
+   Mediator *NewMediator(ENABLEMENT enablement);
+   void DeleteNeuron(Neuron *);
 
    // Clear memory.
-   void expireResponseEnablings(RESPONSE);
-   void expireMediatorEnablings(Mediator *);
-   void clearWorkingMemory();
-   void clearLongTermMemory();
+   void ExpireResponseEnablings(RESPONSE);
+   void ExpireMediatorEnablings(Mediator *);
+   void ClearWorkingMemory();
+   void ClearLongTermMemory();
 
    // Get mediators with worst and best utilities.
-   Mediator *getWorstMediator(int minLevel = 0);
-   Mediator *getBestMediator(int minLevel = 0);
+   Mediator *GetWorstMediator(int min_level = 0);
+   Mediator *GetBestMediator(int min_level = 0);
 
    // Load network.
-   bool load(char *filename);
-   bool load(FILE *fp);
-   Neuron *findByID(ID id);
+   bool Load(char *filename);
+   bool Load(FILE *fp);
+   Neuron *FindByID(ID id);
 
    // Save network.
-   bool save(char *filename);
-   bool save(FILE *fp);
+   bool Store(char *filename);
+   bool Store(FILE *fp);
 
    // Clear network.
-   void clear();
+   void Clear();
 
    // Print network.
-   bool print(char *filename);
-   void print(FILE *out = stdout);
-   void printBrief(FILE *out = stdout);
-   void printParms(FILE *out = stdout);
+   bool Print(char *filename);
+   void Print(FILE *out = stdout);
+   void PrintBrief(FILE *out = stdout);
+   void PrintParms(FILE *out = stdout);
 
 #ifdef MONA_TRACKING
-   void print(TRACKING_FLAGS tracking, FILE *out = stdout);
-   void printBrief(TRACKING_FLAGS tracking, FILE *out = stdout);
+   void Print(TRACKING_FLAGS tracking, FILE *out = stdout);
+   void PrintBrief(TRACKING_FLAGS tracking, FILE *out = stdout);
 #endif
 
    // Print helpers.
 #ifdef MONA_TRACKING
-   void print(TRACKING_FLAGS tracking, bool brief, FILE *out = stdout);
+   void Print(TRACKING_FLAGS tracking, bool brief, FILE *out = stdout);
 
 #else
-   void print(bool brief, FILE *out = stdout);
+   void Print(bool brief, FILE *out = stdout);
 #endif
 
 #ifdef MONA_TRACKING
    enum { MAX_DRIVER_TRACKS=3 };
 
    // Clear tracking activity.
-   void clearTracking();
+   void ClearTracking();
 #endif
 
 private:
    // Clear variables.
-   void clearVars();
+   void ClearVars();
 };
 
 #endif

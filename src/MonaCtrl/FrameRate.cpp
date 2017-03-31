@@ -28,7 +28,7 @@ FrameRate::FrameRate(float targetFPS)
 
 
 // Update: call per frame.
-void FrameRate::update()
+void FrameRate::Update()
 {
    TIME currentTime, delta;
 

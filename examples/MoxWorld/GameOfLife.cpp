@@ -14,13 +14,13 @@ public class GameOfLife
    public static final int BLUE_CELL_COLOR_VALUE  = 3;
 
    // Automaton.
-   public Dimension size;
+   public Size size;
    public int[][]   cells;
    public int[][]   restoreCells;
    public Object    lock;
 
    // Constructors.
-   public GameOfLife(Dimension size)
+   public GameOfLife(Size size)
    {
       // Create automaton.
       this.size    = size;
@@ -43,7 +43,7 @@ public class GameOfLife
 
    public GameOfLife()
    {
-      size = new Dimension();
+      size = new Size();
       lock = new Object();
    }
 
@@ -51,19 +51,19 @@ public class GameOfLife
    // Get grid width.
    public int getWidth()
    {
-      return(size.width);
+      return (size.width);
    }
 
 
    // Get grid height.
    public int getHeight()
    {
-      return(size.height);
+      return (size.height);
    }
 
 
    // Load automaton from file.
-   public void load(String fileName) throws IOException
+   public void Load(String fileName) throws IOException
    {
       DataInputStream in;
 
@@ -77,7 +77,7 @@ public class GameOfLife
       }
 
       // Load the file.
-      load(in);
+      Load(in);
 
       in.close();
    }
@@ -85,7 +85,7 @@ public class GameOfLife
 
    // Load automaton.
    @SuppressWarnings({ "deprecation" })
-   public void load(DataInputStream in) throws IOException
+   public void Load(DataInputStream in) throws IOException
    {
       synchronized (lock)
       {
@@ -147,7 +147,7 @@ public class GameOfLife
          size.height  = h;
          cells        = new int[size.width][size.height];
          restoreCells = new int[size.width][size.height];
-         clear();
+         Clear();
 
          // Load the cell values.
          if ((s = in.readLine()) == null)
@@ -326,7 +326,7 @@ public class GameOfLife
 
 
    // Save automaton.
-   public void save(String fileName) throws IOException
+   public void Store(String fileName) throws IOException
    {
       PrintWriter out;
 
@@ -340,14 +340,14 @@ public class GameOfLife
       }
 
       // Save the file.
-      save(out);
+      Store(out);
 
       out.close();
    }
 
 
    // Save automaton.
-   public void save(PrintWriter out) throws IOException
+   public void Store(PrintWriter out) throws IOException
    {
       synchronized (lock)
       {
@@ -409,7 +409,7 @@ public class GameOfLife
 
 
    // Step automaton.
-   public void step()
+   public void Step()
    {
       int x;
       int y;
@@ -576,13 +576,13 @@ public class GameOfLife
    {
       for (int i = 0; i < steps; i++)
       {
-         step();
+         Step();
       }
    }
 
 
    // Clear cells.
-   public void clear()
+   public void Clear()
    {
       int x;
       int y;

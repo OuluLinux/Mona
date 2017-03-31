@@ -1,14 +1,14 @@
 #include "EasyGL.h"
 
-GUISlider::GUISlider(const std::string &callback, const int   orientation_) :  GUIAlphaElement(callback)
+GUISlider::GUISlider(const String &callback, const int   orientation_) :  GUIAlphaElement(callback)
 {
-  setDiscDimensions(18, 18);
+  setDiscSizes(18, 18);
   setProgress(0.0);
   orientation = orientation_ == OR_VERTICAL ? OR_VERTICAL : OR_HORIZONTAL;
   widgetType  = WT_SLIDER ;
   offset      = 0;
 
-  setDimensions((orientation_ == OR_VERTICAL) ?  18.0f : 100.0f,
+  setSizes((orientation_ == OR_VERTICAL) ?  18.0f : 100.0f,
                 (orientation_ == OR_VERTICAL) ?  85.0f :  18.0f);
 }
 
@@ -21,29 +21,29 @@ bool GUISlider::loadXMLSettings(const TiXmlElement *element)
 
   orientation = (orient  && !strcmp(orient, "VERTICAL")) ? OR_VERTICAL : OR_HORIZONTAL;
 
-  setDiscDimensions(XMLArbiter::fillComponents1i(element, "discWidth",  discDimensions.x),
-                    XMLArbiter::fillComponents1i(element, "discHeight", discDimensions.y));
+  setDiscSizes(XMLArbiter::fillComponents1i(element, "discWidth",  discSizes.x),
+                    XMLArbiter::fillComponents1i(element, "discHeight", discSizes.y));
   setProgress(XMLArbiter::fillComponents1f(element, "progress", progress));
-  setDimensions((orientation == OR_VERTICAL) ? 18.0f : 100.0f,
+  setSizes((orientation == OR_VERTICAL) ? 18.0f : 100.0f,
                (orientation == OR_VERTICAL) ? 85.0f :  18.0f);
   return   GUIAlphaElement::loadXMLSettings(element);
 }
 
-void  GUISlider::setDiscDimensions(const Tuple2i& dimensions)
+void  GUISlider::setDiscSizes(const Tuple2i& dimensions)
 {
-  setDiscDimensions(dimensions.x, dimensions.y);
+  setDiscSizes(dimensions.x, dimensions.y);
 }
 
-void  GUISlider::setDiscDimensions(int width, int height)
+void  GUISlider::setDiscSizes(int width, int height)
 {
-  discDimensions.set(clamp(width, 5, 500), clamp(height, 5, 500));
-  setDimensions((orientation == OR_HORIZONTAL) ? dimensions.x            : float(discDimensions.x),
-                (orientation == OR_HORIZONTAL) ? float(discDimensions.y) : dimensions.y);
+  discSizes.set(clamp(width, 5, 500), clamp(height, 5, 500));
+  setSizes((orientation == OR_HORIZONTAL) ? dimensions.x            : float(discSizes.x),
+                (orientation == OR_HORIZONTAL) ? float(discSizes.y) : dimensions.y);
 }
 
-const Tuple2i &GUISlider::getDiscDimensions()
+const Tuple2i &GUISlider::getDiscSizes()
 {
-  return discDimensions;
+  return discSizes;
 }
 
 void  GUISlider::setProgress(float zeroToOne)
@@ -77,8 +77,8 @@ void GUISlider::render(float clockTick)
 
   discXBounds.x  = windowBounds.x;
   discXBounds.x += int(float(windowBounds.z - windowBounds.x)*progress);
-  discXBounds.x -= discDimensions.x/2;
-  discXBounds.y  = discXBounds.x + discDimensions.x;
+  discXBounds.x -= discSizes.x/2;
+  discXBounds.y  = discXBounds.x + discSizes.x;
 
   glTranslatef(float(offset), 0, 0);
   glEnable(GL_BLEND);
@@ -135,8 +135,8 @@ void    GUISlider::renderVertical()
 
   discYBounds.x  = windowBounds.w;
   discYBounds.x -= int(float(getHeight())*progress);
-  discYBounds.x -= discDimensions.y/2;
-  discYBounds.y  = discYBounds.x + discDimensions.y;
+  discYBounds.x -= discSizes.y/2;
+  discYBounds.y  = discYBounds.x + discSizes.y;
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -190,15 +190,15 @@ const Tuple4i &GUISlider::getWindowBounds()
   if(parent && update)
   {
     GUIRectangle::computeWindowBounds();
-    label.computeDimensions();
+    label.computeSizes();
     realWindowBounds    = windowBounds;
    
     if(orientation == OR_HORIZONTAL)
     {
       int difference = label.getWidth() -  getWidth();
         
-      realWindowBounds.x -= discDimensions.x/2;
-      realWindowBounds.z += discDimensions.x/2;
+      realWindowBounds.x -= discSizes.x/2;
+      realWindowBounds.z += discSizes.x/2;
 
       if(difference > 0)
       {
@@ -212,9 +212,9 @@ const Tuple4i &GUISlider::getWindowBounds()
     }
     else
     {
-      offset               = discDimensions.y/2;
-      realWindowBounds.y  -= discDimensions.y/2;
-      realWindowBounds.w  += discDimensions.y/2;
+      offset               = discSizes.y/2;
+      realWindowBounds.y  -= discSizes.y/2;
+      realWindowBounds.w  += discSizes.y/2;
     }
   }
   return realWindowBounds;

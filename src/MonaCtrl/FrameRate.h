@@ -30,7 +30,7 @@ public:
    FrameRate(float targetFPS);
 
    // Update: call per frame.
-   void update();
+   void Update();
 
    // Reset.
    void reset();

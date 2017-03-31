@@ -15,56 +15,56 @@ float const tol = 0.0000000001f;                  // float type tolerance
 //------------------------------------------------------------------------//
 inline float DegreesToRadians(float deg)
 {
-   return(deg * pi / 180.0f);
+   return (deg * pi / 180.0f);
 }
 
 
 inline float RadiansToDegrees(float rad)
 {
-   return(rad * 180.0f / pi);
+   return (rad * 180.0f / pi);
 }
 
 
 //------------------------------------------------------------------------//
-// Vector Class and vector functions
+// Vector3f Class and vector functions
 //------------------------------------------------------------------------//
-class Vector
+class Vector3f
 {
 public:
    float x;
    float y;
    float z;
 
-   Vector(void);
-   Vector(float xi, float yi, float zi);
+   Vector3f(void);
+   Vector3f(float xi, float yi, float zi);
 
    float Magnitude(void);
    void Normalize(void);
    void Normalize(float);
    void Reverse(void);
 
-   float Distance(Vector);
-   float SquareDistance(Vector);
+   float Distance(Vector3f);
+   float SquareDistance(Vector3f);
    void Zero(void);
 
-   Vector& operator+=(Vector u);                  // vector addition
-   Vector& operator-=(Vector u);                  // vector subtraction
-   Vector& operator*=(float s);                   // scalar multiply
-   Vector& operator/=(float s);                   // scalar divide
+   Vector3f& operator+=(Vector3f u);                  // vector addition
+   Vector3f& operator-=(Vector3f u);                  // vector subtraction
+   Vector3f& operator*=(float s);                   // scalar multiply
+   Vector3f& operator/=(float s);                   // scalar divide
 
-   Vector operator-(void);
+   Vector3f operator-(void);
 };
 
-inline Vector operator+(Vector u, Vector v);
-inline Vector operator-(Vector u, Vector v);
-inline Vector operator^(Vector u, Vector v);
-inline float operator *(Vector u, Vector v);
-inline Vector operator *(float s, Vector u);
-inline Vector operator *(Vector u, float s);
-inline Vector operator/(Vector u, float s);
-inline float TripleScalarProduct(Vector u, Vector v, Vector w);
+inline Vector3f operator+(Vector3f u, Vector3f v);
+inline Vector3f operator-(Vector3f u, Vector3f v);
+inline Vector3f operator^(Vector3f u, Vector3f v);
+inline float operator *(Vector3f u, Vector3f v);
+inline Vector3f operator *(float s, Vector3f u);
+inline Vector3f operator *(Vector3f u, float s);
+inline Vector3f operator/(Vector3f u, float s);
+inline float TripleScalarProduct(Vector3f u, Vector3f v, Vector3f w);
 
-inline Vector::Vector(void)
+inline Vector3f::Vector3f(void)
 {
    x = 0;
    y = 0;
@@ -72,7 +72,7 @@ inline Vector::Vector(void)
 }
 
 
-inline Vector::Vector(float xi, float yi, float zi)
+inline Vector3f::Vector3f(float xi, float yi, float zi)
 {
    x = xi;
    y = yi;
@@ -80,13 +80,13 @@ inline Vector::Vector(float xi, float yi, float zi)
 }
 
 
-inline float Vector::Magnitude(void)
+inline float Vector3f::Magnitude(void)
 {
-   return((float)sqrt(x * x + y * y + z * z));
+   return ((float)sqrt(x * x + y * y + z * z));
 }
 
 
-inline void Vector::Normalize(void)
+inline void Vector3f::Normalize(void)
 {
    float m = (float)sqrt(x * x + y * y + z * z);
 
@@ -113,7 +113,7 @@ inline void Vector::Normalize(void)
 }
 
 
-inline void Vector::Normalize(float n)
+inline void Vector3f::Normalize(float n)
 {
    float m = (float)sqrt(x * x + y * y + z * z);
 
@@ -141,7 +141,7 @@ inline void Vector::Normalize(float n)
 }
 
 
-inline void Vector::Reverse(void)
+inline void Vector3f::Reverse(void)
 {
    x = -x;
    y = -y;
@@ -149,29 +149,29 @@ inline void Vector::Reverse(void)
 }
 
 
-inline float Vector::Distance(Vector v)
+inline float Vector3f::Distance(Vector3f v)
 {
    float dx, dy, dz;
 
    dx = x - v.x;
    dy = y - v.y;
    dz = z - v.z;
-   return((float)sqrt(dx * dx + dy * dy + dz * dz));
+   return ((float)sqrt(dx * dx + dy * dy + dz * dz));
 }
 
 
-inline float Vector::SquareDistance(Vector v)
+inline float Vector3f::SquareDistance(Vector3f v)
 {
    float dx, dy, dz;
 
    dx = x - v.x;
    dy = y - v.y;
    dz = z - v.z;
-   return((float)(dx * dx + dy * dy + dz * dz));
+   return ((float)(dx * dx + dy * dy + dz * dz));
 }
 
 
-inline void Vector::Zero(void)
+inline void Vector3f::Zero(void)
 {
    x = 0.0;
    y = 0.0;
@@ -179,98 +179,98 @@ inline void Vector::Zero(void)
 }
 
 
-inline Vector& Vector::operator+=(Vector u)
+inline Vector3f& Vector3f::operator+=(Vector3f u)
 {
    x += u.x;
    y += u.y;
    z += u.z;
-   return(*this);
+   return (*this);
 }
 
 
-inline Vector& Vector::operator-=(Vector u)
+inline Vector3f& Vector3f::operator-=(Vector3f u)
 {
    x -= u.x;
    y -= u.y;
    z -= u.z;
-   return(*this);
+   return (*this);
 }
 
 
-inline Vector& Vector::operator*=(float s)
+inline Vector3f& Vector3f::operator*=(float s)
 {
    x *= s;
    y *= s;
    z *= s;
-   return(*this);
+   return (*this);
 }
 
 
-inline Vector& Vector::operator/=(float s)
+inline Vector3f& Vector3f::operator/=(float s)
 {
    x /= s;
    y /= s;
    z /= s;
-   return(*this);
+   return (*this);
 }
 
 
-inline Vector Vector::operator-(void)
+inline Vector3f Vector3f::operator-(void)
 {
-   return(Vector(-x, -y, -z));
+   return (Vector3f(-x, -y, -z));
 }
 
 
-inline Vector operator+(Vector u, Vector v)
+inline Vector3f operator+(Vector3f u, Vector3f v)
 {
-   return(Vector(u.x + v.x, u.y + v.y, u.z + v.z));
+   return (Vector3f(u.x + v.x, u.y + v.y, u.z + v.z));
 }
 
 
-inline Vector operator-(Vector u, Vector v)
+inline Vector3f operator-(Vector3f u, Vector3f v)
 {
-   return(Vector(u.x - v.x, u.y - v.y, u.z - v.z));
+   return (Vector3f(u.x - v.x, u.y - v.y, u.z - v.z));
 }
 
 
-// Vector cross product (u cross v)
-inline Vector operator^(Vector u, Vector v)
+// Vector3f cross product (u cross v)
+inline Vector3f operator^(Vector3f u, Vector3f v)
 {
-   return(Vector(u.y * v.z - u.z * v.y,
+   return (Vector3f(u.y * v.z - u.z * v.y,
                  -u.x * v.z + u.z * v.x,
                  u.x * v.y - u.y * v.x));
 }
 
 
-// Vector dot product
-inline float operator *(Vector u, Vector v)
+// Vector3f dot product
+inline float operator *(Vector3f u, Vector3f v)
 {
-   return(u.x * v.x + u.y * v.y + u.z * v.z);
+   return (u.x * v.x + u.y * v.y + u.z * v.z);
 }
 
 
-inline Vector operator *(float s, Vector u)
+inline Vector3f operator *(float s, Vector3f u)
 {
-   return(Vector(u.x * s, u.y * s, u.z * s));
+   return (Vector3f(u.x * s, u.y * s, u.z * s));
 }
 
 
-inline Vector operator *(Vector u, float s)
+inline Vector3f operator *(Vector3f u, float s)
 {
-   return(Vector(u.x * s, u.y * s, u.z * s));
+   return (Vector3f(u.x * s, u.y * s, u.z * s));
 }
 
 
-inline Vector operator/(Vector u, float s)
+inline Vector3f operator/(Vector3f u, float s)
 {
-   return(Vector(u.x / s, u.y / s, u.z / s));
+   return (Vector3f(u.x / s, u.y / s, u.z / s));
 }
 
 
 // triple scalar product (u dot (v cross w))
-inline float TripleScalarProduct(Vector u, Vector v, Vector w)
+inline float TripleScalarProduct(Vector3f u, Vector3f v, Vector3f w)
 {
-   return(float((u.x * (v.y * w.z - v.z * w.y)) +
+   return (float((u.x * (v.y * w.z - v.z * w.y)) +
                 (u.y * (-v.x * w.z + v.z * w.x)) +
                 (u.z * (v.x * w.y - v.y * w.x))));
    //return u*(v^w);

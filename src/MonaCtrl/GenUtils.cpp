@@ -11,7 +11,7 @@ NamedObject::NamedObject(const char*  argName)
     name =  argName;
 }
 
-NamedObject::NamedObject(const std::string &argName)
+NamedObject::NamedObject(const String &argName)
 {
   name = argName;
 }
@@ -29,24 +29,24 @@ NamedObject &NamedObject::operator=(const NamedObject &copy)
   return *this;
 }
 
-void NamedObject::setName(const char   *nameArg)
+void NamedObject::SetName(const char   *nameArg)
 {
   if(nameArg)
     name = nameArg;
   else
   #ifdef WIN32
-    name.clear();
+    name.Clear();
   #else
     name = "";
   #endif
 }
 
-void NamedObject::setName(const std::string &nameArg)
+void NamedObject::SetName(const String &nameArg)
 {
   name = nameArg;
 }
 
-const std::string &NamedObject::getName() const
+const String &NamedObject::GetName() const
 {
   return name;
 }
@@ -59,7 +59,7 @@ const char *NamedObject::getCharName() const
 NamedObject::~NamedObject()
 {
   #ifdef WIN32
-    name.clear();
+    name.Clear();
   #else
     name = "";
   #endif
@@ -70,8 +70,8 @@ NamedObject::~NamedObject()
 /*                                                                                         */
 /*******************************************************************************************/
 
-std::vector<std::string> Logger::logStrings;
-std::string              Logger::logPath;
+Vector<String> Logger::log_strings;
+String              Logger::logPath;
 
 void Logger::initialize(const char* logfilename)
 {
@@ -82,49 +82,49 @@ void Logger::initialize(const char* logfilename)
 
 void Logger::flush()
 {
-  if(!logPath.size() || !logStrings.size())
+  if(!logPath.GetCount() || !log_strings.GetCount())
     return;
 
   std::ofstream logFile(logPath.c_str(), std::ios::app);
 
-  for(size_t t = 0; t < logStrings.size(); t++)
-    logFile << logStrings[t];
+  for(size_t t = 0; t < log_strings.GetCount(); t++)
+    logFile << log_strings[t];
 
-  logStrings.clear();
+  log_strings.Clear();
   logFile.close();
 }
 
-void Logger::writeImmidiateInfoLog(const std::string &info)
+void Logger::writeImmidiateInfoLog(const String &info)
 {
-  if(info.size())
+  if(info.GetCount())
   {
-    logStrings.push_back(std::string("<+>") + info + "\n");
+    log_strings.Add(String("<+>") + info + "\n");
     flush();
   }
 }
 
-void Logger::writeInfoLog(const std::string &info)
+void Logger::writeInfoLog(const String &info)
 {
-  logStrings.push_back(std::string("<+>") + info + "\n");
-  if(logStrings.size() >= 10)
+  log_strings.Add(String("<+>") + info + "\n");
+  if(log_strings.GetCount() >= 10)
     flush();
 }
 
-bool Logger::writeErrorLog(const std::string &info)
+bool Logger::writeErrorLog(const String &info)
 {
-  if(info.size())
+  if(info.GetCount())
   {
-    logStrings.push_back(std::string("<!>") + info + "\n");
+    log_strings.Add(String("<!>") + info + "\n");
     flush();
   }
   return false;
 }
 
-void Logger::writeFatalErrorLog(const std::string &info)
+void Logger::writeFatalErrorLog(const String &info)
 {
-  if(info.size())
+  if(info.GetCount())
   {
-   logStrings.push_back(std::string("<X>") + info + "\n");
+   log_strings.Add(String("<X>") + info + "\n");
 
     flush();
   }
@@ -136,13 +136,13 @@ void Logger::writeFatalErrorLog(const std::string &info)
 /*                                                                                         */
 /*******************************************************************************************/
 
-std::vector<std::string> MediaPathManager::dataPaths;
+Vector<String> MediaPathManager::data_paths;
 
-const std::string MediaPathManager::lookUpMediaPath(const std::string  &path)
+const String MediaPathManager::lookUpMediaPath(const String  &path)
 {
-  std::ifstream test;
-  std::string   pathBuffer = path;
-  size_t        count      = dataPaths.size();
+  FileIn test;
+  String   pathBuffer = path;
+  size_t        count      = data_paths.GetCount();
 
   test.open(path.c_str());
 
@@ -154,7 +154,7 @@ const std::string MediaPathManager::lookUpMediaPath(const std::string  &path)
 
   for(size_t i = 0; i < count; i++)
   {
-    pathBuffer  = dataPaths[i];
+    pathBuffer  = data_paths[i];
     pathBuffer += path;
 
     test.open(pathBuffer.c_str());
@@ -177,40 +177,40 @@ bool MediaPathManager::registerPath(const TiXmlElement *mediaPathNode)
   return false;
 }
 
-bool MediaPathManager::registerPath(const std::string  &path)
+bool MediaPathManager::registerPath(const String  &path)
 {
-  if(!path.size())
+  if(!path.GetCount())
     return Logger::writeErrorLog("Failed to register data path -> NULL");
 
-  for(size_t i = 0; i < dataPaths.size(); i++)
-    if(dataPaths[i] == path)
+  for(size_t i = 0; i < data_paths.GetCount(); i++)
+    if(data_paths[i] == path)
       return true;
 
-  std::string stringBuffer = path;
+  String stringBuffer = path;
 
-  Logger::writeInfoLog(std::string("Registering data path -> ") + path);
-  dataPaths.push_back(stringBuffer);
+  Logger::writeInfoLog(String("Registering data path -> ") + path);
+  data_paths.Add(stringBuffer);
   return true;
 }
 
 int MediaPathManager::getPathCount()
 {
-  return int(dataPaths.size());
+  return int(data_paths.GetCount());
 }
 
-const std::string MediaPathManager::getPathAt(int index)
+const String MediaPathManager::getPathAt(int index)
 {
-  if(!dataPaths.size() || index >= int(dataPaths.size()) || index < 0)
+  if(!data_paths.GetCount() || index >= int(data_paths.GetCount()) || index < 0)
     return NULL;
-  return dataPaths[size_t(index)];
+  return data_paths[size_t(index)];
 }
 
 void  MediaPathManager::printAllPaths()
 {
   std::cout << "List of registred Media Paths: \n";
 
-  for(size_t i = 0; i < dataPaths.size(); i++)
-    std::cout << int(i) << "-" << dataPaths[i].c_str() << std::endl;
+  for(size_t i = 0; i < data_paths.GetCount(); i++)
+    std::cout << int(i) << "-" << data_paths[i].c_str() << std::endl;
 
   std::cout << std::endl;
 }
@@ -284,7 +284,7 @@ double Perlin::noise1(double arg)
 	u = rx0 * g1[p[bx0]];
 	v = rx1 * g1[p[bx1]];
 
-	return(lerp(sx, u, v));
+	return (lerp(sx, u, v));
 }
 
 double Perlin::noise2(double vec[2])
@@ -453,7 +453,7 @@ double Perlin::noise1D(double x,double alpha,double beta,int n)
 		scale *= alpha;
 		p *= beta;
 	}
-	return(sum);
+	return (sum);
 }
 
 double Perlin::noise2D(double x, double y, double alpha, double beta, int n)
@@ -472,7 +472,7 @@ double Perlin::noise2D(double x, double y, double alpha, double beta, int n)
 		p[0] *= beta;
 		p[1] *= beta;
 	}
-	return(sum);
+	return (sum);
 	}
 
 double Perlin::noise3D(double x, double y, double z, double alpha, double beta, int n)
@@ -494,7 +494,7 @@ double Perlin::noise3D(double x, double y, double z, double alpha, double beta, 
     p[1]  *= beta;
     p[2]  *= beta;
   }
-  return(sum);
+  return (sum);
 }
 
 

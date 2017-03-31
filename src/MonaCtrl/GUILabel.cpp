@@ -1,9 +1,9 @@
 #include "EasyGL.h"
 
-GUILabel::GUILabel(const std::string &ls,
-                   const std::string &callback) :  GUIAlphaElement(callback)
+GUILabel::GUILabel(const String &ls,
+                   const String &callback) :  GUIAlphaElement(callback)
 {
-  setDimensions(40, 5);
+  setSizes(40, 5);
   setLabelString(ls);
   widgetType = WT_LABEL;
 }
@@ -28,10 +28,10 @@ void GUILabel::render(float clockTick)
 
   switch(anchor)
   {
-    case AT_CORNERLU: label.print(windowBounds.x, windowBounds.y); break;
-    case AT_CORNERLD: label.print(windowBounds.x, windowBounds.y - label.getHeight()); break;
-    case AT_CORNERRU: label.print(windowBounds.z, windowBounds.y); break;
-    case AT_CORNERRD: label.print(windowBounds.z, windowBounds.y - label.getHeight()); break;
+    case AT_CORNERLU: label.Print(windowBounds.x, windowBounds.y); break;
+    case AT_CORNERLD: label.Print(windowBounds.x, windowBounds.y - label.getHeight()); break;
+    case AT_CORNERRU: label.Print(windowBounds.z, windowBounds.y); break;
+    case AT_CORNERRD: label.Print(windowBounds.z, windowBounds.y - label.getHeight()); break;
     default: label.printCenteredXY(center.x, center.y);
   }
 }
@@ -42,7 +42,7 @@ const Tuple4i &GUILabel::getWindowBounds()
   {
     int height       = 0,
         width        = 0;
-    label.computeDimensions();
+    label.computeSizes();
 
     if(dimensions.x > 1)
       width  = dimensions.x  < label.getWidth() ? label.getWidth() : (int)dimensions.x;

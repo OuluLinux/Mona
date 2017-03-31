@@ -1,9 +1,9 @@
 #include "EasyGL.h"
 
-GUICheckBox::GUICheckBox(const std::string &callback) :  GUIAlphaElement(callback)
+GUICheckBox::GUICheckBox(const String &callback) :  GUIAlphaElement(callback)
 {
   setMinAlphaMark(0.0f);
-  setDimensions(20, 20);
+  setSizes(20, 20);
   setAlphaMark(1.0f);
   setBGColor(0.8f, 0.8f, 0.8f);
   setChecked(false);
@@ -28,16 +28,16 @@ bool GUICheckBox::loadXMLSettings(const TiXmlElement *element)
 
   setChecked(XMLArbiter::analyzeBooleanAttr(element,  "checked", false));
 
-  for(const TiXmlElement *child = element->FirstChildElement();	
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();	
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    const char * value = child->Value();
+    const char * value = outer->Value();
 
     if(value)
     if(!strcmp(value, "BGColor"))
     {
-      setBGColor(XMLArbiter::fillComponents3f(child, bgColor));
+      setBGColor(XMLArbiter::fillComponents3f(outer, bgColor));
       break;
     }
 
@@ -191,7 +191,7 @@ const Tuple4i &GUICheckBox::getWindowBounds()
 {
   if(parent && update)
   {
-    label.computeDimensions();
+    label.computeSizes();
     extra = int(float(label.getHeight())*1.25);
     dimensions.set(float(label.getWidth() + extra), float(extra));
     markOffset = extra - int(dimensions.y*markRatio);

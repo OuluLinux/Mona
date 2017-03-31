@@ -5,1808 +5,1658 @@
 #include "BlockTerrain.h"
 
 // Graphical block size.
-const GLfloat BlockTerrain::DEFAULT_BLOCK_SIZE = 0.05f;
+const double BlockTerrain::default_block_size = 0.05f;
 
 // Block identifier dispenser.
-int BlockTerrain::Block::idDispenser = 0;
+int BlockTerrain::Block::id_dispenser = 0;
 
 // Initialize terrain.
-void BlockTerrain::init(RANDOM randomSeed, int width, int height,
-                        int maxElevation, int minPlatformSize, int maxPlatformSize,
-                        int maxPlatformGenerations, int extraRamps, GLfloat blockSize)
-{
-   assert(width > 0 && height > 0);
-   assert(minPlatformSize > 0 && maxPlatformSize >= minPlatformSize);
-   assert(minPlatformSize <= width && minPlatformSize <= height);
-   assert(maxPlatformSize <= width && maxPlatformSize <= height);
-   assert(extraRamps >= 0);
-   this->RANDOM_SEED              = randomSeed;
-   this->WIDTH                    = width;
-   this->HEIGHT                   = height;
-   this->MAX_PLATFORM_ELEVATION   = maxElevation;
-   this->MIN_PLATFORM_SIZE        = minPlatformSize;
-   this->MAX_PLATFORM_SIZE        = maxPlatformSize;
-   this->MAX_PLATFORM_GENERATIONS = maxPlatformGenerations;
-   this->EXTRA_RAMPS              = extraRamps;
-   this->BLOCK_SIZE               = blockSize;
-   randomizer = new Random(this->RANDOM_SEED);
-   assert(randomizer != NULL);
-   displaysCreated = false;
-   heightmap       = NULL;
-   texturesLoaded  = false;
-
-   // Generate the terrain.
-   generate();
+void BlockTerrain::Init(int random_seed, int width, int height,
+						int max_elevation, int min_platform_size, int max_platform_size,
+						int max_platform_generations, int extra_ramps, double block_size) {
+	ASSERT(width > 0 && height > 0);
+	ASSERT(min_platform_size > 0 && max_platform_size >= min_platform_size);
+	ASSERT(min_platform_size <= width && min_platform_size <= height);
+	ASSERT(max_platform_size <= width && max_platform_size <= height);
+	ASSERT(extra_ramps >= 0);
+	this->random_seed              = random_seed;
+	this->width                    = width;
+	this->height                   = height;
+	this->max_platform_elevation   = max_elevation;
+	this->min_platform_size        = min_platform_size;
+	this->max_platform_size        = max_platform_size;
+	this->max_platform_generations = max_platform_generations;
+	this->extra_ramps              = extra_ramps;
+	this->block_size               = block_size;
+	randomizer = new Random(this->random_seed);
+	ASSERT(randomizer != NULL);
+	displays_created = false;
+	heightmap       = NULL;
+	is_textures_loaded  = false;
+	// Generate the terrain.
+	Generate();
 }
 
 
 // Generate terrain.
-void BlockTerrain::generate()
-{
-   int i, j, k;
+void BlockTerrain::Generate() {
+	int i, j, k;
+	Vector<struct ConnectablePlatforms> connectable_platforms;
+	Vector<ConnectableBlocks>    connectable_blocks;
+	// Create blocks.
+	blocks = new Block *[width];
+	ASSERT(blocks != NULL);
 
-   vector<struct ConnectablePlatforms> connectablePlatforms;
-   vector<struct ConnectableBlocks>    connectableBlocks;
+	for (i = 0; i < width; i++) {
+		blocks[i] = new Block[height];
+		ASSERT(blocks[i] != NULL);
+	}
 
-   // Create blocks.
-   blocks = new Block *[WIDTH];
-   assert(blocks != NULL);
-   for (i = 0; i < WIDTH; i++)
-   {
-      blocks[i] = new Block[HEIGHT];
-      assert(blocks[i] != NULL);
-   }
-   markPlatforms();
-   saveBlocks = new Block *[WIDTH];
-   assert(saveBlocks != NULL);
-   for (i = 0; i < WIDTH; i++)
-   {
-      saveBlocks[i] = new Block[HEIGHT];
-      assert(saveBlocks[i] != NULL);
-   }
+	MarkPlatforms();
+	saveBlocks = new Block *[width];
+	ASSERT(saveBlocks != NULL);
 
-   // Create and connect block platforms.
-   for (k = 0; k < MAX_PLATFORM_GENERATIONS; k++)
-   {
-      // create a platform.
-      createPlatform();
+	for (i = 0; i < width; i++) {
+		saveBlocks[i] = new Block[height];
+		ASSERT(saveBlocks[i] != NULL);
+	}
 
-      // Try to connect platforms with ramps.
-      if (!connectPlatforms())
-      {
-         for (i = 0; i < WIDTH; i++)
-         {
-            for (j = 0; j < HEIGHT; j++)
-            {
-               blocks[i][j] = saveBlocks[i][j];
-            }
-         }
-      }
-   }
+	// Create and connect block platforms.
+	for (k = 0; k < max_platform_generations; k++) {
+		// create a platform.
+		CreatePlatform();
 
-   // Add extra ramps.
-   for (k = 0; k < EXTRA_RAMPS; k++)
-   {
-      // Get connectable platforms.
-      getConnectablePlatforms(connectablePlatforms, true);
+		// Try to connect platforms with ramps.
+		if (!ConnectPlatforms()) {
+			for (i = 0; i < width; i++) {
+				for (j = 0; j < height; j++)
+					blocks[i][j] = saveBlocks[i][j];
+			}
+		}
+	}
 
-      // All possible connections made?
-      if (connectablePlatforms.size() == 0)
-      {
-         break;
-      }
+	// Add extra ramps.
+	for (k = 0; k < extra_ramps; k++) {
+		// Get connectable platforms.
+		GetConnectablePlatforms(connectable_platforms, true);
 
-      // Select a pair of platforms to build a ramp between.
-      i = randomizer->RAND_CHOICE((int)connectablePlatforms.size());
-      getConnectableBlocks(connectablePlatforms[i].platforms[0],
-                           connectablePlatforms[i].platforms[1], connectableBlocks);
+		// All possible connections made?
+		if (connectable_platforms.GetCount() == 0)
+			break;
 
-      // Select blocks and build ramp.
-      assert(connectableBlocks.size() > 0);
-      i = randomizer->RAND_CHOICE((int)connectableBlocks.size());
-      connectBlocks(connectableBlocks[i].x[0], connectableBlocks[i].y[0],
-                    connectableBlocks[i].x[1], connectableBlocks[i].y[1]);
+		// Select a pair of platforms to build a ramp between.
+		i = randomizer->RAND_CHOICE((int)connectable_platforms.GetCount());
+		GetConnectableBlocks(connectable_platforms[i].platforms[0],
+							 connectable_platforms[i].platforms[1], connectable_blocks);
+		// Select blocks and build ramp.
+		ASSERT(connectable_blocks.GetCount() > 0);
+		i = randomizer->RAND_CHOICE((int)connectable_blocks.GetCount());
+		ConnectBlocks(connectable_blocks[i].x[0], connectable_blocks[i].y[0],
+					  connectable_blocks[i].x[1], connectable_blocks[i].y[1]);
+		// Re-mark platforms since new ramp may have partitioned them.
+		MarkPlatforms();
+	}
 
-      // Re-mark platforms since new ramp may have partitioned them.
-      markPlatforms();
-   }
-
-   // Build the terrain.
-   build();
+	// Build the terrain.
+	Build();
 }
 
 
 // Destructor.
-BlockTerrain::~BlockTerrain()
-{
-   for (int i = 0; i < WIDTH; i++)
-   {
-      delete [] blocks[i];
-      delete [] saveBlocks[i];
-   }
-   delete [] blocks;
-   delete [] saveBlocks;
-   delete randomizer;
-   delete heightmap;
-   glDeleteTextures(NUM_BLOCK_TEXTURES, blockTextures);
-   glDeleteLists(blockDisplay, 4);
+BlockTerrain::~BlockTerrain() {
+	for (int i = 0; i < width; i++) {
+		delete [] blocks[i];
+		delete [] saveBlocks[i];
+	}
+
+	delete [] blocks;
+	delete [] saveBlocks;
+	delete randomizer;
+	delete heightmap;
+	glDeleteTextures(NUM_BLOCK_TEXTURES, block_textures);
+	glDeleteLists(blockDisplay, 4);
 }
 
 
 // Create and mark a platform.
-void BlockTerrain::createPlatform()
-{
-   int i, j, x, y, w, h, e;
+void BlockTerrain::CreatePlatform() {
+	int i, j, x, y, w, h, e;
+	// Determine platform dimensions and position.
+	w = randomizer->RAND_CHOICE(max_platform_size - min_platform_size + 1) + min_platform_size;
+	h = randomizer->RAND_CHOICE(max_platform_size - min_platform_size + 1) + min_platform_size;
+	x = randomizer->RAND_CHOICE(width - w + 1);
+	y = randomizer->RAND_CHOICE(height - h + 1);
+	e = randomizer->RAND_CHOICE(max_platform_elevation + 1);
 
-   // Determine platform dimensions and position.
-   w = randomizer->RAND_CHOICE(MAX_PLATFORM_SIZE - MIN_PLATFORM_SIZE + 1) + MIN_PLATFORM_SIZE;
-   h = randomizer->RAND_CHOICE(MAX_PLATFORM_SIZE - MIN_PLATFORM_SIZE + 1) + MIN_PLATFORM_SIZE;
-   x = randomizer->RAND_CHOICE(WIDTH - w + 1);
-   y = randomizer->RAND_CHOICE(HEIGHT - h + 1);
-   e = randomizer->RAND_CHOICE(MAX_PLATFORM_ELEVATION + 1);
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++) {
+			saveBlocks[i][j]  = blocks[i][j];
+			blocks[i][j].type = Block::PLATFORM;
+		}
+	}
 
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         saveBlocks[i][j]  = blocks[i][j];
-         blocks[i][j].type = Block::PLATFORM;
-      }
-   }
-   for (i = x; i < (x + w); i++)
-   {
-      for (j = y; j < (y + h); j++)
-      {
-         blocks[i][j].elevation = e;
-      }
-   }
+	for (i = x; i < (x + w); i++) {
+		for (j = y; j < (y + h); j++)
+			blocks[i][j].elevation = e;
+	}
 
-   // Mark platforms.
-   markPlatforms();
+	// Mark platforms.
+	MarkPlatforms();
 }
 
 
 // Mark platforms.
-void BlockTerrain::markPlatforms()
-{
-   int i, j, mark;
+void BlockTerrain::MarkPlatforms() {
+	int i, j, mark;
 
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         blocks[i][j].platform = -1;
-      }
-   }
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++)
+			blocks[i][j].platform = -1;
+	}
 
-   // Mark all platforms.
-   mark = 0;
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         if ((blocks[i][j].platform == -1) &&
-             ((blocks[i][j].type == Block::PLATFORM) || (blocks[i][j].type == Block::LANDING)))
-         {
-            // Mark continguous blocks on platform.
-            markPlatform(mark, i, j);
-            mark++;
-         }
-      }
-   }
+	// Mark all platforms.
+	mark = 0;
+
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++) {
+			if ((blocks[i][j].platform == -1) &&
+				((blocks[i][j].type == Block::PLATFORM) || (blocks[i][j].type == Block::LANDING))) {
+				// Mark continguous blocks on platform.
+				MarkPlatform(mark, i, j);
+				mark++;
+			}
+		}
+	}
 }
 
 
 // Recursively mark a platform.
-void BlockTerrain::markPlatform(int mark, int x, int y)
-{
-   int lx, ly, crx, cry, clx, cly;
+void BlockTerrain::MarkPlatform(int mark, int x, int y) {
+	int lx, ly, crx, cry, clx, cly;
+	blocks[x][y].platform = mark;
 
-   blocks[x][y].platform = mark;
-   if (blocks[x][y].type == Block::RAMP)
-   {
-      return;
-   }
-   if (x > 0)
-   {
-      if ((blocks[x - 1][y].elevation == blocks[x][y].elevation) &&
-          (blocks[x - 1][y].platform == -1))
-      {
-         if (blocks[x][y].type == Block::PLATFORM)
-         {
-            if (blocks[x - 1][y].type != Block::RAMP)
-            {
-               markPlatform(mark, x - 1, y);
-            }
-         }
-         else                                     // landing.
-         {
-            if (blocks[x - 1][y].type == Block::RAMP)
-            {
-               getRampInfo(x - 1, y, lx, ly, crx, cry, clx, cly);
-               if ((lx == x) && (ly == y))
-               {
-                  markPlatform(mark, x - 1, y);
-               }
-            }
-            else
-            {
-               markPlatform(mark, x - 1, y);
-            }
-         }
-      }
-   }
-   if (y > 0)
-   {
-      if ((blocks[x][y - 1].elevation == blocks[x][y].elevation) &&
-          (blocks[x][y - 1].platform == -1))
-      {
-         if (blocks[x][y].type == Block::PLATFORM)
-         {
-            if (blocks[x][y - 1].type != Block::RAMP)
-            {
-               markPlatform(mark, x, y - 1);
-            }
-         }
-         else                                     // landing.
-         {
-            if (blocks[x][y - 1].type == Block::RAMP)
-            {
-               getRampInfo(x, y - 1, lx, ly, crx, cry, clx, cly);
-               if ((lx == x) && (ly == y))
-               {
-                  markPlatform(mark, x, y - 1);
-               }
-            }
-            else
-            {
-               markPlatform(mark, x, y - 1);
-            }
-         }
-      }
-   }
-   if (x < WIDTH - 1)
-   {
-      if ((blocks[x + 1][y].elevation == blocks[x][y].elevation) &&
-          (blocks[x + 1][y].platform == -1))
-      {
-         if (blocks[x][y].type == Block::PLATFORM)
-         {
-            if (blocks[x + 1][y].type != Block::RAMP)
-            {
-               markPlatform(mark, x + 1, y);
-            }
-         }
-         else                                     // landing.
-         {
-            if (blocks[x + 1][y].type == Block::RAMP)
-            {
-               getRampInfo(x + 1, y, lx, ly, crx, cry, clx, cly);
-               if ((lx == x) && (ly == y))
-               {
-                  markPlatform(mark, x + 1, y);
-               }
-            }
-            else
-            {
-               markPlatform(mark, x + 1, y);
-            }
-         }
-      }
-   }
-   if (y < HEIGHT - 1)
-   {
-      if ((blocks[x][y + 1].elevation == blocks[x][y].elevation) &&
-          (blocks[x][y + 1].platform == -1))
-      {
-         if (blocks[x][y].type == Block::PLATFORM)
-         {
-            if (blocks[x][y + 1].type != Block::RAMP)
-            {
-               markPlatform(mark, x, y + 1);
-            }
-         }
-         else                                     // landing.
-         {
-            if (blocks[x][y + 1].type == Block::RAMP)
-            {
-               getRampInfo(x, y + 1, lx, ly, crx, cry, clx, cly);
-               if ((lx == x) && (ly == y))
-               {
-                  markPlatform(mark, x, y + 1);
-               }
-            }
-            else
-            {
-               markPlatform(mark, x, y + 1);
-            }
-         }
-      }
-   }
+	if (blocks[x][y].type == Block::RAMP)
+		return;
+
+	if (x > 0) {
+		if ((blocks[x - 1][y].elevation == blocks[x][y].elevation) &&
+			(blocks[x - 1][y].platform == -1)) {
+			if (blocks[x][y].type == Block::PLATFORM) {
+				if (blocks[x - 1][y].type != Block::RAMP)
+					MarkPlatform(mark, x - 1, y);
+			}
+			else {                                   // landing.
+				if (blocks[x - 1][y].type == Block::RAMP) {
+					getRampInfo(x - 1, y, lx, ly, crx, cry, clx, cly);
+
+					if ((lx == x) && (ly == y))
+						MarkPlatform(mark, x - 1, y);
+				}
+				else
+					MarkPlatform(mark, x - 1, y);
+			}
+		}
+	}
+
+	if (y > 0) {
+		if ((blocks[x][y - 1].elevation == blocks[x][y].elevation) &&
+			(blocks[x][y - 1].platform == -1)) {
+			if (blocks[x][y].type == Block::PLATFORM) {
+				if (blocks[x][y - 1].type != Block::RAMP)
+					MarkPlatform(mark, x, y - 1);
+			}
+			else {                                   // landing.
+				if (blocks[x][y - 1].type == Block::RAMP) {
+					getRampInfo(x, y - 1, lx, ly, crx, cry, clx, cly);
+
+					if ((lx == x) && (ly == y))
+						MarkPlatform(mark, x, y - 1);
+				}
+				else
+					MarkPlatform(mark, x, y - 1);
+			}
+		}
+	}
+
+	if (x < width - 1) {
+		if ((blocks[x + 1][y].elevation == blocks[x][y].elevation) &&
+			(blocks[x + 1][y].platform == -1)) {
+			if (blocks[x][y].type == Block::PLATFORM) {
+				if (blocks[x + 1][y].type != Block::RAMP)
+					MarkPlatform(mark, x + 1, y);
+			}
+			else {                                   // landing.
+				if (blocks[x + 1][y].type == Block::RAMP) {
+					getRampInfo(x + 1, y, lx, ly, crx, cry, clx, cly);
+
+					if ((lx == x) && (ly == y))
+						MarkPlatform(mark, x + 1, y);
+				}
+				else
+					MarkPlatform(mark, x + 1, y);
+			}
+		}
+	}
+
+	if (y < height - 1) {
+		if ((blocks[x][y + 1].elevation == blocks[x][y].elevation) &&
+			(blocks[x][y + 1].platform == -1)) {
+			if (blocks[x][y].type == Block::PLATFORM) {
+				if (blocks[x][y + 1].type != Block::RAMP)
+					MarkPlatform(mark, x, y + 1);
+			}
+			else {                                   // landing.
+				if (blocks[x][y + 1].type == Block::RAMP) {
+					getRampInfo(x, y + 1, lx, ly, crx, cry, clx, cly);
+
+					if ((lx == x) && (ly == y))
+						MarkPlatform(mark, x, y + 1);
+				}
+				else
+					MarkPlatform(mark, x, y + 1);
+			}
+		}
+	}
 }
 
 
 // Connect platforms with ramps into a fully connected terrain.
 // Return true if full connection achieved.
-bool BlockTerrain::connectPlatforms()
-{
-   int  i, j, mark;
-   bool connected;
+bool BlockTerrain::ConnectPlatforms() {
+	int  i, j, mark;
+	bool connected;
+	Vector<struct ConnectablePlatforms> connectable_platforms;
+	Vector<ConnectableBlocks>    connectable_blocks;
 
-   vector<struct ConnectablePlatforms> connectablePlatforms;
-   vector<struct ConnectableBlocks>    connectableBlocks;
+	// Connect all platforms with ramps.
+	while true {
+		// Get connectable platforms.
+		GetConnectablePlatforms(connectable_platforms);
 
-   // Connect all platforms with ramps.
-   while (true)
-   {
-      // Get connectable platforms.
-      getConnectablePlatforms(connectablePlatforms);
+		// All possible connections made?
+		if (connectable_platforms.GetCount() == 0) {
+			// Check for a single group that signifies connected terrain.
+			MarkGroups();
+			mark = blocks[0][0].group;
 
-      // All possible connections made?
-      if (connectablePlatforms.size() == 0)
-      {
-         // Check for a single group that signifies connected terrain.
-         markGroups();
-         mark = blocks[0][0].group;
-         for (i = 0; i < WIDTH; i++)
-         {
-            for (j = 0; j < HEIGHT; j++)
-            {
-               if (blocks[i][j].group != mark)
-               {
-                  return(false);
-               }
-            }
-         }
-         return(true);
-      }
+			for (i = 0; i < width; i++) {
+				for (j = 0; j < height; j++) {
+					if (blocks[i][j].group != mark)
+						return false;
+				}
+			}
 
-      // Select a pair of platforms to build a ramp between.
-      i = randomizer->RAND_CHOICE((int)connectablePlatforms.size());
-      getConnectableBlocks(connectablePlatforms[i].platforms[0],
-                           connectablePlatforms[i].platforms[1], connectableBlocks);
+			return true;
+		}
 
-      // Select blocks and build ramp.
-      assert(connectableBlocks.size() > 0);
-      i = randomizer->RAND_CHOICE((int)connectableBlocks.size());
-      connectBlocks(connectableBlocks[i].x[0], connectableBlocks[i].y[0],
-                    connectableBlocks[i].x[1], connectableBlocks[i].y[1]);
+		// Select a pair of platforms to build a ramp between.
+		i = randomizer->RAND_CHOICE((int)connectable_platforms.GetCount());
+		GetConnectableBlocks(connectable_platforms[i].platforms[0],
+							 connectable_platforms[i].platforms[1], connectable_blocks);
+		// Select blocks and build ramp.
+		ASSERT(connectable_blocks.GetCount() > 0);
+		i = randomizer->RAND_CHOICE((int)connectable_blocks.GetCount());
+		ConnectBlocks(connectable_blocks[i].x[0], connectable_blocks[i].y[0],
+					  connectable_blocks[i].x[1], connectable_blocks[i].y[1]);
+		// Re-mark platforms since new ramp may have partitioned them.
+		MarkPlatforms();
+		// Check for a single group that signifies connected terrain.
+		MarkGroups();
+		mark      = blocks[0][0].group;
+		connected = true;
 
-      // Re-mark platforms since new ramp may have partitioned them.
-      markPlatforms();
+		for (i = 0; i < width && connected; i++) {
+			for (j = 0; j < height && connected; j++) {
+				if (blocks[i][j].group != mark)
+					connected = false;
+			}
+		}
 
-      // Check for a single group that signifies connected terrain.
-      markGroups();
-      mark      = blocks[0][0].group;
-      connected = true;
-      for (i = 0; i < WIDTH && connected; i++)
-      {
-         for (j = 0; j < HEIGHT && connected; j++)
-         {
-            if (blocks[i][j].group != mark)
-            {
-               connected = false;
-            }
-         }
-      }
-      if (connected)
-      {
-         return(true);
-      }
-   }
+		if (connected)
+			return true;
+	}
 }
 
 
 // Mark groups.
 // Connected platforms belong to the same group.
-void BlockTerrain::markGroups()
-{
-   int i, j;
+void BlockTerrain::MarkGroups() {
+	int i, j;
 
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         blocks[i][j].group = -1;
-      }
-   }
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++)
+			blocks[i][j].group = -1;
+	}
 
-   // Mark all groups.
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         if ((blocks[i][j].group == -1) &&
-             ((blocks[i][j].type == Block::PLATFORM) || (blocks[i][j].type == Block::LANDING)))
-         {
-            // Mark connected platforms with group.
-            markGroup(blocks[i][j].platform, i, j);
-         }
-      }
-   }
+	// Mark all groups.
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++) {
+			if ((blocks[i][j].group == -1) &&
+				((blocks[i][j].type == Block::PLATFORM) || (blocks[i][j].type == Block::LANDING))) {
+				// Mark connected platforms with group.
+				MarkGroup(blocks[i][j].platform, i, j);
+			}
+		}
+	}
 }
 
 
 // Recursively mark a group.
-void BlockTerrain::markGroup(int mark, int x, int y)
-{
-   int lx, ly, crx, cry, clx, cly;
+void BlockTerrain::MarkGroup(int mark, int x, int y) {
+	int lx, ly, crx, cry, clx, cly;
+	blocks[x][y].group = mark;
 
-   blocks[x][y].group = mark;
+	// Extend group marking across ramps to other platforms.
+	if (blocks[x][y].type == Block::RAMP) {
+		// Find connected ramp and mark the landing.
+		getRampInfo(x, y, lx, ly, crx, cry, clx, cly);
 
-   // Extend group marking across ramps to other platforms.
-   if (blocks[x][y].type == Block::RAMP)
-   {
-      // Find connected ramp and mark the landing.
-      getRampInfo(x, y, lx, ly, crx, cry, clx, cly);
-      if (blocks[clx][cly].group == -1)
-      {
-         markGroup(mark, clx, cly);
-      }
-      return;
-   }
+		if (blocks[clx][cly].group == -1)
+			MarkGroup(mark, clx, cly);
 
-   // Mark the platform.
-   if (x > 0)
-   {
-      if ((blocks[x - 1][y].platform == blocks[x][y].platform) &&
-          (blocks[x - 1][y].group == -1))
-      {
-         markGroup(mark, x - 1, y);
-      }
-   }
+		return;
+	}
 
-   if (y > 0)
-   {
-      if ((blocks[x][y - 1].platform == blocks[x][y].platform) &&
-          (blocks[x][y - 1].group == -1))
-      {
-         markGroup(mark, x, y - 1);
-      }
-   }
+	// Mark the platform.
+	if (x > 0) {
+		if ((blocks[x - 1][y].platform == blocks[x][y].platform) &&
+			(blocks[x - 1][y].group == -1))
+			MarkGroup(mark, x - 1, y);
+	}
 
-   if (x < WIDTH - 1)
-   {
-      if ((blocks[x + 1][y].platform == blocks[x][y].platform) &&
-          (blocks[x + 1][y].group == -1))
-      {
-         markGroup(mark, x + 1, y);
-      }
-   }
+	if (y > 0) {
+		if ((blocks[x][y - 1].platform == blocks[x][y].platform) &&
+			(blocks[x][y - 1].group == -1))
+			MarkGroup(mark, x, y - 1);
+	}
 
-   if (y < HEIGHT - 1)
-   {
-      if ((blocks[x][y + 1].platform == blocks[x][y].platform) &&
-          (blocks[x][y + 1].group == -1))
-      {
-         markGroup(mark, x, y + 1);
-      }
-   }
+	if (x < width - 1) {
+		if ((blocks[x + 1][y].platform == blocks[x][y].platform) &&
+			(blocks[x + 1][y].group == -1))
+			MarkGroup(mark, x + 1, y);
+	}
+
+	if (y < height - 1) {
+		if ((blocks[x][y + 1].platform == blocks[x][y].platform) &&
+			(blocks[x][y + 1].group == -1))
+			MarkGroup(mark, x, y + 1);
+	}
 }
 
 
 // Get connectable platforms.
 // Can specify platforms that are not already connected.
-void BlockTerrain::getConnectablePlatforms(
-   vector<struct ConnectablePlatforms>& connectablePlatforms,
-   bool                                 alreadyConnected)
-{
-   int i, j, k;
+void BlockTerrain::GetConnectablePlatforms(
+	Vector<struct ConnectablePlatforms>& connectable_platforms,
+	bool                                 already_connected) {
+	int i, j, k;
+	Vector<int> platforms;
+	Vector<ConnectableBlocks> connectable_blocks;
+	struct ConnectablePlatforms      platformConnection;
 
-   vector<int> platforms;
-   vector<struct ConnectableBlocks> connectableBlocks;
-   struct ConnectablePlatforms      platformConnection;
+	// List the platforms.
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++) {
+			for (k = 0; k < (int)platforms.GetCount(); k++) {
+				if (platforms[k] == blocks[i][j].platform)
+					break;
+			}
 
-   // List the platforms.
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         for (k = 0; k < (int)platforms.size(); k++)
-         {
-            if (platforms[k] == blocks[i][j].platform)
-            {
-               break;
-            }
-         }
-         if (k == platforms.size())
-         {
-            platforms.push_back(blocks[i][j].platform);
-         }
-      }
-   }
+			if (k == platforms.GetCount())
+				platforms.Add(blocks[i][j].platform);
+		}
+	}
 
-   // Sort by platform number.
-   for (i = 0; i < (int)platforms.size(); i++)
-   {
-      for (j = i + 1; j < (int)platforms.size(); j++)
-      {
-         if (platforms[j] < platforms[i])
-         {
-            k            = platforms[i];
-            platforms[i] = platforms[j];
-            platforms[j] = k;
-         }
-      }
-   }
+	// Sort by platform number.
+	for (i = 0; i < (int)platforms.GetCount(); i++) {
+		for (j = i + 1; j < (int)platforms.GetCount(); j++) {
+			if (platforms[j] < platforms[i]) {
+				k            = platforms[i];
+				platforms[i] = platforms[j];
+				platforms[j] = k;
+			}
+		}
+	}
 
-   // Find platforms having a connectable border.
-   connectablePlatforms.clear();
-   for (i = 0; i < (int)platforms.size(); i++)
-   {
-      for (j = i + 1; j < (int)platforms.size(); j++)
-      {
-         if (getConnectableBlocks(platforms[i], platforms[j], connectableBlocks) &&
-             !alreadyConnected)
-         {
-            continue;
-         }
-         if (connectableBlocks.size() > 0)
-         {
-            platformConnection.platforms[0] = platforms[i];
-            platformConnection.platforms[1] = platforms[j];
-            connectablePlatforms.push_back(platformConnection);
-         }
-      }
-   }
+	// Find platforms having a connectable border.
+	connectable_platforms.Clear();
+
+	for (i = 0; i < (int)platforms.GetCount(); i++) {
+		for (j = i + 1; j < (int)platforms.GetCount(); j++) {
+			if (GetConnectableBlocks(platforms[i], platforms[j], connectable_blocks) &&
+				!already_connected)
+				continue;
+
+			if (connectable_blocks.GetCount() > 0) {
+				platformConnection.platforms[0] = platforms[i];
+				platformConnection.platforms[1] = platforms[j];
+				connectable_platforms.Add(platformConnection);
+			}
+		}
+	}
 }
 
 
 // Get connectable blocks for given platforms.
 // Return true if already connected.
-bool BlockTerrain::getConnectableBlocks(int platform1, int platform2,
-                                        vector<struct ConnectableBlocks>& connectableBlocks)
-{
-   int x, y, lx, ly, crx, cry, clx, cly, e;
-   struct ConnectableBlocks blockConnection;
-   bool alreadyConnected;
+bool BlockTerrain::GetConnectableBlocks(int platform1, int platform2,
+										Vector<ConnectableBlocks>& connectable_blocks) {
+	int x, y, lx, ly, crx, cry, clx, cly, e;
+	struct ConnectableBlocks blockConnection;
+	bool already_connected;
+	connectable_blocks.Clear();
+	already_connected = false;
 
-   connectableBlocks.clear();
-   alreadyConnected = false;
-   for (x = 0; x < WIDTH; x++)
-   {
-      for (y = 0; y < HEIGHT; y++)
-      {
-         if (blocks[x][y].platform != platform1)
-         {
-            continue;
-         }
+	for (x = 0; x < width; x++) {
+		for (y = 0; y < height; y++) {
+			if (blocks[x][y].platform != platform1)
+				continue;
 
-         // Cannot convert a landing into a ramp.
-         if (blocks[x][y].type == Block::LANDING)
-         {
-            continue;
-         }
+			// Cannot convert a landing into a ramp.
+			if (blocks[x][y].type == Block::LANDING)
+				continue;
 
-         // Already connected?
-         if (blocks[x][y].type == Block::RAMP)
-         {
-            getRampInfo(x, y, lx, ly, crx, cry, clx, cly);
-            if (blocks[crx][cry].platform == platform2)
-            {
-               alreadyConnected = true;
-            }
-            continue;
-         }
+			// Already connected?
+			if (blocks[x][y].type == Block::RAMP) {
+				getRampInfo(x, y, lx, ly, crx, cry, clx, cly);
 
-         // Check bordering blocks.
-         if ((x > 1) && (x < WIDTH - 1))
-         {
-            if ((blocks[x - 1][y].platform == platform2) &&
-                (blocks[x - 1][y].type == Block::PLATFORM) &&
-                (blocks[x - 2][y].platform == platform2) &&
-                (blocks[x - 2][y].type != Block::RAMP) &&
-                (blocks[x + 1][y].platform == platform1) &&
-                (blocks[x + 1][y].type != Block::RAMP))
-            {
-               // Check elevation difference.
-               e = blocks[x][y].elevation - blocks[x - 1][y].elevation;
-               if (e < 0)
-               {
-                  e = -e;
-               }
-               if (e == 1)
-               {
-                  blockConnection.x[0] = x;
-                  blockConnection.y[0] = y;
-                  blockConnection.x[1] = x - 1;
-                  blockConnection.y[1] = y;
-                  connectableBlocks.push_back(blockConnection);
-               }
-            }
-         }
+				if (blocks[crx][cry].platform == platform2)
+					already_connected = true;
 
-         if ((y > 1) && (y < HEIGHT - 1))
-         {
-            if ((blocks[x][y - 1].platform == platform2) &&
-                (blocks[x][y - 1].type == Block::PLATFORM) &&
-                (blocks[x][y - 2].platform == platform2) &&
-                (blocks[x][y - 2].type != Block::RAMP) &&
-                (blocks[x][y + 1].platform == platform1) &&
-                (blocks[x][y + 1].type != Block::RAMP))
-            {
-               e = blocks[x][y].elevation - blocks[x][y - 1].elevation;
-               if (e < 0)
-               {
-                  e = -e;
-               }
-               if (e == 1)
-               {
-                  blockConnection.x[0] = x;
-                  blockConnection.y[0] = y;
-                  blockConnection.x[1] = x;
-                  blockConnection.y[1] = y - 1;
-                  connectableBlocks.push_back(blockConnection);
-               }
-            }
-         }
+				continue;
+			}
 
-         if ((x < WIDTH - 2) && (x > 0))
-         {
-            if ((blocks[x + 1][y].platform == platform2) &&
-                (blocks[x + 1][y].type == Block::PLATFORM) &&
-                (blocks[x + 2][y].platform == platform2) &&
-                (blocks[x + 2][y].type != Block::RAMP) &&
-                (blocks[x - 1][y].platform == platform1) &&
-                (blocks[x - 1][y].type != Block::RAMP))
-            {
-               e = blocks[x][y].elevation - blocks[x + 1][y].elevation;
-               if (e < 0)
-               {
-                  e = -e;
-               }
-               if (e == 1)
-               {
-                  blockConnection.x[0] = x;
-                  blockConnection.y[0] = y;
-                  blockConnection.x[1] = x + 1;
-                  blockConnection.y[1] = y;
-                  connectableBlocks.push_back(blockConnection);
-               }
-            }
-         }
+			// Check bordering blocks.
+			if ((x > 1) && (x < width - 1)) {
+				if ((blocks[x - 1][y].platform == platform2) &&
+					(blocks[x - 1][y].type == Block::PLATFORM) &&
+					(blocks[x - 2][y].platform == platform2) &&
+					(blocks[x - 2][y].type != Block::RAMP) &&
+					(blocks[x + 1][y].platform == platform1) &&
+					(blocks[x + 1][y].type != Block::RAMP)) {
+					// Check elevation difference.
+					e = blocks[x][y].elevation - blocks[x - 1][y].elevation;
 
-         if ((y < HEIGHT - 2) && (y > 0))
-         {
-            if ((blocks[x][y + 1].platform == platform2) &&
-                (blocks[x][y + 1].type == Block::PLATFORM) &&
-                (blocks[x][y + 2].platform == platform2) &&
-                (blocks[x][y + 2].type != Block::RAMP) &&
-                (blocks[x][y - 1].platform == platform1) &&
-                (blocks[x][y - 1].type != Block::RAMP))
-            {
-               e = blocks[x][y].elevation - blocks[x][y + 1].elevation;
-               if (e < 0)
-               {
-                  e = -e;
-               }
-               if (e == 1)
-               {
-                  blockConnection.x[0] = x;
-                  blockConnection.y[0] = y;
-                  blockConnection.x[1] = x;
-                  blockConnection.y[1] = y + 1;
-                  connectableBlocks.push_back(blockConnection);
-               }
-            }
-         }
-      }
-   }
-   return(alreadyConnected);
+					if (e < 0)
+						e = -e;
+
+					if (e == 1) {
+						blockConnection.x[0] = x;
+						blockConnection.y[0] = y;
+						blockConnection.x[1] = x - 1;
+						blockConnection.y[1] = y;
+						connectable_blocks.Add(blockConnection);
+					}
+				}
+			}
+
+			if ((y > 1) && (y < height - 1)) {
+				if ((blocks[x][y - 1].platform == platform2) &&
+					(blocks[x][y - 1].type == Block::PLATFORM) &&
+					(blocks[x][y - 2].platform == platform2) &&
+					(blocks[x][y - 2].type != Block::RAMP) &&
+					(blocks[x][y + 1].platform == platform1) &&
+					(blocks[x][y + 1].type != Block::RAMP)) {
+					e = blocks[x][y].elevation - blocks[x][y - 1].elevation;
+
+					if (e < 0)
+						e = -e;
+
+					if (e == 1) {
+						blockConnection.x[0] = x;
+						blockConnection.y[0] = y;
+						blockConnection.x[1] = x;
+						blockConnection.y[1] = y - 1;
+						connectable_blocks.Add(blockConnection);
+					}
+				}
+			}
+
+			if ((x < width - 2) && (x > 0)) {
+				if ((blocks[x + 1][y].platform == platform2) &&
+					(blocks[x + 1][y].type == Block::PLATFORM) &&
+					(blocks[x + 2][y].platform == platform2) &&
+					(blocks[x + 2][y].type != Block::RAMP) &&
+					(blocks[x - 1][y].platform == platform1) &&
+					(blocks[x - 1][y].type != Block::RAMP)) {
+					e = blocks[x][y].elevation - blocks[x + 1][y].elevation;
+
+					if (e < 0)
+						e = -e;
+
+					if (e == 1) {
+						blockConnection.x[0] = x;
+						blockConnection.y[0] = y;
+						blockConnection.x[1] = x + 1;
+						blockConnection.y[1] = y;
+						connectable_blocks.Add(blockConnection);
+					}
+				}
+			}
+
+			if ((y < height - 2) && (y > 0)) {
+				if ((blocks[x][y + 1].platform == platform2) &&
+					(blocks[x][y + 1].type == Block::PLATFORM) &&
+					(blocks[x][y + 2].platform == platform2) &&
+					(blocks[x][y + 2].type != Block::RAMP) &&
+					(blocks[x][y - 1].platform == platform1) &&
+					(blocks[x][y - 1].type != Block::RAMP)) {
+					e = blocks[x][y].elevation - blocks[x][y + 1].elevation;
+
+					if (e < 0)
+						e = -e;
+
+					if (e == 1) {
+						blockConnection.x[0] = x;
+						blockConnection.y[0] = y;
+						blockConnection.x[1] = x;
+						blockConnection.y[1] = y + 1;
+						connectable_blocks.Add(blockConnection);
+					}
+				}
+			}
+		}
+	}
+
+	return (already_connected);
 }
 
 
 // Connect blocks with a ramp.
-void BlockTerrain::connectBlocks(int block1x, int block1y, int block2x, int block2y)
-{
-   if (block1x < block2x)
-   {
-      blocks[block1x - 1][block1y].type = Block::LANDING;
-      blocks[block1x][block1y].type     = Block::RAMP;
-      blocks[block2x + 1][block2y].type = Block::LANDING;
-      blocks[block2x][block2y].type     = Block::RAMP;
-      if (blocks[block1x][block1y].elevation > blocks[block2x][block2y].elevation)
-      {
-         blocks[block1x][block1y].rampDir = Block::WEST;
-         blocks[block2x][block2y].rampDir = Block::WEST;
-      }
-      else
-      {
-         blocks[block1x][block1y].rampDir = Block::EAST;
-         blocks[block2x][block2y].rampDir = Block::EAST;
-      }
-      return;
-   }
-   if (block1y < block2y)
-   {
-      blocks[block1x][block1y - 1].type = Block::LANDING;
-      blocks[block1x][block1y].type     = Block::RAMP;
-      blocks[block2x][block2y + 1].type = Block::LANDING;
-      blocks[block2x][block2y].type     = Block::RAMP;
-      if (blocks[block1x][block1y].elevation > blocks[block2x][block2y].elevation)
-      {
-         blocks[block1x][block1y].rampDir = Block::NORTH;
-         blocks[block2x][block2y].rampDir = Block::NORTH;
-      }
-      else
-      {
-         blocks[block1x][block1y].rampDir = Block::SOUTH;
-         blocks[block2x][block2y].rampDir = Block::SOUTH;
-      }
-      return;
-   }
-   if (block1x > block2x)
-   {
-      blocks[block1x + 1][block1y].type = Block::LANDING;
-      blocks[block1x][block1y].type     = Block::RAMP;
-      blocks[block2x - 1][block2y].type = Block::LANDING;
-      blocks[block2x][block2y].type     = Block::RAMP;
-      if (blocks[block1x][block1y].elevation > blocks[block2x][block2y].elevation)
-      {
-         blocks[block1x][block1y].rampDir = Block::EAST;
-         blocks[block2x][block2y].rampDir = Block::EAST;
-      }
-      else
-      {
-         blocks[block1x][block1y].rampDir = Block::WEST;
-         blocks[block2x][block2y].rampDir = Block::WEST;
-      }
-      return;
-   }
-   if (block1y > block2y)
-   {
-      blocks[block1x][block1y + 1].type = Block::LANDING;
-      blocks[block1x][block1y].type     = Block::RAMP;
-      blocks[block2x][block2y - 1].type = Block::LANDING;
-      blocks[block2x][block2y].type     = Block::RAMP;
-      if (blocks[block1x][block1y].elevation > blocks[block2x][block2y].elevation)
-      {
-         blocks[block1x][block1y].rampDir = Block::SOUTH;
-         blocks[block2x][block2y].rampDir = Block::SOUTH;
-      }
-      else
-      {
-         blocks[block1x][block1y].rampDir = Block::NORTH;
-         blocks[block2x][block2y].rampDir = Block::NORTH;
-      }
-      return;
-   }
+void BlockTerrain::ConnectBlocks(int block1x, int block1y, int block2x, int block2y) {
+	if (block1x < block2x) {
+		blocks[block1x - 1][block1y].type = Block::LANDING;
+		blocks[block1x][block1y].type     = Block::RAMP;
+		blocks[block2x + 1][block2y].type = Block::LANDING;
+		blocks[block2x][block2y].type     = Block::RAMP;
+
+		if (blocks[block1x][block1y].elevation > blocks[block2x][block2y].elevation) {
+			blocks[block1x][block1y].rampDir = Block::WEST;
+			blocks[block2x][block2y].rampDir = Block::WEST;
+		}
+		else {
+			blocks[block1x][block1y].rampDir = Block::EAST;
+			blocks[block2x][block2y].rampDir = Block::EAST;
+		}
+
+		return;
+	}
+
+	if (block1y < block2y) {
+		blocks[block1x][block1y - 1].type = Block::LANDING;
+		blocks[block1x][block1y].type     = Block::RAMP;
+		blocks[block2x][block2y + 1].type = Block::LANDING;
+		blocks[block2x][block2y].type     = Block::RAMP;
+
+		if (blocks[block1x][block1y].elevation > blocks[block2x][block2y].elevation) {
+			blocks[block1x][block1y].rampDir = Block::NORTH;
+			blocks[block2x][block2y].rampDir = Block::NORTH;
+		}
+		else {
+			blocks[block1x][block1y].rampDir = Block::SOUTH;
+			blocks[block2x][block2y].rampDir = Block::SOUTH;
+		}
+
+		return;
+	}
+
+	if (block1x > block2x) {
+		blocks[block1x + 1][block1y].type = Block::LANDING;
+		blocks[block1x][block1y].type     = Block::RAMP;
+		blocks[block2x - 1][block2y].type = Block::LANDING;
+		blocks[block2x][block2y].type     = Block::RAMP;
+
+		if (blocks[block1x][block1y].elevation > blocks[block2x][block2y].elevation) {
+			blocks[block1x][block1y].rampDir = Block::EAST;
+			blocks[block2x][block2y].rampDir = Block::EAST;
+		}
+		else {
+			blocks[block1x][block1y].rampDir = Block::WEST;
+			blocks[block2x][block2y].rampDir = Block::WEST;
+		}
+
+		return;
+	}
+
+	if (block1y > block2y) {
+		blocks[block1x][block1y + 1].type = Block::LANDING;
+		blocks[block1x][block1y].type     = Block::RAMP;
+		blocks[block2x][block2y - 1].type = Block::LANDING;
+		blocks[block2x][block2y].type     = Block::RAMP;
+
+		if (blocks[block1x][block1y].elevation > blocks[block2x][block2y].elevation) {
+			blocks[block1x][block1y].rampDir = Block::SOUTH;
+			blocks[block2x][block2y].rampDir = Block::SOUTH;
+		}
+		else {
+			blocks[block1x][block1y].rampDir = Block::NORTH;
+			blocks[block2x][block2y].rampDir = Block::NORTH;
+		}
+
+		return;
+	}
 }
 
 
 // Given a half-ramp location, get remaining ramp coordinates.
-void BlockTerrain::getRampInfo(int rampX, int rampY,
-                               int& landingX, int& landingY,
-                               int& connectedRampX, int& connectedRampY,
-                               int& connectedLandingX, int& connectedLandingY)
-{
-   assert(blocks[rampX][rampY].type == Block::RAMP);
-   switch (blocks[rampX][rampY].rampDir)
-   {
-   case Block::NORTH:
-      if (blocks[rampX][rampY - 1].type == Block::RAMP)
-      {
-         landingX          = rampX;
-         landingY          = rampY + 1;
-         connectedRampX    = rampX;
-         connectedRampY    = rampY - 1;
-         connectedLandingX = rampX;
-         connectedLandingY = rampY - 2;
-      }
-      else
-      {
-         landingX          = rampX;
-         landingY          = rampY - 1;
-         connectedRampX    = rampX;
-         connectedRampY    = rampY + 1;
-         connectedLandingX = rampX;
-         connectedLandingY = rampY + 2;
-      }
-      break;
+void BlockTerrain::getRampInfo(int ramp_x, int ramp_y,
+							   int& landing_x, int& landing_y,
+							   int& connected_ramp_x, int& connected_ramp_y,
+							   int& connected_landing_x, int& connected_landing_y) {
+	ASSERT(blocks[ramp_x][ramp_y].type == Block::RAMP);
 
-   case Block::SOUTH:
-      if (blocks[rampX][rampY + 1].type == Block::RAMP)
-      {
-         landingX          = rampX;
-         landingY          = rampY - 1;
-         connectedRampX    = rampX;
-         connectedRampY    = rampY + 1;
-         connectedLandingX = rampX;
-         connectedLandingY = rampY + 2;
-      }
-      else
-      {
-         landingX          = rampX;
-         landingY          = rampY + 1;
-         connectedRampX    = rampX;
-         connectedRampY    = rampY - 1;
-         connectedLandingX = rampX;
-         connectedLandingY = rampY - 2;
-      }
-      break;
+	switch (blocks[ramp_x][ramp_y].rampDir) {
+	case Block::NORTH:
+		if (blocks[ramp_x][ramp_y - 1].type == Block::RAMP) {
+			landing_x          = ramp_x;
+			landing_y          = ramp_y + 1;
+			connected_ramp_x    = ramp_x;
+			connected_ramp_y    = ramp_y - 1;
+			connected_landing_x = ramp_x;
+			connected_landing_y = ramp_y - 2;
+		}
+		else {
+			landing_x          = ramp_x;
+			landing_y          = ramp_y - 1;
+			connected_ramp_x    = ramp_x;
+			connected_ramp_y    = ramp_y + 1;
+			connected_landing_x = ramp_x;
+			connected_landing_y = ramp_y + 2;
+		}
 
-   case Block::EAST:
-      if (blocks[rampX + 1][rampY].type == Block::RAMP)
-      {
-         landingX          = rampX - 1;
-         landingY          = rampY;
-         connectedRampX    = rampX + 1;
-         connectedRampY    = rampY;
-         connectedLandingX = rampX + 2;
-         connectedLandingY = rampY;
-      }
-      else
-      {
-         landingX          = rampX + 1;
-         landingY          = rampY;
-         connectedRampX    = rampX - 1;
-         connectedRampY    = rampY;
-         connectedLandingX = rampX - 2;
-         connectedLandingY = rampY;
-      }
-      break;
+		break;
 
-   case Block::WEST:
-      if (blocks[rampX - 1][rampY].type == Block::RAMP)
-      {
-         landingX          = rampX + 1;
-         landingY          = rampY;
-         connectedRampX    = rampX - 1;
-         connectedRampY    = rampY;
-         connectedLandingX = rampX - 2;
-         connectedLandingY = rampY;
-      }
-      else
-      {
-         landingX          = rampX - 1;
-         landingY          = rampY;
-         connectedRampX    = rampX + 1;
-         connectedRampY    = rampY;
-         connectedLandingX = rampX + 2;
-         connectedLandingY = rampY;
-      }
-      break;
-   }
+	case Block::SOUTH:
+		if (blocks[ramp_x][ramp_y + 1].type == Block::RAMP) {
+			landing_x          = ramp_x;
+			landing_y          = ramp_y - 1;
+			connected_ramp_x    = ramp_x;
+			connected_ramp_y    = ramp_y + 1;
+			connected_landing_x = ramp_x;
+			connected_landing_y = ramp_y + 2;
+		}
+		else {
+			landing_x          = ramp_x;
+			landing_y          = ramp_y + 1;
+			connected_ramp_x    = ramp_x;
+			connected_ramp_y    = ramp_y - 1;
+			connected_landing_x = ramp_x;
+			connected_landing_y = ramp_y - 2;
+		}
+
+		break;
+
+	case Block::EAST:
+		if (blocks[ramp_x + 1][ramp_y].type == Block::RAMP) {
+			landing_x          = ramp_x - 1;
+			landing_y          = ramp_y;
+			connected_ramp_x    = ramp_x + 1;
+			connected_ramp_y    = ramp_y;
+			connected_landing_x = ramp_x + 2;
+			connected_landing_y = ramp_y;
+		}
+		else {
+			landing_x          = ramp_x + 1;
+			landing_y          = ramp_y;
+			connected_ramp_x    = ramp_x - 1;
+			connected_ramp_y    = ramp_y;
+			connected_landing_x = ramp_x - 2;
+			connected_landing_y = ramp_y;
+		}
+
+		break;
+
+	case Block::WEST:
+		if (blocks[ramp_x - 1][ramp_y].type == Block::RAMP) {
+			landing_x          = ramp_x + 1;
+			landing_y          = ramp_y;
+			connected_ramp_x    = ramp_x - 1;
+			connected_ramp_y    = ramp_y;
+			connected_landing_x = ramp_x - 2;
+			connected_landing_y = ramp_y;
+		}
+		else {
+			landing_x          = ramp_x - 1;
+			landing_y          = ramp_y;
+			connected_ramp_x    = ramp_x + 1;
+			connected_ramp_y    = ramp_y;
+			connected_landing_x = ramp_x + 2;
+			connected_landing_y = ramp_y;
+		}
+
+		break;
+	}
 }
 
 
 // Is block an upper half-ramp?
-bool BlockTerrain::isUpperRamp(int rampX, int rampY)
-{
-   int x, y;
+bool BlockTerrain::IsUpperRamp(int ramp_x, int ramp_y) {
+	int x, y;
 
-   if (blocks[rampX][rampY].type != Block::RAMP)
-   {
-      return(false);
-   }
-   switch (blocks[rampX][rampY].rampDir)
-   {
-   case Block::NORTH:
-      x = rampX;
-      y = rampY - 1;
-      break;
+	if (blocks[ramp_x][ramp_y].type != Block::RAMP)
+		return false;
 
-   case Block::SOUTH:
-      x = rampX;
-      y = rampY + 1;
-      break;
+	switch (blocks[ramp_x][ramp_y].rampDir) {
+	case Block::NORTH:
+		x = ramp_x;
+		y = ramp_y - 1;
+		break;
 
-   case Block::EAST:
-      x = rampX + 1;
-      y = rampY;
-      break;
+	case Block::SOUTH:
+		x = ramp_x;
+		y = ramp_y + 1;
+		break;
 
-   case Block::WEST:
-      x = rampX - 1;
-      y = rampY;
-      break;
-   }
-   if (blocks[x][y].type == Block::RAMP)
-   {
-      return(false);
-   }
-   else
-   {
-      return(true);
-   }
+	case Block::EAST:
+		x = ramp_x + 1;
+		y = ramp_y;
+		break;
+
+	case Block::WEST:
+		x = ramp_x - 1;
+		y = ramp_y;
+		break;
+	}
+
+	if (blocks[x][y].type == Block::RAMP)
+		return false;
+	else
+		return true;
 }
 
 
 // Print block terrain.
-void BlockTerrain::print(FILE *out)
-{
-   int  i, j;
-   char c;
+void BlockTerrain::Print(Stream& s) {
+	int  i, j;
+	char c;
 
-   for (i = 0; i < HEIGHT; i++)
-   {
-      for (j = 0; j < WIDTH; j++)
-      {
-         switch (blocks[j][i].type)
-         {
-         case Block::PLATFORM:
-            c = 'p';
-            break;
+	for (i = 0; i < height; i++) {
+		for (j = 0; j < width; j++) {
+			switch (blocks[j][i].type) {
+			case Block::PLATFORM:
+				c = 'p';
+				break;
 
-         case Block::LANDING:
-            c = 'l';
-            break;
+			case Block::LANDING:
+				c = 'l';
+				break;
 
-         case Block::RAMP:
-            c = 'r';
-            break;
-         }
-         fprintf(out, "%c/%d/%d ", c, blocks[j][i].platform, blocks[j][i].elevation);
-      }
-      fprintf(out, "\n");
-   }
+			case Block::RAMP:
+				c = 'r';
+				break;
+			}
+
+			fprintf(out, "%c/%d/%d ", c, blocks[j][i].platform, blocks[j][i].elevation);
+		}
+
+		fprintf(out, "\n");
+	}
 }
 
 
 // Build the drawable blocks and a heightmap where
 // height is defined as the Y dimension on the XZ plane.
-void BlockTerrain::build()
-{
-   int    i, j, k, e;
-   Vector vmin, vmax, vertex;
-   Bounds bounds;
+void BlockTerrain::Build() {
+	int    i, j, k, e;
+	Vector vmin, vmax, vertex;
+	Bounds bounds;
+	Vector<Vector> vertices;
+	Poly*           polygon;
 
-   vector<Vector> vertices;
-   Poly           *polygon;
+	// Build displays.
+	if (!displays_created) {
+		blockDisplay = glGenLists(4);
+		glNewList(blockDisplay, GL_COMPILE);
+		DrawBlock();
+		glEndList();
+		rampSurfaceDisplay = blockDisplay + 1;
+		glNewList(rampSurfaceDisplay, GL_COMPILE);
+		DrawRampSurface();
+		glEndList();
+		leftRampDisplay = rampSurfaceDisplay + 1;
+		glNewList(leftRampDisplay, GL_COMPILE);
+		DrawLeftRamp();
+		glEndList();
+		rightRampDisplay = leftRampDisplay + 1;
+		glNewList(rightRampDisplay, GL_COMPILE);
+		DrawRightRamp();
+		glEndList();
+		displays_created = true;
+	}
 
-   // Build displays.
-   if (!displaysCreated)
-   {
-      blockDisplay = glGenLists(4);
-      glNewList(blockDisplay, GL_COMPILE);
-      drawBlock();
-      glEndList();
-      rampSurfaceDisplay = blockDisplay + 1;
-      glNewList(rampSurfaceDisplay, GL_COMPILE);
-      drawRampSurface();
-      glEndList();
-      leftRampDisplay = rampSurfaceDisplay + 1;
-      glNewList(leftRampDisplay, GL_COMPILE);
-      drawLeftRamp();
-      glEndList();
-      rightRampDisplay = leftRampDisplay + 1;
-      glNewList(rightRampDisplay, GL_COMPILE);
-      drawRightRamp();
-      glEndList();
-      displaysCreated = true;
-   }
+	// Assign textures to blocks.
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++) {
+			blocks[i][j].texture_indexes.Clear();
+			e = blocks[i][j].elevation;
 
-   // Assign textures to blocks.
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         blocks[i][j].textureIndexes.clear();
-         e = blocks[i][j].elevation;
-         if (isUpperRamp(i, j))
-         {
-            e--;
-         }
-         for (k = 0; k <= e; k++)
-         {
-            blocks[i][j].textureIndexes.push_back(randomizer->RAND_CHOICE(NUM_BLOCK_TEXTURES - 1));
-         }
-      }
-   }
+			if (IsUpperRamp(i, j))
+				e--;
 
-   // Get the terrain bounds and create the heightmap.
-   vmin.x = -(BLOCK_SIZE * 0.1f);
-   vmin.y = 0.0f;
-   vmin.z = -(BLOCK_SIZE * 0.1f);
-   vmax.x = BLOCK_SIZE * WIDTH * 1.1f;
-   vmax.y = 0.0f;
-   vmax.z = BLOCK_SIZE * HEIGHT * 1.1f;
-   bounds = Bounds(vmin, vmax);
-   if (heightmap != NULL)
-   {
-      delete heightmap;
-   }
-   heightmap = new QuadTree(bounds);
-   assert(heightmap != NULL);
+			for (k = 0; k <= e; k++)
+				blocks[i][j].texture_indexes.Add(randomizer->RAND_CHOICE(NUM_BLOCK_TEXTURES - 1));
+		}
+	}
 
-   // Create the terrain surface polygons and insert into heightmap.
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         // Ramp?
-         if (blocks[i][j].type == Block::RAMP)
-         {
-            if (isUpperRamp(i, j))
-            {
-               vertices.clear();
-               switch (blocks[i][j].rampDir)
-               {
-               case Block::NORTH:
-                  vertex.x = (GLfloat)i * BLOCK_SIZE;
-                  vertex.y = ((GLfloat)blocks[i][j].elevation * BLOCK_SIZE) + BLOCK_SIZE;
-                  vertex.z = (GLfloat)j * BLOCK_SIZE;
-                  vertices.push_back(vertex);
-                  vertex.y -= BLOCK_SIZE;
-                  vertex.z += BLOCK_SIZE * 2.0f;
-                  vertices.push_back(vertex);
-                  vertex.x += BLOCK_SIZE;
-                  vertices.push_back(vertex);
-                  vertex.y += BLOCK_SIZE;
-                  vertex.z -= BLOCK_SIZE * 2.0f;
-                  vertices.push_back(vertex);
-                  break;
+	// Get the terrain bounds and create the heightmap.
+	vmin.x = -(block_size * 0.1f);
+	vmin.y = 0.0f;
+	vmin.z = -(block_size * 0.1f);
+	vmax.x = block_size * width * 1.1f;
+	vmax.y = 0.0f;
+	vmax.z = block_size * height * 1.1f;
+	bounds = Bounds(vmin, vmax);
 
-               case Block::SOUTH:
-                  vertex.x = ((GLfloat)i * BLOCK_SIZE) + BLOCK_SIZE;
-                  vertex.y = ((GLfloat)blocks[i][j].elevation * BLOCK_SIZE) + BLOCK_SIZE;
-                  vertex.z = ((GLfloat)j * BLOCK_SIZE) + BLOCK_SIZE;
-                  vertices.push_back(vertex);
-                  vertex.y -= BLOCK_SIZE;
-                  vertex.z -= BLOCK_SIZE * 2.0f;
-                  vertices.push_back(vertex);
-                  vertex.x -= BLOCK_SIZE;
-                  vertices.push_back(vertex);
-                  vertex.y += BLOCK_SIZE;
-                  vertex.z += BLOCK_SIZE * 2.0f;
-                  vertices.push_back(vertex);
-                  break;
+	if (heightmap != NULL)
+		delete heightmap;
 
-               case Block::EAST:
-                  vertex.x = ((GLfloat)i * BLOCK_SIZE) + BLOCK_SIZE;
-                  vertex.y = ((GLfloat)blocks[i][j].elevation * BLOCK_SIZE) + BLOCK_SIZE;
-                  vertex.z = (GLfloat)j * BLOCK_SIZE;
-                  vertices.push_back(vertex);
-                  vertex.y -= BLOCK_SIZE;
-                  vertex.x -= BLOCK_SIZE * 2.0f;
-                  vertices.push_back(vertex);
-                  vertex.z += BLOCK_SIZE;
-                  vertices.push_back(vertex);
-                  vertex.y += BLOCK_SIZE;
-                  vertex.x += BLOCK_SIZE * 2.0f;
-                  vertices.push_back(vertex);
-                  break;
+	heightmap = new QuadTree(bounds);
+	ASSERT(heightmap != NULL);
 
-               case Block::WEST:
-                  vertex.x = (GLfloat)i * BLOCK_SIZE;
-                  vertex.y = ((GLfloat)blocks[i][j].elevation * BLOCK_SIZE) + BLOCK_SIZE;
-                  vertex.z = ((GLfloat)j * BLOCK_SIZE) + BLOCK_SIZE;
-                  vertices.push_back(vertex);
-                  vertex.y -= BLOCK_SIZE;
-                  vertex.x += BLOCK_SIZE * 2.0f;
-                  vertices.push_back(vertex);
-                  vertex.z -= BLOCK_SIZE;
-                  vertices.push_back(vertex);
-                  vertex.y += BLOCK_SIZE;
-                  vertex.x -= BLOCK_SIZE * 2.0f;
-                  vertices.push_back(vertex);
-                  break;
-               }
-               polygon = new Poly(vertices);
-               assert(polygon != NULL);
-               heightmap->insert(polygon);
-            }
-         }
-         else
-         {
-            // Insert block surface.
-            vertices.clear();
-            vertex.x = (GLfloat)i * BLOCK_SIZE;
-            vertex.y = ((GLfloat)blocks[i][j].elevation * BLOCK_SIZE) + BLOCK_SIZE;
-            vertex.z = (GLfloat)j * BLOCK_SIZE;
-            vertices.push_back(vertex);
-            vertex.z += BLOCK_SIZE;
-            vertices.push_back(vertex);
-            vertex.x += BLOCK_SIZE;
-            vertices.push_back(vertex);
-            vertex.z -= BLOCK_SIZE;
-            vertices.push_back(vertex);
-            polygon = new Poly(vertices);
-            assert(polygon != NULL);
-            heightmap->insert(polygon);
-         }
-      }
-   }
+	// Create the terrain surface polygons and insert into heightmap.
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++) {
+			// Ramp?
+			if (blocks[i][j].type == Block::RAMP) {
+				if (IsUpperRamp(i, j)) {
+					vertices.Clear();
 
-   // Load the textures.
-   if (!texturesLoaded)
-   {
-      loadTextures();
-      texturesLoaded = true;
-   }
+					switch (blocks[i][j].rampDir) {
+					case Block::NORTH:
+						vertex.x = (double)i * block_size;
+						vertex.y = ((double)blocks[i][j].elevation * block_size) + block_size;
+						vertex.z = (double)j * block_size;
+						vertices.Add(vertex);
+						vertex.y -= block_size;
+						vertex.z += block_size * 2.0f;
+						vertices.Add(vertex);
+						vertex.x += block_size;
+						vertices.Add(vertex);
+						vertex.y += block_size;
+						vertex.z -= block_size * 2.0f;
+						vertices.Add(vertex);
+						break;
+
+					case Block::SOUTH:
+						vertex.x = ((double)i * block_size) + block_size;
+						vertex.y = ((double)blocks[i][j].elevation * block_size) + block_size;
+						vertex.z = ((double)j * block_size) + block_size;
+						vertices.Add(vertex);
+						vertex.y -= block_size;
+						vertex.z -= block_size * 2.0f;
+						vertices.Add(vertex);
+						vertex.x -= block_size;
+						vertices.Add(vertex);
+						vertex.y += block_size;
+						vertex.z += block_size * 2.0f;
+						vertices.Add(vertex);
+						break;
+
+					case Block::EAST:
+						vertex.x = ((double)i * block_size) + block_size;
+						vertex.y = ((double)blocks[i][j].elevation * block_size) + block_size;
+						vertex.z = (double)j * block_size;
+						vertices.Add(vertex);
+						vertex.y -= block_size;
+						vertex.x -= block_size * 2.0f;
+						vertices.Add(vertex);
+						vertex.z += block_size;
+						vertices.Add(vertex);
+						vertex.y += block_size;
+						vertex.x += block_size * 2.0f;
+						vertices.Add(vertex);
+						break;
+
+					case Block::WEST:
+						vertex.x = (double)i * block_size;
+						vertex.y = ((double)blocks[i][j].elevation * block_size) + block_size;
+						vertex.z = ((double)j * block_size) + block_size;
+						vertices.Add(vertex);
+						vertex.y -= block_size;
+						vertex.x += block_size * 2.0f;
+						vertices.Add(vertex);
+						vertex.z -= block_size;
+						vertices.Add(vertex);
+						vertex.y += block_size;
+						vertex.x -= block_size * 2.0f;
+						vertices.Add(vertex);
+						break;
+					}
+
+					polygon = new Poly(vertices);
+					ASSERT(polygon != NULL);
+					heightmap->Insert(polygon);
+				}
+			}
+			else {
+				// Insert block surface.
+				vertices.Clear();
+				vertex.x = (double)i * block_size;
+				vertex.y = ((double)blocks[i][j].elevation * block_size) + block_size;
+				vertex.z = (double)j * block_size;
+				vertices.Add(vertex);
+				vertex.z += block_size;
+				vertices.Add(vertex);
+				vertex.x += block_size;
+				vertices.Add(vertex);
+				vertex.z -= block_size;
+				vertices.Add(vertex);
+				polygon = new Poly(vertices);
+				ASSERT(polygon != NULL);
+				heightmap->Insert(polygon);
+			}
+		}
+	}
+
+	// Load the textures.
+	if (!is_textures_loaded) {
+		LoadTextures();
+		is_textures_loaded = true;
+	}
 }
 
 
 // Load the textures.
-void BlockTerrain::loadTextures()
-{
-   char *path, *image;
+void BlockTerrain::LoadTextures() {
+	char* path, *image;
+	// Load the block textures.
+	image = (char*)"images/A.bmp";
+	path  = getResourcePath(image);
 
-   // Load the block textures.
-   image = (char *)"images/A.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 0))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/B.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 1))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/C.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 2))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/D.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 3))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/E.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 4))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/F.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 5))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/G.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 6))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/H.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 7))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/I.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 8))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/J.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 9))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/K.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 10))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/L.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 11))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/M.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 12))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/N.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 13))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/O.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 14))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/P.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 15))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/Q.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 16))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/R.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 17))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/S.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 18))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/T.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 19))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/U.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 20))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/V.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 21))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/W.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 22))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/X.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 23))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/Y.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 24))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/Z.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 25))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
-   image = (char *)"images/gray.bmp";
-   path  = getResourcePath(image);
-   if (path == NULL)
-   {
-      fprintf(stderr, "Cannot get texture path for %s\n", image);
-      exit(1);
-   }
-   if (!CreateTexture(path, blockTextures, 26))
-   {
-      fprintf(stderr, "Cannot load texture for %s\n", path);
-      exit(1);
-   }
-   free(path);
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 0)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/B.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 1)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/C.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 2)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/D.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 3)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/E.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 4)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/F.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 5)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/G.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 6)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/H.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 7)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/I.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 8)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/J.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 9)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/K.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 10)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/L.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 11)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/M.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 12)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/N.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 13)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/O.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 14)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/P.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 15)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/Q.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 16)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/R.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 17)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/S.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 18)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/T.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 19)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/U.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 20)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/V.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 21)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/W.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 22)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/X.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 23)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/Y.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 24)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/Z.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 25)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
+	image = (char*)"images/gray.bmp";
+	path  = getResourcePath(image);
+
+	if (path == NULL) {
+		fprintf(stderr, "Cannot get texture path for %s\n", image);
+		exit(1);
+	}
+
+	if (!CreateTexture(path, block_textures, 26)) {
+		fprintf(stderr, "Cannot load texture for %s\n", path);
+		exit(1);
+	}
+
+	free(path);
 }
 
 
 // Get terrain height (Y) and facet normal vector at given XZ coordinates.
-void BlockTerrain::getGeometry(GLfloat x, GLfloat z, GLfloat& y, Vector& normal)
-{
-   vector<Poly *> polygons;
+void BlockTerrain::GetGeometry(double x, double z, double& y, Vector& normal) {
+	Vector<Poly*> polygons;
+	// Search for facet polygons at x, y coordinates.
+	heightmap->Search(x, z, polygons);
 
-   // Search for facet polygons at x, y coordinates.
-   heightmap->search(x, z, polygons);
-   if (polygons.size() == 0)
-   {
-      y        = 0.0f;
-      normal.x = 0.0f;
-      normal.y = 1.0f;
-      normal.z = 0.0f;
-      return;
-   }
+	if (polygons.GetCount() == 0) {
+		y        = 0.0f;
+		normal.x = 0.0f;
+		normal.y = 1.0f;
+		normal.z = 0.0f;
+		return;
+	}
 
-   // Assume single polygon match.
-   normal = polygons[0]->plane.normal;
-   if (normal.y > 0.0f)
-   {
-      // Solve plane equation for height.
-      y = (-(normal.x * x) - (normal.z * z) - polygons[0]->plane.d) / normal.y;
-   }
-   else
-   {
-      y = 0.0f;
-   }
+	// Assume single polygon match.
+	normal = polygons[0]->plane.normal;
+
+	if (normal.y > 0.0f) {
+		// Solve plane equation for height.
+		y = (-(normal.x * x) - (normal.z * z) - polygons[0]->plane.d) / normal.y;
+	}
+	else
+		y = 0.0f;
 }
 
 
 // Draw a block.
-void BlockTerrain::drawBlock()
-{
-   BaseObject::drawBlock(0.0f, BLOCK_SIZE, 0.0f, BLOCK_SIZE, 0.0f, BLOCK_SIZE);
+void BlockTerrain::DrawBlock() {
+	BaseObject::DrawBlock(0.0f, block_size, 0.0f, block_size, 0.0f, block_size);
 }
 
 
 // Draw ramp surface.
-void BlockTerrain::drawRampSurface()
-{
-   int     i;
-   GLfloat d, h, s, w, x, y, z;
+void BlockTerrain::DrawRampSurface() {
+	int     i;
+	double d, h, s, w, x, y, z;
+	// Draw a chevron pattern on the ramp surface.
+	h = block_size / 2.0f;
+	w = (block_size * 2.236f * 0.25f) / (double)NUM_RAMP_STRIPES;
+	d = ((block_size * 2.236f) - w) / ((double)NUM_RAMP_STRIPES + 1.0f);
+	s = (d * 2.0f) / h;
 
-   // Draw a chevron pattern on the ramp surface.
-   h = BLOCK_SIZE / 2.0f;
-   w = (BLOCK_SIZE * 2.236f * 0.25f) / (GLfloat)NUM_RAMP_STRIPES;
-   d = ((BLOCK_SIZE * 2.236f) - w) / ((GLfloat)NUM_RAMP_STRIPES + 1.0f);
-   s = (d * 2.0f) / h;
-   for (i = 0; i < NUM_RAMP_STRIPES; i++)
-   {
-      // Draw black chevron.
-      glColor3f(0.0f, 0.0f, 0.0f);
-      glBegin(GL_QUADS);
-      // Left half of chevron.
-      glNormal3f(0.0f, 0.894f, 0.447f);
-      x = 0.0f;
-      y = d * (GLfloat)i * 0.447f;
-      z = d * (GLfloat)i * 0.894f;
-      z = (BLOCK_SIZE * 2.0f) - z;
-      glVertex3f(x, y, z);
-      glNormal3f(0.0f, 0.894f, 0.447f);
-      x  = h;
-      y += s * x * 0.447f;
-      z -= s * x * 0.894f;
-      glVertex3f(x, y, z);
-      glNormal3f(0.0f, 0.894f, 0.447f);
-      y += w * 0.447f;
-      z -= w * 0.894f;
-      glVertex3f(x, y, z);
-      glNormal3f(0.0f, 0.894f, 0.447f);
-      x = 0.0f;
-      y = ((d * (GLfloat)i) + w) * 0.447f;
-      z = ((d * (GLfloat)i) + w) * 0.894f;
-      z = (BLOCK_SIZE * 2.0f) - z;
-      glVertex3f(x, y, z);
-      // Right half of chevron.
-      glNormal3f(0.0f, 0.894f, 0.447f);
-      x  = h;
-      y  = d * (GLfloat)i * 0.447f;
-      z  = d * (GLfloat)i * 0.894f;
-      z  = (BLOCK_SIZE * 2.0f) - z;
-      y += s * x * 0.447f;
-      z -= s * x * 0.894f;
-      glVertex3f(x, y, z);
-      glNormal3f(0.0f, 0.894f, 0.447f);
-      y -= s * x * 0.447f;
-      z += s * x * 0.894f;
-      x  = BLOCK_SIZE;
-      glVertex3f(x, y, z);
-      glNormal3f(0.0f, 1.0f, 0.0f);
-      y += w * 0.447f;
-      z -= w * 0.894f;
-      glVertex3f(x, y, z);
-      glNormal3f(0.0f, 0.894f, 0.447f);
-      x  = h;
-      y += s * x * 0.447f;
-      z -= s * x * 0.894f;
-      glVertex3f(x, y, z);
-      glEnd();
+	for (i = 0; i < NUM_RAMP_STRIPES; i++) {
+		// Draw black chevron.
+		glColor3f(0.0f, 0.0f, 0.0f);
+		glBegin(GL_QUADS);
+		// Left half of chevron.
+		glNormal3f(0.0f, 0.894f, 0.447f);
+		x = 0.0f;
+		y = d * (double)i * 0.447f;
+		z = d * (double)i * 0.894f;
+		z = (block_size * 2.0f) - z;
+		glVertex3f(x, y, z);
+		glNormal3f(0.0f, 0.894f, 0.447f);
+		x  = h;
+		y += s * x * 0.447f;
+		z -= s * x * 0.894f;
+		glVertex3f(x, y, z);
+		glNormal3f(0.0f, 0.894f, 0.447f);
+		y += w * 0.447f;
+		z -= w * 0.894f;
+		glVertex3f(x, y, z);
+		glNormal3f(0.0f, 0.894f, 0.447f);
+		x = 0.0f;
+		y = ((d * (double)i) + w) * 0.447f;
+		z = ((d * (double)i) + w) * 0.894f;
+		z = (block_size * 2.0f) - z;
+		glVertex3f(x, y, z);
+		// Right half of chevron.
+		glNormal3f(0.0f, 0.894f, 0.447f);
+		x  = h;
+		y  = d * (double)i * 0.447f;
+		z  = d * (double)i * 0.894f;
+		z  = (block_size * 2.0f) - z;
+		y += s * x * 0.447f;
+		z -= s * x * 0.894f;
+		glVertex3f(x, y, z);
+		glNormal3f(0.0f, 0.894f, 0.447f);
+		y -= s * x * 0.447f;
+		z += s * x * 0.894f;
+		x  = block_size;
+		glVertex3f(x, y, z);
+		glNormal3f(0.0f, 1.0f, 0.0f);
+		y += w * 0.447f;
+		z -= w * 0.894f;
+		glVertex3f(x, y, z);
+		glNormal3f(0.0f, 0.894f, 0.447f);
+		x  = h;
+		y += s * x * 0.447f;
+		z -= s * x * 0.894f;
+		glVertex3f(x, y, z);
+		glEnd();
+		// Draw white background.
+		glColor3f(1.0f, 1.0f, 1.0f);
 
-      // Draw white background.
-      glColor3f(1.0f, 1.0f, 1.0f);
-      if (i == 0)
-      {
-         // Draw bottom white triangle.
-         glBegin(GL_TRIANGLES);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x = 0.0f;
-         y = d * (GLfloat)i * 0.447f;
-         z = d * (GLfloat)i * 0.894f;
-         z = (BLOCK_SIZE * 2.0f) - z;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x = BLOCK_SIZE;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x  = h;
-         y += s * x * 0.447f;
-         z -= s * x * 0.894f;
-         glVertex3f(x, y, z);
-         glEnd();
-      }
-      else
-      {
-         // Draw white chevron.
-         glBegin(GL_QUADS);
-         // Left half of chevron.
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x = 0.0f;
-         y = d * (GLfloat)i * 0.447f;
-         z = d * (GLfloat)i * 0.894f;
-         z = (BLOCK_SIZE * 2.0f) - z;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x = 0.0f;
-         y = ((d * (GLfloat)(i - 1)) + w) * 0.447f;
-         z = (d * (GLfloat)(i - 1) + w) * 0.894f;
-         z = (BLOCK_SIZE * 2.0f) - z;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x  = h;
-         y += s * x * 0.447f;
-         z -= s * x * 0.894f;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x  = h;
-         y  = d * (GLfloat)i * 0.447f;
-         z  = d * (GLfloat)i * 0.894f;
-         z  = (BLOCK_SIZE * 2.0f) - z;
-         y += s * x * 0.447f;
-         z -= s * x * 0.894f;
-         glVertex3f(x, y, z);
-         // Right half of chevron.
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x  = h;
-         y  = d * (GLfloat)i * 0.447f;
-         z  = d * (GLfloat)i * 0.894f;
-         z  = (BLOCK_SIZE * 2.0f) - z;
-         y += s * x * 0.447f;
-         z -= s * x * 0.894f;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x  = h;
-         y  = ((d * (GLfloat)(i - 1)) + w) * 0.447f;
-         z  = ((d * (GLfloat)(i - 1)) + w) * 0.894f;
-         z  = (BLOCK_SIZE * 2.0f) - z;
-         y += s * x * 0.447f;
-         z -= s * x * 0.894f;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 1.0f, 0.0f);
-         y -= s * x * 0.447f;
-         z += s * x * 0.894f;
-         x  = BLOCK_SIZE;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x = BLOCK_SIZE;
-         y = d * (GLfloat)i * 0.447f;
-         z = d * (GLfloat)i * 0.894f;
-         z = (BLOCK_SIZE * 2.0f) - z;
-         glVertex3f(x, y, z);
-         glEnd();
-      }
-      if (i == NUM_RAMP_STRIPES - 1)
-      {
-         // Draw top triangles.
-         glBegin(GL_TRIANGLES);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x = 0.0f;
-         y = ((d * (GLfloat)i) + w) * 0.447f;
-         z = ((d * (GLfloat)i) + w) * 0.894f;
-         z = (BLOCK_SIZE * 2.0f) - z;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x  = h;
-         y += s * x * 0.447f;
-         z -= s * x * 0.894f;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x = 0.0f;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x  = h;
-         y  = ((d * (GLfloat)i) + w) * 0.447f;
-         z  = ((d * (GLfloat)i) + w) * 0.894f;
-         z  = (BLOCK_SIZE * 2.0f) - z;
-         y += s * x * 0.447f;
-         z -= s * x * 0.894f;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         y -= s * x * 0.447f;
-         z += s * x * 0.894f;
-         x  = BLOCK_SIZE;
-         glVertex3f(x, y, z);
-         glNormal3f(0.0f, 0.894f, 0.447f);
-         x  = BLOCK_SIZE;
-         y  = ((d * (GLfloat)i) + w) * 0.447f;
-         z  = ((d * (GLfloat)i) + w) * 0.894f;
-         z  = (BLOCK_SIZE * 2.0f) - z;
-         y += s * h * 0.447f;
-         z -= s * h * 0.894f;
-         glVertex3f(x, y, z);
-         glEnd();
-      }
-   }
-   glColor3f(1.0f, 1.0f, 1.0f);
+		if (i == 0) {
+			// Draw bottom white triangle.
+			glBegin(GL_TRIANGLES);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x = 0.0f;
+			y = d * (double)i * 0.447f;
+			z = d * (double)i * 0.894f;
+			z = (block_size * 2.0f) - z;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x = block_size;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x  = h;
+			y += s * x * 0.447f;
+			z -= s * x * 0.894f;
+			glVertex3f(x, y, z);
+			glEnd();
+		}
+		else {
+			// Draw white chevron.
+			glBegin(GL_QUADS);
+			// Left half of chevron.
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x = 0.0f;
+			y = d * (double)i * 0.447f;
+			z = d * (double)i * 0.894f;
+			z = (block_size * 2.0f) - z;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x = 0.0f;
+			y = ((d * (double)(i - 1)) + w) * 0.447f;
+			z = (d * (double)(i - 1) + w) * 0.894f;
+			z = (block_size * 2.0f) - z;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x  = h;
+			y += s * x * 0.447f;
+			z -= s * x * 0.894f;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x  = h;
+			y  = d * (double)i * 0.447f;
+			z  = d * (double)i * 0.894f;
+			z  = (block_size * 2.0f) - z;
+			y += s * x * 0.447f;
+			z -= s * x * 0.894f;
+			glVertex3f(x, y, z);
+			// Right half of chevron.
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x  = h;
+			y  = d * (double)i * 0.447f;
+			z  = d * (double)i * 0.894f;
+			z  = (block_size * 2.0f) - z;
+			y += s * x * 0.447f;
+			z -= s * x * 0.894f;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x  = h;
+			y  = ((d * (double)(i - 1)) + w) * 0.447f;
+			z  = ((d * (double)(i - 1)) + w) * 0.894f;
+			z  = (block_size * 2.0f) - z;
+			y += s * x * 0.447f;
+			z -= s * x * 0.894f;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 1.0f, 0.0f);
+			y -= s * x * 0.447f;
+			z += s * x * 0.894f;
+			x  = block_size;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x = block_size;
+			y = d * (double)i * 0.447f;
+			z = d * (double)i * 0.894f;
+			z = (block_size * 2.0f) - z;
+			glVertex3f(x, y, z);
+			glEnd();
+		}
+
+		if (i == NUM_RAMP_STRIPES - 1) {
+			// Draw top triangles.
+			glBegin(GL_TRIANGLES);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x = 0.0f;
+			y = ((d * (double)i) + w) * 0.447f;
+			z = ((d * (double)i) + w) * 0.894f;
+			z = (block_size * 2.0f) - z;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x  = h;
+			y += s * x * 0.447f;
+			z -= s * x * 0.894f;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x = 0.0f;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x  = h;
+			y  = ((d * (double)i) + w) * 0.447f;
+			z  = ((d * (double)i) + w) * 0.894f;
+			z  = (block_size * 2.0f) - z;
+			y += s * x * 0.447f;
+			z -= s * x * 0.894f;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			y -= s * x * 0.447f;
+			z += s * x * 0.894f;
+			x  = block_size;
+			glVertex3f(x, y, z);
+			glNormal3f(0.0f, 0.894f, 0.447f);
+			x  = block_size;
+			y  = ((d * (double)i) + w) * 0.447f;
+			z  = ((d * (double)i) + w) * 0.894f;
+			z  = (block_size * 2.0f) - z;
+			y += s * h * 0.447f;
+			z -= s * h * 0.894f;
+			glVertex3f(x, y, z);
+			glEnd();
+		}
+	}
+
+	glColor3f(1.0f, 1.0f, 1.0f);
 }
 
 
 // Draw ramp left side.
-void BlockTerrain::drawLeftRamp()
-{
-   glColor3f(0.5f, 0.5f, 0.5f);
-   glBegin(GL_TRIANGLES);
-   glNormal3f(-1.0f, 0.0f, 0.0f);
-   glVertex3f(0.0f, 0.0f, 0.0f);
-   glNormal3f(-1.0f, 0.0f, 0.0f);
-   glVertex3f(0.0f, 0.0f, BLOCK_SIZE * 2.0f);
-   glNormal3f(-1.0f, 0.0f, 0.0f);
-   glVertex3f(0.0f, BLOCK_SIZE, 0.0f);
-   glEnd();
-   glColor3f(1.0f, 1.0f, 1.0f);
+void BlockTerrain::DrawLeftRamp() {
+	glColor3f(0.5f, 0.5f, 0.5f);
+	glBegin(GL_TRIANGLES);
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, block_size * 2.0f);
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, block_size, 0.0f);
+	glEnd();
+	glColor3f(1.0f, 1.0f, 1.0f);
 }
 
 
 // Draw ramp right side.
-void BlockTerrain::drawRightRamp()
-{
-   glColor3f(0.5f, 0.5f, 0.5f);
-   glBegin(GL_TRIANGLES);
-   glNormal3f(1.0f, 0.0f, 0.0f);
-   glVertex3f(BLOCK_SIZE, 0.0f, 0.0f);
-   glNormal3f(1.0f, 0.0f, 0.0f);
-   glVertex3f(BLOCK_SIZE, BLOCK_SIZE, 0.0f);
-   glNormal3f(1.0f, 0.0f, 0.0f);
-   glVertex3f(BLOCK_SIZE, 0.0f, BLOCK_SIZE * 2.0f);
-   glEnd();
-   glColor3f(1.0f, 1.0f, 1.0f);
+void BlockTerrain::DrawRightRamp() {
+	glColor3f(0.5f, 0.5f, 0.5f);
+	glBegin(GL_TRIANGLES);
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(block_size, 0.0f, 0.0f);
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(block_size, block_size, 0.0f);
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(block_size, 0.0f, block_size * 2.0f);
+	glEnd();
+	glColor3f(1.0f, 1.0f, 1.0f);
 }
 
 
 // Draw block terrain.
-void BlockTerrain::draw()
-{
-   int     i, j, k;
-   GLfloat x, y, z;
+void BlockTerrain::Draw() {
+	int     i, j, k;
+	double x, y, z;
+	glMatrixMode(GL_MODELVIEW);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-   glMatrixMode(GL_MODELVIEW);
-   glEnable(GL_TEXTURE_2D);
-   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	// Draw blocks.
+	for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++) {
+			// Draw a ramp?
+			if ((blocks[i][j].type == Block::RAMP) && IsUpperRamp(i, j)) {
+				glPushMatrix();
 
-   // Draw blocks.
-   for (i = 0; i < WIDTH; i++)
-   {
-      for (j = 0; j < HEIGHT; j++)
-      {
-         // Draw a ramp?
-         if ((blocks[i][j].type == Block::RAMP) && isUpperRamp(i, j))
-         {
-            glPushMatrix();
-            switch (blocks[i][j].rampDir)
-            {
-            case Block::NORTH:
-               x = (GLfloat)i * BLOCK_SIZE;
-               y = (GLfloat)blocks[i][j].elevation * BLOCK_SIZE;
-               z = (GLfloat)j * BLOCK_SIZE;
-               glTranslatef(x, y, z);
-               break;
+				switch (blocks[i][j].rampDir) {
+				case Block::NORTH:
+					x = (double)i * block_size;
+					y = (double)blocks[i][j].elevation * block_size;
+					z = (double)j * block_size;
+					glTranslatef(x, y, z);
+					break;
 
-            case Block::SOUTH:
-               x = ((GLfloat)i * BLOCK_SIZE) + BLOCK_SIZE;
-               y = (GLfloat)blocks[i][j].elevation * BLOCK_SIZE;
-               z = ((GLfloat)j * BLOCK_SIZE) + BLOCK_SIZE;
-               glTranslatef(x, y, z);
-               glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-               break;
+				case Block::SOUTH:
+					x = ((double)i * block_size) + block_size;
+					y = (double)blocks[i][j].elevation * block_size;
+					z = ((double)j * block_size) + block_size;
+					glTranslatef(x, y, z);
+					glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+					break;
 
-            case Block::EAST:
-               x = ((GLfloat)i * BLOCK_SIZE) + BLOCK_SIZE;
-               y = (GLfloat)blocks[i][j].elevation * BLOCK_SIZE;
-               z = (GLfloat)j * BLOCK_SIZE;
-               glTranslatef(x, y, z);
-               glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
-               break;
+				case Block::EAST:
+					x = ((double)i * block_size) + block_size;
+					y = (double)blocks[i][j].elevation * block_size;
+					z = (double)j * block_size;
+					glTranslatef(x, y, z);
+					glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+					break;
 
-            case Block::WEST:
-               x = (GLfloat)i * BLOCK_SIZE;
-               y = (GLfloat)blocks[i][j].elevation * BLOCK_SIZE;
-               z = ((GLfloat)j * BLOCK_SIZE) + BLOCK_SIZE;
-               glTranslatef(x, y, z);
-               glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-               break;
-            }
-            glCallList(rampSurfaceDisplay);
-            glCallList(leftRampDisplay);
-            glCallList(rightRampDisplay);
-            glPopMatrix();
-         }
+				case Block::WEST:
+					x = (double)i * block_size;
+					y = (double)blocks[i][j].elevation * block_size;
+					z = ((double)j * block_size) + block_size;
+					glTranslatef(x, y, z);
+					glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+					break;
+				}
 
-         // Draw block stack.
-         x = (GLfloat)i * BLOCK_SIZE;
-         z = (GLfloat)j * BLOCK_SIZE;
-         for (k = 0; k < (int)blocks[i][j].textureIndexes.size(); k++)
-         {
-            y = (GLfloat)k * BLOCK_SIZE;
-            glPushMatrix();
-            glTranslatef(x, y, z);
-            glBindTexture(GL_TEXTURE_2D, blockTextures[blocks[i][j].textureIndexes[k]]);
-            glCallList(blockDisplay);
-            glPopMatrix();
-         }
-      }
-   }
+				glCallList(rampSurfaceDisplay);
+				glCallList(leftRampDisplay);
+				glCallList(rightRampDisplay);
+				glPopMatrix();
+			}
+
+			// Draw block stack.
+			x = (double)i * block_size;
+			z = (double)j * block_size;
+
+			for (k = 0; k < (int)blocks[i][j].texture_indexes.GetCount(); k++) {
+				y = (double)k * block_size;
+				glPushMatrix();
+				glTranslatef(x, y, z);
+				glBindTexture(GL_TEXTURE_2D, block_textures[blocks[i][j].texture_indexes[k]]);
+				glCallList(blockDisplay);
+				glPopMatrix();
+			}
+		}
+	}
 }

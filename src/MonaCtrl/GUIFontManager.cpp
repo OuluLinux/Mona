@@ -1,6 +1,6 @@
 #include "EasyGL.h"
 
-vector<GUIFont *> GUIFontManager::guiFontList;
+Vector<GUIFont *> GUIFontManager::guiFontList;
 GUIFont *GUIFontManager::currentFont    = NULL;
 GUIFont *GUIFontManager::defaultFont    = NULL;
 
@@ -68,7 +68,7 @@ int GUIFontManager::findFontIndex(GUIFont *font)
   if(!font)
     return -1;
 
-  for(size_t i = 0; i < guiFontList.size(); i++)
+  for(size_t i = 0; i < guiFontList.GetCount(); i++)
     if(guiFontList[i]->operator ==(*font))
        return int(i);
 
@@ -77,7 +77,7 @@ int GUIFontManager::findFontIndex(GUIFont *font)
 
 GUIFont *GUIFontManager::getFont(size_t index)
 {
-  return index >= guiFontList.size() ? NULL : guiFontList[index];
+  return index >= guiFontList.GetCount() ? NULL : guiFontList[index];
 }
 
 int GUIFontManager::addFont(const TiXmlElement *fontNode)
@@ -103,7 +103,7 @@ int GUIFontManager::addFont(const TiXmlElement *fontNode)
         if(newFont->build())
         {
           addFont(newFont);
-          index = int(guiFontList.size() - 1);
+          index = int(guiFontList.GetCount() - 1);
         }
       }
     }
@@ -116,14 +116,14 @@ bool GUIFontManager::addFont(GUIFont *font)
   if(!font)
     return false;
 
-  guiFontList.push_back(font); 
+  guiFontList.Add(font); 
   return true;
 }
 
-void GUIFontManager::clear()
+void GUIFontManager::Clear()
 {
-  for(size_t i = 0; i < guiFontList.size(); i++)
+  for(size_t i = 0; i < guiFontList.GetCount(); i++)
     deleteObject(guiFontList[i]); 
   
-  guiFontList.clear();
+  guiFontList.Clear();
 }

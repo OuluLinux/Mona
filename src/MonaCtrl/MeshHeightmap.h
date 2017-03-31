@@ -41,7 +41,7 @@ public:
 
    // Constructors.
    Bounds() {}
-   Bounds(Vector& min, Vector& max)
+   Bounds(Vector3f& min, Vector3f& max)
    {
       this->min = min;
       this->max = max;
@@ -58,8 +58,8 @@ public:
    bool intersects(Bounds& bounds);
 
    // Minimum and maximum x and z values.
-   Vector min;
-   Vector max;
+   Vector3f min;
+   Vector3f max;
 };
 
 // Polygon object.
@@ -74,14 +74,14 @@ public:
 
       // Constructors.
       Plane() {}
-      Plane(Vector& normal, float d)
+      Plane(Vector3f& normal, float d)
       {
          this->normal = normal;
          this->d      = d;
       }
 
 
-      Vector normal;
+      Vector3f normal;
       float  d;
    };
 
@@ -90,16 +90,16 @@ public:
    // wound counterclockwise, i.e., viewing polygon
    // from "outside".
    Poly() {}
-   Poly(vector<Vector>& vertices);
+   Poly(Vector<Vector3f>& vertices);
 
    // Is given point inside the polygon projected on the XZ plane?
    bool contains(float x, float z);
 
    // Print polygon.
-   void print();
+   void Print();
 
    // Vectices.
-   vector<Vector> vertices;
+   Vector<Vector3f> vertices;
 
    // 3D plane defined by vertices.
    Plane plane;
@@ -117,7 +117,7 @@ public:
    QuadNode()
    {
       depth = 0;
-      for (int i = 0; i < 4; i++) { children[i] = NULL; }
+      for (int i = 0; i < 4; i++) { outerren[i] = NULL; }
    }
 
 
@@ -127,19 +127,19 @@ public:
    ~QuadNode();
 
    // Insert polygon.
-   void insert(Poly *polygon);
+   void Insert(Poly *polygon);
 
    // Search for polygons containing coordinate.
-   void search(float x, float z, vector<Poly *>& found);
+   void Search(float x, float z, Vector<Poly *>& found);
 
    // Print node.
-   void print();
+   void Print();
 
    // Data members.
    int            depth;
-   QuadNode       *children[4];
+   QuadNode       *outerren[4];
    Bounds         bounds;
-   vector<Poly *> polygons;
+   Vector<Poly *> polygons;
 };
 
 // Quadtree.
@@ -159,17 +159,17 @@ public:
    ~QuadTree();
 
    // Insert polygon.
-   bool insert(Poly *polygon);
+   bool Insert(Poly *polygon);
 
    // Search for polygons containing coordinate.
-   void search(float x, float z, vector<Poly *>& found);
+   void Search(float x, float z, Vector<Poly *>& found);
 
    // Print tree.
-   void print();
+   void Print();
 
    // Data members.
    QuadNode       *root;
    Bounds         bounds;
-   vector<Poly *> polygons;
+   Vector<Poly *> polygons;
 };
 #endif

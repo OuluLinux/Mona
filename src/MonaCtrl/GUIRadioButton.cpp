@@ -1,6 +1,6 @@
 #include "EasyGL.h"
 
-GUIRadioButton::GUIRadioButton(const std::string &callback) : GUICheckBox(callback)
+GUIRadioButton::GUIRadioButton(const String &callback) : GUICheckBox(callback)
 {
   secondaryTexDesc = WT_CHECK_RB_MARK;
   primaryTexDesc   = WT_RADIO_BUTTON;

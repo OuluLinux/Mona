@@ -9,231 +9,162 @@
 #include "Mushroom.h"
 #include "Pool.h"
 #include <Mona/Mona.h>
-#include <map>
 
-class Muzz : public BaseObject
-{
+class Muzz : public BaseObject {
 public:
 
-   // Identifier.
-   int id;
+	// Identifier.
+	int id;
 
-   // Identifier dispenser.
-   static int idDispenser;
+	// Identifier dispenser.
+	static int id_dispenser;
 
-   // Muzz world sensors.
-   enum
-   {
-      FORWARD_SENSOR=0,
-      RIGHT_SENSOR  =1,
-      LEFT_SENSOR   =2,
-      TERRAIN_SENSOR=3,
-      OBJECT_SENSOR =4,
-      NUM_SENSORS   =5
-   };
-   enum
-   {
-      OPEN  =0,
-      CLOSED=1
-   };
-   enum
-   {
-      PLATFORM =0,
-      WALL     =1,
-      DROP     =2,
-      RAMP_UP  =3,
-      RAMP_DOWN=4
-   };
-   enum
-   {
-      MUSHROOM =0,
-      POOL     =1,
-      MUZZ     =2,
-      EMPTY    =3,
-      MIN_OTHER=(int)'A',
-      MAX_OTHER=(int)'['
-   };
+	// Muzz world sensors.
+	enum {
+		FORWARD_SENSOR = 0,
+		RIGHT_SENSOR  = 1,
+		LEFT_SENSOR   = 2,
+		TERRAIN_SENSOR = 3,
+		OBJECT_SENSOR = 4,
+		NUM_SENSORS   = 5
+	};
+	enum {
+		OPEN  = 0,
+		CLOSED = 1
+	};
+	enum {
+		PLATFORM = 0,
+		WALL     = 1,
+		DROP     = 2,
+		RAMP_UP  = 3,
+		RAMP_DOWN = 4
+	};
+	enum {
+		MUSHROOM = 0,
+		POOL     = 1,
+		MUZZ     = 2,
+		EMPTY    = 3,
+		MIN_OTHER = (int)'A',
+		MAX_OTHER = (int)'['
+	};
 
-   // Brain sensors.
-   enum
-   {
-      NUM_BRAIN_SENSORS      =11,
-      NUM_BRAIN_SENSOR_MODE_1=3,
-      NUM_BRAIN_SENSOR_MODE_2=8
-   };
-   enum
-   {
-      // Binary encoding of terrain types:
-      TERRAIN_SENSOR_0=3,
-      TERRAIN_SENSOR_1=4,
-      TERRAIN_SENSOR_2=5,
+	// Brain sensors.
+	enum {
+		NUM_BRAIN_SENSORS      = 11,
+		NUM_BRAIN_SENSOR_MODE_1 = 3,
+		NUM_BRAIN_SENSOR_MODE_2 = 8
+	};
+	enum {
+		// Binary encoding of terrain types:
+		TERRAIN_SENSOR_0 = 3,
+		TERRAIN_SENSOR_1 = 4,
+		TERRAIN_SENSOR_2 = 5,
 
-      // Binary encoding of object values:
-      OBJECT_SENSOR_0 =6,
-      OBJECT_SENSOR_1 =7,
-      OBJECT_SENSOR_2 =8,
-      OBJECT_SENSOR_3 =9,
-      OBJECT_SENSOR_4 =10
-   };
+		// Binary encoding of object values:
+		OBJECT_SENSOR_0 = 6,
+		OBJECT_SENSOR_1 = 7,
+		OBJECT_SENSOR_2 = 8,
+		OBJECT_SENSOR_3 = 9,
+		OBJECT_SENSOR_4 = 10
+	};
 
-   // Sensor modes.
-   enum
-   {
-      SENSOR_MODE_0=0,
-      SENSOR_MODE_1=1,
-      SENSOR_MODE_2=2
-   };
+	// Sensor modes.
+	enum {
+		SENSOR_MODE_0 = 0,
+		SENSOR_MODE_1 = 1,
+		SENSOR_MODE_2 = 2
+	};
 
-   // Muzz responses.
-   enum
-   {
-      WAIT          =0,
-      FORWARD       =1,
-      RIGHT         =2,
-      LEFT          =3,
-      EAT           =4,
-      DRINK         =5,
-      NUM_RESPONSES = 6
-   };
+	// Muzz responses.
+	enum {
+		WAIT          = 0,
+		FORWARD       = 1,
+		RIGHT         = 2,
+		LEFT          = 3,
+		EAT           = 4,
+		DRINK         = 5,
+		NUM_RESPONSES = 6
+	};
 
-   // Muzz needs.
-   enum
-   {
-      FOOD     =0,
-      WATER    =1,
-      NUM_NEEDS=2
-   };
-   static Mona::NEED       INIT_HUNGER;
-   static Mona::NEED       INIT_THIRST;
-   static const Mona::NEED EAT_GOAL_VALUE;
-   static const Mona::NEED DRINK_GOAL_VALUE;
+	// Muzz needs.
+	enum {
+		FOOD     = 0,
+		WATER    = 1,
+		NUM_NEEDS = 2
+	};
+	
+	static Mona::NEED       INIT_HUNGER;
+	static Mona::NEED       INIT_THIRST;
+	static const Mona::NEED EAT_GOAL_VALUE;
+	static const Mona::NEED DRINK_GOAL_VALUE;
+	static const double base_size;
+	static const double HOVER_height;
+	static const double max_height_change;
+	static const double max_angle_adjustment;
+	
+	Muzz(const Color& color, BlockTerrain& terrain, int placement_seed);
+	Muzz(BlockTerrain& terrain);
+	~Muzz();
+	static void InitBrain(Mona& brain);
+	static void SetBoolBits(Vector<bool>& bits, int begin, int length, int value);
+	void GetColor(Color& color);
+	void SetColor(const Color& color);
+	BlockTerrain& GetTerrain();
+	void Place(int placement_seed);
+	void Place(int x, int y, BlockTerrain::Block::DIRECTION direction);
+	void Place(double x, double y, double direction);
+	void Place();
 
-   // Base size.
-   static const GLfloat BASE_SIZE;
+	inline double GetPlaceX() {return (m_place_position[0]);}
+	inline double GetPlaceY() {return (m_place_position[2]);}
+	inline double GetPlaceDirection() {return m_place_direction;}
 
-   // Hover height.
-   static const GLfloat HOVER_HEIGHT;
+	void Forward(double step);
+	void Backward(double step);
+	void Right(double angle);
+	void Left(double angle);
 
-   // Movement constraint parameters.
-   static const GLfloat MAX_HEIGHT_CHANGE;
-   static const GLfloat MAX_ANGLE_ADJUSTMENT;
+	enum {MOVE_FORWARD, TURN_RIGHT, TURN_LEFT};
+	
+	bool MoveOverTerrain(int type, double amount);
+	void Draw();
+	void Highlight();
 
-   // Constructors/destructor.
-   Muzz(float *color, BlockTerrain *terrain,
-        RANDOM placementSeed, Random *randomizer);
-   Muzz(BlockTerrain *terrain = NULL);
-   ~Muzz();
+	double GetNeed(int need) {return (brain.GetNeed(need));}
+	void SetNeed(int need, double value) {brain.SetNeed(need, value);}
+	void Reset();
+	void ReSetNeed(int need);
+	void ClearNeed(int need);
+	int Cycle(int* sensors, int cycleNum = -1);
 
-   // Initialize a muzz brain.
-   static void initBrain(Mona *brain);
+	void Load(String filename);
+	void Load(Stream& s);
+	void Store(String filename);
+	void Store(Stream& s);
+	void PrintBrain(Stream& s);
+	void PrintResponsePotentials(Stream& s);
+	
 
-   // Set binary value in bools.
-   static void setBoolBits(vector<bool>& bits, int begin,
-                           int length, int value);
+	bool has_food;
+	bool has_water;
+	int  has_foodCycle;
+	int  has_waterCycle;
 
-   // Color.
-   void getColor(float *color);
-   void setColor(float *color);
+	Mona brain;
 
-   // Get terrain.
-   BlockTerrain *getTerrain();
+	Vector<Mona::SENSOR> brain_sensors;
 
-   // Get randomizer.
-   Random *getRandomizer();
+	// Properties.
+	Color         m_color;
+	double        m_place_position[3];
+	double        m_place_direction;
+	BlockTerrain* m_terrain;
 
-   // Place muzz on terrain.
-   void place(RANDOM placementSeed);
-   void place(int x, int y, BlockTerrain::Block::DIRECTION direction);
-   void place(GLfloat x, GLfloat y, GLfloat direction);
-   void place();
+	// OpenGL display for drawing.
+/*	GLuint display;
 
-   inline GLfloat getPlaceX() { return(m_placePosition[0]); }
-   inline GLfloat getPlaceY() { return(m_placePosition[2]); }
-   inline GLfloat getPlaceDirection() { return(m_placeDirection); }
-
-   // Movement.
-   void forward(GLfloat step);
-   void backward(GLfloat step);
-   void right(GLfloat angle);
-   void left(GLfloat angle);
-
-   // Conform movement to terrain topology.
-   typedef enum
-   {
-      MOVE_FORWARD, TURN_RIGHT, TURN_LEFT
-   } MOVE_TYPE;
-   bool moveOverTerrain(MOVE_TYPE type, GLfloat amount);
-
-   // Set the camera to muzz's viewpoint.
-   void aimCamera(Camera& camera);
-
-   // Draw.
-   void draw();
-
-   // Highlight the muzz.
-   void highlight();
-
-   // Needs.
-   double getNeed(int need)
-   {
-      return(brain->getNeed(need));
-   }
-
-
-   void setNeed(int need, double value)
-   {
-      brain->setNeed(need, value);
-   }
-
-
-   // Reset muzz.
-   void reset();
-
-   // Reset muzz need.
-   void resetNeed(int need);
-
-   // Clear muzz need.
-   void clearNeed(int need);
-
-   // Sensory-response cycle.
-   int cycle(int *sensors, int cycleNum = (-1));
-
-   // Foraging results.
-   bool gotFood;
-   bool gotWater;
-   int  gotFoodCycle;
-   int  gotWaterCycle;
-
-   // Load muzz.
-   void load(char *filename);
-   void load(FILE *);
-
-   // Save muzz.
-   void save(char *filename);
-   void save(FILE *);
-
-   // Print brain.
-   void printBrain(FILE *out = stdout);
-   void printResponsePotentials(FILE *out = stdout);
-
-   // Brain.
-   Mona *brain;
-
-   // Brain sensors.
-   vector<Mona::SENSOR> brainSensors;
-
-   // Properties.
-   float        m_color[3];
-   GLfloat      m_placePosition[3];
-   GLfloat      m_placeDirection;
-   BlockTerrain *m_terrain;
-   Random       *m_randomizer;
-
-   // OpenGL display for drawing.
-   GLuint display;
-
-   // "Turret" components.
-   GLUquadricObj *turretCylinder, *turretTopInner, *turretTopOuter,
-   *turretEye, *turretRightEar, *turretLeftEar;
+	// "Turret" components.
+	GLUquadricObj* turretCylinder, *turretTopInner, *turretTopOuter,
+				   *turretEye, *turretRightEar, *turretLeftEar;*/
 };
 #endif

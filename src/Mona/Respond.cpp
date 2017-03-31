@@ -4,36 +4,36 @@
 
 // Respond.
 void
-Mona::respond()
+Mona::Respond()
 {
    int                i, j;
    Motor              *motor;
    RESPONSE_POTENTIAL max;
 
 #ifdef MONA_TRACE
-   if (traceRespond)
+   if (trace_respond)
    {
       printf("***Respond phase***\n");
    }
 #endif
 
    // Get response potentials from motor motives.
-   for (i = 0; i < numResponses; i++)
+   for (i = 0; i < response_count; i++)
    {
-      responsePotentials[i] = 0.0;
+      response_potentials[i] = 0.0;
    }
-   for (i = 0; i < (int)motors.size(); i++)
+   for (i = 0; i < (int)motors.GetCount(); i++)
    {
       motor = motors[i];
-      responsePotentials[motor->response] += motor->motive;
+      response_potentials[motor->response] += motor->motive;
    }
 
    // Incorporate minimal randomness.
-   for (i = 0; i < numResponses; i++)
+   for (i = 0; i < response_count; i++)
    {
-      if (responsePotentials[i] <= NEARLY_ZERO)
+      if (response_potentials[i] <= NEARLY_ZERO)
       {
-         responsePotentials[i] =
+         response_potentials[i] =
             (random.RAND_PROB() * RESPONSE_RANDOMNESS);
       }
    }
@@ -41,19 +41,19 @@ Mona::respond()
    // Make a random response selection?
    if (random.RAND_CHANCE(RESPONSE_RANDOMNESS))
    {
-      if (numResponses > 0)
+      if (response_count > 0)
       {
-         double *responseWeights = new double[numResponses];
-         assert(responseWeights != NULL);
-         for (i = 0; i < numResponses; i++)
+         double *responseWeights = new double[response_count];
+         ASSERT(responseWeights != NULL);
+         for (i = 0; i < response_count; i++)
          {
-            responseWeights[i] = responsePotentials[i];
+            responseWeights[i] = response_potentials[i];
             if (i > 0)
             {
                responseWeights[i] += responseWeights[i - 1];
             }
          }
-         int    j = numResponses - 1;
+         int    j = response_count - 1;
          double n = random.RAND_INTERVAL(0.0, responseWeights[j]);
          for (i = 0; i < j; i++)
          {
@@ -74,17 +74,17 @@ Mona::respond()
    {
       // Select maximum response potential.
       bool first = true;
-      j = random.RAND_CHOICE(numResponses);
-      for (i = response = 0, max = 0.0; i < numResponses; i++)
+      j = random.RAND_CHOICE(response_count);
+      for (i = response = 0, max = 0.0; i < response_count; i++)
       {
-         if (first || (responsePotentials[j] > max))
+         if (first || (response_potentials[j] > max))
          {
             first    = false;
             response = (RESPONSE)j;
-            max      = responsePotentials[j];
+            max      = response_potentials[j];
          }
          j++;
-         if (j == numResponses)
+         if (j == response_count)
          {
             j = 0;
          }
@@ -92,34 +92,34 @@ Mona::respond()
    }
 
    // Response overridden?
-   if (responseOverride != NULL_RESPONSE)
+   if (response_override != NULL_RESPONSE)
    {
       // Conditional override?
-      if (responseOverridePotential >= 0.0)
+      if (response_override_potential >= 0.0)
       {
-         if (responsePotentials[(int)response] < responseOverridePotential)
+         if (response_potentials[(int)response] < response_override_potential)
          {
-            response = responseOverride;
+            response = response_override;
          }
       }
       else
       {
-         response = responseOverride;
+         response = response_override;
       }
-      responseOverride          = NULL_RESPONSE;
-      responseOverridePotential = -1.0;
+      response_override          = NULL_RESPONSE;
+      response_override_potential = -1.0;
    }
 
    // Fire responding motor.
-   for (i = 0; i < (int)motors.size(); i++)
+   for (i = 0; i < (int)motors.GetCount(); i++)
    {
       motor = motors[i];
       if (motor->response == response)
       {
-         motor->firingStrength = 1.0;
+         motor->firing_strength = 1.0;
 
 #ifdef MONA_TRACE
-         if (traceRespond)
+         if (trace_respond)
          {
             printf("Motor firing: %llu\n", motor->id);
          }
@@ -130,111 +130,111 @@ Mona::respond()
       }
       else
       {
-         motor->firingStrength = 0.0;
+         motor->firing_strength = 0.0;
       }
    }
 
 #ifdef MONA_TRACE
-   if (traceRespond)
+   if (trace_respond)
    {
       printf("Response = %d\n", response);
    }
 #endif
 
    // Update need based on response.
-   for (i = 0; i < numNeeds; i++)
+   for (i = 0; i < need_count; i++)
    {
-      homeostats[i]->responseUpdate();
+      homeostats[i]->ResponseUpdate();
    }
 }
 
 
 // Add a response.
-Mona::RESPONSE Mona::addResponse()
+Mona::RESPONSE Mona::AddResponse()
 {
    int i;
 
-   numResponses++;
-   responsePotentials.resize(numResponses);
-   for (i = 0; i < numResponses; i++)
+   response_count++;
+   response_potentials.SetCount(response_count);
+   for (i = 0; i < response_count; i++)
    {
-      responsePotentials[i] = 0.0;
+      response_potentials[i] = 0.0;
    }
-   i = numResponses - 1;
-   newMotor(i);
-   return(i);
+   i = response_count - 1;
+   NewMotor(i);
+   return (i);
 }
 
 
 // Get response potential.
-Mona::RESPONSE_POTENTIAL Mona::getResponsePotential(RESPONSE response)
+Mona::RESPONSE_POTENTIAL Mona::GetResponsePotential(RESPONSE response)
 {
-   if ((response >= 0) && (response < numResponses))
+   if ((response >= 0) && (response < response_count))
    {
-      return(responsePotentials[response]);
+      return (response_potentials[response]);
    }
    else
    {
-      return(0.0);
+      return (0.0);
    }
 }
 
 
 // Override response.
 // Auto-cleared each cycle.
-bool Mona::overrideResponse(RESPONSE responseOverride)
+bool Mona::OverrideResponse(RESPONSE response_override)
 {
-   if ((responseOverride >= 0) && (responseOverride < numResponses))
+   if ((response_override >= 0) && (response_override < response_count))
    {
-      this->responseOverride    = responseOverride;
-      responseOverridePotential = -1.0;
-      return(true);
+      this->response_override    = response_override;
+      response_override_potential = -1.0;
+      return true;
    }
    else
    {
-      return(false);
+      return false;
    }
 }
 
 
 // Conditionally override response if potential is less than given value.
 // Auto-cleared each cycle.
-bool Mona::overrideResponseConditional(RESPONSE           responseOverride,
-                                       RESPONSE_POTENTIAL responseOverridePotential)
+bool Mona::OverrideResponseConditional(RESPONSE           response_override,
+                                       RESPONSE_POTENTIAL response_override_potential)
 {
-   if ((responseOverride >= 0) && (responseOverride < numResponses))
+   if ((response_override >= 0) && (response_override < response_count))
    {
-      this->responseOverride          = responseOverride;
-      this->responseOverridePotential = responseOverridePotential;
-      return(true);
+      this->response_override          = response_override;
+      this->response_override_potential = response_override_potential;
+      return true;
    }
    else
    {
-      return(false);
+      return false;
    }
 }
 
 
 // Clear response override.
-void Mona::clearResponseOverride()
+void Mona::ClearResponseOverride()
 {
-   responseOverride          = NULL_RESPONSE;
-   responseOverridePotential = -1.0;
+   response_override          = NULL_RESPONSE;
+   response_override_potential = -1.0;
 }
 
 
 // Find motor by response.
-Mona::Motor *Mona::findMotorByResponse(RESPONSE response)
+Mona::Motor *Mona::FindMotorByResponse(RESPONSE response)
 {
    Motor *motor;
 
-   for (int i = 0; i < (int)motors.size(); i++)
+   for (int i = 0; i < (int)motors.GetCount(); i++)
    {
       motor = motors[i];
       if (motor->response == response)
       {
-         return(motor);
+         return (motor);
       }
    }
-   return(NULL);
+   return (NULL);
 }

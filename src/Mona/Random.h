@@ -1,3 +1,4 @@
+#if 0
 // Random numbers.
 
 #ifndef __RANDOM__
@@ -61,7 +62,7 @@ public:
    void SRAND(RANDOM seed);
 
    // Get random number
-   RANDOM RAND();
+   RANDOM RAND(); // genrand_int32
 
    // Random probability >= 0.0 && <= 1.0
    double RAND_PROB();
@@ -140,4 +141,5 @@ private:
 
 // Return random probability for given random object.
 extern "C" double external_rand(void *random);
+#endif
 #endif

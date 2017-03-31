@@ -1,6 +1,6 @@
 #include "EasyGL.h"
 
-GUIComboBox::GUIComboBox(const std::string& cbs) : GUIRectangle(cbs)
+GUIComboBox::GUIComboBox(const String& cbs) : GUIRectangle(cbs)
 
 {
   setScrollingColor(0.2f, 0.75f, 0.35f, 1.0f);
@@ -68,15 +68,15 @@ bool GUIComboBox::loadXMLSettings(const TiXmlElement *element)
   if(!XMLArbiter::inspectElementInfo(element, "ComboBox"))
     return Logger::writeErrorLog("Need a ComboBox node in the xml file");
 
-  const   TiXmlElement *child  = NULL;
+  const   TiXmlElement *outer  = NULL;
   Tuple3f bordersColor         = upperPanel->getBordersColor();
   Tuple4f bgColor              = upperPanel->getBGColor();
   float   lowerPanelColorScale = 1.0f;
 
-  if(child = XMLArbiter::getChildElementByName(element, "Button"))
+  if(outer = XMLArbiter::getChildElementByName(element, "Button"))
   {
-    dropMenuButton->loadXMLClippedRectangleInfo(child);
-    dropMenuButton->loadXMLSettings(child);
+    dropMenuButton->loadXMLClippedRectangleInfo(outer);
+    dropMenuButton->loadXMLSettings(outer);
     dropMenuButton->setCallbackString("cbddb");
     dropMenuButton->setLabelString("");
     dropMenuButton->setActive(true);
@@ -89,25 +89,25 @@ bool GUIComboBox::loadXMLSettings(const TiXmlElement *element)
   fontScales.x              = XMLArbiter::fillComponents1f(element,   "wScale",    fontScales.x);
   fontIndex                 = XMLArbiter::fillComponents1i(element,   "fontIndex", fontIndex);
 
-  for(child = element->FirstChildElement();	
-      child;
-   	  child = child->NextSiblingElement() )
+  for(outer = element->FirstChildElement();	
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    const char *value = child->Value();
+    const char *value = outer->Value();
     if(!value)
       continue;
 
     if(!strcmp(value, "ScrollingColor"))
-      setScrollingColor(XMLArbiter::fillComponents4f(child, scrollingColor));
+      setScrollingColor(XMLArbiter::fillComponents4f(outer, scrollingColor));
 
     if(!strcmp(value, "BordersColor"))
-      XMLArbiter::fillComponents3f(child, bordersColor);
+      XMLArbiter::fillComponents3f(outer, bordersColor);
 
     if(!strcmp(value, "BGColor"))
-      XMLArbiter::fillComponents4f(child, bgColor);
+      XMLArbiter::fillComponents4f(outer, bgColor);
 
     if(!strcmp(value, "Item"))
-      addItem(child->Attribute("string"));
+      addItem(outer->Attribute("string"));
   }
 
   upperPanel->setBordersColor(bordersColor);
@@ -121,7 +121,7 @@ bool GUIComboBox::loadXMLSettings(const TiXmlElement *element)
 
   setFontScales(fontScales);
 
-  return GUIRectangle::loadXMLSettings(element) && (items.size() != 0);
+  return GUIRectangle::loadXMLSettings(element) && (items.GetCount() != 0);
 }
 
 void GUIComboBox::checkMouseEvents(MouseEvent &evt, int extraInfo, bool rBits)
@@ -147,7 +147,7 @@ void GUIComboBox::checkMouseEvents(MouseEvent &evt, int extraInfo, bool rBits)
 void GUIComboBox::actionPerformed(GUIEvent &evt)
 {
   GUIEventListener  *eventsListener  = parent->getEventsListener();
-  const std::string &cbs             = evt.getCallbackString();
+  const String &cbs             = evt.getCallbackString();
   GUIRectangle      *sourceRectangle = evt.getEventSource();
   int                widgetType      = sourceRectangle->getWidgetType();
 
@@ -213,7 +213,7 @@ void GUIComboBox::render(float clockTick)
 
 void GUIComboBox::finalizeSize()
 {
-  if(!items.size() || lockItems )
+  if(!items.GetCount() || lockItems )
     return;
 
   GUIFont *font             = GUIFontManager::getFont(fontIndex);
@@ -228,9 +228,9 @@ void GUIComboBox::finalizeSize()
 
     height   =  float(font->getFontObject()->getHeight());
 
-    for(size_t l = 0; l < items.size(); l++)
+    for(size_t l = 0; l < items.GetCount(); l++)
     {
-      length = items[l].size();
+      length = items[l].GetCount();
       width  = 0.0f;
 
       for(size_t t = 0; t < length; t++)
@@ -243,19 +243,19 @@ void GUIComboBox::finalizeSize()
     return;
 
   currentSelection->setLabelString(items[0]);
-  currentSelection->setDimensions(maxWidth*fontScales.x + 2.0f, height*fontScales.y);
+  currentSelection->setSizes(maxWidth*fontScales.x + 2.0f, height*fontScales.y);
   currentSelection->getLabel()->setFontIndex(fontIndex);
   currentSelection->getLabel()->setScales(fontScales);
-  dropMenuButton->setDimensions(height*fontScales.y + 4.0f, height*fontScales.y + 4.0f);
+  dropMenuButton->setSizes(height*fontScales.y + 4.0f, height*fontScales.y + 4.0f);
 
   char buffer[256];
   
-  for(size_t l = 0; l < items.size(); l++)
+  for(size_t l = 0; l < items.GetCount(); l++)
   {
     sprintf(buffer, "itemCBS %d", (cbsIndex++));
     GUILabel *newLabel = new GUILabel(items[l].c_str(), buffer);
     newLabel->getLabel()->setFontIndex(fontIndex);
-    newLabel->setDimensions(maxWidth*fontScales.x + 2.0f /*+ height*fontScales.y + 10.0f*/, height*fontScales.y);
+    newLabel->setSizes(maxWidth*fontScales.x + 2.0f /*+ height*fontScales.y + 10.0f*/, height*fontScales.y);
     newLabel->getLabel()->setScales(fontScales);
     if(!lowerPanel->addWidget(newLabel))
       deleteObject(newLabel);
@@ -288,28 +288,28 @@ const void GUIComboBox::computeWindowBounds()
   }
 }
 
-void GUIComboBox::addItem(const std::string &item)
+void GUIComboBox::addItem(const String &item)
 {
-  if(lockItems || !item.size())
+  if(lockItems || !item.GetCount())
     return;
 
-  for(size_t t = 0; t < items.size(); t++)
+  for(size_t t = 0; t < items.GetCount(); t++)
     if(items[t] == item)
       return;
 
-  items.push_back(item);
+  items.Add(item);
 }
 
-int  GUIComboBox::getItemIndex(const std::string &item)
+int  GUIComboBox::getItemIndex(const String &item)
 {
-  for(size_t t = 0; t < items.size(); t++)
+  for(size_t t = 0; t < items.GetCount(); t++)
     if(items[t] == item)
       return int(t);
 
   return -1;
 }
 
-const std::vector<std::string> &GUIComboBox::getItems() const
+const Vector<String> &GUIComboBox::getItems() const
 {
   return items;
 }
@@ -321,10 +321,10 @@ const char  *GUIComboBox::getSelectedItem()  const
 
 const char  *GUIComboBox::getItem(size_t index) const
 {
-  return index >= items.size() ? NULL :  items[index].c_str();
+  return index >= items.GetCount() ? NULL :  items[index].c_str();
 }
 
-bool GUIComboBox::setSelectedItem(const std::string &item)
+bool GUIComboBox::setSelectedItem(const String &item)
 {
   size_t index;
 
@@ -334,7 +334,7 @@ bool GUIComboBox::setSelectedItem(const std::string &item)
 
 bool GUIComboBox::setSelectedItemIndex(size_t index)
 {
-  if (index >= items.size()) return false;
+  if (index >= items.GetCount()) return false;
   selectionIndex = (int)index;
   currentSelection->setLabelString(getItem(index));
   return true;

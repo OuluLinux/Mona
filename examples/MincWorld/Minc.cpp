@@ -17,21 +17,21 @@ bool Minc:: printCallback = false;
 Mona::RESPONSE_POTENTIAL Minc::MIN_RESPONSE_POTENTIAL = 0.01;
 
 // Identifier dispenser.
-int Minc::idDispenser = 0;
+int Minc::id_dispenser = 0;
 
 // Constructors.
-Minc::Minc(int numMarks, int intervals, RANDOM randomSeed)
+Minc::Minc(int numMarks, int intervals, RANDOM random_seed)
 {
    char buf[100];
 
-   id              = idDispenser++;
+   id              = id_dispenser++;
    this->numMarks  = numMarks;
    this->intervals = intervals;
 
    // Create LENS NN.
    sprintf(buf, (char *)"net%d", id);
    lensNet = new char[strlen(buf) + 1];
-   assert(lensNet != NULL);
+   ASSERT(lensNet != NULL);
    strcpy(lensNet, buf);
    sprintf(buf, (char *)"addNet %s -i %d %d %d ELMAN 2 SOFT_MAX",
            lensNet, intervals, numMarks, HIDDEN_UNITS);
@@ -39,11 +39,11 @@ Minc::Minc(int numMarks, int intervals, RANDOM randomSeed)
 
    // Create Mona NN.
    mona = new Mona(1, 2, 1);
-   assert(mona != NULL);
+   ASSERT(mona != NULL);
 
    // Random numbers.
-   randomizer = new Random(randomSeed);
-   assert(randomizer != NULL);
+   randomizer = new Random(random_seed);
+   ASSERT(randomizer != NULL);
 }
 
 
@@ -54,7 +54,7 @@ Minc::Minc()
    intervals  = 0;
    lensNet    = NULL;
    mona       = NULL;
-   randomSeed = 0;
+   random_seed = 0;
    randomizer = NULL;
 }
 
@@ -104,7 +104,7 @@ void Minc::generalize(char *example, int numUpdates)
 // Return true for success.
 bool Minc::discriminate(char *example, Tmaze *maze)
 {
-   return(test(example, maze, false));
+   return (test(example, maze, false));
 }
 
 
@@ -116,9 +116,9 @@ bool Minc::test(char *example, Tmaze *maze, bool verbose)
 
    // Set up LENS output callback.
    netInputs = new real *[numMarks];
-   assert(netInputs != NULL);
+   ASSERT(netInputs != NULL);
    netOutputs = new real *[2];
-   assert(netOutputs != NULL);
+   ASSERT(netOutputs != NULL);
    clientProc = lensCallback;
    activeMinc = this;
    result     = true;
@@ -149,7 +149,7 @@ bool Minc::test(char *example, Tmaze *maze, bool verbose)
    clientProc = NULL;
    activeMinc = NULL;
 
-   return(result);
+   return (result);
 }
 
 
@@ -158,7 +158,7 @@ void Minc::lensCallback()
 {
    int i, lensDirection, direction;
 
-   vector<Mona::SENSOR> sensors;
+   Vector<Mona::SENSOR> sensors;
    Mona                 *mona;
    Tmaze                *maze;
    Random               *randomizer;
@@ -173,7 +173,7 @@ void Minc::lensCallback()
    randomizer = activeMinc->randomizer;
    if (exampleTick == 0)
    {
-      mona->inflateNeed(0);
+      mona->InflateNeed(0);
    }
    if (startTick >= 0)
    {
@@ -244,27 +244,27 @@ void Minc::lensCallback()
       }
 
       // Cycle mona with LENS direction as conditional response override.
-      mona->overrideResponseConditional(lensDirection, MIN_RESPONSE_POTENTIAL);
-      sensors.push_back((Mona::SENSOR)(maze->path[exampleTick].mark));
-      direction = (int)mona->cycle(sensors);
+      mona->OverrideResponseConditional(lensDirection, MIN_RESPONSE_POTENTIAL);
+      sensors.Add((Mona::SENSOR)(maze->path[exampleTick].mark));
+      direction = (int)mona->Cycle(sensors);
       if (printCallback)
       {
          printf("output=%d lens=%d: [%f %f]", direction,
                 lensDirection, *netOutputs[0], *netOutputs[1]);
          printf(" mona=%d: [%f %f]", direction,
-                mona->responsePotentials[0], mona->responsePotentials[1]);
+                mona->response_potentials[0], mona->response_potentials[1]);
       }
 
       // Reward mona if direction is correct.
       if (direction == maze->path[exampleTick].direction)
       {
-         mona->setNeed(0, mona->getNeed(0) - (1.0 / (Mona::NEED)activeMinc->intervals));
+         mona->SetNeed(0, mona->GetNeed(0) - (1.0 / (Mona::NEED)activeMinc->intervals));
       }
       else
       {
          // Otherwise expire wrong reponses and clear memory.
-         mona->expireResponseEnablings((Mona::RESPONSE)direction);
-         mona->clearWorkingMemory();
+         mona->ExpireResponseEnablings((Mona::RESPONSE)direction);
+         mona->ClearWorkingMemory();
       }
 
       // Set output.
@@ -280,13 +280,13 @@ void Minc::lensCallback()
       }
 
       // Output error?
-      if ((exampleTick < (int)maze->path.size()) &&
+      if ((exampleTick < (int)maze->path.GetCount()) &&
           (direction != maze->path[exampleTick].direction))
       {
          result = false;
          if (startTick >= 0)
          {
-            startTick = randomizer->RAND_CHOICE((int)maze->path.size());
+            startTick = randomizer->RAND_CHOICE((int)maze->path.GetCount());
             tickCount = -1;
          }
          if (printCallback)
@@ -303,7 +303,7 @@ void Minc::lensCallback()
 
 
 // Load minc.
-void Minc::load(char *filename)
+void Minc::Load(char *filename)
 {
    FILE *fp;
 
@@ -312,21 +312,21 @@ void Minc::load(char *filename)
       fprintf(stderr, "Cannot load minc from file %s\n", filename);
       exit(1);
    }
-   load(fp);
+   Load(fp);
    FCLOSE(fp);
 }
 
 
-void Minc::load(FILE *fp)
+void Minc::Load(FILE *fp)
 {
    int  i;
    bool b;
    char buf[100];
 
    FREAD_INT(&id, fp);
-   if (id >= idDispenser)
+   if (id >= id_dispenser)
    {
-      idDispenser = id + 1;
+      id_dispenser = id + 1;
    }
    FREAD_INT(&numMarks, fp);
    FREAD_INT(&intervals, fp);
@@ -341,7 +341,7 @@ void Minc::load(FILE *fp)
    if (i > 0)
    {
       lensNet = new char[i + 1];
-      assert(lensNet != NULL);
+      ASSERT(lensNet != NULL);
       FREAD_STRING(lensNet, i, fp);
       sprintf(buf, (char *)"addNet %s -i %d %d %d ELMAN 2 SOFT_MAX",
               lensNet, intervals, numMarks, HIDDEN_UNITS);
@@ -356,10 +356,10 @@ void Minc::load(FILE *fp)
    if (b)
    {
       mona = new Mona(1, 2, 1);
-      assert(mona != NULL);
-      mona->load(fp);
+      ASSERT(mona != NULL);
+      mona->Load(fp);
    }
-   FREAD_LONG(&randomSeed, fp);
+   FREAD_LONG(&random_seed, fp);
    if (randomizer != NULL)
    {
       delete randomizer;
@@ -374,7 +374,7 @@ void Minc::load(FILE *fp)
 
 
 // Save minc.
-void Minc::save(char *filename)
+void Minc::Store(char *filename)
 {
    FILE *fp;
 
@@ -383,12 +383,12 @@ void Minc::save(char *filename)
       fprintf(stderr, "Cannot save minc to file %s\n", filename);
       exit(1);
    }
-   save(fp);
+   Store(fp);
    FCLOSE(fp);
 }
 
 
-void Minc::save(FILE *fp)
+void Minc::Store(FILE *fp)
 {
    int  i;
    bool b;
@@ -411,14 +411,14 @@ void Minc::save(FILE *fp)
    {
       b = true;
       FWRITE_BOOL(&b, fp);
-      mona->save(fp);
+      mona->Store(fp);
    }
    else
    {
       b = false;
       FWRITE_BOOL(&b, fp);
    }
-   FWRITE_LONG(&randomSeed, fp);
+   FWRITE_LONG(&random_seed, fp);
    if (randomizer != NULL)
    {
       b = true;

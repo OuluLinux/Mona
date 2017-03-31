@@ -13,7 +13,7 @@ class MediaInfo
 {
   public:
 
-    MediaInfo(const std::string &mediaPath_, MediaInfoType mediaArg = 0)
+    MediaInfo(const String &mediaPath_, MediaInfoType mediaArg = 0)
     {
       userCount = 1;
       mediaPath = mediaPath_;
@@ -41,7 +41,7 @@ class MediaInfo
       mediaPath = mediaPath_;
     }
 
-    const std::string &getMediaPath() const
+    const String &getMediaPath() const
     {
       return mediaPath;
     }
@@ -96,7 +96,7 @@ class MediaInfo
   protected:
     unsigned int   userCount;
     MediaInfoType  media;
-    std::string    mediaPath;
+    String    mediaPath;
 
 };
 
@@ -118,7 +118,7 @@ class TexturesManager
     static void printTexturesInfo();
     static void flushAllTextures();
   private:
-    static vector<TextureInfo*> textureCollection;
+    static Vector<TextureInfo*> textureCollection;
 
 };
 
@@ -130,7 +130,7 @@ class TexturesManager
 class Image
 {
   private:
-    std::string     path;
+    String     path;
     unsigned char  *dataBuffer;
     unsigned int    internalFormat,
                     components,
@@ -167,9 +167,9 @@ class Image
    void setInternalFormat(unsigned int );
    void setComponentsCount(unsigned int );
 
-   bool load(const char*);
+   bool Load(const char*);
 
-   const std::string    &getPath()            const;
+   const String    &getPath()            const;
    const unsigned int    getComponentsCount() const;
    const unsigned int    getInternalFormat()  const;
    const unsigned char*  getDataBuffer()      const;
@@ -410,10 +410,10 @@ class Texture : public IOXMLObject
     bool finalizeLoading(const char* string);
     bool checkForRepeat (const char* string);
 
-    int getMagFilteri(const std::string &value);
-    int getMinFilteri(const std::string &value);
-    int getWrapModei (const std::string &value);
-    int getTypei     (const std::string &value);
+    int getMagFilteri(const String &value);
+    int getMinFilteri(const String &value);
+    int getWrapModei (const String &value);
+    int getTypei     (const String &value);
 
     int getValidWrapMode (int clamp);
     int getValidMagFilter(int filter);

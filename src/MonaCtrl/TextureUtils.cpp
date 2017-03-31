@@ -56,7 +56,7 @@ bool Texture::checkForRepeat(const char* string)
 bool Texture::finalizeLoading(const char* string)
 {
   if(!id)
-    return Logger::writeErrorLog(std::string("Failed to load texture <") + string + ">");
+    return Logger::writeErrorLog(String("Failed to load texture <") + string + ">");
   else
   {
     TextureInfo *textureInfo = new TextureInfo(string, id);
@@ -118,7 +118,7 @@ void Texture::setID(GLuint texID)
     newTextureInfo->increaseUserCount();
   else
   {
-    newTextureInfo = new TextureInfo(std::string("Unknown texture"), texID);
+    newTextureInfo = new TextureInfo(String("Unknown texture"), texID);
     unknown++;
   }
 
@@ -149,7 +149,7 @@ bool Texture::loadXMLSettings(const TiXmlElement *element)
   if(!isSuitable(element))
     return false;
 
-  std::string  path;
+  String  path;
   int          clampS    = GL_CLAMP,
                clampT    = GL_CLAMP,
                aniso     =         0,
@@ -166,35 +166,35 @@ bool Texture::loadXMLSettings(const TiXmlElement *element)
   target = getTypei(element->Attribute("type"));
   path   = element->Attribute("path");
 
-  for(const TiXmlElement *child = element->FirstChildElement();
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    std::string childName  = child->Value();
+    String outerName  = outer->Value();
 
-    if(!childName.size())
+    if(!outerName.GetCount())
       continue;
 
-    if(childName == "Wrap")
+    if(outerName == "Wrap")
     {
-      const char* attribute = child->Attribute("s");
+      const char* attribute = outer->Attribute("s");
       attribute             = attribute ? attribute :
-                              child->Attribute("u");
+                              outer->Attribute("u");
 
       clampS  = getWrapModei(attribute);
 
-      attribute = child->Attribute("t");
-      attribute = attribute ? attribute : child->Attribute("v");
+      attribute = outer->Attribute("t");
+      attribute = attribute ? attribute : outer->Attribute("v");
 
       clampT  = getWrapModei(attribute);
       continue;
     }
 
-    if(childName == "Filter")
+    if(outerName == "Filter")
     {
-      magFilter  = getMagFilteri(child->Attribute("mag"));
-      minFilter  = getMinFilteri(child->Attribute("min"));
-      aniso      = XMLArbiter::fillComponents1i(child, "aniso", 0);
+      magFilter  = getMagFilteri(outer->Attribute("mag"));
+      minFilter  = getMinFilteri(outer->Attribute("min"));
+      aniso      = XMLArbiter::fillComponents1i(outer, "aniso", 0);
       continue;
     }
   }
@@ -205,18 +205,18 @@ bool Texture::loadXMLSettings(const TiXmlElement *element)
   return result;
 }
 
-int Texture::getMagFilteri(const std::string &value)
+int Texture::getMagFilteri(const String &value)
 {
-  if(value.size())
+  if(value.GetCount())
   {
     if(value == "NEAREST") return GL_NEAREST;
   }
   return GL_LINEAR;
 }
 
-int Texture::getMinFilteri(const std::string &value)
+int Texture::getMinFilteri(const String &value)
 {
-  if(value.size())
+  if(value.GetCount())
   {
     if(value == "NEAREST_MIPMAP_NEAREST") return GL_NEAREST_MIPMAP_NEAREST;
     if(value == "LINEAR_MIPMAP_NEAREST")  return GL_LINEAR_MIPMAP_NEAREST;
@@ -227,9 +227,9 @@ int Texture::getMinFilteri(const std::string &value)
   return GL_LINEAR;
 }
 
-int Texture::getWrapModei(const std::string &value)
+int Texture::getWrapModei(const String &value)
 {
-  if(value.size())
+  if(value.GetCount())
   {
     if(value == "CLAMP_TO_BORDER") return GL_CLAMP_TO_BORDER;
     if(value == "CLAMP_TO_EDGE")   return GL_CLAMP_TO_EDGE;
@@ -238,9 +238,9 @@ int Texture::getWrapModei(const std::string &value)
   return GL_CLAMP;
 }
 
-int Texture::getTypei(const std::string &value)
+int Texture::getTypei(const String &value)
 {
-  if(value.size())
+  if(value.GetCount())
   {
     if(value == "TEXTURE_1D")       return GL_TEXTURE_1D;
     if(value == "TEXTURE_3D")       return GL_TEXTURE_3D;
@@ -327,18 +327,18 @@ bool Texture::load2D(const char* filename,
                      GLuint magFilter, GLuint minFilter,
                      bool  mipmap)
 {
-  std::string texturePath = MediaPathManager::lookUpMediaPath(filename);
+  String texturePath = MediaPathManager::lookUpMediaPath(filename);
 
-  if(!texturePath.size())
-    return Logger::writeErrorLog(std::string("Couldn't locate the Texture file at <") + filename + "> even with a look up");
+  if(!texturePath.GetCount())
+    return Logger::writeErrorLog(String("Couldn't locate the Texture file at <") + filename + "> even with a look up");
 
   if(checkForRepeat(texturePath.c_str()))
     return true;
 
   Image  image;
 
-  if(!image.load(filename))
-    return Logger::writeErrorLog(std::string("Could not load Texture2D file at -> ") + filename);
+  if(!image.Load(filename))
+    return Logger::writeErrorLog(String("Could not load Texture2D file at -> ") + filename);
 
   return load2DImage(image, clampS, clampT, magFilter, minFilter, mipmap);
 }
@@ -366,7 +366,7 @@ bool Texture::load2DImage(const Image& image,
   else
   {
     destroy();
-    return Logger::writeErrorLog(std::string("Could not load Texture2D file."));
+    return Logger::writeErrorLog(String("Could not load Texture2D file."));
   }
 
   height = image.getHeight();
@@ -375,7 +375,7 @@ bool Texture::load2DImage(const Image& image,
 
   if(finalizeLoading(path))
   {
-    Logger::writeInfoLog(std::string("Loaded Texture2D file at -> ") + path);
+    Logger::writeInfoLog(String("Loaded Texture2D file at -> ") + path);
     return true;
   }
   return false;
@@ -386,34 +386,34 @@ bool Texture::loadCube(const char* pathPXdotExtension,
                        GLuint magFilter, GLuint minFilter,
                        bool  mipmap)
 {
-  std::string initialPath  = MediaPathManager::lookUpMediaPath(pathPXdotExtension);
-  std::string temp;
+  String initialPath  = MediaPathManager::lookUpMediaPath(pathPXdotExtension);
+  String temp;
 
-  if(!initialPath.size())
-    return Logger::writeErrorLog(std::string("Couldn't locate the texture file at <") +
+  if(!initialPath.GetCount())
+    return Logger::writeErrorLog(String("Couldn't locate the texture file at <") +
                                  pathPXdotExtension + "> even with a look up");
   destroy();
   target = GL_TEXTURE_CUBE_MAP;
 
-  std::string  verifiedPaths[6],
+  String  verifiedPaths[6],
                faces[6]     = { "PX", "NX", "PY", "NY", "PZ", "NZ"},
                body;
 
   int extensionIndex = 0;
 
-  for(int j = 0; j < int(initialPath.size()); j++)
+  for(int j = 0; j < int(initialPath.GetCount()); j++)
     if(initialPath[j] == '.')
       extensionIndex = j;
 
   if(extensionIndex == 0)
     return false;
 
-  std::string extension  = initialPath;
+  String extension  = initialPath;
               extension += extensionIndex;
   size_t      strl        = 0;
 
-  strl  = initialPath.size();
-  strl -= extension.size() + 2;
+  strl  = initialPath.GetCount();
+  strl -= extension.GetCount() + 2;
 
   for(size_t i = 0; i< 6; i++)
   {
@@ -424,10 +424,10 @@ bool Texture::loadCube(const char* pathPXdotExtension,
     verifiedPaths[i] += extension;
     temp = MediaPathManager::lookUpMediaPath(verifiedPaths[i].data());
 
-    if(temp.size())
+    if(temp.GetCount())
        verifiedPaths[i] = temp;
     else
-      return Logger::writeErrorLog(std::string("Failed to locate cubemap texture face ") + verifiedPaths[i].data());
+      return Logger::writeErrorLog(String("Failed to locate cubemap texture face ") + verifiedPaths[i].data());
   }
 
   if(checkForRepeat(verifiedPaths[0].data()))
@@ -444,14 +444,14 @@ bool Texture::loadCube(const char* pathPXdotExtension,
   {
     Image image;
 
-    if(!image.load(verifiedPaths[i].data()))
+    if(!image.Load(verifiedPaths[i].data()))
     {
       destroy();
-      return Logger::writeErrorLog(std::string("Failed at loading CubeMap face: ") + faces[i]);
+      return Logger::writeErrorLog(String("Failed at loading CubeMap face: ") + faces[i]);
     }
 
     if(!loadTextureFace(image, GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, mipmap))
-      return Logger::writeErrorLog(std::string("Failed while loading CubeMap face: ") + faces[i]);
+      return Logger::writeErrorLog(String("Failed while loading CubeMap face: ") + faces[i]);
 
     if(i == 5)
     {
@@ -461,7 +461,7 @@ bool Texture::loadCube(const char* pathPXdotExtension,
     }
   }
 
-  Logger::writeInfoLog(std::string("Loaded TextureCubeMap at ->") + initialPath);
+  Logger::writeInfoLog(String("Loaded TextureCubeMap at ->") + initialPath);
   return  finalizeLoading(initialPath.c_str());
 }
 
@@ -480,7 +480,7 @@ bool Texture::create2DShell(const char* name,
   destroy();
   target = GL_TEXTURE_2D;
 
-  Logger::writeInfoLog(std::string("Loading new 2D Shell") + name);
+  Logger::writeInfoLog(String("Loading new 2D Shell") + name);
 
   glGenTextures(1, &id);
   glBindTexture(GL_TEXTURE_2D, id);
@@ -509,7 +509,7 @@ bool Texture::createNoise3D(const char* name, GLuint size)
   destroy();
   target = GL_TEXTURE_3D;
 
-  Logger::writeInfoLog(std::string("Creating new Noise3D Texture: ") + name);
+  Logger::writeInfoLog(String("Creating new Noise3D Texture: ") + name);
 
 
   GLubyte *noise3DBuffer = new GLubyte[size * size * size * 4],
@@ -553,7 +553,7 @@ bool Texture::createNoise3D(const char* name, GLuint size)
   glTexParameterf(target, GL_TEXTURE_WRAP_R, GL_REPEAT);
   glTexParameterf(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexImage3DEXT(target, 0, GL_RGBA,
+  glTexImage3D(target, 0, GL_RGBA,
                   size, size, size,
                   0, GL_RGBA, GL_UNSIGNED_BYTE, noise3DBuffer);
   deleteArray(noise3DBuffer);
@@ -575,7 +575,7 @@ bool Texture::createRectShell(const char* name,
   destroy();
   target = GL_TEXTURE_RECTANGLE_ARB;
 
-  Logger::writeInfoLog(std::string("Loading new Rectangle Shell: ") + name);
+  Logger::writeInfoLog(String("Loading new Rectangle Shell: ") + name);
 
   glGenTextures(1, &id);
   glBindTexture(GL_TEXTURE_RECTANGLE_ARB, id);
@@ -605,7 +605,7 @@ bool Texture::create1DShell(const char* name,
   target = GL_TEXTURE_1D;
 
 
-  Logger::writeInfoLog(std::string("Loading new 1D Shell: ") + name);
+  Logger::writeInfoLog(String("Loading new 1D Shell: ") + name);
 
   glGenTextures(1, &id);
   glBindTexture(target, id);
@@ -635,7 +635,7 @@ bool Texture::create3DShell(const char* name,
   target = GL_TEXTURE_3D;
 
 
-  Logger::writeInfoLog(std::string("Loading new 3D Shell: ") + name);
+  Logger::writeInfoLog(String("Loading new 3D Shell: ") + name);
 
   glGenTextures(1, &id);
   glBindTexture(target, id);
@@ -677,7 +677,7 @@ bool Texture::createCubeShell(const char* name,
   glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_S,     getValidWrapMode(clampS));
   glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_T,     getValidWrapMode(clampT));
 
-  Logger::writeInfoLog(std::string("Loading Cube Shell: ") + name);
+  Logger::writeInfoLog(String("Loading Cube Shell: ") + name);
 
   for(int i = 0; i < 6; i++)
    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i,
@@ -713,7 +713,7 @@ bool Texture::createNormalizingCube(const char* name,
 
   int levels = buildMipmaps ? int(log(double(size))/log(2.0)) : 1;
   target = GL_TEXTURE_CUBE_MAP;
-  Logger::writeInfoLog(std::string("Creating Normalization Texture Cube Map: ") + name);
+  Logger::writeInfoLog(String("Creating Normalization Texture Cube Map: ") + name);
 
   GLuint minFilter = buildMipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
 
@@ -1013,7 +1013,7 @@ bool Texture::loadTextureFace(const  Image &image,
 /*                                                                                         */
 /*******************************************************************************************/
 
-vector<TextureInfo*> TexturesManager::textureCollection;
+Vector<TextureInfo*> TexturesManager::textureCollection;
 
 bool TexturesManager::addTextureInfo(TextureInfo *textureInfo)
 {
@@ -1021,17 +1021,17 @@ bool TexturesManager::addTextureInfo(TextureInfo *textureInfo)
 
   if(!textureInfo)
     return false;
-  textureCollection.push_back(textureInfo);
+  textureCollection.Add(textureInfo);
   return true;
 }
 
 TextureInfo *TexturesManager::getTextureInfo(const char* texturePath)
 {
   flushUnusedTextures();
-  if(!texturePath || !textureCollection.size())
+  if(!texturePath || !textureCollection.GetCount())
     return NULL;
 
-  for(size_t i = 0; i < textureCollection.size(); i++)
+  for(size_t i = 0; i < textureCollection.GetCount(); i++)
     if(textureCollection[i]->getMediaPath() == texturePath)
       return textureCollection[i];
 
@@ -1040,10 +1040,10 @@ TextureInfo *TexturesManager::getTextureInfo(const char* texturePath)
 
 TextureInfo *TexturesManager::getTextureInfo(GLuint textureID)
 {
-  if(!textureID || !textureCollection.size())
+  if(!textureID || !textureCollection.GetCount())
     return NULL;
 
-  for(size_t i = 0; i < textureCollection.size(); i++)
+  for(size_t i = 0; i < textureCollection.GetCount(); i++)
     if(textureCollection[i]->getMedia() == textureID)
       return textureCollection[i];
 
@@ -1052,15 +1052,15 @@ TextureInfo *TexturesManager::getTextureInfo(GLuint textureID)
 
 void TexturesManager::flushUnusedTextures()
 {
-  vector<TextureInfo*> validTextures;
+  Vector<TextureInfo*> validTextures;
   size_t i         = 0,
          count     = 0;
   GLuint textureID = 0;
 
-  for(i = 0; i < textureCollection.size(); i++)
+  for(i = 0; i < textureCollection.GetCount(); i++)
     if(textureCollection[i]->getUserCount() > 0)
     {
-      validTextures.push_back(textureCollection[i]);
+      validTextures.Add(textureCollection[i]);
     }
     else
     {
@@ -1070,37 +1070,37 @@ void TexturesManager::flushUnusedTextures()
       deleteObject(textureCollection[i]);
     }
 
-  textureCollection.clear();
+  textureCollection.Clear();
 
-  for(i = 0; i < validTextures.size(); i++)
-      textureCollection.push_back(validTextures[i]);
+  for(i = 0; i < validTextures.GetCount(); i++)
+      textureCollection.Add(validTextures[i]);
 
   if(count)
-    Logger::writeInfoLog(std::string("Flushed texture."));
+    Logger::writeInfoLog(String("Flushed texture."));
 }
 
 void TexturesManager::flushAllTextures(){
   GLuint textureID = 0;
 
 	size_t i = 0;
-  for(i = 0; i < textureCollection.size(); i++)
+  for(i = 0; i < textureCollection.GetCount(); i++)
   {
     textureID = textureCollection[i]->getMedia();
     glDeleteTextures(1, &textureID);
     deleteObject(textureCollection[i]);
   }
 
-  textureCollection.clear();
+  textureCollection.Clear();
   if(i) Logger::writeInfoLog("Flushed all active textures");
 }
 
 void TexturesManager::printTexturesInfo()
 {
-  if(!textureCollection.size())
+  if(!textureCollection.GetCount())
     cout << "This Manager contains no Textures as of yet." << endl;
   else{
     cout << "Textures list: " << endl;
-    for(size_t i = 0; i < textureCollection.size(); i++)
+    for(size_t i = 0; i < textureCollection.GetCount(); i++)
       cout <<  "<users = \"" << textureCollection[i]->getUserCount() << "\" "
            <<  " path  = \"" << textureCollection[i]->getMediaPath() << "\" "
            <<  " id    = \"" << textureCollection[i]->getMedia()     << "\" />" << endl;
@@ -1123,7 +1123,7 @@ Image::Image(const char *path)
   depth          =    0;
 
   if(path)
-   load(path);
+   Load(path);
 }
 
 void Image::setWidth(unsigned short w)
@@ -1207,11 +1207,11 @@ void Image::flipVertically()
   deleteArray(newDataBuffer);
 }
 
-bool Image::load(const char* path_)
+bool Image::Load(const char* path_)
 {
-  std::string verifiedPath = MediaPathManager::lookUpMediaPath(path_);
+  String verifiedPath = MediaPathManager::lookUpMediaPath(path_);
  
-  if(!verifiedPath.size())
+  if(!verifiedPath.GetCount())
     return false;
 
   const char* cPath = verifiedPath.c_str();
@@ -1235,7 +1235,7 @@ const unsigned int    Image::getComponentsCount() const { return components;    
 const unsigned int    Image::getInternalFormat()  const { return internalFormat; }
 const unsigned char*  Image::getDataBuffer()      const { return dataBuffer;     }
 const unsigned int    Image::getFormat()          const { return format;         }
-const std::string    &Image::getPath()            const { return path;           }
+const String    &Image::getPath()            const { return path;           }
 
 const unsigned short Image::getHeight() const {return height;}
 const unsigned short Image::getWidth()  const {return width; }
@@ -1333,7 +1333,7 @@ char fileOpen(const char *filename)
     data = new unsigned char[bsize];
     if (fread(data, 1, bsize, stream) != bsize)
     {
-      Logger::writeErrorLog(std::string("Error reading data for file -> ") + filename);
+      Logger::writeErrorLog(String("Error reading data for file -> ") + filename);
     }
     fclose(stream);
     return 1;
@@ -2013,13 +2013,13 @@ bool Image::loadTGA(const char* filename)
   FILE * file = fopen(filename, "rb");    //Open the TGA file
 
   if(file==NULL )                         //Does the file exist?
-    return Logger::writeErrorLog(std::string("Could not find file -> ") + filename);
+    return Logger::writeErrorLog(String("Could not find file -> ") + filename);
 
 
   //read the header
   if (fread(TGAcompare, 1, sizeof(TGAcompare), file) != sizeof(TGAcompare))
   {
-    Logger::writeErrorLog(std::string("Error reading header for file -> ") + filename);
+    Logger::writeErrorLog(String("Error reading header for file -> ") + filename);
   }
   fclose(file);
 
@@ -2036,7 +2036,7 @@ bool Image::loadTGA(const char* filename)
     return loadUncompressed8BitTGA(filename);
   }
   else
-    return Logger::writeErrorLog(std::string("Unrecognized TGA format -> ") + filename);
+    return Logger::writeErrorLog(String("Unrecognized TGA format -> ") + filename);
 
   return false;
 }
@@ -2050,14 +2050,14 @@ bool Image::loadUncompressed8BitTGA(const char * filename)
   FILE * file = fopen(filename, "rb");        //Open the TGA file
 
   if(file == NULL)                //Does the file exist?
-    return Logger::writeErrorLog(std::string("Could not find file at -> ") + filename);
+    return Logger::writeErrorLog(String("Could not find file at -> ") + filename);
 
   if(fread(TGAcompare, 1, sizeof(TGAcompare), file)!=sizeof(TGAcompare)|| //Are there 12 bytes to read?
     memcmp(TGAHeader, TGAcompare, sizeof(TGAHeader))!=0 ||          //Is the header correct?
     fread(header, 1, sizeof(header), file)!=sizeof(header))   //Read next 6 bytes
   {
     fclose(file);               //If anything else failed, close the file
-    return Logger::writeErrorLog(std::string("Could not process file at -> ") + filename);
+    return Logger::writeErrorLog(String("Could not process file at -> ") + filename);
   }
 
   //save data into class member variables
@@ -2070,7 +2070,7 @@ bool Image::loadUncompressed8BitTGA(const char * filename)
      header[4] != 8)    //bpp not 8
   {
     fclose(file);                     //close the file
-    return Logger::writeErrorLog(std::string("The height or width is less than zero, or the TGA is not 8 bpp -> ") + filename);
+    return Logger::writeErrorLog(String("The height or width is less than zero, or the TGA is not 8 bpp -> ") + filename);
   }
 
   setFormat(GL_RGB);
@@ -2112,7 +2112,7 @@ bool Image::loadUncompressed8BitTGA(const char * filename)
   if(!dataBuffer)
   {
     fclose(file);
-    return Logger::writeErrorLog(std::string("Unable to allocate memory for ->") + filename);
+    return Logger::writeErrorLog(String("Unable to allocate memory for ->") + filename);
   }
 
   //calculate the color values
@@ -2138,14 +2138,14 @@ bool Image::loadUncompressedTrueColorTGA(const char * filename)
   FILE * file = fopen(filename, "rb");        //Open the TGA file
 
   if(file == NULL)                //Does the file exist?
-    return Logger::writeErrorLog(std::string("Could not load file at -> ") + filename);
+    return Logger::writeErrorLog(String("Could not load file at -> ") + filename);
 
   if( fread(TGAcompare, 1, sizeof(TGAcompare), file)!=sizeof(TGAcompare)||  //Are there 12 bytes to read?
     memcmp(TGAheader, TGAcompare, sizeof(TGAheader))!=0 ||          //Is the header correct?
     fread(header, 1, sizeof(header), file)!=sizeof(header))   //Read next 6 bytes
   {
     fclose(file);               //If anything else failed, close the file
-    return Logger::writeErrorLog(std::string("Could not process file at -> ") + filename);
+    return Logger::writeErrorLog(String("Could not process file at -> ") + filename);
   }
 
   //save data into class member variables
@@ -2158,7 +2158,7 @@ bool Image::loadUncompressedTrueColorTGA(const char * filename)
      (header[4] !=24 && header[4]!=32))                   //bpp not 24 or 32
   {
     fclose(file);                     //close the file
-    return Logger::writeErrorLog(std::string("The height or width is less than zero, or the TGA is not 24 bpp -> ") + filename);
+    return Logger::writeErrorLog(String("The height or width is less than zero, or the TGA is not 24 bpp -> ") + filename);
   }
 
   //set format
@@ -2181,13 +2181,13 @@ bool Image::loadUncompressedTrueColorTGA(const char * filename)
   if(dataBuffer==NULL)                     //Does the storage memory exist?
   {
     fclose(file);
-    return Logger::writeErrorLog(std::string("Unable to allocate memory for image ->") + filename);
+    return Logger::writeErrorLog(String("Unable to allocate memory for image ->") + filename);
   }
 
   //read in the image data
   if (fread(dataBuffer, 1, imageSize, file) != imageSize)
   {
-    Logger::writeErrorLog(std::string("Error reading data for image ->") + filename);
+    Logger::writeErrorLog(String("Error reading data for image ->") + filename);
   }
   fclose(file);
   return true;
@@ -2205,7 +2205,7 @@ bool Image::loadCompressedTrueColorTGA(const char * filename)
   FILE * file = fopen(filename, "rb");        //Open the TGA file
 
   if(file == NULL)                //Does the file exist?
-    return Logger::writeErrorLog(std::string("Could not load file at -> ") + filename);
+    return Logger::writeErrorLog(String("Could not load file at -> ") + filename);
 
 
   if( fread(TGAcompare, 1, sizeof(TGAcompare), file)!=sizeof(TGAcompare)||  //Are there 12 bytes to read?
@@ -2213,7 +2213,7 @@ bool Image::loadCompressedTrueColorTGA(const char * filename)
     fread(header, 1, sizeof(header), file)!=sizeof(header))   //Read next 6 bytes
   {
     fclose(file);               //If anything else failed, close the file
-    return Logger::writeErrorLog(std::string("Could not process file at -> ") + filename);
+    return Logger::writeErrorLog(String("Could not process file at -> ") + filename);
   }
 
   //save data into class member variables
@@ -2227,7 +2227,7 @@ bool Image::loadCompressedTrueColorTGA(const char * filename)
      (header[4] !=24 && header[4] !=32))                   //bpp not 24 or 32
   {
     fclose(file);                     //close the file
-    return Logger::writeErrorLog(std::string("The height or width is less than zero, or the TGA is not 24 bpp -> ") + filename);
+    return Logger::writeErrorLog(String("The height or width is less than zero, or the TGA is not 24 bpp -> ") + filename);
   }
 
   //set format
@@ -2251,7 +2251,7 @@ bool Image::loadCompressedTrueColorTGA(const char * filename)
   if(!dataBuffer)                         //Does the storage memory exist?
   {
     fclose(file);
-    return Logger::writeErrorLog(std::string("Unable to allocate memory for image -> ") + filename);
+    return Logger::writeErrorLog(String("Unable to allocate memory for image -> ") + filename);
   }
 
   //read in the image data
@@ -2284,7 +2284,7 @@ bool Image::loadCompressedTrueColorTGA(const char * filename)
             fclose(file);
           deleteArray(colorBuffer);
           deleteArray(dataBuffer);
-          return Logger::writeErrorLog(std::string("Could not read image data -> ") + filename);
+          return Logger::writeErrorLog(String("Could not read image data -> ") + filename);
         }
 
         //transfer pixel color to data (swapping r and b values)
@@ -2318,7 +2318,7 @@ bool Image::loadCompressedTrueColorTGA(const char * filename)
           fclose(file);
         deleteArray(colorBuffer);
         deleteArray(dataBuffer);
-        return Logger::writeErrorLog(std::string("Unable to read image data -> ") + filename);
+        return Logger::writeErrorLog(String("Unable to read image data -> ") + filename);
       }
 
       for(short counter=0; counter<chunkHeader; counter++)

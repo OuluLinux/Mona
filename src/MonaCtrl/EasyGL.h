@@ -189,14 +189,14 @@ class GUIEvent
     GUIEvent &operator= (const GUIEvent& copy);
 
     GUIRectangle *getEventSource();
-    const std::string &getCallbackString();
+    const String &getCallbackString();
 
     void setConsumed(bool);
     bool isConsumed();
 
   private:
     GUIRectangle *eventSource;
-    std::string   callbackString;
+    String   callbackString;
     bool          consumed;
 };
 
@@ -221,7 +221,7 @@ class GUIEventListener
 class GUIFont : public NamedObject
 {
   public:
-    GUIFont(const std::string &guiFontPath = "") : NamedObject(guiFontPath){}
+    GUIFont(const String &guiFontPath = "") : NamedObject(guiFontPath){}
 
    ~GUIFont();
 
@@ -246,25 +246,25 @@ class GUIFont : public NamedObject
 class GUIText
 {
   public:
-    GUIText(const std::string &text = "");
+    GUIText(const String &text = "");
 
     GUIText(const GUIText & text);
     GUIText &operator =(const GUIText     &text);
-    GUIText &operator =(const std::string &text);
+    GUIText &operator =(const String &text);
 
     virtual bool loadXMLSettings(const TiXmlElement *node);
 
-    void  computeDimensions();
+    void  computeSizes();
     void  printCenteredXY(int x, int y, int startIndex = 0, int endIndex = -1);
     void  printCenteredX (int x, int y, int startIndex = 0, int endIndex = -1);
     void  printCenteredY (int x, int y, int startIndex = 0, int endIndex = -1);
-    void  print(int x, int y, int startIndex = 0, int endIndex = -1);
+    void  Print(int x, int y, int startIndex = 0, int endIndex = -1);
 
-    const std::string &getString();
+    const String &getString();
 
-    void setString(const std::string &text);
+    void setString(const String &text);
     void setString(const char        *text);
-    void clear();
+    void Clear();
 
     void  setSize(int x, int y);
     void  setSize(const Tuple2i& size);
@@ -292,7 +292,7 @@ class GUIText
     int  getFontIndex();
 
   protected:
-    std::string text;
+    String text;
     Tuple2i     position,
                 size;
     Tuple2f     scales;
@@ -324,12 +324,12 @@ class GUIFontManager
     static int      getCharacterWidth(char Char, GUIFont *font);
     static int      getCharacterWidth(char Char, int      index);
    
-    static void     clear();
+    static void     Clear();
 
   private:
     static bool addFont(GUIFont *font);
 
-    static vector<GUIFont *>  guiFontList;
+    static Vector<GUIFont *>  guiFontList;
 
     static GUIFont *currentFont,
                    *defaultFont;
@@ -345,7 +345,7 @@ class GUITexCoordDescriptor
 {
 
   private:
-    void    setType(const std::string &type);
+    void    setType(const String &type);
 
     Tuple4f texCoords;
     int     widgetType;
@@ -383,7 +383,7 @@ class GUIRectangle
   protected:
     GUIRectangle *parent;
 
-    std::string   callbackString;
+    String   callbackString;
 
     Tuple4i       windowBounds;
     Tuple2f       position,
@@ -404,17 +404,17 @@ class GUIRectangle
                   z;
 
   public:
-    GUIRectangle(const std::string &callback = "");
+    GUIRectangle(const String &callback = "");
     virtual ~GUIRectangle(){};
 
-    void               setCallbackString(const std::string& callback);
-    const std::string &getCallbackString();
+    void               setCallbackString(const String& callback);
+    const String &getCallbackString();
 
     bool     loadXMLSettings(const TiXmlElement *node);
 
-    void     setDimensions(float width, float height);
-    void     setDimensions(const Tuple2f &dimensions);
-    const    Tuple2f &getDimensions();
+    void     setSizes(float width, float height);
+    void     setSizes(const Tuple2f &dimensions);
+    const    Tuple2f &getSizes();
 
     void     setPosition(float xScaleOrPosition, float yScaleOrPosition);
     void     setPosition(const Tuple2f &scalesOrPosition);
@@ -427,7 +427,7 @@ class GUIRectangle
     void  setActive(bool active);
     bool  isActive();
 
-    void  setAnchorPoint(const std::string &anchor);
+    void  setAnchorPoint(const String &anchor);
     void  setAnchorPoint(int anchor);
     int   getAnchorPoint();
 
@@ -467,10 +467,10 @@ class GUIRectangle
     bool  isPressed();
 };
 
-typedef vector<GUITexCoordDescriptor> GUITexCoordsInfo;
+typedef Vector<GUITexCoordDescriptor> GUITexCoordsInfo;
 typedef DistanceObject<GUIRectangle*> ZWidget;
-typedef vector<GUIRectangle *>        Widgets;
-typedef vector<ZWidget>               ZWidgets;
+typedef Vector<GUIRectangle *>        Widgets;
+typedef Vector<ZWidget>               ZWidgets;
 
 /**********************************************************************************/
 /*class GUIClippedRectangle                                                       */
@@ -572,7 +572,7 @@ class GUIAlphaElement : public GUIRectangle
 
     void       modifyCurrentAlpha(float tick);
  public:
-    GUIAlphaElement(const std::string &callback = "");
+    GUIAlphaElement(const String &callback = "");
 
     virtual void render(float clockTick) = 0;
     virtual bool loadXMLSettings(const TiXmlElement *node);
@@ -586,8 +586,8 @@ class GUIAlphaElement : public GUIRectangle
     void  setAlpha(float alpha);
     float getAlpha();
 
-    void  setLabelString(const std::string &label);
-    const std::string  &getLabelString();
+    void  setLabelString(const String &label);
+    const String  &getLabelString();
 
     void  setColor(const Tuple3f& color);
     void  setColor(float x, float y, float z);
@@ -605,8 +605,8 @@ class GUIAlphaElement : public GUIRectangle
 class GUILabel : public GUIAlphaElement
 {
   public:
-    GUILabel(const std::string &labelString    = "Unknown Label",
-             const std::string &callbackString = "");
+    GUILabel(const String &labelString    = "Unknown Label",
+             const String &callbackString = "");
 
     virtual void  render(float clockTick);
     virtual bool  loadXMLSettings(const TiXmlElement *element);
@@ -622,16 +622,16 @@ class GUILabel : public GUIAlphaElement
 class GUITextBox : public GUIAlphaElement
 {
   public:
-    GUITextBox(const std::string &callback  = "",
-               const std::string &fieldText = "");
+    GUITextBox(const String &callback  = "",
+               const String &fieldText = "");
 
     virtual void    render(float clockTick);
     virtual void    checkMouseEvents(MouseEvent &evt, int extraInfo, bool reservedBits = false);
     virtual void    checkKeyboardEvents(KeyEvent evt, int extraInfo);
     virtual bool    loadXMLSettings(const TiXmlElement *node);
     virtual const   Tuple4i &getWindowBounds();
-    void            setText(const std::string &text);
-    const   std::string &getText() const;
+    void            setText(const String &text);
+    const   String &getText() const;
 
     bool    textChanged();
 
@@ -667,7 +667,7 @@ class GUITextBox : public GUIAlphaElement
 class GUIButton : public GUIAlphaElement, public GUIClippedRectangle
 {
   public:
-    GUIButton(const std::string &callback = "");
+    GUIButton(const String &callback = "");
 
     virtual void  render(float clockTick);
     virtual bool  loadXMLSettings(const TiXmlElement *node);
@@ -689,7 +689,7 @@ class GUIButton : public GUIAlphaElement, public GUIClippedRectangle
 class GUICheckBox : public GUIAlphaElement
 {
   public:
-    GUICheckBox(const std::string &callback = "");
+    GUICheckBox(const String &callback = "");
 
     virtual void render(float clockTick);
     virtual void checkMouseEvents(MouseEvent &evt, int extraInfo, bool reservedBits = false);
@@ -730,7 +730,7 @@ class GUICheckBox : public GUIAlphaElement
 class GUIRadioButton : public GUICheckBox
 {
   public:
-    GUIRadioButton(const std::string &callback = "");
+    GUIRadioButton(const String &callback = "");
     virtual void checkMouseEvents(MouseEvent &newEvent, int extraInfo, bool bits);
 };
 
@@ -743,7 +743,7 @@ class GUIRadioButton : public GUICheckBox
 class GUISlider : public GUIAlphaElement
 {
   public:
-    GUISlider(const std::string &callback    = "",
+    GUISlider(const String &callback    = "",
               const int          orientation = OR_HORIZONTAL);
 
     virtual const Tuple4i &getWindowBounds();
@@ -754,15 +754,15 @@ class GUISlider : public GUIAlphaElement
     float getProgress();
     void  setProgress(float zeroToOne);
 
-    void  setDiscDimensions(const Tuple2i& dimensions);
-    void  setDiscDimensions(int width, int height);
+    void  setDiscSizes(const Tuple2i& dimensions);
+    void  setDiscSizes(int width, int height);
     int   getOrientation();
 
-    const Tuple2i &getDiscDimensions();
+    const Tuple2i &getDiscSizes();
 
   private:
     Tuple4i realWindowBounds;
-    Tuple2i discDimensions;
+    Tuple2i discSizes;
     float   progress;
     int     orientation,
             offset;
@@ -791,9 +791,9 @@ class GUIPanel : public GUIRectangle,
     void    correctPosition();
 
   public:
-    GUIPanel(const std::string &callback = "");
+    GUIPanel(const String &callback = "");
     virtual ~GUIPanel();
-    GUIRectangle *getWidgetByCallbackString(const std::string &name);
+    GUIRectangle *getWidgetByCallbackString(const String &name);
 
     void  setInterval(int width, int height);
     void  setInterval(const Tuple2i &dimensions);
@@ -816,7 +816,7 @@ class GUIPanel : public GUIRectangle,
     virtual void  forceUpdate(bool);
     virtual bool  addWidget(GUIRectangle *widget);
     virtual void  pack();
-    virtual void  clear();
+    virtual void  Clear();
 
     int           getWidgetCountByType(int type);
     Widgets      &getWidgets();
@@ -835,7 +835,7 @@ class GUIFrame : public GUIPanel
     GUITexCoordsInfo    texCoords;
     Texture             elementsTexture;
     Tuple2i             windowSize;
-    int                 updateCount;
+    int                 update_count;
   public:
     GUIFrame();
    ~GUIFrame();
@@ -856,7 +856,7 @@ class GUIFrame : public GUIPanel
     virtual void  enableGUITexture();
     virtual void  disableGUITexture();
     virtual void  render(float tick);
-    virtual void  clear();
+    virtual void  Clear();
 };
 
 /**********************************************************************************/
@@ -868,7 +868,7 @@ class GUIFrame : public GUIPanel
 class GUIComboBox : public GUIRectangle, public GUIEventListener
 {
   public:
-    GUIComboBox(const std::string& cbs = "");
+    GUIComboBox(const String& cbs = "");
     virtual ~GUIComboBox();
 
     virtual GUIEventListener  *getEventsListener();
@@ -882,13 +882,13 @@ class GUIComboBox : public GUIRectangle, public GUIEventListener
     void                    setFontScales(const Tuple2f &scales);
     const   Tuple2f        &getFontScales();
 
-    void                         addItem(const std::string &item);
-    const   vector<std::string> &getItems() const;
+    void                         addItem(const String &item);
+    const   Vector<String> &getItems() const;
 
     const   char*                getSelectedItem()  const;
     const   char*                getItem(size_t index) const;
-    int                          getItemIndex(const std::string &item);
-    bool                         setSelectedItem(const std::string &item);
+    int                          getItemIndex(const String &item);
+    bool                         setSelectedItem(const String &item);
     bool                         setSelectedItemIndex(size_t index);
 
     void    setScrollingColor(float r, float g, float b, float alpha);
@@ -904,7 +904,7 @@ class GUIComboBox : public GUIRectangle, public GUIEventListener
 
     void           finalizeSize();
 
-    vector<std::string>  items;
+    Vector<String>  items;
     GUIButton           *dropMenuButton;
     GUIPanel            *upperPanel,
                         *lowerPanel;
@@ -931,7 +931,7 @@ class GUIComboBox : public GUIRectangle, public GUIEventListener
 class GUITabbedPanel : public GUIRectangle, public GUIEventListener
 {
   public:
-    GUITabbedPanel(const std::string &callback = "");
+    GUITabbedPanel(const String &callback = "");
    ~GUITabbedPanel();
 
     virtual GUIEventListener  *getEventsListener();

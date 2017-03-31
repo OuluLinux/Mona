@@ -1,15 +1,15 @@
 #include "EasyGL.h"
 
-Tuple2i textureGUIDimensions(256,256);
+Tuple2i textureGUISizes(256,256);
 
 void GUITexCoordDescriptor::setTextureWidth(int width)
 {
-  textureGUIDimensions.x = clamp(width, 8, 1024);
+  textureGUISizes.x = clamp(width, 8, 1024);
 }
 
 void GUITexCoordDescriptor::setTextureHeight(int height)
 {  
-  textureGUIDimensions.y = clamp(height, 8, 1024);
+  textureGUISizes.y = clamp(height, 8, 1024);
 }
 
 GUITexCoordDescriptor::GUITexCoordDescriptor(int widgetTypeArg)
@@ -50,9 +50,9 @@ void GUITexCoordDescriptor::setType(int type)
   }
 }
 
-void GUITexCoordDescriptor::setType(const std::string &type)
+void GUITexCoordDescriptor::setType(const String &type)
 {
-  if(!type.size())
+  if(!type.GetCount())
   {
     Logger::writeErrorLog("NULL GUITexCoordDescriptor type");
     return;
@@ -70,7 +70,7 @@ void GUITexCoordDescriptor::setType(const std::string &type)
   if(type == "PANEL")           { widgetType = WT_PANEL;            return; }
   if(type == "LABEL")           { widgetType = WT_LABEL;            return; }
 
-  Logger::writeErrorLog(std::string("Unknow GUITexCoordDescriptor type -> ") + type);
+  Logger::writeErrorLog(String("Unknow GUITexCoordDescriptor type -> ") + type);
   widgetType = WT_UNKNOWN;
 }
 
@@ -84,7 +84,7 @@ void GUITexCoordDescriptor::loadXMLSettings(const TiXmlElement *element)
   if(!XMLArbiter::inspectElementInfo(element, "TexCoordsDesc"))
     return;
 
-  std::string name;
+  String name;
   int         xStart        = 0,
               yStart        = 0,
               xEnd          = 0,
@@ -96,19 +96,19 @@ void GUITexCoordDescriptor::loadXMLSettings(const TiXmlElement *element)
   xEnd = XMLArbiter::fillComponents1i(element, "xEnd", xEnd);
   yEnd = XMLArbiter::fillComponents1i(element, "yEnd", yEnd);
    
-  setTexCoords(xStart/float(textureGUIDimensions.x), yStart/float(textureGUIDimensions.y),
-               xEnd  /float(textureGUIDimensions.x), yEnd  /float(textureGUIDimensions.y));
+  setTexCoords(xStart/float(textureGUISizes.x), yStart/float(textureGUISizes.y),
+               xEnd  /float(textureGUISizes.x), yEnd  /float(textureGUISizes.y));
   setType(element->Attribute("type"));
 }
 
 int GUITexCoordDescriptor::getTextureWidth()
 {
-  return textureGUIDimensions.x;
+  return textureGUISizes.x;
 }
 
 int GUITexCoordDescriptor::getTextureHeight()
 {
-  return textureGUIDimensions.y;
+  return textureGUISizes.y;
 }
 
 void GUITexCoordDescriptor::setTexCoords(float x, float y, float z, float w)

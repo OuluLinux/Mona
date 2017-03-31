@@ -16,110 +16,110 @@ public:
 
    ValueSet(int size)
    {
-      values.resize(size);
+      values.SetCount(size);
    }
 
 
    // Destructor.
    ~ValueSet()
    {
-      clear();
+      Clear();
    }
 
 
    // Clear
-   inline void clear()
+   inline void Clear()
    {
-      values.clear();
+      values.Clear();
    }
 
 
    // Get size.
-   inline int size()
+   inline int GetCount()
    {
-      return((int)values.size());
+      return ((int)values.GetCount());
    }
 
 
    // Allocate
-   inline void alloc(int size)
+   inline void Reserve(int size)
    {
-      clear();
-      values.resize(size);
+      Clear();
+      values.SetCount(size);
    }
 
 
    // Zero
-   inline void zero()
+   inline void Zero()
    {
-      for (int i = 0; i < (int)values.size(); i++) { values[i] = 0.0; }
+      for (int i = 0; i < (int)values.GetCount(); i++) { values[i] = 0.0; }
    }
 
 
    // Get a specified value.
-   inline double get(int index)
+   inline double Get(int index)
    {
-      assert(index >= 0 && index < (int)values.size());
-      return(values[index]);
+      ASSERT(index >= 0 && index < (int)values.GetCount());
+      return (values[index]);
    }
 
 
    // Get sum of values.
-   inline double sum()
+   inline double GetSum()
    {
       double d;
 
       d = 0.0;
-      for (int i = 0; i < (int)values.size(); i++) { d += values[i]; }
-      return(d);
+      for (int i = 0; i < (int)values.GetCount(); i++) { d += values[i]; }
+      return d;
    }
 
 
    // Set a scalar value.
-   inline void set(int index, double value)
+   inline void Set(int index, double value)
    {
-      assert(index >= 0 && index < (int)values.size());
+      ASSERT(index >= 0 && index < (int)values.GetCount());
       values[index] = value;
    }
 
 
    // Add a scalar value.
-   inline void add(int index, double value)
+   inline void Add(int index, double value)
    {
-      assert(index >= 0 && index < (int)values.size());
+      ASSERT(index >= 0 && index < (int)values.GetCount());
       values[index] += value;
    }
 
 
    // Subtract a scalar value.
-   inline void subtract(int index, double value)
+   inline void Subtract(int index, double value)
    {
-      assert(index >= 0 && index < (int)values.size());
+      ASSERT(index >= 0 && index < (int)values.GetCount());
       values[index] -= value;
    }
 
 
    // Multiply by a scalar value.
-   inline void multiply(int index, double value)
+   inline void Multiply(int index, double value)
    {
-      assert(index >= 0 && index < (int)values.size());
+      ASSERT(index >= 0 && index < (int)values.GetCount());
       values[index] *= value;
    }
 
 
    // Divide by a scalar value.
-   inline void divide(int index, double value)
+   inline void Divide(int index, double value)
    {
-      assert(index >= 0 && index < (int)values.size());
-      assert(value != 0.0);
+      ASSERT(index >= 0 && index < (int)values.GetCount());
+      ASSERT(value != 0.0);
       values[index] /= value;
    }
 
 
    // Add a scalar value to all.
-   inline void add(double value)
+   inline void Add(double value)
    {
-      for (int i = 0; i < (int)values.size(); i++)
+      for (int i = 0; i < (int)values.GetCount(); i++)
       {
          values[i] += value;
       }
@@ -127,9 +127,9 @@ public:
 
 
    // Subtract a scalar value from all.
-   inline void subtract(double value)
+   inline void Subtract(double value)
    {
-      for (int i = 0; i < (int)values.size(); i++)
+      for (int i = 0; i < (int)values.GetCount(); i++)
       {
          values[i] -= value;
       }
@@ -137,9 +137,9 @@ public:
 
 
    // Multiply all by a scalar value.
-   inline void multiply(double value)
+   inline void Multiply(double value)
    {
-      for (int i = 0; i < (int)values.size(); i++)
+      for (int i = 0; i < (int)values.GetCount(); i++)
       {
          values[i] *= value;
       }
@@ -147,10 +147,10 @@ public:
 
 
    // Divide all by a scalar value.
-   inline void divide(double value)
+   inline void Divide(double value)
    {
-      assert(value != 0.0);
-      for (int i = 0; i < (int)values.size(); i++)
+      ASSERT(value != 0.0);
+      for (int i = 0; i < (int)values.GetCount(); i++)
       {
          values[i] /= value;
       }
@@ -158,36 +158,36 @@ public:
 
 
    // Load given set of values into this.
-   inline void load(class ValueSet& loadSet)
+   inline void Load(class ValueSet& loadSet)
    {
-      if (loadSet.size() != (int)values.size())
+      if (loadSet.GetCount() != (int)values.GetCount())
       {
-         values.resize(loadSet.size());
+         values.SetCount(loadSet.GetCount());
       }
 
-      for (int i = 0; i < (int)values.size(); i++)
+      for (int i = 0; i < (int)values.GetCount(); i++)
       {
          values[i] = loadSet.values[i];
       }
    }
 
 
-   // Vector addition.
-   inline void add(class ValueSet& addSet)
+   // Vector3f addition.
+   inline void Add(class ValueSet& addSet)
    {
-      assert(size() == addSet.size());
-      for (int i = 0; i < (int)values.size(); i++)
+      ASSERT(GetCount() == addSet.GetCount());
+      for (int i = 0; i < (int)values.GetCount(); i++)
       {
          values[i] += addSet.values[i];
       }
    }
 
 
-   // Vector subtraction.
-   inline void subtract(class ValueSet& subSet)
+   // Vector3f subtraction.
+   inline void Subtract(class ValueSet& subSet)
    {
-      assert(size() == subSet.size());
-      for (int i = 0; i < (int)values.size(); i++)
+      ASSERT(GetCount() == subSet.GetCount());
+      for (int i = 0; i < (int)values.GetCount(); i++)
       {
          values[i] -= subSet.values[i];
       }
@@ -195,14 +195,14 @@ public:
 
 
    // Load.
-   inline void load(FILE *fp)
+   inline void Load(FILE *fp)
    {
       int i;
 
-      values.clear();
+      values.Clear();
       FREAD_INT(&i, fp);
-      values.resize(i);
-      for (i = 0; i < (int)values.size(); i++)
+      values.SetCount(i);
+      for (i = 0; i < (int)values.GetCount(); i++)
       {
          FREAD_DOUBLE(&values[i], fp);
       }
@@ -210,12 +210,12 @@ public:
 
 
    // Save.
-   inline void save(FILE *fp)
+   inline void Store(FILE *fp)
    {
-      int i = (int)values.size();
+      int i = (int)values.GetCount();
 
       FWRITE_INT(&i, fp);
-      for (i = 0; i < (int)values.size(); i++)
+      for (i = 0; i < (int)values.GetCount(); i++)
       {
          FWRITE_DOUBLE(&values[i], fp);
       }
@@ -223,9 +223,9 @@ public:
 
 
    // Print.
-   inline void print(FILE *out = stdout)
+   inline void Print(FILE *out = stdout)
    {
-      for (int i = 0; i < (int)values.size(); i++)
+      for (int i = 0; i < (int)values.GetCount(); i++)
       {
          fprintf(out, "%f ", values[i]);
       }
@@ -233,8 +233,9 @@ public:
    }
 
 
-   vector<double> values;                         // Value set
+   Vector<double> values;                         // Value set
 };
 
 typedef class ValueSet   VALUE_SET;
+
 #endif

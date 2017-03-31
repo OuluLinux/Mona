@@ -21,35 +21,35 @@
 class Logger
 {
   public:
-    static void writeImmidiateInfoLog(const std::string &info);
-    static void writeFatalErrorLog(const std::string &logString);
-    static bool writeErrorLog(const std::string &error);
-    static void writeInfoLog(const std::string &info);
+    static void writeImmidiateInfoLog(const String &info);
+    static void writeFatalErrorLog(const String &logString);
+    static bool writeErrorLog(const String &error);
+    static void writeInfoLog(const String &info);
     static void initialize(const char* logfilename = NULL);
     static void flush();
 
   private:
-    static vector<std::string> logStrings;
-    static std::string         logPath;
+    static Vector<String> log_strings;
+    static String         logPath;
 };
 
 class NamedObject
 {
 
   protected:
-    std::string name;
+    String name;
 
   public:
     NamedObject(const char*  argName = NULL);
-    NamedObject(const std::string &argName);
+    NamedObject(const String &argName);
     NamedObject(const NamedObject &copy);
    ~NamedObject();
 
     NamedObject &operator=(const NamedObject &copy);
-    void   setName(const char   *nameArg);
-    void   setName(const std::string &name);
+    void   SetName(const char   *nameArg);
+    void   SetName(const String &name);
 
-    const std::string &getName()     const;
+    const String &GetName()     const;
     const char*        getCharName() const;
 
 };
@@ -76,17 +76,17 @@ class Perlin
 class MediaPathManager
 {
   public:
-    static const std::string lookUpMediaPath(const std::string  &path);
-    static const std::string getPathAt(int index);
+    static const String lookUpMediaPath(const String  &path);
+    static const String getPathAt(int index);
 
     static bool  registerPath(const TiXmlElement *MediaPathNode);
-    static bool  registerPath(const std::string  &path);
+    static bool  registerPath(const String  &path);
 
     static int   getPathCount();
     static void  printAllPaths();
 
   private:
-    static std::vector<std::string> dataPaths;
+    static Vector<String> data_paths;
 };
 
 template <class ODT>

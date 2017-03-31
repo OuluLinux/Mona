@@ -1,295 +1,206 @@
 // For conditions of distribution and use, see copyright notice in muzz.hpp
 
 /*
- *
- * Block terrain: a grid of blocks piled to various elevations
- * that is connected by ramps such that the top of every block
- * is reachable.
- *
- * A platform is a horizontal rectangle of blocks impressed into
- * the terrain. Multiple platforms overlay to produce a terraced
- * effect.
- *
- * A ramp can connect platforms that have an elevation difference
- * of one. It is composed of a pair of inclined blocks, one rising from
- * the lower platform and the other sinking from the upper platform to
- * form a 30 degree incline.
- *
- * A landing is the level block that terminates a ramp. There is a
- * landing at the upper and lower ends to ensure continuity with
- * a platform.
- *
- * Constructors:
- *
- * BlockTerrain();
- * BlockTerrain(RANDOM randomSeed);
- * BlockTerrain(RANDOM randomSeed, int width, int height,
- * int maxElevation, int minPlatformSize, int maxPlatformSize,
- * int maxPlatformGenerations, int extraRamps, GLfloat blockSize);
- *
- * randomSeed - determines terrain topology.
- * width, height - dimensions of terrain.
- * maxElevation - maximum block elevation.
- * minPlatformSize, maxPlatformSize - dimensions platform.
- * maxPlatformGenerations - maximum platform creation attempts.
- * extraRamps - extra ramps to add more terrain routes.
- * blockSize - dimension size of a cubic block.
- *
- * The generated terrain topology:
- *
- * Block **blocks;
- *
- * To access terrain blocks:
- *
- * for (i = 0; i < terrain->width; i++)
- * {
- * for (j = 0; j < terrain->height; j++)
- * {
- * terrain->blocks[i][j].type;
- * terrain->blocks[i][j].elevation;
- * }
- * }
- *
- * Types: Block::PLATFORM, Block::LANDING, Block::RAMP
- *
- * To get terrain height (Y) and facet normal vector at given XZ coordinates:
- *
- * void getGeometry(GLfloat x, GLfloat z, GLfloat &y, Vector &normal);
- *
- * The draw() function draws the terrain using OpenGL graphics.
- *
- * The print() function prints out the terrain topology.
- *
- */
+
+    Block terrain: a grid of blocks piled to various elevations
+    that is connected by ramps such that the top of every block
+    is reachable.
+
+    A platform is a horizontal rectangle of blocks impressed into
+    the terrain. Multiple platforms overlay to produce a terraced
+    effect.
+
+    A ramp can connect platforms that have an elevation difference
+    of one. It is composed of a pair of inclined blocks, one rising from
+    the lower platform and the other sinking from the upper platform to
+    form a 30 degree incline.
+
+    A landing is the level block that terminates a ramp. There is a
+    landing at the upper and lower ends to ensure continuity with
+    a platform.
+
+*/
 
 #ifndef __BLOCK_TERRAIN__
 #define __BLOCK_TERRAIN__
 
 #include <MonaCtrl/MonaCtrl.h>
+#include <CtrlLib/CtrlLib.h>
+using namespace Upp;
 
 // Block terrain.
-class BlockTerrain
-{
+class BlockTerrain {
 public:
 
-   // Block.
-   class Block
-   {
-public:
+	// Block.
+	class Block {
+	public:
 
-      // Identifier dispenser.
-      static int idDispenser;
+		// Identifier dispenser.
+		static int id_dispenser;
 
-      // Block type.
-      typedef enum
-      {
-         PLATFORM,
-         LANDING,
-         RAMP
-      } TYPE;
+		// Block type.
+		typedef enum {
+			PLATFORM,
+			LANDING,
+			RAMP
+		} TYPE;
 
-      // Direction.
-      typedef enum
-      {
-         NORTH = 0,
-         EAST  = 1,
-         SOUTH = 2,
-         WEST  = 3,
-         NONE  = 4
-      } DIRECTION;
+		// Direction.
+		typedef enum {
+			NORTH = 0,
+			EAST  = 1,
+			SOUTH = 2,
+			WEST  = 3,
+			NONE  = 4
+		} DIRECTION;
 
-      int         id;
-      int         elevation;
-      TYPE        type;
-      DIRECTION   rampDir;
-      int         platform;
-      int         group;
-      vector<int> textureIndexes;
+		int         id;
+		int         elevation;
+		TYPE        type;
+		DIRECTION   rampDir;
+		int         platform;
+		int         group;
+		Vector<int> texture_indexes;
 
-      Block()
-      {
-         id = idDispenser;
-         idDispenser++;
-         elevation = 0;
-         type      = PLATFORM;
-         rampDir   = NONE;
-         platform  = group = -1;
-      }
-   };
+		Block() {
+			id = id_dispenser;
+			id_dispenser++;
+			elevation = 0;
+			type      = PLATFORM;
+			rampDir   = NONE;
+			platform  = group = -1;
+		}
+	};
 
-   // Parameters:
+	// Parameters:
 
-   // Random seed.
-   enum { DEFAULT_RANDOM_SEED=4517 };
-   RANDOM RANDOM_SEED;
-   Random *randomizer;
+	// Random seed.
+	enum { default_random_seed = 4517 };
+	int random_seed;
+	
+	//Random randomizer;
 
-   // Terrain width and height.
-   enum { DEFAULT_WIDTH=4, DEFAULT_HEIGHT=4 };
-   int WIDTH;
-   int HEIGHT;
+	// Terrain width and height.
+	enum { default_width = 4, default_height = 4 };
+	int width;
+	int height;
 
-   // Maximum platform elevation.
-   enum { DEFAULT_MAX_PLATFORM_ELEVATION=5 };
-   int MAX_PLATFORM_ELEVATION;
+	// Maximum platform elevation.
+	enum { default_max_platform_elevation = 5 };
+	int max_platform_elevation;
 
-   // Minimum/maximum platform sizes.
-   enum { DEFAULT_MIN_PLATFORM_SIZE=2, DEFAULT_MAX_PLATFORM_SIZE=2 };
-   int MIN_PLATFORM_SIZE;
-   int MAX_PLATFORM_SIZE;
+	// Minimum/maximum platform sizes.
+	enum { default_min_platform_size = 2, default_max_platform_size = 2 };
+	int min_platform_size;
+	int max_platform_size;
 
-   // Maximum platform generations.
-   enum { DEFAULT_MAX_PLATFORM_GENERATIONS=10 };
-   int MAX_PLATFORM_GENERATIONS;
+	// Maximum platform generations.
+	enum { default_max_platform_generations = 10 };
+	int max_platform_generations;
 
-   // Extra ramps.
-   enum { DEFAULT_EXTRA_RAMPS=0 };
-   int EXTRA_RAMPS;
+	// Extra ramps.
+	enum { default_extra_ramps = 0 };
+	int extra_ramps;
 
-   // Block dimension size.
-   static const GLfloat DEFAULT_BLOCK_SIZE;
-   GLfloat              BLOCK_SIZE;
+	// Block dimension size.
+	static const double default_block_size;
+	double              block_size;
 
-   // Ramp stripes.
-   enum { NUM_RAMP_STRIPES=10 };
+	// Ramp stripes.
+	enum { NUM_RAMP_STRIPES = 10 };
 
-   // Terrain blocks
-   Block **blocks;
-   Block **saveBlocks;
+	// Terrain blocks
+	Array<Block> blocks;
+	
+	//Block** saveBlocks;
 
-   // Constructors.
-   BlockTerrain()
-   {
-      init(DEFAULT_RANDOM_SEED, DEFAULT_WIDTH, DEFAULT_HEIGHT,
-           DEFAULT_MAX_PLATFORM_ELEVATION, DEFAULT_MIN_PLATFORM_SIZE,
-           DEFAULT_MAX_PLATFORM_SIZE, DEFAULT_MAX_PLATFORM_GENERATIONS,
-           DEFAULT_EXTRA_RAMPS, DEFAULT_BLOCK_SIZE);
-   }
+	// Constructors.
+	BlockTerrain() {
+		Init(random_seed, default_width, default_height,
+			 default_max_platform_elevation, default_min_platform_size,
+			 default_max_platform_size, default_max_platform_generations,
+			 default_extra_ramps, default_block_size);
+	}
 
 
-   BlockTerrain(RANDOM randomSeed)
-   {
-      init(randomSeed, DEFAULT_WIDTH, DEFAULT_HEIGHT,
-           DEFAULT_MAX_PLATFORM_ELEVATION, DEFAULT_MIN_PLATFORM_SIZE,
-           DEFAULT_MAX_PLATFORM_SIZE, DEFAULT_MAX_PLATFORM_GENERATIONS,
-           DEFAULT_EXTRA_RAMPS, DEFAULT_BLOCK_SIZE);
-   }
+	BlockTerrain(int random_seed) {
+		Init(random_seed, default_width, default_height,
+			 default_max_platform_elevation, default_min_platform_size,
+			 default_max_platform_size, default_max_platform_generations,
+			 default_extra_ramps, default_block_size);
+	}
 
 
-   BlockTerrain(RANDOM randomSeed, int width, int height,
-                int maxElevation, int minPlatformSize, int maxPlatformSize,
-                int maxPlatformGenerations, int extraRamps, GLfloat blockSize)
-   {
-      init(randomSeed, width, height,
-           maxElevation, minPlatformSize, maxPlatformSize,
-           maxPlatformGenerations, extraRamps, blockSize);
-   }
+	BlockTerrain(int random_seed, int width, int height,
+				 int max_elevation, int min_platform_size, int max_platform_size,
+				 int max_platform_generations, int extra_ramps, double block_size) {
+		Init(random_seed, width, height,
+			 max_elevation, min_platform_size, max_platform_size,
+			 max_platform_generations, extra_ramps, block_size);
+	}
 
 
-   // Destructor.
-   ~BlockTerrain();
-
-   // Print terrain.
-   void print(FILE *out = stdout);
-
-   // Get terrain height (Y) and facet normal vector at given XZ coordinates.
-   void getGeometry(GLfloat x, GLfloat z, GLfloat& y, Vector& normal);
-
-   // Is block an upper half-ramp?
-   bool isUpperRamp(int rampX, int rampY);
-
-   // Draw terrain.
-   void draw();
+	~BlockTerrain();
+	void Print(Stream& s);
+	void GetGeometry(double x, double z, double& y, Vector3f& normal);
+	bool IsUpperRamp(int ramp_x, int ramp_y);
+	void Draw();
 
 protected:
 
-   void init(RANDOM randomSeed, int width, int height,
-             int maxElevation, int minPlatformSize, int maxPlatformSize,
-             int maxPlatformGenerations, int extraRamps, GLfloat blockSize);
+	void Init(int random_seed, int width, int height,
+			  int max_elevation, int min_platform_size, int max_platform_size,
+			  int max_platform_generations, int extra_ramps, double block_size);
 
-   // Platforms that are connectable by a ramp.
-   struct ConnectablePlatforms
-   {
-      int platforms[2];
-   };
+	// Platforms that are connectable by a ramp.
+	struct ConnectablePlatforms {
+		int platforms[2];
+	};
 
-   // Blocks that are connectable by a ramp.
-   struct ConnectableBlocks
-   {
-      int x[2];
-      int y[2];
-   };
+	// Blocks that are connectable by a ramp.
+	struct ConnectableBlocks {
+		int x[2];
+		int y[2];
+	};
 
-   // Generate terrain.
-   void generate();
+	void Generate();
+	void GenerateTMaze();
+	void CreatePlatform();
+	void MarkPlatforms();
+	void MarkPlatform(int mark, int x, int y);
+	bool ConnectPlatforms();
+	void MarkGroups();
+	void MarkGroup(int mark, int x, int y);
+	void GetConnectablePlatforms(Vector<ConnectablePlatforms>& connectable_platforms, bool already_connected = false);
+	bool GetConnectableBlocks(int platform1, int platform2, Vector<ConnectableBlocks>& connectable_blocks);
+	void ConnectBlocks(int block1x, int block1y, int block2x, int block2y);
+	void GetRampInfo(int ramp_x, int ramp_y,
+					 int& landing_x, int& landing_y,
+					 int& connected_ramp_x, int& connected_ramp_y,
+					 int& connected_landing_x, int& connected_landing_y);
+	void Build();
 
-   // Generate T-maze terrain.
-   void generateTmaze();
+	void DrawBlock();
+	void DrawRampSurface();
+	void DrawLeftRamp();
+	void DrawRightRamp();
 
-   // Create a platform.
-   void createPlatform();
+	// OpenGL displays for drawing.
+/*	bool   displays_created;
+	GLuint blockDisplay;
+	GLuint rampSurfaceDisplay;
+	GLuint leftRampDisplay;
+	GLuint rightRampDisplay;
+*/
+	// Terrain height map.
+	// Height is defined as the Y dimension on the XZ plane.
+	QuadTree* heightmap;
 
-   // Mark platforms.
-   void markPlatforms();
-
-   // Mark a platform.
-   void markPlatform(int mark, int x, int y);
-
-   // Connect platforms with ramps into a fully connected terrain.
-   // Return true if full connection achieved.
-   bool connectPlatforms();
-
-   // Mark groups.
-   // Connected platforms belong to the same group.
-   void markGroups();
-
-   // Mark a group.
-   void markGroup(int mark, int x, int y);
-
-   // Get connectable platforms.
-   // Default to platforms that are not already connected.
-   void getConnectablePlatforms(
-      vector<struct ConnectablePlatforms>& connectablePlatforms,
-      bool                                 alreadyConnected = false);
-
-   // Get connectable blocks for given platforms.
-   // Return true if already connected.
-   bool getConnectableBlocks(int platform1, int platform2,
-                             vector<struct ConnectableBlocks>& connectableBlocks);
-
-   // Connect blocks with a ramp.
-   void connectBlocks(int block1x, int block1y, int block2x, int block2y);
-
-   // Given a half-ramp location, get remaining ramp coordinates.
-   void getRampInfo(int rampX, int rampY,
-                    int& landingX, int& landingY,
-                    int& connectedRampX, int& connectedRampY,
-                    int& connectedLandingX, int& connectedLandingY);
-
-   // Build the drawable blocks and a heightmap.
-   void build();
-
-   // Draw components.
-   void drawBlock();
-   void drawRampSurface();
-   void drawLeftRamp();
-   void drawRightRamp();
-
-   // OpenGL displays for drawing.
-   bool   displaysCreated;
-   GLuint blockDisplay;
-   GLuint rampSurfaceDisplay;
-   GLuint leftRampDisplay;
-   GLuint rightRampDisplay;
-
-   // Terrain height map.
-   // Height is defined as the Y dimension on the XZ plane.
-   QuadTree *heightmap;
-
-   // Textures.
-   enum { NUM_BLOCK_TEXTURES=27 };
-   GLuint blockTextures[NUM_BLOCK_TEXTURES];
-   bool   texturesLoaded;
-   void loadTextures();
+	// Textures.
+	enum { NUM_BLOCK_TEXTURES = 27 };
+	GLuint block_textures[NUM_BLOCK_TEXTURES];
+	bool   is_textures_loaded;
+	void LoadTextures();
 };
 #endif

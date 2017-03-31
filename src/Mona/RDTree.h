@@ -1,28 +1,9 @@
 #ifndef __PATTREE__
 #define __PATTREE__
 
-#ifdef _WIN32
-#ifndef WIN32
-#define WIN32
-#endif
-#endif
-
-#include <stdio.h>
-#include <vector>
-using namespace std;
-
-#ifndef PUBLIC_API
-#ifdef WIN32
-#define PUBLIC_API    __declspec(dllexport)
-#pragma warning( disable: 4251 )
-#else
-#define PUBLIC_API
-#endif
-#endif
 
 // Mona: sensory/response, neural network, and needs.
-class PUBLIC_API RDtree
-{
+class RDTree {
 public:
 
    // Tree configuration parameter.
@@ -30,143 +11,141 @@ public:
    float              RADIUS;
 
    // Tree node.
-   class RDnode
+   class RDNode
    {
 public:
       void *pattern;           /* pattern value */
       void *client;            /* client link */
 private:
-      RDnode *childlist;       /* child pattern list */
-      RDnode *childlast;       /* last child */
-      RDnode *sibnext;         /* next sibling */
-      RDnode *sibback;         /* previous sibling */
-      float  distance;         /* distance from child to parent */
+      RDNode *outer_list;      /* outer pattern list */
+      RDNode *outer_last;      /* last outer */
+      RDNode *equal_next;      /* next sibling */
+      RDNode *equal_prev;      /* previous sibling */
+      float  distance;         /* distance from outer to parent */
 public:
-      RDnode(void *pattern, void *client);
-      RDnode();
-      friend class RDtree;
+      RDNode(void *pattern, void *client);
+      RDNode();
+      friend class RDTree;
    };
 
    // Search element.
-   class RDsearch
+   class RDSearch
    {
 public:
-      RDnode   *node;           /* node */
+      RDNode   *node;           /* node */
       float    distance;        /* comparison distance */
-      RDsearch *srchnext;       /* next on search return list */
+      RDSearch *search_next;       /* next on search return list */
 private:
       float    workdist;        /* work distance */
       int      state;           /* search state */
-      RDsearch *childlist;      /* children */
-      RDsearch *sibnext;        /* next sibling */
-      RDsearch *sibback;        /* previous sibling */
+      RDSearch *outer_list;      /* outerren */
+      RDSearch *equal_next;        /* next sibling */
+      RDSearch *equal_prev;        /* previous sibling */
 public:
-      RDsearch();
-      friend class RDtree;
+      RDSearch();
+      friend class RDTree;
    };
 
    // Constructors.
-   RDtree(float (*distFunc)(void *, void *), void (*delFunc)(void *) = NULL);
-   RDtree(float radius, float (*distFunc)(void *, void *), void (*delFunc)(void *) = NULL);
+   RDTree(float (*dist_func)(void *, void *), void (*del_func)(void *) = NULL);
+   RDTree(float radius, float (*dist_func)(void *, void *), void (*del_func)(void *) = NULL);
 
    // Destructor.
-   ~RDtree();
-   void deleteSubtree(RDnode *);
+   ~RDTree();
+   void DeleteSubtree(RDNode *);
 
    // Insert, remove, and search.
-   void insert(void *pattern, void *client);
-   void remove(void *pattern);
-   RDsearch *search(void *pattern, int maxFind = 1, int maxSearch = (-1));
+   void Insert(void *pattern, void *client);
+   void Remove(void *pattern);
+   RDSearch *Search(void *pattern, int max_find = 1, int max_search = (-1));
 
    // Load and save tree.
-   bool load(char *filename, void *(*loadPatt)(FILE * fp),
-             void *(*loadClient)(FILE * fp) = NULL);
-   void load(FILE * fp, void *(*loadPatt)(FILE * fp),
-             void *(*loadClient)(FILE * fp) = NULL);
-   bool load(char *filename, void *helper,
-             void *(*loadPatt)(void *helper, FILE * fp),
-             void *(*loadClient)(void *helper, FILE * fp) = NULL);
-   void load(FILE * fp, void *helper,
-             void *(*loadPatt)(void *helper, FILE * fp),
-             void *(*loadClient)(void *helper, FILE * fp) = NULL);
-   bool save(char *filename, void (*savePatt)(void *pattern, FILE *fp),
+   bool Load(char *filename, void *(*load_pattern)(Stream& s),
+             void *(*load_client)(Stream& s) = NULL);
+   void Load(Stream& s, void *(*load_pattern)(Stream& s),
+             void *(*load_client)(Stream& s) = NULL);
+   bool Load(char *filename, void *helper,
+             void *(*load_pattern)(void *helper, Stream& s),
+             void *(*load_client)(void *helper, Stream& s) = NULL);
+   void Load(Stream& s, void *helper,
+             void *(*load_pattern)(void *helper, Stream& s),
+             void *(*load_client)(void *helper, Stream& s) = NULL);
+   bool Store(char *filename, void (*savePatt)(void *pattern, FILE *fp),
              void (*saveClient)(void *client, FILE *fp) = NULL);
-   void save(FILE * fp, void (*savePatt)(void *pattern, FILE *fp),
+   void Store(Stream& s, void (*savePatt)(void *pattern, FILE *fp),
              void (*saveClient)(void *client, FILE *fp) = NULL);
 
    // Print.
-   bool print(char *filename, void (*printPatt)(void *pattern, FILE *fp));
-   void print(void (*printPatt)(void *pattern, FILE *fp), FILE * fp = stdout);
+   bool Print(char *filename, void (*print_pattern)(void *pattern, FILE *fp));
+   void Print(void (*print_pattern)(void *pattern, FILE *fp), Stream& s = stdout);
 
 private:
 
    // Tree root.
-   RDnode *root;
+   RDNode *root;
 
    // Pattern distance function.
-   float (*distFunc)(void *pattern0, void *pattern1);
+   float (*dist_func)(void *pattern0, void *pattern1);
 
    // Pattern delete function.
-   void (*delFunc)(void *pattern);
+   void (*del_func)(void *pattern);
 
    // Search states.
    enum
    {
-      DISTPENDING=0,                        /* distance pending */
-      DISTDONE   =1,                        /* distance computed */
-      EXPANDED   =2,                        /* pattern expanded */
-      SRCHDONE   =3                         /* pattern searched */
+      DISTPENDING = 0,                        /* distance pending */
+      DISTDONE    = 1,                        /* distance computed */
+      EXPANDED    = 2,                        /* pattern expanded */
+      SRCHDONE    = 3                         /* pattern searched */
    };
 
-   static RDsearch *EMPTY;
+   static RDSearch *EMPTY;
 
    // Search stack.
    enum { STKMEM_QUANTUM=32 };              /* stack malloc increment */
    int stkMem;
    struct SrchStk
    {
-      RDsearch *currsrch;
-      RDsearch *child;
-      RDsearch *childnext;
+      RDSearch *current_search;
+      RDSearch *outer;
+      RDSearch *outer_next;
    };
 
    // Search work memory.
    enum { SRCHWORKMEM_QUANTUM=128 };         /* search work memory size */
 
    // Search control.
-   struct SrchCtl
+   struct SearchCtrl
    {
-      RDsearch           *srchList;          /* search results */
-      RDsearch           *srchBest;          /* best search result */
-      int                maxFind;            /* max number of results */
-      int                maxSearch;          /* max nodes to search (-1=unlimited) */
-      int                searchCount;        /* search counter */
-      int                bestSearch;         /* best result search counter */
-      struct SrchStk     *srchStk;           /* search stack */
-      int                srchStkIdx;         /* stack index */
-      int                srchStkSz;          /* current stack size */
-      vector<RDsearch *> srchWork;           /* search work space */
-      int                srchWorkIdx;        /* search work index */
-      int                srchWorkUse;        /* used search work */
+      RDSearch           *search_list;          /* search results */
+      RDSearch           *search_best;          /* best search result */
+      int                max_find;            /* max number of results */
+      int                max_search;          /* max nodes to search (-1=unlimited) */
+      int                search_count;        /* search counter */
+      int                best_search;         /* best result search counter */
+      struct SrchStk     *search_stack;           /* search stack */
+      int                search_stack_idx;         /* stack index */
+      int                search_stack_sz;          /* current stack size */
+      Vector<RDSearch *> search_work;           /* search work space */
+      int                search_work_idx;        /* search work index */
+      int                search_work_use;        /* used search work */
    };
 
    // Internal functions.
-   void insert(RDnode *current, RDnode *node);
-   void search(struct SrchCtl *srchCtl, RDnode *srchNode);
-   void foundPatt(struct SrchCtl *srchCtl, RDsearch *swfound,
-                  int *numFind, RDsearch **swcut);
-   RDsearch *getSrchWork(struct SrchCtl *srchCtl);
+   void Insert(RDNode *current, RDNode *node);
+   void Search(struct SearchCtrl *search_ctrl, RDNode *search_node);
+   void FoundPattern(struct SearchCtrl *search_ctrl, RDSearch *sw_found, int *found_count, RDSearch **sw_cut);
+   RDSearch *GetSearchWork(struct SearchCtrl *search_ctrl);
 
-   void loadChildren(FILE * fp, RDnode * parent,
-                     void *(*loadPatt)(FILE * fp),
-                     void *(*loadClient)(FILE * fp));
-   void loadChildren(FILE * fp, void *helper, RDnode * parent,
-                     void *(*loadPatt)(void *helper, FILE * fp),
-                     void *(*loadClient)(void *helper, FILE * fp));
-   void saveChildren(FILE * fp, RDnode * parent,
+   void LoadOuter(Stream& s, RDNode * parent, void *(*load_pattern)(Stream& s),
+                     void *(*load_client)(Stream& s));
+   void LoadOuter(Stream& s, void *helper, RDNode * parent,
+                     void *(*load_pattern)(void *helper, Stream& s),
+                     void *(*load_client)(void *helper, Stream& s));
+   void StoreOuter(Stream& s, RDNode * parent,
                      void (*savePatt)(void *pattern, FILE *fp),
                      void (*saveClient)(void *client, FILE *fp));
-   void printNode(FILE * fp, RDnode * node, int level,
-                  void (*printPatt)(void *pattern, FILE *fp));
+   void PrintNode(Stream& s, RDNode * node, int level,
+                  void (*print_pattern)(void *pattern, FILE *fp));
 };
 #endif

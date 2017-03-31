@@ -30,7 +30,7 @@
 typedef struct _GLMnode
 {
    GLuint          index;
-   GLboolean       averaged;
+   GLbool       averaged;
    struct _GLMnode *next;
 } GLMnode;
 
@@ -40,9 +40,9 @@ glmMax(GLfloat a, GLfloat b)
 {
    if (b > a)
    {
-      return(b);
+      return (b);
    }
-   return(a);
+   return (a);
 }
 
 
@@ -52,9 +52,9 @@ glmAbs(GLfloat f)
 {
    if (f < 0)
    {
-      return(-f);
+      return (-f);
    }
-   return(f);
+   return (f);
 }
 
 
@@ -66,10 +66,10 @@ glmAbs(GLfloat f)
 static GLfloat
 glmDot(GLfloat *u, GLfloat *v)
 {
-   assert(u);
-   assert(v);
+   ASSERT(u);
+   ASSERT(v);
 
-   return(u[0] * v[0] + u[1] * v[1] + u[2] * v[2]);
+   return (u[0] * v[0] + u[1] * v[1] + u[2] * v[2]);
 }
 
 
@@ -82,9 +82,9 @@ glmDot(GLfloat *u, GLfloat *v)
 static GLvoid
 glmCross(GLfloat *u, GLfloat *v, GLfloat *n)
 {
-   assert(u);
-   assert(v);
-   assert(n);
+   ASSERT(u);
+   ASSERT(v);
+   ASSERT(n);
 
    n[0] = u[1] * v[2] - u[2] * v[1];
    n[1] = u[2] * v[0] - u[0] * v[2];
@@ -101,7 +101,7 @@ glmNormalize(GLfloat *v)
 {
    GLfloat l;
 
-   assert(v);
+   ASSERT(v);
 
    l     = (GLfloat)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
    v[0] /= l;
@@ -124,13 +124,13 @@ glmEqual(GLfloat *u, GLfloat *v, GLfloat epsilon)
        (glmAbs(u[1] - v[1]) < epsilon) &&
        (glmAbs(u[2] - v[2]) < epsilon))
    {
-      return(GL_TRUE);
+      return (GL_TRUE);
    }
-   return(GL_FALSE);
+   return (GL_FALSE);
 }
 
 
-/* glmWeldVectors: eliminate (weld) vectors that are within an
+/* glmWeldVector3fs: eliminate (weld) vectors that are within an
  * epsilon of each other.
  *
  * vectors     - array of GLfloat[3]'s to be welded
@@ -174,7 +174,7 @@ duplicate:
    }
 
    *numvectors = copied - 1;
-   return(copies);
+   return (copies);
 }
 
 
@@ -184,7 +184,7 @@ glmFindGroup(GLMmodel *model, char *name)
 {
    GLMgroup *group;
 
-   assert(model);
+   ASSERT(model);
 
    group = model->groups;
    while (group)
@@ -196,7 +196,7 @@ glmFindGroup(GLMmodel *model, char *name)
       group = group->next;
    }
 
-   return(group);
+   return (group);
 }
 
 
@@ -219,7 +219,7 @@ glmAddGroup(GLMmodel *model, char *name)
       model->numgroups++;
    }
 
-   return(group);
+   return (group);
 }
 
 
@@ -244,7 +244,7 @@ glmFindMaterial(GLMmodel *model, char *name)
    i = 0;
 
 found:
-   return(i);
+   return (i);
 }
 
 
@@ -272,7 +272,7 @@ glmDirName(char *path)
       dir[0] = '\0';
    }
 
-   return(dir);
+   return (dir);
 }
 
 
@@ -867,8 +867,8 @@ glmUnitize(GLMmodel *model)
    GLfloat cx, cy, cz, w, h, d;
    GLfloat scale;
 
-   assert(model);
-   assert(model->vertices);
+   ASSERT(model);
+   ASSERT(model->vertices);
 
    /* get the max/mins */
    maxx = minx = model->vertices[3 + 0];
@@ -928,7 +928,7 @@ glmUnitize(GLMmodel *model)
       model->vertices[3 * i + 2] *= scale;
    }
 
-   return(scale);
+   return (scale);
 }
 
 
@@ -945,8 +945,8 @@ glmBounds(GLMmodel *model, GLfloat *mins, GLfloat *maxs)
    GLuint  i;
    GLfloat maxx, minx, maxy, miny, maxz, minz;
 
-   assert(model);
-   assert(model->vertices);
+   ASSERT(model);
+   ASSERT(model->vertices);
 
    /* get the max/mins */
    maxx = minx = model->vertices[3 + 0];
@@ -991,20 +991,20 @@ glmBounds(GLMmodel *model, GLfloat *mins, GLfloat *maxs)
 }
 
 
-/* glmDimensions: Calculates the dimensions (width, height, depth) of
+/* glmSizes: Calculates the dimensions (width, height, depth) of
  * a model.
  *
  * model   - initialized GLMmodel structure
  * dimensions - array of 3 GLfloats (GLfloat dimensions[3])
  */
 GLvoid
-glmDimensions(GLMmodel *model, GLfloat *dimensions)
+glmSizes(GLMmodel *model, GLfloat *dimensions)
 {
    GLfloat mins[3], maxs[3];
 
-   assert(model);
-   assert(model->vertices);
-   assert(dimensions);
+   ASSERT(model);
+   ASSERT(model->vertices);
+   ASSERT(dimensions);
 
    /* get the max/min bounds */
    glmBounds(model, mins, maxs);
@@ -1029,18 +1029,18 @@ glmHeightmap(GLMmodel *model)
 {
    GLuint      i;
    GLfloat     mins[3], maxs[3];
-   Vector      vmin, vmax, vertex;
+   Vector3f      vmin, vmax, vertex;
    Bounds      bounds;
    QuadTree    *tree;
    GLMgroup    *group;
    GLMtriangle *triangle;
 
-   vector<Vector> vertices;
+   Vector<Vector3f> vertices;
    Poly           *polygon;
 
-   assert(model);
-   assert(model->vertices);
-   assert(model->facetnorms);
+   ASSERT(model);
+   ASSERT(model->vertices);
+   ASSERT(model->facetnorms);
 
    // Get the model bounds and create the quadtree.
    glmBounds(model, mins, maxs);
@@ -1052,7 +1052,7 @@ glmHeightmap(GLMmodel *model)
    vmax.z = maxs[2];
    bounds = Bounds(vmin, vmax);
    tree   = new QuadTree(bounds);
-   assert(tree != NULL);
+   ASSERT(tree != NULL);
 
    // Create the facet polygons and insert into tree.
    group = model->groups;
@@ -1061,26 +1061,26 @@ glmHeightmap(GLMmodel *model)
       for (i = 0; i < group->numtriangles; i++)
       {
          triangle = &T(group->triangles[i]);
-         vertices.clear();
+         vertices.Clear();
          vertex.x = model->vertices[3 * triangle->vindices[0] + 0];
          vertex.y = model->vertices[3 * triangle->vindices[0] + 1];
          vertex.z = model->vertices[3 * triangle->vindices[0] + 2];
-         vertices.push_back(vertex);
+         vertices.Add(vertex);
          vertex.x = model->vertices[3 * triangle->vindices[1] + 0];
          vertex.y = model->vertices[3 * triangle->vindices[1] + 1];
          vertex.z = model->vertices[3 * triangle->vindices[1] + 2];
-         vertices.push_back(vertex);
+         vertices.Add(vertex);
          vertex.x = model->vertices[3 * triangle->vindices[2] + 0];
          vertex.y = model->vertices[3 * triangle->vindices[2] + 1];
          vertex.z = model->vertices[3 * triangle->vindices[2] + 2];
-         vertices.push_back(vertex);
+         vertices.Add(vertex);
          polygon = new Poly(vertices);
-         assert(polygon != NULL);
-         tree->insert(polygon);
+         ASSERT(polygon != NULL);
+         tree->Insert(polygon);
       }
       group = group->next;
    }
-   return(tree);
+   return (tree);
 }
 
 
@@ -1115,7 +1115,7 @@ glmReverseWinding(GLMmodel *model)
 {
    GLuint i, swap;
 
-   assert(model);
+   ASSERT(model);
 
    for (i = 0; i < model->numtriangles; i++)
    {
@@ -1169,8 +1169,8 @@ glmFacetNormals(GLMmodel *model)
    GLfloat u[3];
    GLfloat v[3];
 
-   assert(model);
-   assert(model->vertices);
+   ASSERT(model);
+   ASSERT(model->vertices);
 
    /* clobber any old facetnormals */
    if (model->facetnorms)
@@ -1235,8 +1235,8 @@ glmVertexNormals(GLMmodel *model, GLfloat angle)
    GLfloat dot, cos_angle;
    GLuint  i, avg;
 
-   assert(model);
-   assert(model->facetnorms);
+   ASSERT(model);
+   ASSERT(model->facetnorms);
 
    /* calculate the cosine of the angle (in degrees) */
    cos_angle = cos(angle * M_PI / 180.0);
@@ -1423,14 +1423,14 @@ glmVertexNormals(GLMmodel *model, GLfloat angle)
  * GLfloat x, y, scalefactor;
  * GLuint i;
  *
- * assert(model);
+ * ASSERT(model);
  *
  * if (model->texcoords)
  * free(model->texcoords);
  * model->numtexcoords = model->numvertices;
  * model->texcoords=(GLfloat*)malloc(sizeof(GLfloat)*2*(model->numtexcoords+1));
  *
- * glmDimensions(model, dimensions);
+ * glmSizes(model, dimensions);
  * scalefactor = 2.0 /
  * glmAbs(glmMax(glmMax(dimensions[0], dimensions[1]), dimensions[2]));
  *
@@ -1478,8 +1478,8 @@ glmSpheremapTexture(GLMmodel *model)
    GLfloat  theta, phi, rho, x, y, z, r;
    GLuint   i;
 
-   assert(model);
-   assert(model->normals);
+   ASSERT(model);
+   ASSERT(model->normals);
 
    if (model->texcoords)
    {
@@ -1551,7 +1551,7 @@ glmDelete(GLMmodel *model)
    GLMgroup *group;
    GLuint   i;
 
-   assert(model);
+   ASSERT(model);
 
    if (model->pathname)
    {
@@ -1673,7 +1673,7 @@ glmReadOBJ(char *filename)
    /* close the file */
    fclose(file);
 
-   return(model);
+   return (model);
 }
 
 
@@ -1699,7 +1699,7 @@ glmWriteOBJ(GLMmodel *model, char *filename, GLuint mode)
    FILE     *file;
    GLMgroup *group;
 
-   assert(model);
+   ASSERT(model);
 
    /* do a bit of warning */
    if (mode & GLM_FLAT && !model->facetnorms)
@@ -1926,8 +1926,8 @@ glmDraw(GLMmodel *model, GLuint mode)
    static GLMtriangle *triangle;
    static GLMmaterial *material;
 
-   assert(model);
-   assert(model->vertices);
+   ASSERT(model);
+   ASSERT(model->vertices);
 
    /* do a bit of warning */
    if (mode & GLM_FLAT && !model->facetnorms)
@@ -2091,7 +2091,7 @@ glmList(GLMmodel *model, GLuint mode)
    glmDraw(model, mode);
    glEndList();
 
-   return(list);
+   return (list);
 }
 
 
@@ -2188,7 +2188,7 @@ glmReadPPM(char *filename, int *width, int *height)
    if (!fp)
    {
       perror(filename);
-      return(NULL);
+      return (NULL);
    }
 
    /* grab first two chars of the file and make sure that it has the
@@ -2197,7 +2197,7 @@ glmReadPPM(char *filename, int *width, int *height)
    if (strncmp(head, "P6", 2))
    {
       fprintf(stderr, "%s: Not a raw PPM file\n", filename);
-      return(NULL);
+      return (NULL);
    }
 
    /* grab the three elements in the header (height, width, maxval). */
@@ -2230,7 +2230,7 @@ glmReadPPM(char *filename, int *width, int *height)
 
    *width  = w;
    *height = h;
-   return(image);
+   return (image);
 }
 
 
@@ -2240,7 +2240,7 @@ if (model->numnormals)
 {
    numvectors = model->numnormals;
    vectors    = model->normals;
-   copies     = glmOptimizeVectors(vectors, &numvectors);
+   copies     = glmOptimizeVector3fs(vectors, &numvectors);
 
    printf("glmOptimize(): %d redundant normals.\n",
           model->numnormals - numvectors);
@@ -2277,7 +2277,7 @@ if (model->numtexcoords)
 {
    numvectors = model->numtexcoords;
    vectors    = model->texcoords;
-   copies     = glmOptimizeVectors(vectors, &numvectors);
+   copies     = glmOptimizeVector3fs(vectors, &numvectors);
 
    printf("glmOptimize(): %d redundant texcoords.\n",
           model->numtexcoords - numvectors);

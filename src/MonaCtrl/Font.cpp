@@ -23,13 +23,13 @@ CFont::~CFont()
   fontTexture.destroy();
 }
 
-bool CFont::load(const char* fontPath)
+bool CFont::Load(const char* fontPath)
 {
   Image  image;
   int    width  = 0,
          height = 0;
 
-  if(!image.load(fontPath))
+  if(!image.Load(fontPath))
     return Logger::writeErrorLog("Can't load font file");
 
   if(image.getComponentsCount() != 4)
@@ -117,12 +117,12 @@ bool CFont::load(const char* fontPath)
   return true;
 }
 
-Tuple2i CFont::getStringDimensions(const std::string &string)
+Tuple2i CFont::getStringSizes(const String &string)
 {
   Tuple2i dimensions(0, fontHeight);
   size_t x = 0;
 
-  for(size_t i = 0; i < string.size(); i++)
+  for(size_t i = 0; i < string.GetCount(); i++)
   {
     if (string[i] != '\n')
     {
@@ -137,15 +137,15 @@ Tuple2i CFont::getStringDimensions(const std::string &string)
   return dimensions;
 }
 
-int  CFont::getMaxFittingLength(const std::string &string, int bounds)
+int  CFont::getMaxFittingLength(const String &string, int bounds)
 {
   int index         = 0,
       currentLength = 0;
 
-  if(!bounds || !string.size() || !fontTexture.getID())
+  if(!bounds || !string.GetCount() || !fontTexture.getID())
     return 0;
 
-  for(size_t i = 0; i < string.size(); i++)
+  for(size_t i = 0; i < string.GetCount(); i++)
     if(currentLength < bounds)
     {
       currentLength += spaces[int(string[i])];
@@ -161,29 +161,29 @@ int  CFont::getMaxFittingLength(const std::string &string, int bounds)
 void CFont::printProportional(float widthRatio, float heightRatio,
                              float width,      float height,
                              float r, float g, float b,
-                             const std::string &string)
+                             const String &string)
 {
   Tuple4i viewport;
 
-  if(!string.size())
+  if(!string.GetCount())
     return;
 
   glGetIntegerv(GL_VIEWPORT, viewport);
 
-  Tuple2i dimensions = getStringDimensions(string);
+  Tuple2i dimensions = getStringSizes(string);
 
   float xPosition = (viewport.z - dimensions.x*width)*widthRatio,
         yPosition = (viewport.w - dimensions.y*height)*heightRatio;
 
-  print(xPosition, yPosition, width, height, r, g, b, string);
+  Print(xPosition, yPosition, width, height, r, g, b, string);
 }
 
-void CFont::print(float xPosition,  float yPosition,
+void CFont::Print(float xPosition,  float yPosition,
                  float width,      float height,
                  float r, float g, float b,
-                 const std::string &string)
+                 const String &string)
 {
-  GLint stringLength =  GLint(string.size());
+  GLint stringLength =  GLint(string.GetCount());
   if(!stringLength || !fontTexture.getID())
     return;
 
@@ -215,12 +215,12 @@ void CFont::printSubString(float xPosition,  float yPosition,
                           float width,      float height,
                           float r, float g, float b,
                           int   start, int end,
-                          const std::string &string)
+                          const String &string)
 {
   if(start >= end)
     return;
 
-  int stringLength =  int(string.size());
+  int stringLength =  int(string.GetCount());
   if(stringLength  < end)
     return;
 

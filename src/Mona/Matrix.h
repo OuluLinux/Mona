@@ -306,15 +306,15 @@ public:
    matrixT& operator =(const matrixT& m) _NO_THROW;
 
    // Value extraction method
-   size_t RowNo() const { return(_m->Row); }
-   size_t ColNo() const { return(_m->Col); }
+   size_t RowNo() const { return (_m->Row); }
+   size_t ColNo() const { return (_m->Col); }
 
    // Subscript operator
    T & operator ()(size_t row, size_t col) _THROW_MATRIX_ERROR;
    T operator ()(size_t row, size_t col) const _THROW_MATRIX_ERROR;
 
    // Unary operators
-   matrixT operator +() _NO_THROW { return(*this); }
+   matrixT operator +() _NO_THROW { return (*this); }
    matrixT operator -() _NO_THROW;
 
    // Combined assignment - calculation operators
@@ -342,7 +342,7 @@ public:
    T Cond() _NO_THROW;
 
    // Type of matrices
-   bool IsSquare() _NO_THROW { return(_m->Row == _m->Col); }
+   bool IsSquare() _NO_THROW { return (_m->Row == _m->Col); }
    bool IsSingular() _NO_THROW;
    bool IsDiagonal() _NO_THROW;
    bool IsScalar() _NO_THROW;
@@ -390,7 +390,7 @@ private:
    };
    base_mat *_m;
 
-   void clone();
+   void Clone();
    void realloc(size_t row, size_t col);
    int pivot(size_t row);
 };
@@ -421,7 +421,7 @@ matrixT::matrix(const matrixT& m)
 
 // Internal copy constructor
 MAT_TEMPLATE inline void
-matrixT::clone()
+matrixT::Clone()
 {
    _m->Refcnt--;
    _m = new base_mat(_m->Row, _m->Col, _m->Val);
@@ -448,7 +448,7 @@ matrixT::operator =(const matrixT& m) _NO_THROW
       delete _m;
    }
    _m = m._m;
-   return(*this);
+   return (*this);
 }
 
 
@@ -521,9 +521,9 @@ matrixT::operator ()(size_t row, size_t col) _THROW_MATRIX_ERROR
    }
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
-   return(_m->Val[row][col]);
+   return (_m->Val[row][col]);
 }
 
 
@@ -535,7 +535,7 @@ matrixT::operator ()(size_t row, size_t col) const _THROW_MATRIX_ERROR
    {
       REPORT_ERROR("matrixT::operator(): Index out of range!");
    }
-   return(_m->Val[row][col]);
+   return (_m->Val[row][col]);
 }
 
 
@@ -552,7 +552,7 @@ operator >>(std::istream& istrm, matrixT& m)
          m(i, j) = x;
       }
    }
-   return(istrm);
+   return (istrm);
 }
 
 
@@ -569,7 +569,7 @@ operator <<(std::ostream& ostrm, const matrixT& m)
       }
       ostrm << endl;
    }
-   return(ostrm);
+   return (ostrm);
 }
 
 
@@ -579,7 +579,7 @@ operator ==(const matrixT& m1, const matrixT& m2) _NO_THROW
 {
    if ((m1.RowNo() != m2.RowNo()) || (m1.ColNo() != m2.ColNo()))
    {
-      return(false);
+      return (false);
    }
 
    for (size_t i = 0; i < m1.RowNo(); i++)
@@ -588,12 +588,12 @@ operator ==(const matrixT& m1, const matrixT& m2) _NO_THROW
       {
          if (m1(i, j) != m2(i, j))
          {
-            return(false);
+            return (false);
          }
       }
    }
 
-   return(true);
+   return (true);
 }
 
 
@@ -601,7 +601,7 @@ operator ==(const matrixT& m1, const matrixT& m2) _NO_THROW
 MAT_TEMPLATE inline bool
 operator !=(const matrixT& m1, const matrixT& m2) _NO_THROW
 {
-   return((m1 == m2) ? false : true);
+   return ((m1 == m2) ? false : true);
 }
 
 
@@ -615,7 +615,7 @@ matrixT::operator +=(const matrixT& m) _THROW_MATRIX_ERROR
    }
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
    for (size_t i = 0; i < m._m->Row; i++)
    {
@@ -624,7 +624,7 @@ matrixT::operator +=(const matrixT& m) _THROW_MATRIX_ERROR
          _m->Val[i][j] += m._m->Val[i][j];
       }
    }
-   return(*this);
+   return (*this);
 }
 
 
@@ -638,7 +638,7 @@ matrixT::operator -=(const matrixT& m) _THROW_MATRIX_ERROR
    }
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
    for (size_t i = 0; i < m._m->Row; i++)
    {
@@ -647,7 +647,7 @@ matrixT::operator -=(const matrixT& m) _THROW_MATRIX_ERROR
          _m->Val[i][j] -= m._m->Val[i][j];
       }
    }
-   return(*this);
+   return (*this);
 }
 
 
@@ -657,7 +657,7 @@ matrixT::operator *=(const T& c) _NO_THROW
 {
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -666,7 +666,7 @@ matrixT::operator *=(const T& c) _NO_THROW
          _m->Val[i][j] *= c;
       }
    }
-   return(*this);
+   return (*this);
 }
 
 
@@ -694,7 +694,7 @@ matrixT::operator *=(const matrixT& m) _THROW_MATRIX_ERROR
    }
    *this = temp;
 
-   return(*this);
+   return (*this);
 }
 
 
@@ -704,7 +704,7 @@ matrixT::operator /=(const T& c) _NO_THROW
 {
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -714,7 +714,7 @@ matrixT::operator /=(const T& c) _NO_THROW
       }
    }
 
-   return(*this);
+   return (*this);
 }
 
 
@@ -729,7 +729,7 @@ matrixT::operator ^=(const size_t& pow) _THROW_MATRIX_ERROR
       *this = *this * temp;
    }
 
-   return(*this);
+   return (*this);
 }
 
 
@@ -747,7 +747,7 @@ matrixT::operator -() _NO_THROW
       }
    }
 
-   return(temp);
+   return (temp);
 }
 
 
@@ -758,7 +758,7 @@ operator +(const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
    matrixT temp = m1;
 
    temp += m2;
-   return(temp);
+   return (temp);
 }
 
 
@@ -769,7 +769,7 @@ operator -(const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
    matrixT temp = m1;
 
    temp -= m2;
-   return(temp);
+   return (temp);
 }
 
 
@@ -780,7 +780,7 @@ operator *(const matrixT& m, const T& no) _NO_THROW
    matrixT temp = m;
 
    temp *= no;
-   return(temp);
+   return (temp);
 }
 
 
@@ -788,7 +788,7 @@ operator *(const matrixT& m, const T& no) _NO_THROW
 MAT_TEMPLATE inline matrixT
 operator *(const T& no, const matrixT& m) _NO_THROW
 {
-   return(m * no);
+   return (m * no);
 }
 
 
@@ -799,7 +799,7 @@ operator *(const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
    matrixT temp = m1;
 
    temp *= m2;
-   return(temp);
+   return (temp);
 }
 
 
@@ -807,7 +807,7 @@ operator *(const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
 MAT_TEMPLATE inline matrixT
 operator /(const matrixT& m, const T& no) _NO_THROW
 {
-   return(m * (T(1) / no));
+   return (m * (T(1) / no));
 }
 
 
@@ -815,7 +815,7 @@ operator /(const matrixT& m, const T& no) _NO_THROW
 MAT_TEMPLATE inline matrixT
 operator /(const T& no, const matrixT& m) _THROW_MATRIX_ERROR
 {
-   return(!m * no);
+   return (!m * no);
 }
 
 
@@ -823,7 +823,7 @@ operator /(const T& no, const matrixT& m) _THROW_MATRIX_ERROR
 MAT_TEMPLATE inline matrixT
 operator /(const matrixT& m1, const matrixT& m2) _THROW_MATRIX_ERROR
 {
-   return(m1 * !m2);
+   return (m1 * !m2);
 }
 
 
@@ -834,7 +834,7 @@ operator ^(const matrixT& m, const size_t& pow) _THROW_MATRIX_ERROR
    matrixT temp = m;
 
    temp ^= pow;
-   return(temp);
+   return (temp);
 }
 
 
@@ -852,7 +852,7 @@ operator ~(const matrixT& m) _NO_THROW
          temp(j, i) = x;
       }
    }
-   return(temp);
+   return (temp);
 }
 
 
@@ -862,7 +862,7 @@ operator !(const matrixT m) _THROW_MATRIX_ERROR
 {
    matrixT temp = m;
 
-   return(temp.Inv());
+   return (temp.Inv());
 }
 
 
@@ -881,7 +881,7 @@ matrixT::Inv() _THROW_MATRIX_ERROR
    matrixT temp(_m->Row, _m->Col);
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
 
    temp.Unit();
@@ -918,7 +918,7 @@ matrixT::Inv() _THROW_MATRIX_ERROR
          }
       }
    }
-   return(temp);
+   return (temp);
 }
 
 
@@ -981,7 +981,7 @@ matrixT::Solve(const matrixT& v) const _THROW_MATRIX_ERROR
          }
       }
    }
-   return(s);
+   return (s);
 }
 
 
@@ -996,7 +996,7 @@ matrixT::Null(const size_t& row, const size_t& col) _NO_THROW
 
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
 
    for (size_t i = 0; i < _m->Row; i++)
@@ -1015,7 +1015,7 @@ matrixT::Null() _NO_THROW
 {
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -1038,7 +1038,7 @@ matrixT::Unit(const size_t& row) _NO_THROW
 
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
 
    for (size_t i = 0; i < _m->Row; i++)
@@ -1057,7 +1057,7 @@ matrixT::Unit() _NO_THROW
 {
    if (_m->Refcnt > 1)
    {
-      clone();
+      Clone();
    }
    size_t row = min(_m->Row, _m->Col);
    _m->Row = _m->Col = row;
@@ -1090,16 +1090,16 @@ matrixT::pivot(size_t row)
    }
    if (_m->Val[k][row] == T(0))
    {
-      return(-1);
+      return (-1);
    }
    if (k != int(row))
    {
       T *rowptr = _m->Val[k];
       _m->Val[k]   = _m->Val[row];
       _m->Val[row] = rowptr;
-      return(k);
+      return (k);
    }
-   return(0);
+   return (0);
 }
 
 
@@ -1118,7 +1118,7 @@ matrixT::Det() const _THROW_MATRIX_ERROR
    matrixT temp(*this);
    if (temp._m->Refcnt > 1)
    {
-      temp.clone();
+      temp.Clone();
    }
 
    for (k = 0; k < _m->Row; k++)
@@ -1126,7 +1126,7 @@ matrixT::Det() const _THROW_MATRIX_ERROR
       int indx = temp.pivot(k);
       if (indx == -1)
       {
-         return(0);
+         return (0);
       }
       if (indx != 0)
       {
@@ -1142,7 +1142,7 @@ matrixT::Det() const _THROW_MATRIX_ERROR
          }
       }
    }
-   return(detVal);
+   return (detVal);
 }
 
 
@@ -1161,7 +1161,7 @@ matrixT::Norm() _NO_THROW
    }
    retVal = sqrt(retVal);
 
-   return(retVal);
+   return (retVal);
 }
 
 
@@ -1171,7 +1171,7 @@ matrixT::Cond() _NO_THROW
 {
    matrixT inv = !(*this);
 
-   return(Norm() * inv.Norm());
+   return (Norm() * inv.Norm());
 }
 
 
@@ -1216,7 +1216,7 @@ matrixT::Cofact(size_t row, size_t col) _THROW_MATRIX_ERROR
       cof = -cof;
    }
 
-   return(cof);
+   return (cof);
 }
 
 
@@ -1238,7 +1238,7 @@ matrixT::Adj() _THROW_MATRIX_ERROR
          temp._m->Val[j][i] = Cofact(i, j);
       }
    }
-   return(temp);
+   return (temp);
 }
 
 
@@ -1248,9 +1248,9 @@ matrixT::IsSingular() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return(false);
+      return (false);
    }
-   return(Det() == T(0));
+   return (Det() == T(0));
 }
 
 
@@ -1260,7 +1260,7 @@ matrixT::IsDiagonal() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return(false);
+      return (false);
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -1268,11 +1268,11 @@ matrixT::IsDiagonal() _NO_THROW
       {
          if ((i != j) && (_m->Val[i][j] != T(0)))
          {
-            return(false);
+            return (false);
          }
       }
    }
-   return(true);
+   return (true);
 }
 
 
@@ -1282,17 +1282,17 @@ matrixT::IsScalar() _NO_THROW
 {
    if (!IsDiagonal())
    {
-      return(false);
+      return (false);
    }
    T v = _m->Val[0][0];
    for (size_t i = 1; i < _m->Row; i++)
    {
       if (_m->Val[i][i] != v)
       {
-         return(false);
+         return (false);
       }
    }
-   return(true);
+   return (true);
 }
 
 
@@ -1302,9 +1302,9 @@ matrixT::IsUnit() _NO_THROW
 {
    if (IsScalar() && (_m->Val[0][0] == T(1)))
    {
-      return(true);
+      return (true);
    }
-   return(false);
+   return (false);
 }
 
 
@@ -1318,11 +1318,11 @@ matrixT::IsNull() _NO_THROW
       {
          if (_m->Val[i][j] != T(0))
          {
-            return(false);
+            return (false);
          }
       }
    }
-   return(true);
+   return (true);
 }
 
 
@@ -1332,7 +1332,7 @@ matrixT::IsSymmetric() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return(false);
+      return (false);
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -1340,11 +1340,11 @@ matrixT::IsSymmetric() _NO_THROW
       {
          if (_m->Val[i][j] != _m->Val[j][i])
          {
-            return(false);
+            return (false);
          }
       }
    }
-   return(true);
+   return (true);
 }
 
 
@@ -1354,7 +1354,7 @@ matrixT::IsSkewSymmetric() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return(false);
+      return (false);
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -1362,11 +1362,11 @@ matrixT::IsSkewSymmetric() _NO_THROW
       {
          if (_m->Val[i][j] != -_m->Val[j][i])
          {
-            return(false);
+            return (false);
          }
       }
    }
-   return(true);
+   return (true);
 }
 
 
@@ -1376,7 +1376,7 @@ matrixT::IsUpperTriangular() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return(false);
+      return (false);
    }
    for (size_t i = 1; i < _m->Row; i++)
    {
@@ -1384,11 +1384,11 @@ matrixT::IsUpperTriangular() _NO_THROW
       {
          if (_m->Val[i][j] != T(0))
          {
-            return(false);
+            return (false);
          }
       }
    }
-   return(true);
+   return (true);
 }
 
 
@@ -1398,7 +1398,7 @@ matrixT::IsLowerTriangular() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return(false);
+      return (false);
    }
 
    for (size_t j = 1; j < _m->Col; j++)
@@ -1407,12 +1407,12 @@ matrixT::IsLowerTriangular() _NO_THROW
       {
          if (_m->Val[i][j] != T(0))
          {
-            return(false);
+            return (false);
          }
       }
    }
 
-   return(true);
+   return (true);
 }
 
 

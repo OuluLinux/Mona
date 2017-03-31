@@ -190,7 +190,7 @@ int glbmp_LoadBitmap(const char *bmp_file, int flags, glbmp_t *p_bmp_out)
    /* free everything used in reading (and rgb_data too, if !success) */
    _bmp_FreeContext(&ctx, success);
 
-   return(success);
+   return (success);
 }
 
 
@@ -220,13 +220,13 @@ void glbmp_FreeBitmap(glbmp_t *p_bmp)
 #ifdef _GLBMP_BYTESWAP
 static uint32_t _bmp_Swap32(uint32_t x)
 {
-   return((x >> 24) | ((x >> 8) & 0xff00) | ((x << 8) & 0xff0000) | (x << 24));
+   return ((x >> 24) | ((x >> 8) & 0xff00) | ((x << 8) & 0xff0000) | (x << 24));
 }
 
 
 static uint16_t _bmp_Swap16(uint16_t x)
 {
-   return((x >> 8) | (x << 8));
+   return ((x >> 8) | (x << 8));
 }
 
 
@@ -271,7 +271,7 @@ static int _bmp_ReadHeader(_bmp_read_context *p_ctx)
       success = 1;
    } while (0);
 
-   return(success);
+   return (success);
 }
 
 
@@ -295,12 +295,12 @@ static int _bmp_IsPowerOf2(int x)
       /* if the bit is set */
       if (x & bit)
       {
-         return(!(x & ~bit));                     /* return nonzero if no other bits are */
+         return (!(x & ~bit));                     /* return nonzero if no other bits are */
       }
    }
 
    /* if it didn't find a bit, x was 0, which isn't a power of 2 */
-   return(0);
+   return (0);
 }
 
 
@@ -328,7 +328,7 @@ static int _bmp_GetLineLength(int width, int bpp)
    }
 
    /* return how many bytes we have now */
-   return(bits / 8);
+   return (bits / 8);
 }
 
 
@@ -437,7 +437,7 @@ static int _bmp_ReadInfo(_bmp_read_context *p_ctx, int flags)
       success = 1;
    } while (0);
 
-   return(success);
+   return (success);
 }
 
 
@@ -449,7 +449,7 @@ static int _bmp_ReadInfo(_bmp_read_context *p_ctx, int flags)
 static int _bmp_InitDecode(_bmp_read_context *p_ctx)
 {
    /* alloc a line of file data */
-   return((p_ctx->file_data = (uint8_t *)malloc(p_ctx->file_line_len))
+   return ((p_ctx->file_data = (uint8_t *)malloc(p_ctx->file_line_len))
           /* alloc the entire output buffer */
           && (p_ctx->rgb_data = (uint8_t *)
                                 malloc(p_ctx->rgb_line_len * p_ctx->lines))
@@ -635,7 +635,7 @@ static int _bmp_Decode(_bmp_read_context *p_ctx, int flags)
    }
 
    /* if we reached the end of the buffer, we succeeded */
-   return(p_rgb == p_rgb_end);
+   return (p_rgb == p_rgb_end);
 }
 
 

@@ -28,9 +28,9 @@ public class ForagerMox extends Mox
          this.value = value;
       }
 
-      public int getValue()
+      public int GetValue()
       {
-         return(value);
+         return (value);
       }
    }
 
@@ -43,8 +43,8 @@ public class ForagerMox extends Mox
    public ForagerMox()
    {
       super();
-      setProperties(-1, SPECIES.FORAGER.getValue(),
-                    0, 0, DIRECTION.NORTH.getValue(), true);
+      setProperties(-1, SPECIES.FORAGER.GetValue(),
+                    0, 0, DIRECTION.NORTH.GetValue(), true);
 
       // Create mona.
       createMona(DEFAULT_RANDOM_SEED);
@@ -54,14 +54,14 @@ public class ForagerMox extends Mox
    }
 
 
-   public ForagerMox(int id, int x, int y, int direction, int randomSeed)
+   public ForagerMox(int id, int x, int y, int direction, int random_seed)
    {
       mutex = new Object();
-      setProperties(id, SPECIES.FORAGER.getValue(),
+      setProperties(id, SPECIES.FORAGER.GetValue(),
                     x, y, direction, true);
 
       // Create mona.
-      createMona(randomSeed);
+      createMona(random_seed);
 
       // Configure forager-specific needs and goals.
       configureNeedsAndGoals();
@@ -73,7 +73,7 @@ public class ForagerMox extends Mox
                      Vector<String> monaParmKeys, Vector<Object> monaParmVals)
    {
       mutex = new Object();
-      setProperties(id, SPECIES.FORAGER.getValue(),
+      setProperties(id, SPECIES.FORAGER.GetValue(),
                     x, y, direction, true);
 
       // Create mona.
@@ -85,22 +85,22 @@ public class ForagerMox extends Mox
 
 
    // Create mona.
-   void createMona(int randomSeed)
+   void createMona(int random_seed)
    {
       synchronized (mutex)
       {
-         mona = new Mona(SENSOR_CONFIG.NUM_SENSORS.getValue(),
-                         RESPONSE_TYPE.NUM_RESPONSES.getValue(),
-                         NEED_TYPE.NUM_NEEDS.getValue(), randomSeed);
-         boolean[] sensorMask = new boolean[SENSOR_CONFIG.NUM_SENSORS.getValue()];
-         for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.getValue(); i++)
+         mona = new Mona(SENSOR_CONFIG.NUM_SENSORS.GetValue(),
+                         RESPONSE_TYPE.NUM_RESPONSES.GetValue(),
+                         NEED_TYPE.NUM_NEEDS.GetValue(), random_seed);
+         boolean[] sensorMask = new boolean[SENSOR_CONFIG.NUM_SENSORS.GetValue()];
+         for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++)
          {
             sensorMask[i] = true;
          }
-         mona.addSensorMode(sensorMask, SENSOR_RESOLUTION);
-         for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.getValue(); i++)
+         mona.AddSensorMode(sensorMask, SENSOR_RESOLUTION);
+         for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++)
          {
-            if (i < SENSOR_CONFIG.NUM_RANGE_SENSORS.getValue())
+            if (i < SENSOR_CONFIG.NUM_RANGE_SENSORS.GetValue())
             {
                sensorMask[i] = true;
             }
@@ -109,10 +109,10 @@ public class ForagerMox extends Mox
                sensorMask[i] = false;
             }
          }
-         mona.addSensorMode(sensorMask, SENSOR_RESOLUTION);
-         for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.getValue(); i++)
+         mona.AddSensorMode(sensorMask, SENSOR_RESOLUTION);
+         for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++)
          {
-            if (i < SENSOR_CONFIG.NUM_RANGE_SENSORS.getValue())
+            if (i < SENSOR_CONFIG.NUM_RANGE_SENSORS.GetValue())
             {
                sensorMask[i] = false;
             }
@@ -121,7 +121,7 @@ public class ForagerMox extends Mox
                sensorMask[i] = true;
             }
          }
-         mona.addSensorMode(sensorMask, SENSOR_RESOLUTION);
+         mona.AddSensorMode(sensorMask, SENSOR_RESOLUTION);
       }
    }
 
@@ -131,21 +131,21 @@ public class ForagerMox extends Mox
    {
       synchronized (mutex)
       {
-         needValues = new double[NEED_TYPE.NUM_NEEDS.getValue()];
-         needValues[NEED_TYPE.BLUE_FOOD.getValue()] = BLUE_FOOD_NEED_VALUE;
-         goalValues = new double[NEED_TYPE.NUM_NEEDS.getValue()];
-         goalValues[NEED_TYPE.BLUE_FOOD.getValue()] = BLUE_FOOD_GOAL_VALUE;
-         needNames = new String[NEED_TYPE.NUM_NEEDS.getValue()];
-         needNames[NEED_TYPE.BLUE_FOOD.getValue()] = BLUE_FOOD_NEED_NAME;
-         mona.setNeed(NEED_TYPE.BLUE_FOOD.getValue(), BLUE_FOOD_NEED_VALUE);
-         float[] sensors = new float[SENSOR_CONFIG.NUM_SENSORS.getValue()];
-         sensors[SENSOR_CONFIG.RANGE_SENSOR_INDEX.getValue()]     = 0;
-         sensors[SENSOR_CONFIG.COLOR_HUE_SENSOR_INDEX.getValue()] =
+         needValues = new double[NEED_TYPE.NUM_NEEDS.GetValue()];
+         needValues[NEED_TYPE.BLUE_FOOD.GetValue()] = BLUE_FOOD_NEED_VALUE;
+         goal_values = new double[NEED_TYPE.NUM_NEEDS.GetValue()];
+         goal_values[NEED_TYPE.BLUE_FOOD.GetValue()] = BLUE_FOOD_GOAL_VALUE;
+         needNames = new String[NEED_TYPE.NUM_NEEDS.GetValue()];
+         needNames[NEED_TYPE.BLUE_FOOD.GetValue()] = BLUE_FOOD_NEED_NAME;
+         mona.SetNeed(NEED_TYPE.BLUE_FOOD.GetValue(), BLUE_FOOD_NEED_VALUE);
+         Vector<double> sensors = new float[SENSOR_CONFIG.NUM_SENSORS.GetValue()];
+         sensors[SENSOR_CONFIG.RANGE_SENSOR_INDEX.GetValue()]     = 0;
+         sensors[SENSOR_CONFIG.COLOR_HUE_SENSOR_INDEX.GetValue()] =
             GameOfLife.BLUE_CELL_COLOR_VALUE;
-         sensors[SENSOR_CONFIG.COLOR_INTENSITY_SENSOR_INDEX.getValue()] = 1.0f;
-         mona.addGoal(NEED_TYPE.BLUE_FOOD.getValue(), sensors,
-                      SENSOR_CONFIG.BASIC_SENSOR_MODE.getValue(),
-                      RESPONSE_TYPE.NULL_RESPONSE.getValue(),
+         sensors[SENSOR_CONFIG.COLOR_INTENSITY_SENSOR_INDEX.GetValue()] = 1.0f;
+         mona.AddGoal(NEED_TYPE.BLUE_FOOD.GetValue(), sensors,
+                      SENSOR_CONFIG.BASIC_SENSOR_MODE.GetValue(),
+                      RESPONSE_TYPE.NULL_RESPONSE.GetValue(),
                       BLUE_FOOD_GOAL_VALUE);
       }
    }
@@ -157,7 +157,7 @@ public class ForagerMox extends Mox
       super.reset();
       synchronized (mutex)
       {
-         mona.setNeed(NEED_TYPE.BLUE_FOOD.getValue(), BLUE_FOOD_NEED_VALUE);
+         mona.SetNeed(NEED_TYPE.BLUE_FOOD.GetValue(), BLUE_FOOD_NEED_VALUE);
       }
    }
 }

@@ -1,3 +1,4 @@
+#if 0
 /*
  * Get time in milliseconds since the initial call.
  */
@@ -19,3 +20,4 @@
 typedef unsigned long long   TIME;
 #define INVALID_TIME    ((unsigned long long)(-1))
 TIME gettime();
+#endif

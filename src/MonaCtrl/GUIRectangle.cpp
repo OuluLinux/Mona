@@ -1,9 +1,9 @@
 #include "EasyGL.h"
 
-GUIRectangle::GUIRectangle(const std::string &callback)
+GUIRectangle::GUIRectangle(const String &callback)
 {
   setCallbackString(callback);
-  setDimensions(5, 5);
+  setSizes(5, 5);
   setPosition(0.5f, 0.5f);
 
   lastAction =          0;
@@ -54,7 +54,7 @@ bool GUIRectangle::loadXMLSettings(const TiXmlElement *element)
   if(cbString)
     setCallbackString(cbString);
   else
-    return Logger::writeErrorLog(std::string("Need a <name> or <callbackString> attribute, check ")
+    return Logger::writeErrorLog(String("Need a <name> or <callbackString> attribute, check ")
                                  + element->Value());
 
   if(element->Attribute("anchorPoint"))
@@ -63,19 +63,19 @@ bool GUIRectangle::loadXMLSettings(const TiXmlElement *element)
   setVisible(XMLArbiter::analyzeBooleanAttr(element, "visible", true));
   setActive(XMLArbiter::analyzeBooleanAttr(element,  "active", true));
 
-  for(const TiXmlElement *child = element->FirstChildElement();	
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();	
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    const char * value = child->Value();
+    const char * value = outer->Value();
 
     if(value)
     {
       if(!strcmp(value, "Position"))
-        setPosition(XMLArbiter::fillComponents2f(child, position));
+        setPosition(XMLArbiter::fillComponents2f(outer, position));
  
-      if(!strcmp(value, "Dimensions"))
-        setDimensions(XMLArbiter::fillComponents2f(child, dimensions));
+      if(!strcmp(value, "Sizes"))
+        setSizes(XMLArbiter::fillComponents2f(outer, dimensions));
     }
   }
 
@@ -94,19 +94,19 @@ void  GUIRectangle::disableGUITexture()
     parent->disableGUITexture();
 }
 
-void  GUIRectangle::setCallbackString(const std::string& callback)
+void  GUIRectangle::setCallbackString(const String& callback)
 {
   callbackString = callback;
 }
 
-const std::string & GUIRectangle::getCallbackString()
+const String & GUIRectangle::getCallbackString()
 {
   return callbackString;
 }  
 
-void  GUIRectangle::setAnchorPoint(const std::string &anchorArg)
+void  GUIRectangle::setAnchorPoint(const String &anchorArg)
 {
-  if(!anchorArg.size())
+  if(!anchorArg.GetCount())
     return;
 
   if(anchorArg == "CENTER"  ){ anchor = AT_CENTER;   return; }
@@ -142,19 +142,19 @@ GUITexCoordDescriptor *GUIRectangle::getTexCoordsInfo(int type)
   return !parent? NULL : parent->getTexCoordsInfo(type);
 }
 
-void GUIRectangle::setDimensions(const Tuple2f &dimensions)
+void GUIRectangle::setSizes(const Tuple2f &dimensions)
 {
-  setDimensions(dimensions.x, dimensions.y);
+  setSizes(dimensions.x, dimensions.y);
 }
 
-void GUIRectangle::setDimensions(float width, float height)
+void GUIRectangle::setSizes(float width, float height)
 {
   dimensions.set(clamp(width , 0.01f, 2048.0f),
                  clamp(height, 0.01f, 2048.0f));
   update = true;
 }
 
-const Tuple2f &GUIRectangle::getDimensions()
+const Tuple2f &GUIRectangle::getSizes()
 {
   return  dimensions;
 }
@@ -222,63 +222,63 @@ const void GUIRectangle::computeWindowBounds()
   {
     const Tuple4i &parentBounds = parent->getWindowBounds();
     z  = parent->getZCoordinate() + 1;
-    Tuple2f newDimensions,
+    Tuple2f newSizes,
             newPosition;
  
-    newDimensions.x  = float(parentBounds.z - parentBounds.x);
-    newDimensions.y  = float(parentBounds.w - parentBounds.y);
+    newSizes.x  = float(parentBounds.z - parentBounds.x);
+    newSizes.y  = float(parentBounds.w - parentBounds.y);
 
     newPosition.x    = float(parentBounds.x);
     newPosition.y    = float(parentBounds.y);
 
     newPosition.x    = (position.x <= 1.0f) && (position.x >= 0.0f) ? 
-                        newDimensions.x*position.x + parentBounds.x :
+                        newSizes.x*position.x + parentBounds.x :
                        (position.x < 0.0f) ?
                         parentBounds.z + position.x    :
                         position.x     + parentBounds.x;
 
     newPosition.y    = (position.y <= 1.0f) && (position.y >= 0.0f) ? 
-                        newDimensions.y*position.y + parentBounds.y :
+                        newSizes.y*position.y + parentBounds.y :
                        (position.y < 0.0f) ?
                         parentBounds.w + position.y    :
                         position.y     + parentBounds.y;
 
-    newDimensions.x  = (dimensions.x <= 1.0f) ? newDimensions.x*dimensions.x :
+    newSizes.x  = (dimensions.x <= 1.0f) ? newSizes.x*dimensions.x :
                                                 dimensions.x;
-    newDimensions.y  = (dimensions.y <= 1.0f) ? newDimensions.y*dimensions.y :
+    newSizes.y  = (dimensions.y <= 1.0f) ? newSizes.y*dimensions.y :
                                                 dimensions.y;
 
     windowBounds.x = int(newPosition.x);
     windowBounds.y = int(newPosition.y);
-    windowBounds.z = int(newPosition.x + newDimensions.x);
-    windowBounds.w = int(newPosition.y + newDimensions.y);
+    windowBounds.z = int(newPosition.x + newSizes.x);
+    windowBounds.w = int(newPosition.y + newSizes.y);
 
     switch(anchor)
     {
       case AT_CORNERLD:
-        windowBounds.y -= int(newDimensions.y);
-        windowBounds.w -= int(newDimensions.y);
+        windowBounds.y -= int(newSizes.y);
+        windowBounds.w -= int(newSizes.y);
       break;
 
       case AT_CORNERRU:
-        windowBounds.x -= int(newDimensions.x);
-        windowBounds.z -= int(newDimensions.x);
+        windowBounds.x -= int(newSizes.x);
+        windowBounds.z -= int(newSizes.x);
       break;
 
       case AT_CORNERRD:
-        windowBounds.y -= int(newDimensions.y);
-        windowBounds.w -= int(newDimensions.y);
-        windowBounds.x -= int(newDimensions.x);
-        windowBounds.z -= int(newDimensions.x);
+        windowBounds.y -= int(newSizes.y);
+        windowBounds.w -= int(newSizes.y);
+        windowBounds.x -= int(newSizes.x);
+        windowBounds.z -= int(newSizes.x);
       break;
 
       case AT_CENTER:
-        newDimensions /= 2;
+        newSizes /= 2;
 
-        windowBounds.y -= int(newDimensions.y);
-        windowBounds.w -= int(newDimensions.y);
-        windowBounds.x -= int(newDimensions.x);
-        windowBounds.z -= int(newDimensions.x);
+        windowBounds.y -= int(newSizes.y);
+        windowBounds.w -= int(newSizes.y);
+        windowBounds.x -= int(newSizes.x);
+        windowBounds.z -= int(newSizes.x);
       break;
     }
   }

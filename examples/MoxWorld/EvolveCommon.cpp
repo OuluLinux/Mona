@@ -16,9 +16,9 @@ public class EvolveCommon
    public static final int PREDATOR_POPULATION_SIZE     =
       (PREDATOR_FIT_POPULATION_SIZE + PREDATOR_NUM_MUTANTS + PREDATOR_NUM_OFFSPRING);
    public static final double DEFAULT_MUTATION_RATE        = 0.25;
-   public static double       MutationRate                 = DEFAULT_MUTATION_RATE;
+   public static double       mutation_rate                 = DEFAULT_MUTATION_RATE;
    public static final double DEFAULT_RANDOM_MUTATION_RATE = 0.5;
-   public static double       RandomMutationRate           = DEFAULT_RANDOM_MUTATION_RATE;
+   public static double       Randommutation_rate           = DEFAULT_RANDOM_MUTATION_RATE;
    public static final float  DEFAULT_MAX_SENSOR_RANGE     = 10.0f;
    public static float        MaxSensorRange               = DEFAULT_MAX_SENSOR_RANGE;
    public static int          MAX_PREPARATION_TRIALS       = 5;
@@ -41,25 +41,25 @@ public class EvolveCommon
          this.name  = name;
       }
 
-      public int getValue()
+      public int GetValue()
       {
-         return(value);
+         return (value);
       }
 
 
-      public void setValue(int value)
+      public void SetValue(int value)
       {
          this.value = value;
       }
 
 
-      public String getName()
+      public String GetName()
       {
-         return(name);
+         return (name);
       }
 
 
-      public void setName(String name)
+      public void SetName(String name)
       {
          this.name = name;
       }
@@ -75,88 +75,88 @@ public class EvolveCommon
       // Constructor.
       MoxParmGenome(Random randomizer)
       {
-         super(MutationRate, RandomMutationRate, randomizer.nextInt());
+         super(mutation_rate, Randommutation_rate, randomizer.nextInt());
 
          // INITIAL_ENABLEMENT.
-         genes.add(
+         genes.Add(
             new Gene("INITIAL_ENABLEMENT", 0.1, 0.1, 1.0, 0.1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // DRIVE_ATTENUATION.
-         genes.add(
+         genes.Add(
             new Gene("DRIVE_ATTENUATION", 0.0, 0.0, 1.0, 0.1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // LEARNING_DECREASE_VELOCITY.
-         genes.add(
+         genes.Add(
             new Gene("LEARNING_DECREASE_VELOCITY", 0.1, 0.1, 0.9, 0.1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // LEARNING_INCREASE_VELOCITY.
-         genes.add(
+         genes.Add(
             new Gene("LEARNING_INCREASE_VELOCITY", 0.1, 0.1, 0.9, 0.1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // FIRING_STRENGTH_LEARNING_DAMPER.
-         genes.add(
+         genes.Add(
             new Gene("FIRING_STRENGTH_LEARNING_DAMPER", 0.1, 0.05, 0.9, 0.05,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // UTILITY_ASYMPTOTE.
-         genes.add(
+         genes.Add(
             new Gene("UTILITY_ASYMPTOTE", 10.0, 0.0, 100.0, 10.0,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // RESPONSE_RANDOMNESS.
-         genes.add(
+         genes.Add(
             new Gene("RESPONSE_RANDOMNESS", 0.01, 0.01, 0.2, 0.01,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // DEFAULT_MAX_LEARNING_EFFECT_EVENT_INTERVAL.
-         genes.add(
+         genes.Add(
             new Gene("DEFAULT_MAX_LEARNING_EFFECT_EVENT_INTERVAL", 1, 1, 3, 1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // DEFAULT_NUM_EFFECT_EVENT_INTERVALS.
-         genes.add(
+         genes.Add(
             new Gene("DEFAULT_NUM_EFFECT_EVENT_INTERVALS", 1, 1, 3, 1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // MAX_ASSOCIATOR_EVENTS.
-         genes.add(
+         genes.Add(
             new Gene("MAX_ASSOCIATOR_EVENTS", 1, 1, 5, 1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // MAX_MEDIATORS.
-         genes.add(
+         genes.Add(
             new Gene("MAX_MEDIATORS", 100, 50, 500, 50,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // MAX_MEDIATOR_LEVEL.
          maxMediatorLevel =
             new Gene("MAX_MEDIATOR_LEVEL", 2, 1, 5, 1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt());
-         genes.add(maxMediatorLevel);
+                     mutation_rate, Randommutation_rate, randomizer.nextInt());
+         genes.Add(maxMediatorLevel);
 
          // MAX_RESPONSE_EQUIPPED_MEDIATOR_LEVEL.
          maxResponseEquippedMediatorLevel =
             new Gene("MAX_RESPONSE_EQUIPPED_MEDIATOR_LEVEL", 2, 1, 5, 1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt());
-         genes.add(maxResponseEquippedMediatorLevel);
+                     mutation_rate, Randommutation_rate, randomizer.nextInt());
+         genes.Add(maxResponseEquippedMediatorLevel);
 
          // MIN_RESPONSE_UNEQUIPPED_MEDIATOR_LEVEL.
          minResponseUnequippedMediatorLevel =
             new Gene("MIN_RESPONSE_UNEQUIPPED_MEDIATOR_LEVEL", 1, 1, 5, 1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt());
-         genes.add(minResponseUnequippedMediatorLevel);
+                     mutation_rate, Randommutation_rate, randomizer.nextInt());
+         genes.Add(minResponseUnequippedMediatorLevel);
       }
 
 
       // Mutate.
-      void mutate()
+      void Mutate()
       {
          // Mutate.
-         super.mutate();
+         super.Mutate();
 
          // Sanity checks.
          if (maxResponseEquippedMediatorLevel.ivalue > maxMediatorLevel.ivalue)
@@ -187,74 +187,74 @@ public class EvolveCommon
    // Mox homeostat genome.
    public static class MoxHomeostatGenome extends Genome
    {
-      float[] sensors;
-      int    sensorMode;
+      Vector<double> sensors;
+      int    sensor_mode;
       int    response;
-      double goalValue;
+      double goal_value;
       int    frequency;
-      double periodicNeed;
+      double periodic_need;
 
       // Constructors.
       MoxHomeostatGenome(Random randomizer)
       {
-         super(MutationRate, RandomMutationRate, randomizer.nextInt());
+         super(mutation_rate, Randommutation_rate, randomizer.nextInt());
 
-         sensors = new float[Mox.SENSOR_CONFIG.NUM_SENSORS.getValue()];
+         sensors = new float[Mox.SENSOR_CONFIG.NUM_SENSORS.GetValue()];
 
          // RANGE_SENSOR.
-         genes.add(
+         genes.Add(
             new Gene("RANGE_SENSOR", 0.0f, 0.0f, MaxSensorRange, 1.0f,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // COLOR_SENSOR.
          // Mapping: 0=empty, 1=green, 2=blue, 3=forager, 4=predator
-         genes.add(
+         genes.Add(
             new Gene("COLOR_SENSOR", 0, 0, 4, 1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // RESPONSE.
          // NULL_RESPONSE=0, WAIT=1, ...
-         genes.add(
+         genes.Add(
             new Gene("RESPONSE", 0, 0, 4, 1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // GOAL_VALUE.
-         genes.add(
+         genes.Add(
             new Gene("GOAL_VALUE", 0.1, 0.1, 1.0, 0.1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // FREQUENCY.
-         genes.add(
+         genes.Add(
             new Gene("FREQUENCY", 0, 0, 50, 5,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
 
          // PERIODIC_NEED.
-         genes.add(
+         genes.Add(
             new Gene("PERIODIC_NEED", 0.1, 0.1, 1.0, 0.1,
-                     MutationRate, RandomMutationRate, randomizer.nextInt()));
+                     mutation_rate, Randommutation_rate, randomizer.nextInt()));
       }
 
 
       // Mutate.
-      void mutate()
+      void Mutate()
       {
          // Mutate.
-         super.mutate();
+         super.Mutate();
       }
 
 
       // Extract values.
       void extractValues()
       {
-         for (int i = 0; i < genes.size(); i++)
+         for (int i = 0; i < genes.GetCount(); i++)
          {
-            if (genes.get(i).name.equals("RANGE_SENSOR"))
+            if (genes.Get(i).name.equals("RANGE_SENSOR"))
             {
-               sensors[0] = genes.get(i).fvalue;
+               sensors[0] = genes.Get(i).fvalue;
             }
-            else if (genes.get(i).name.equals("COLOR_SENSOR"))
+            else if (genes.Get(i).name.equals("COLOR_SENSOR"))
             {
-               switch (genes.get(i).ivalue)
+               switch (genes.Get(i).ivalue)
                {
                case 0:
                   sensors[1] = 0.0f;
@@ -277,42 +277,42 @@ public class EvolveCommon
                   break;
                }
             }
-            else if (genes.get(i).name.equals("RESPONSE"))
+            else if (genes.Get(i).name.equals("RESPONSE"))
             {
-               switch (genes.get(i).ivalue)
+               switch (genes.Get(i).ivalue)
                {
                case 0:
-                  response = Mox.RESPONSE_TYPE.NULL_RESPONSE.getValue();
+                  response = Mox.RESPONSE_TYPE.NULL_RESPONSE.GetValue();
                   break;
 
                case 1:
-                  response = Mox.RESPONSE_TYPE.WAIT.getValue();
+                  response = Mox.RESPONSE_TYPE.WAIT.GetValue();
                   break;
 
                case 2:
-                  response = Mox.RESPONSE_TYPE.FORWARD.getValue();
+                  response = Mox.RESPONSE_TYPE.FORWARD.GetValue();
                   break;
 
                case 3:
-                  response = Mox.RESPONSE_TYPE.RIGHT.getValue();
+                  response = Mox.RESPONSE_TYPE.RIGHT.GetValue();
                   break;
 
                case 4:
-                  response = Mox.RESPONSE_TYPE.LEFT.getValue();
+                  response = Mox.RESPONSE_TYPE.LEFT.GetValue();
                   break;
                }
             }
-            else if (genes.get(i).name.equals("GOAL_VALUE"))
+            else if (genes.Get(i).name.equals("GOAL_VALUE"))
             {
-               goalValue = genes.get(i).dvalue;
+               goal_value = genes.Get(i).dvalue;
             }
-            else if (genes.get(i).name.equals("FREQUENCY"))
+            else if (genes.Get(i).name.equals("FREQUENCY"))
             {
-               frequency = genes.get(i).ivalue;
+               frequency = genes.Get(i).ivalue;
             }
-            else if (genes.get(i).name.equals("PERIODIC_NEED"))
+            else if (genes.Get(i).name.equals("PERIODIC_NEED"))
             {
-               periodicNeed = genes.get(i).dvalue;
+               periodic_need = genes.Get(i).dvalue;
             }
          }
       }
@@ -325,9 +325,9 @@ public class EvolveCommon
 
          // Cap RANGE_SENSOR value at current maximum.
          Gene gene;
-         for (int i = 0; i < genes.size(); i++)
+         for (int i = 0; i < genes.GetCount(); i++)
          {
-            gene = genes.get(i);
+            gene = genes.Get(i);
             if (gene.name.equals("RANGE_SENSOR"))
             {
                if (gene.fvalue > MaxSensorRange)
@@ -372,11 +372,11 @@ public class EvolveCommon
 
          // Create instinct genomes.
          numInstincts = new Gene("NUM_INSTINCTS", 0, 0, 5, 1,
-                                 MutationRate, RandomMutationRate, randomizer.nextInt());
+                                 mutation_rate, Randommutation_rate, randomizer.nextInt());
          instinctHomeostats = new Vector<MoxHomeostatGenome>();
          for (int i = 0; i < numInstincts.ivalue; i++)
          {
-            instinctHomeostats.add(new MoxHomeostatGenome(randomizer));
+            instinctHomeostats.Add(new MoxHomeostatGenome(randomizer));
          }
 
          // Initialize mox.
@@ -394,21 +394,21 @@ public class EvolveCommon
          // Create and mutate parameter genome.
          moxParmGenome = new MoxParmGenome(randomizer);
          moxParmGenome.copyValues(member.moxParmGenome);
-         moxParmGenome.mutate();
+         moxParmGenome.Mutate();
 
          // Create and mutate instinct genomes.
          numInstincts = new Gene("NUM_INSTINCTS", 0, 0, 5, 1,
-                                 MutationRate, RandomMutationRate, randomizer.nextInt());
-         numInstincts.copyValue(member.numInstincts);
-         numInstincts.mutate();
+                                 mutation_rate, Randommutation_rate, randomizer.nextInt());
+         numInstincts.CopyValue(member.numInstincts);
+         numInstincts.Mutate();
          instinctHomeostats = new Vector<MoxHomeostatGenome>();
          for (int i = 0; i < numInstincts.ivalue; i++)
          {
-            instinctHomeostats.add(new MoxHomeostatGenome(randomizer));
+            instinctHomeostats.Add(new MoxHomeostatGenome(randomizer));
             if (i < member.numInstincts.ivalue)
             {
-               instinctHomeostats.get(i).copyValues(member.instinctHomeostats.get(i));
-               instinctHomeostats.get(i).mutate();
+               instinctHomeostats.Get(i).copyValues(member.instinctHomeostats.Get(i));
+               instinctHomeostats.Get(i).Mutate();
             }
          }
 
@@ -430,26 +430,26 @@ public class EvolveCommon
 
          // Create and meld instinct genomes.
          numInstincts = new Gene("NUM_INSTINCTS", 0, 0, 5, 1,
-                                 MutationRate, RandomMutationRate, randomizer.nextInt());
+                                 mutation_rate, Randommutation_rate, randomizer.nextInt());
          if (randomizer.nextBoolean())
          {
-            numInstincts.copyValue(member1.numInstincts);
+            numInstincts.CopyValue(member1.numInstincts);
             instinctHomeostats = new Vector<MoxHomeostatGenome>();
             for (int i = 0; i < numInstincts.ivalue; i++)
             {
-               instinctHomeostats.add(new MoxHomeostatGenome(randomizer));
-               instinctHomeostats.get(i).copyValues(member1.instinctHomeostats.get(i));
+               instinctHomeostats.Add(new MoxHomeostatGenome(randomizer));
+               instinctHomeostats.Get(i).copyValues(member1.instinctHomeostats.Get(i));
             }
             initMox(member1.mox.x2, member1.mox.y2, member1.mox.direction2, randomizer);
          }
          else
          {
-            numInstincts.copyValue(member2.numInstincts);
+            numInstincts.CopyValue(member2.numInstincts);
             instinctHomeostats = new Vector<MoxHomeostatGenome>();
             for (int i = 0; i < numInstincts.ivalue; i++)
             {
-               instinctHomeostats.add(new MoxHomeostatGenome(randomizer));
-               instinctHomeostats.get(i).copyValues(member2.instinctHomeostats.get(i));
+               instinctHomeostats.Add(new MoxHomeostatGenome(randomizer));
+               instinctHomeostats.Get(i).copyValues(member2.instinctHomeostats.Get(i));
             }
             initMox(member2.mox.x2, member2.mox.y2, member2.mox.direction2, randomizer);
          }
@@ -465,32 +465,32 @@ public class EvolveCommon
          moxParmGenome.getKeyValues(parameterKeys, parameterValues);
 
          // Construct mox.
-         parameterKeys.add("SENSOR_MODES");
-         Object[] modes = new Object[Mox.SENSOR_CONFIG.NUM_SPECIFIC_SENSOR_MODES.getValue()];
-         modes[0]       = Mox.SENSOR_CONFIG.NUM_RANGE_SENSORS.getValue() + "";
-         modes[1]       = Mox.SENSOR_CONFIG.NUM_COLOR_SENSORS.getValue() + "";
-         parameterValues.add(modes);
-         parameterKeys.add("NUM_RESPONSES");
-         parameterValues.add(Mox.RESPONSE_TYPE.NUM_RESPONSES.getValue() + "");
-         parameterKeys.add("RANDOM_SEED");
-         parameterValues.add(randomizer.nextInt() + "");
-         parameterKeys.add("NUM_NEEDS");
-         int numNeeds;
-         if (species == Mox.SPECIES.FORAGER.getValue())
+         parameterKeys.Add("SENSOR_MODES");
+         Object[] modes = new Object[Mox.SENSOR_CONFIG.NUM_SPECIFIC_SENSOR_MODES.GetValue()];
+         modes[0]       = Mox.SENSOR_CONFIG.NUM_RANGE_SENSORS.GetValue() + "";
+         modes[1]       = Mox.SENSOR_CONFIG.NUM_COLOR_SENSORS.GetValue() + "";
+         parameterValues.Add(modes);
+         parameterKeys.Add("NUM_RESPONSES");
+         parameterValues.Add(Mox.RESPONSE_TYPE.NUM_RESPONSES.GetValue() + "");
+         parameterKeys.Add("RANDOM_SEED");
+         parameterValues.Add(randomizer.nextInt() + "");
+         parameterKeys.Add("NUM_NEEDS");
+         int need_count;
+         if (species == Mox.SPECIES.FORAGER.GetValue())
          {
-            numNeeds = ForagerMox.NEED_TYPE.NUM_NEEDS.getValue();
-            parameterValues.add(numNeeds + numInstincts.ivalue + "");
+            need_count = ForagerMox.NEED_TYPE.NUM_NEEDS.GetValue();
+            parameterValues.Add(need_count + numInstincts.ivalue + "");
             mox = new ForagerMox(MoxIdDispenser, x, y, direction,
                                  parameterKeys, parameterValues);
-            addInstincts(numNeeds);
+            addInstincts(need_count);
          }
          else
          {
-            numNeeds = PredatorMox.NEED_TYPE.NUM_NEEDS.getValue();
-            parameterValues.add(numNeeds + numInstincts.ivalue + "");
+            need_count = PredatorMox.NEED_TYPE.NUM_NEEDS.GetValue();
+            parameterValues.Add(need_count + numInstincts.ivalue + "");
             mox = new PredatorMox(MoxIdDispenser, x, y, direction,
                                   parameterKeys, parameterValues);
-            addInstincts(numNeeds);
+            addInstincts(need_count);
          }
          MoxIdDispenser++;
       }
@@ -501,20 +501,20 @@ public class EvolveCommon
       {
          MoxHomeostatGenome homeostat;
 
-         for (int i = 0; i < instinctHomeostats.size(); i++)
+         for (int i = 0; i < instinctHomeostats.GetCount(); i++)
          {
-            homeostat = instinctHomeostats.get(i);
+            homeostat = instinctHomeostats.Get(i);
             homeostat.extractValues();
-            mox.addGoal(i + startIndex, homeostat.sensors,
-                        homeostat.sensorMode, homeostat.response,
-                        homeostat.goalValue, homeostat.frequency,
-                        homeostat.periodicNeed);
+            mox.AddGoal(i + startIndex, homeostat.sensors,
+                        homeostat.sensor_mode, homeostat.response,
+                        homeostat.goal_value, homeostat.frequency,
+                        homeostat.periodic_need);
          }
       }
 
 
       // Load member.
-      void load(FileInputStream input, NativeFileDescriptor fd)
+      void Load(FileInputStream input, NativeFileDescriptor fd)
       throws IOException
       {
          // DataInputStream is for unbuffered input.
@@ -528,16 +528,16 @@ public class EvolveCommon
          moxParmGenome.loadValues(reader);
 
          // Load instincts.
-         numInstincts.loadValue(reader);
+         numInstincts.LoadValue(reader);
          instinctHomeostats = new Vector<MoxHomeostatGenome>();
          for (int i = 0; i < numInstincts.ivalue; i++)
          {
-            instinctHomeostats.add(new MoxHomeostatGenome(new Random()));
-            instinctHomeostats.get(i).loadValues(reader);
+            instinctHomeostats.Add(new MoxHomeostatGenome(new Random()));
+            instinctHomeostats.Get(i).loadValues(reader);
          }
 
          // Load mox.
-         mox.load(input, fd);
+         mox.Load(input, fd);
          if (mox.id >= MoxIdDispenser)
          {
             MoxIdDispenser = mox.id + 1;
@@ -546,7 +546,7 @@ public class EvolveCommon
 
 
       // Save member.
-      void save(FileOutputStream output, NativeFileDescriptor fd) throws IOException
+      void Store(FileOutputStream output, NativeFileDescriptor fd) throws IOException
       {
          PrintWriter writer = new PrintWriter(new OutputStreamWriter(output));
 
@@ -560,20 +560,20 @@ public class EvolveCommon
          writer.flush();
 
          // Save instincts.
-         numInstincts.saveValue(writer);
+         numInstincts.SaveValue(writer);
          for (int i = 0; i < numInstincts.ivalue; i++)
          {
-            instinctHomeostats.get(i).saveValues(writer);
+            instinctHomeostats.Get(i).saveValues(writer);
          }
          writer.flush();
 
          // Save mox.
-         mox.save(output, fd);
+         mox.Store(output, fd);
       }
 
 
       // Clear.
-      void clear()
+      void Clear()
       {
          species            = 0;
          generation         = 0;
@@ -581,7 +581,7 @@ public class EvolveCommon
          moxParmGenome      = null;
          numInstincts       = null;
          instinctHomeostats = null;
-         mox.clear();
+         mox.Clear();
          mox = null;
       }
 
@@ -591,11 +591,11 @@ public class EvolveCommon
       {
          System.out.println(getInfo());
          System.out.println("parameters:");
-         moxParmGenome.print();
+         moxParmGenome.Print();
          for (int i = 0; i < numInstincts.ivalue; i++)
          {
             System.out.println("instinct " + i + ":");
-            instinctHomeostats.get(i).print();
+            instinctHomeostats.Get(i).Print();
          }
       }
 
@@ -603,7 +603,7 @@ public class EvolveCommon
       // Get information.
       String getInfo()
       {
-         return("mox=" + mox.id +
+         return ("mox=" + mox.id +
                 ", fitness=" + fitness +
                 ", generation=" + generation);
       }

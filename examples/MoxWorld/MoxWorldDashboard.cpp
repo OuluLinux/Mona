@@ -16,17 +16,17 @@ public class MoxWorldDashboard extends JFrame
    ArrayList<Mox> moxen;
 
    // Moxen dashboards.
-   ArrayList<MoxDashboard> moxenDashboards;
+   ArrayList<Moxdashboard> moxendashboards;
    int currentMox;
 
    // Game of Life.
-   GameOfLife gameOfLife;
+   GameOfLife game_of_life;
 
    // Title.
    static final String TITLE = "Mox world";
 
-   // Dimensions.
-   static final Dimension DASHBOARD_SIZE = new Dimension(600, 700);
+   // Sizes.
+   static final Size DASHBOARD_SIZE = new Size(600, 700);
 
    // Mox display.
    MoxDisplay display;
@@ -40,30 +40,30 @@ public class MoxWorldDashboard extends JFrame
    int              stepDelay      = MAX_STEP_DELAY;
 
    // Quit.
-   boolean quit;
+   bool quit;
 
    // Constructors.
-   public MoxWorldDashboard(GameOfLife gameOfLife, ArrayList<Mox> moxen)
+   public MoxWorldDashboard(GameOfLife game_of_life, ArrayList<Mox> moxen)
    {
-      this.gameOfLife = gameOfLife;
+      this.game_of_life = game_of_life;
       setMoxen(moxen);
       currentMox = -1;
-      init();
+      Init();
    }
 
 
-   public MoxWorldDashboard(GameOfLife gameOfLife)
+   public MoxWorldDashboard(GameOfLife game_of_life)
    {
-      this.gameOfLife = gameOfLife;
+      this.game_of_life = game_of_life;
       moxen           = new ArrayList<Mox>();
       setMoxen(moxen);
       currentMox = -1;
-      init();
+      Init();
    }
 
 
    // Initialize.
-   void init()
+   void Init()
    {
       // Set up dashboard.
       setTitle(TITLE);
@@ -81,14 +81,14 @@ public class MoxWorldDashboard extends JFrame
       basePanel.setLayout(new BorderLayout());
 
       // Create display.
-      Dimension displaySize = new Dimension((int)((double)DASHBOARD_SIZE.width * .99),
+      Size displaySize = new Size((int)((double)DASHBOARD_SIZE.width * .99),
                                             (int)((double)DASHBOARD_SIZE.height * .85));
       display = new MoxDisplay(displaySize);
-      basePanel.add(display, BorderLayout.NORTH);
+      basePanel.Add(display, BorderLayout.NORTH);
 
       // Create controls.
       controls = new MoxControls();
-      basePanel.add(controls, BorderLayout.SOUTH);
+      basePanel.Add(controls, BorderLayout.SOUTH);
 
       // Make dashboard visible.
       setVisible(true);
@@ -103,12 +103,12 @@ public class MoxWorldDashboard extends JFrame
 
       // Create moxen dashboards.
       this.moxen      = moxen;
-      moxenDashboards = new ArrayList<MoxDashboard>();
-      MoxDashboard moxDashboard;
-      for (int i = 0; i < moxen.size(); i++)
+      moxendashboards = new ArrayList<Moxdashboard>();
+      Moxdashboard moxdashboard;
+      for (int i = 0; i < moxen.GetCount(); i++)
       {
-         moxDashboard = new MoxDashboard(moxen.get(i), this);
-         moxenDashboards.add(i, moxDashboard);
+         moxdashboard = new Moxdashboard(moxen.Get(i), this);
+         moxendashboards.Add(i, moxdashboard);
       }
    }
 
@@ -117,11 +117,11 @@ public class MoxWorldDashboard extends JFrame
    void reset()
    {
       currentMox = -1;
-      if (moxenDashboards != null)
+      if (moxendashboards != null)
       {
-         for (int i = 0; i < moxenDashboards.size(); i++)
+         for (int i = 0; i < moxendashboards.GetCount(); i++)
          {
-            moxenDashboards.get(i).setVisible(false);
+            moxendashboards.Get(i).setVisible(false);
          }
       }
    }
@@ -131,36 +131,36 @@ public class MoxWorldDashboard extends JFrame
    public void update(int step, int steps)
    {
       controls.updateStepCounter(step, steps);
-      update();
+      Update();
    }
 
 
    private int timer = 0;
-   public void update()
+   public void Update()
    {
       if (quit) { return; }
 
       // Update moxen dashboards.
-      for (int i = 0; i < moxenDashboards.size(); i++)
+      for (int i = 0; i < moxendashboards.GetCount(); i++)
       {
-         moxenDashboards.get(i).update();
+         moxendashboards.Get(i).Update();
       }
 
       // Update display.
-      display.update();
+      display.Update();
 
       // Timer loop: count down delay by 1ms.
       for (timer = stepDelay; timer > 0 && !quit; )
       {
          try
          {
-            Thread.sleep(1);
+            Sleep(1);
          }
          catch (InterruptedException e) {
             break;
          }
 
-         display.update();
+         display.Update();
 
          if (stepDelay < MAX_STEP_DELAY)
          {
@@ -171,35 +171,35 @@ public class MoxWorldDashboard extends JFrame
 
 
    // Set step delay.
-   void setStepDelay(int delay)
+   void SetStepDelay(int delay)
    {
       stepDelay = timer = delay;
    }
 
 
    // Step.
-   void step()
+   void Step()
    {
       timer = 0;
    }
 
 
    // Close current mox dashboard.
-   public void closeMoxDashboard()
+   public void closeMoxdashboard()
    {
       if (currentMox != -1)
       {
-         closeMoxDashboard(currentMox);
+         closeMoxdashboard(currentMox);
       }
    }
 
 
    // Close given mox dashboard.
-   public void closeMoxDashboard(int moxIndex)
+   public void closeMoxdashboard(int moxIndex)
    {
       if (moxIndex == currentMox)
       {
-         moxenDashboards.get(currentMox).setVisible(false);
+         moxendashboards.Get(currentMox).setVisible(false);
          currentMox = -1;
       }
    }
@@ -210,11 +210,11 @@ public class MoxWorldDashboard extends JFrame
    {
       if (message == null)
       {
-         controls.messageText.setText("");
+         controls.messageText.SetLabel("");
       }
       else
       {
-         controls.messageText.setText(message);
+         controls.messageText.SetLabel(message);
       }
    }
 
@@ -223,7 +223,7 @@ public class MoxWorldDashboard extends JFrame
    public class MoxDisplay extends Canvas
    {
       // Buffered display.
-      private Dimension canvasSize;
+      private Size canvasSize;
       private Graphics  graphics;
       private Image     image;
       private Graphics  imageGraphics;
@@ -235,7 +235,7 @@ public class MoxWorldDashboard extends JFrame
       private int lastY = -1;
 
       // Constructor.
-      public MoxDisplay(Dimension canvasSize)
+      public MoxDisplay(Size canvasSize)
       {
          // Configure canvas.
          this.canvasSize = canvasSize;
@@ -246,7 +246,7 @@ public class MoxWorldDashboard extends JFrame
 
 
       // Update display.
-      void update()
+      void Update()
       {
          int   x;
          int   y;
@@ -277,14 +277,14 @@ public class MoxWorldDashboard extends JFrame
          imageGraphics.fillRect(0, 0, canvasSize.width, canvasSize.height);
 
          // Draw grid.
-         synchronized (gameOfLife.lock)
+         synchronized (game_of_life.lock)
          {
-            cellWidth  = (float)canvasSize.width / (float)gameOfLife.size.width;
-            cellHeight = (float)canvasSize.height / (float)gameOfLife.size.height;
+            cellWidth  = (float)canvasSize.width / (float)game_of_life.size.width;
+            cellHeight = (float)canvasSize.height / (float)game_of_life.size.height;
             imageGraphics.setColor(Color.black);
             y2 = canvasSize.height;
 
-            for (x = 1, x2 = (int)cellWidth; x < gameOfLife.size.width;
+            for (x = 1, x2 = (int)cellWidth; x < game_of_life.size.width;
                  x++, x2 = (int)(cellWidth * (double)x))
             {
                imageGraphics.drawLine(x2, 0, x2, y2);
@@ -292,24 +292,24 @@ public class MoxWorldDashboard extends JFrame
 
             x2 = canvasSize.width;
 
-            for (y = 1, y2 = (int)cellHeight; y < gameOfLife.size.height;
+            for (y = 1, y2 = (int)cellHeight; y < game_of_life.size.height;
                  y++, y2 = (int)(cellHeight * (double)y))
             {
                imageGraphics.drawLine(0, y2, x2, y2);
             }
 
             // Draw cells.
-            for (x = x2 = 0; x < gameOfLife.size.width;
+            for (x = x2 = 0; x < game_of_life.size.width;
                  x++, x2 = (int)(cellWidth * (double)x))
             {
                for (y = 0, y2 = canvasSize.height - (int)cellHeight;
-                    y < gameOfLife.size.height;
+                    y < game_of_life.size.height;
                     y++, y2 = (int)(cellHeight *
-                                    (double)(gameOfLife.size.height - (y + 1))))
+                                    (double)(game_of_life.size.height - (y + 1))))
                {
-                  if (gameOfLife.cells[x][y] > 0)
+                  if (game_of_life.cells[x][y] > 0)
                   {
-                     switch (gameOfLife.cells[x][y])
+                     switch (game_of_life.cells[x][y])
                      {
                      case GameOfLife.GREEN_CELL_COLOR_VALUE:
                         imageGraphics.setColor(Color.green);
@@ -336,16 +336,16 @@ public class MoxWorldDashboard extends JFrame
          Mox mox;
          int[] vx = new int[3];
          int[] vy = new int[3];
-         for (int i = 0; i < moxen.size(); i++)
+         for (int i = 0; i < moxen.GetCount(); i++)
          {
-            mox = (Mox)moxen.get(i);
+            mox = (Mox)moxen.Get(i);
             if (!mox.isAlive)
             {
                continue;
             }
             x2 = (int)(cellWidth * (double)mox.x);
             y2 = (int)(cellHeight *
-                       (double)(gameOfLife.size.height - (mox.y + 1)));
+                       (double)(game_of_life.size.height - (mox.y + 1)));
 
             // Highlight selected mox?
             if (i == currentMox)
@@ -358,11 +358,11 @@ public class MoxWorldDashboard extends JFrame
             }
             imageGraphics.fillRect(x2 + 1, y2 + 1, (int)cellWidth - 1,
                                    (int)cellHeight - 1);
-            if (mox.species == Mox.SPECIES.FORAGER.getValue())
+            if (mox.species == Mox.SPECIES.FORAGER.GetValue())
             {
                imageGraphics.setColor(ForagerMox.FORAGER_COLOR);
             }
-            else if (mox.species == Mox.SPECIES.PREDATOR.getValue())
+            else if (mox.species == Mox.SPECIES.PREDATOR.GetValue())
             {
                imageGraphics.setColor(PredatorMox.PREDATOR_COLOR);
             }
@@ -370,7 +370,7 @@ public class MoxWorldDashboard extends JFrame
             {
                imageGraphics.setColor(Color.black);
             }
-            if (mox.direction == Mox.DIRECTION.NORTH.getValue())
+            if (mox.direction == Mox.DIRECTION.NORTH.GetValue())
             {
                vx[0] = x2 + (int)(cellWidth * 0.5f);
                vy[0] = y2;
@@ -379,7 +379,7 @@ public class MoxWorldDashboard extends JFrame
                vx[2] = x2 + (int)cellWidth;
                vy[2] = y2 + (int)cellHeight;
             }
-            else if (mox.direction == Mox.DIRECTION.EAST.getValue())
+            else if (mox.direction == Mox.DIRECTION.EAST.GetValue())
             {
                vx[0] = x2 + (int)(cellWidth);
                vy[0] = y2 + (int)(cellHeight * 0.5f);
@@ -388,7 +388,7 @@ public class MoxWorldDashboard extends JFrame
                vx[2] = x2;
                vy[2] = y2 + (int)cellHeight;
             }
-            else if (mox.direction == Mox.DIRECTION.SOUTH.getValue())
+            else if (mox.direction == Mox.DIRECTION.SOUTH.GetValue())
             {
                vx[0] = x2 + (int)(cellWidth * 0.5f);
                vy[0] = y2 + (int)cellHeight;
@@ -423,45 +423,45 @@ public class MoxWorldDashboard extends JFrame
             int     i;
             int     x;
             int     y;
-            double  cellWidth  = (double)canvasSize.width / (double)gameOfLife.size.width;
-            double  cellHeight = (double)canvasSize.height / (double)gameOfLife.size.height;
+            double  cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
+            double  cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
             Mox     mox;
-            boolean moxSelected;
+            bool moxSelected;
 
             x = (int)((double)evt.getX() / cellWidth);
-            y = gameOfLife.size.height - (int)((double)evt.getY() / cellHeight) - 1;
+            y = game_of_life.size.height - (int)((double)evt.getY() / cellHeight) - 1;
 
-            if ((x >= 0) && (x < gameOfLife.size.width) &&
-                (y >= 0) && (y < gameOfLife.size.height))
+            if ((x >= 0) && (x < game_of_life.size.width) &&
+                (y >= 0) && (y < game_of_life.size.height))
             {
                lastX = x;
                lastY = y;
 
                // Selecting mox?
                moxSelected = false;
-               for (i = 0; i < moxen.size(); i++)
+               for (i = 0; i < moxen.GetCount(); i++)
                {
-                  mox = moxen.get(i);
+                  mox = moxen.Get(i);
                   if (mox.isAlive && (mox.x == x) && (mox.y == y))
                   {
                      moxSelected = true;
                      if (currentMox == -1)
                      {
                         currentMox = i;
-                        moxenDashboards.get(currentMox).setVisible(true);
+                        moxendashboards.Get(currentMox).setVisible(true);
                      }
                      else
                      {
                         if (i == currentMox)
                         {
-                           moxenDashboards.get(currentMox).setVisible(false);
+                           moxendashboards.Get(currentMox).setVisible(false);
                            currentMox = -1;
                         }
                         else
                         {
-                           moxenDashboards.get(currentMox).setVisible(false);
+                           moxendashboards.Get(currentMox).setVisible(false);
                            currentMox = i;
-                           moxenDashboards.get(currentMox).setVisible(true);
+                           moxendashboards.Get(currentMox).setVisible(true);
                         }
                      }
                      break;
@@ -469,27 +469,27 @@ public class MoxWorldDashboard extends JFrame
                }
                if (!moxSelected && (currentMox != -1))
                {
-                  moxenDashboards.get(currentMox).setVisible(false);
+                  moxendashboards.Get(currentMox).setVisible(false);
                   currentMox = -1;
                }
 
                if (!moxSelected)
                {
-                  synchronized (gameOfLife.lock)
+                  synchronized (game_of_life.lock)
                   {
-                     if (gameOfLife.cells[x][y] > 0)
+                     if (game_of_life.cells[x][y] > 0)
                      {
-                        gameOfLife.cells[x][y] = 0;
+                        game_of_life.cells[x][y] = 0;
                      }
                      else
                      {
-                        gameOfLife.cells[x][y] = 1;
+                        game_of_life.cells[x][y] = 1;
                      }
                   }
                }
 
                // Refresh display.
-               update();
+               Update();
             }
          }
       }
@@ -502,34 +502,34 @@ public class MoxWorldDashboard extends JFrame
          {
             int    x;
             int    y;
-            double cellWidth  = (double)canvasSize.width / (double)gameOfLife.size.width;
-            double cellHeight = (double)canvasSize.height / (double)gameOfLife.size.height;
+            double cellWidth  = (double)canvasSize.width / (double)game_of_life.size.width;
+            double cellHeight = (double)canvasSize.height / (double)game_of_life.size.height;
 
             x = (int)((double)evt.getX() / cellWidth);
-            y = gameOfLife.size.height - (int)((double)evt.getY() / cellHeight) - 1;
+            y = game_of_life.size.height - (int)((double)evt.getY() / cellHeight) - 1;
 
-            if ((x >= 0) && (x < gameOfLife.size.width) &&
-                (y >= 0) && (y < gameOfLife.size.height))
+            if ((x >= 0) && (x < game_of_life.size.width) &&
+                (y >= 0) && (y < game_of_life.size.height))
             {
                if ((x != lastX) || (y != lastY))
                {
                   lastX = x;
                   lastY = y;
 
-                  synchronized (gameOfLife.lock)
+                  synchronized (game_of_life.lock)
                   {
-                     if (gameOfLife.cells[x][y] > 0)
+                     if (game_of_life.cells[x][y] > 0)
                      {
-                        gameOfLife.cells[x][y] = 0;
+                        game_of_life.cells[x][y] = 0;
                      }
                      else
                      {
-                        gameOfLife.cells[x][y] = 1;
+                        game_of_life.cells[x][y] = 1;
                      }
                   }
 
                   // Refresh display.
-                  update();
+                  Update();
                }
             }
          }
@@ -555,23 +555,23 @@ public class MoxWorldDashboard extends JFrame
          JPanel panel = new JPanel();
          resetButton = new JButton("Reset");
          resetButton.addActionListener(this);
-         panel.add(resetButton);
-         panel.add(new JLabel("Speed:   Fast", Label.RIGHT));
+         panel.Add(resetButton);
+         panel.Add(new JLabel("Speed:   Fast", Label.RIGHT));
          speedSlider = new JSlider(JSlider.HORIZONTAL, MIN_STEP_DELAY,
                                    MAX_STEP_DELAY, MAX_STEP_DELAY);
          speedSlider.addChangeListener(this);
-         panel.add(speedSlider);
-         panel.add(new JLabel("Stop", Label.LEFT));
+         panel.Add(speedSlider);
+         panel.Add(new JLabel("Stop", Label.LEFT));
          stepButton = new JButton("Step");
          stepButton.addActionListener(this);
-         panel.add(stepButton);
+         panel.Add(stepButton);
          stepCounter = new JLabel("");
-         panel.add(stepCounter);
+         panel.Add(stepCounter);
          add(panel, BorderLayout.NORTH);
          panel       = new JPanel();
          messageText = new JTextField("", 50);
          messageText.setEditable(false);
-         panel.add(messageText);
+         panel.Add(messageText);
          add(panel, BorderLayout.SOUTH);
       }
 
@@ -579,14 +579,14 @@ public class MoxWorldDashboard extends JFrame
       // Update step counter display
       void updateStepCounter(int step, int steps)
       {
-         stepCounter.setText("Step: " + step + "/" + steps);
+         stepCounter.SetLabel("Step: " + step + "/" + steps);
       }
 
 
       // Speed slider listener.
       public void stateChanged(ChangeEvent evt)
       {
-         setStepDelay(speedSlider.getValue());
+         SetStepDelay(speedSlider.GetValue());
       }
 
 
@@ -596,12 +596,12 @@ public class MoxWorldDashboard extends JFrame
          // Reset?
          if (evt.getSource() == (Object)resetButton)
          {
-            gameOfLife.restore();
-            int numMox = moxen.size();
+            game_of_life.restore();
+            int numMox = moxen.GetCount();
             for (int i = 0; i < numMox; i++)
             {
-               moxen.get(i).reset();
-               moxenDashboards.get(i).update();
+               moxen.Get(i).reset();
+               moxendashboards.Get(i).Update();
             }
 
             return;
@@ -610,8 +610,8 @@ public class MoxWorldDashboard extends JFrame
          // Step?
          if (evt.getSource() == (Object)stepButton)
          {
-            speedSlider.setValue(MAX_STEP_DELAY);
-            step();
+            speedSlider.SetValue(MAX_STEP_DELAY);
+            Step();
 
             return;
          }

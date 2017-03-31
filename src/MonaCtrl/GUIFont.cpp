@@ -2,10 +2,10 @@
 
 bool GUIFont::build()
 {
-  if(!getName().size())
+  if(!GetName().GetCount())
     return Logger::writeErrorLog("Null font path");
   
-  return font.load(getName().c_str());
+  return font.Load(GetName().c_str());
 }
 
 bool GUIFont::loadXMLSettings(const TiXmlElement *element)
@@ -13,7 +13,7 @@ bool GUIFont::loadXMLSettings(const TiXmlElement *element)
   if(!XMLArbiter::inspectElementInfo(element, "Font"))
     return Logger::writeErrorLog("Need a Font node in the xml file");
 
-  setName(element->Attribute("path"));
+  SetName(element->Attribute("path"));
 
   return true;
 }
@@ -25,7 +25,7 @@ CFont *GUIFont::getFontObject()
 
 bool  GUIFont::operator ==(const GUIFont &compare)
 {
-  return (name   == compare.getName());  
+  return (name   == compare.GetName());  
 }
 
 bool  GUIFont::operator !=(const GUIFont &compare)

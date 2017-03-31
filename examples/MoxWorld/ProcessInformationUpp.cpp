@@ -17,5 +17,5 @@ JNIEXPORT jlong JNICALL Java_ProcessInformation_getProcessCPUTime(JNIEnv *env, j
    struct tms proctimes;
 
    times(&proctimes);
-   return(proctimes.tms_stime + proctimes.tms_utime);
+   return (proctimes.tms_stime + proctimes.tms_utime);
 }

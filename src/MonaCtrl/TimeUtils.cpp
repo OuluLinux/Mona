@@ -102,7 +102,7 @@ void FPSCounter::markFrameEnd()
 /*                                                                                         */
 /*******************************************************************************************/
 
-Benchmark::Benchmark(const std::string &logFilePath) : FPSCounter() , IOXMLObject("Benchmark")
+Benchmark::Benchmark(const String &logFilePath) : FPSCounter() , IOXMLObject("Benchmark")
 {
   setLogFilePath(logFilePath);
   framesCounter  =   0.0f;
@@ -125,11 +125,11 @@ bool   Benchmark::loadXMLSettings(const TiXmlElement *element)
   return true;
 }
 
-bool Benchmark::exportXMLSettings(const std::string &xmlPath)
+bool Benchmark::exportXMLSettings(const String &xmlPath)
 {
-  if(!xmlPath.size())
+  if(!xmlPath.GetCount())
   {
-    if(!logFilePath.size())
+    if(!logFilePath.GetCount())
       return Logger::writeErrorLog("Cannot export Benchmark results -> NULL log file path");
   }
   else
@@ -148,12 +148,12 @@ bool Benchmark::exportXMLSettings(const std::string &xmlPath)
   return true;
 }
 
-void Benchmark::setLogFilePath(const std::string &lFilePath)
+void Benchmark::setLogFilePath(const String &lFilePath)
 {
-  logFilePath = lFilePath.size() ? lFilePath : logFilePath;
+  logFilePath = lFilePath.GetCount() ? lFilePath : logFilePath;
 }
 
-const std::string &Benchmark::getLogFilePath() const
+const String &Benchmark::getLogFilePath() const
 {
   return logFilePath;
 }

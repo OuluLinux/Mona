@@ -1,3 +1,4 @@
+#if 0
 /*
  * Basic logging.
  */
@@ -17,7 +18,7 @@ char Log::messageBuf[MESSAGE_SIZE + 1];
 FILE *Log::logfp     = NULL;
 bool Log:: logOpened = false;
 
-void Log::setLogFileName(char *name)
+void Log::setlog_file_name(char *name)
 {
    strncpy(logFileNameBuf, name, LOG_FILE_NAMESZ);
    logFileName = logFileNameBuf;
@@ -171,3 +172,4 @@ void Log::log(char *prefix, char *message)
       fflush(stdout);
    }
 }
+#endif

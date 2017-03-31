@@ -1,6 +1,6 @@
 #include "EasyGL.h"
 
-GUIText::GUIText(const std::string &text)
+GUIText::GUIText(const String &text)
 {
   fontIndex =    -1;
   update    = true;
@@ -29,7 +29,7 @@ GUIText &GUIText::operator =(const GUIText & copy)
   return *this;
 }
 
-GUIText &GUIText::operator =(const std::string & str)
+GUIText &GUIText::operator =(const String & str)
 {
   setString(str);
   return *this;
@@ -40,19 +40,19 @@ bool GUIText::loadXMLSettings(const TiXmlElement *element)
   if(!element || !element->Value() || strcmp(element->Value(),  "Text"))
     return Logger::writeErrorLog("Need a Text node in the xml file");
  
-  for(const TiXmlElement *child = element->FirstChildElement();	
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();	
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    const char * value = child->Value();
+    const char * value = outer->Value();
 
     if(value)
     {
       if(!strcmp(value, "Color"))
-        XMLArbiter::fillComponents3f(child, color);
+        XMLArbiter::fillComponents3f(outer, color);
 
       if(!strcmp(value, "Font"))
-        fontIndex = GUIFontManager::addFont(child);
+        fontIndex = GUIFontManager::addFont(outer);
     }
   }
 
@@ -64,11 +64,11 @@ bool GUIText::loadXMLSettings(const TiXmlElement *element)
   return true;
 }
 
-const std::string& GUIText::getString(){  return text; }
+const String& GUIText::getString(){  return text; }
 
-void GUIText::setString(const std::string &textArg)
+void GUIText::setString(const String &textArg)
 {
-  if(textArg.size() && text != textArg)
+  if(textArg.GetCount() && text != textArg)
   {
     text   = textArg;
     update = true;
@@ -84,12 +84,12 @@ void GUIText::setString(const char *textArg)
   }
 }
 
-void GUIText::clear()
+void GUIText::Clear()
 {
 #ifndef WIN32
   text = "";
 #else
-  text.clear();
+  text.Clear();
 #endif
   update = false;
   size.set(0,0);
@@ -105,17 +105,17 @@ void GUIText::setFontIndex(int index)
   fontIndex = index;
 }
 
-void  GUIText::print(int x, int y, int startIndex, int endIndex)
+void  GUIText::Print(int x, int y, int startIndex, int endIndex)
 {
-  if(!text.size())
+  if(!text.GetCount())
     return;
 
-  endIndex   = (endIndex  < 0) ? int(text.size()) : endIndex;
+  endIndex   = (endIndex  < 0) ? int(text.GetCount()) : endIndex;
   startIndex = clamp(startIndex, 0, endIndex);
 
   GUIFontManager::setCurrentFont(fontIndex);
   GUIFont *currentFont = GUIFontManager::getCurrentFont();
-  computeDimensions();
+  computeSizes();
 
   if(!currentFont && !(currentFont = GUIFontManager::getDefaultFont()))
     return;
@@ -124,10 +124,10 @@ void  GUIText::print(int x, int y, int startIndex, int endIndex)
   s = startIndex;
   e = endIndex;
   y2 = y;
-  while (true)
+  while true
   {
-      std::string::size_type p = text.find("\n", s);
-      if(p == std::string::npos) break;
+      String::size_type p = text.find("\n", s);
+      if(p == String::npos) break;
       if (int(p) >= endIndex) break;
       e = int(p);
       if (s < e)
@@ -150,32 +150,32 @@ void  GUIText::print(int x, int y, int startIndex, int endIndex)
 
 void  GUIText::printCenteredX (int x, int y, int startIndex, int endIndex)
 {
-  if(!text.size())
+  if(!text.GetCount())
     return;
 
-  computeDimensions();
-  print(x - size.x/2, y, startIndex, endIndex);
+  computeSizes();
+  Print(x - size.x/2, y, startIndex, endIndex);
 }
 
 void  GUIText::printCenteredY (int x, int y, int startIndex, int endIndex)
 {
-  if(!text.size())
+  if(!text.GetCount())
     return;
 
-  computeDimensions();
-  print(x,  y - size.y/2, startIndex, endIndex);
+  computeSizes();
+  Print(x,  y - size.y/2, startIndex, endIndex);
 }
 
 void  GUIText::printCenteredXY(int x, int y, int startIndex, int endIndex)
 {
-  if(!text.size())
+  if(!text.GetCount())
     return;
 
-  computeDimensions();
-  print(x - size.x/2, y - size.y/2, startIndex, endIndex);
+  computeSizes();
+  Print(x - size.x/2, y - size.y/2, startIndex, endIndex);
 }
 
-void GUIText::computeDimensions()
+void GUIText::computeSizes()
 {
   if(needUpdating())
   {
@@ -188,9 +188,9 @@ void GUIText::computeDimensions()
     if(currentFont == GUIFontManager::getDefaultFont())
       fontIndex = GUIFontManager::findFontIndex(currentFont);
 
-    if(text.size())
+    if(text.GetCount())
     {
-      size = currentFont->getFontObject()->getStringDimensions(text);
+      size = currentFont->getFontObject()->getStringSizes(text);
       size.x = int(float(size.x)*scales.x);
       size.y = int(float(size.y)*scales.y);
     } else {

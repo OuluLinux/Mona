@@ -49,7 +49,7 @@ public:
    // Rotation.
    GLfloat     m_pitchRate, m_yawRate, m_rollRate;
    GLfloat     m_rotmatrix[4][4];
-   cQuaternion *m_qcalc;
+   CQuaternion *m_qcalc;
 
    // Position.
    GLfloat m_x, m_y, m_z;
@@ -63,9 +63,9 @@ public:
    // Constructors.
    cSpacial()
    {
-      m_qcalc = new cQuaternion();
-      assert(m_qcalc != NULL);
-      clear();
+      m_qcalc = new CQuaternion();
+      ASSERT(m_qcalc != NULL);
+      Clear();
    }
 
 
@@ -73,14 +73,14 @@ public:
             GLfloat pitchRate, GLfloat yawRate, GLfloat rollRate,
             GLfloat x, GLfloat y, GLfloat z, GLfloat scale, GLfloat speed)
    {
-      m_qcalc = new cQuaternion();
-      assert(m_qcalc != NULL);
+      m_qcalc = new CQuaternion();
+      ASSERT(m_qcalc != NULL);
       initialize(pitch, yaw, roll, pitchRate, yawRate, rollRate,
                  x, y, z, scale, speed);
    }
 
 
-   inline void clear()
+   inline void Clear()
    {
       initialize(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
    }
@@ -102,9 +102,9 @@ public:
    void setRoll(GLfloat roll);
 
    // Get and set angular rates.
-   inline GLfloat getPitchRate() { return(m_pitchRate); }
-   inline GLfloat getYawRate() { return(m_yawRate); }
-   inline GLfloat getRollRate() { return(m_rollRate); }
+   inline GLfloat getPitchRate() { return (m_pitchRate); }
+   inline GLfloat getYawRate() { return (m_yawRate); }
+   inline GLfloat getRollRate() { return (m_rollRate); }
    inline void setPitchRate(GLfloat pitchRate) { m_pitchRate = pitchRate; }
    inline void setYawRate(GLfloat yawRate) { m_yawRate = yawRate; }
    inline void setRollRate(GLfloat rollRate) { m_rollRate = rollRate; }
@@ -115,44 +115,44 @@ public:
    void getForward(GLfloat *v);
 
    // Get and set position.
-   inline GLfloat getX() { return(m_x); }
-   inline GLfloat getY() { return(m_y); }
-   inline GLfloat getZ() { return(m_z); }
+   inline GLfloat getX() { return (m_x); }
+   inline GLfloat getY() { return (m_y); }
+   inline GLfloat getZ() { return (m_z); }
    inline void setX(GLfloat x) { m_x = x; }
    inline void setY(GLfloat y) { m_y = y; }
    inline void setZ(GLfloat z) { m_z = z; }
 
    // Get and set scale.
-   inline GLfloat getScale() { return(m_scale); }
+   inline GLfloat getScale() { return (m_scale); }
    inline void setScale(GLfloat scale) { m_scale = scale; }
 
    // Get and set speed.
-   inline GLfloat getSpeed() { return(m_speed); }
+   inline GLfloat getSpeed() { return (m_speed); }
    inline void setSpeed(GLfloat speed) { m_speed = speed; }
 
    // Update rotation and translation state.
-   void update();
+   void Update();
 
    // Get Euler angles.
-   inline void getEulerAngles(float& pitch, float& yaw, float& roll)
+   inline void GetEulerAngles(float& pitch, float& yaw, float& roll)
    {
-      m_qcalc->getEulerAngles(pitch, yaw, roll);
+      m_qcalc->GetEulerAngles(pitch, yaw, roll);
    }
 
 
    // Load an axis-angle rotation.
-   inline void loadRotation(GLfloat angle, GLfloat *axis)
+   inline void LoadRotation(GLfloat angle, GLfloat *axis)
    {
-      m_qcalc->loadRotation(DegreesToRadians(angle), axis);
-      build_rotmatrix();
+      m_qcalc->LoadRotation(DegreesToRadians(angle), axis);
+      BuildRotationMatrix();
    }
 
 
    // Merge an axis-angle rotation.
-   inline void mergeRotation(GLfloat angle, GLfloat *axis)
+   inline void MergeRotation(GLfloat angle, GLfloat *axis)
    {
-      m_qcalc->mergeRotation(DegreesToRadians(angle), axis);
-      build_rotmatrix();
+      m_qcalc->MergeRotation(DegreesToRadians(angle), axis);
+      BuildRotationMatrix();
    }
 
 
@@ -163,9 +163,9 @@ public:
    void getBillboard(GLfloat *target, GLfloat *source, GLfloat *rotation);
 
    // Build rotation matrix from quaternion.
-   inline void build_rotmatrix()
+   inline void BuildRotationMatrix()
    {
-      m_qcalc->build_rotmatrix(m_rotmatrix);
+      m_qcalc->BuildRotationMatrix(m_rotmatrix);
    }
 
 
@@ -200,10 +200,10 @@ public:
 
 
    // Clone spacial.
-   cSpacial *clone();
+   cSpacial *Clone();
 
    // Load and save.
-   void load(FILE *fp);
-   void save(FILE *fp);
+   void Load(FILE *fp);
+   void Store(FILE *fp);
 };
 #endif

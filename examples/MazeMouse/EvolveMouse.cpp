@@ -1,107 +1,100 @@
 #include "EvolveMouse.h"
 
 // Version (SCCS "what" format).
-const char *MouseEvolveVersion = MOUSE_EVOLVE_VERSION;
+const char* MouseEvolveVersion = MOUSE_EVOLVE_VERSION;
 
 // Print version.
 void
-printEvolveVersion(FILE *out = stdout)
-{
-   fprintf(out, "%s\n", &MouseEvolveVersion[5]);
+printEvolveVersion(FILE* out = stdout) {
+	fprintf(out, "%s\n", &MouseEvolveVersion[5]);
 }
 
 
 // Usage.
-char *Usage[] =
-{
-   (char *)"To run:",
-   (char *)"  evolve_mouse",
-   (char *)"      [-generations <evolution generations>]",
-   (char *)"      [-numMazeTests (number of maze tests)]",
-   (char *)"      [-numDoorTrainingTrials (number of door association training trials)]",
-   (char *)"      [-numMazeTrainingTrials (number of training trials per maze test)]",
-   (char *)"      [-mutationRate <mutation rate>]",
-   (char *)"      [-randomSeed <random seed> (for new run)]",
-   (char *)"      [-print (print mouse brain parameters)]",
-   (char *)"      [-input <evolution input file name>]",
-   (char *)"      [-output <evolution output file name>]",
-   (char *)"      [-logfile <log file name>]",
-   (char *)"      [-ignoreInterrupts (ignore interrupts)]",
-#ifdef WIN32
-   (char *)"      [-attachConsole (attach to console)]",
-#endif
-   (char *)"To print version:",
-   (char *)"  evolve_mouse",
-   (char *)"      [-version (print version)]",
-   NULL
+char* Usage[] = {
+	(char*)"To run:",
+	(char*)"  evolve_mouse",
+	(char*)"      [-generations <evolution generations>]",
+	(char*)"      [-numMazeTests (number of maze tests)]",
+	(char*)"      [-numDoorTrainingTrials (number of door association training trials)]",
+	(char*)"      [-numMazeTrainingTrials (number of training trials per maze test)]",
+	(char*)"      [-mutation_rate <mutation rate>]",
+	(char*)"      [-random_seed <random seed> (for new run)]",
+	(char*)"      [-print (print mouse brain parameters)]",
+	(char*)"      [-input <evolution input file name>]",
+	(char*)"      [-output <evolution output file name>]",
+	(char*)"      [-logfile <log file name>]",
+	(char*)"      [-ignoreInterrupts (ignore interrupts)]",
+	#ifdef WIN32
+	(char*)"      [-attachConsole (attach to console)]",
+	#endif
+	(char*)"To print version:",
+	(char*)"  evolve_mouse",
+	(char*)"      [-version (print version)]",
+	NULL
 };
 
 // Print and log error.
-void printError(char *buf)
-{
-   fprintf(stderr, "%s\n", buf);
-   if (Log::LOGGING_FLAG == LOG_TO_FILE)
-   {
-      sprintf(Log::messageBuf, "%s", buf);
-      Log::logError();
-   }
+void PrintError(char* buf) {
+	fprintf(stderr, "%s\n", buf);
+
+	if (Log::LOGGING_FLAG == LOG_TO_FILE) {
+		sprintf(Log::messageBuf, "%s", buf);
+		Log::logError();
+	}
 }
 
 
 // Print and log information.
-void printInfo(char *buf)
-{
-   fprintf(stderr, "%s\n", buf);
-   if (Log::LOGGING_FLAG == LOG_TO_FILE)
-   {
-      sprintf(Log::messageBuf, "%s", buf);
-      Log::logInformation();
-   }
+void printInfo(char* buf) {
+	fprintf(stderr, "%s\n", buf);
+
+	if (Log::LOGGING_FLAG == LOG_TO_FILE) {
+		sprintf(Log::messageBuf, "%s", buf);
+		Log::logInformation();
+	}
 }
 
 
 // Print usage.
-void printUsage()
-{
-   for (int i = 0; Usage[i] != NULL; i++)
-   {
-      printInfo(Usage[i]);
-   }
+void printUsage() {
+	for (int i = 0; Usage[i] != NULL; i++)
+		printInfo(Usage[i]);
 }
 
 
 // Evolution generation.
-int Generation = 0;
+int generation = 0;
 
-// Generations to run.
-int Generations = -1;
+// generation_count to run.
+int generation_count = -1;
 
 // Number of maze tests.
-int NumMazeTests = DEFAULT_NUM_MAZE_TESTS;
+int maze_test_count = DEFAULT_NUM_MAZE_TESTS;
 
 // Number of door association training trials.
-int NumDoorTrainingTrials = DEFAULT_NUM_DOOR_TRAINING_TRIALS;
+int door_training_trial_count = DEFAULT_NUM_DOOR_TRAINING_TRIALS;
 
 // Number of maze training trials.
-int NumMazeTrainingTrials = DEFAULT_NUM_MAZE_TRAINING_TRIALS;
+int maze_training_trial_count = DEFAULT_NUM_MAZE_TRAINING_TRIALS;
 
 // Are maze room doors all visible?
 // Some of these doors are blocked.
-bool SeeAllMazeDoors = true;
+bool see_all_maze_doors = true;
 
 // Mutation rate.
-PROBABILITY MutationRate = DEFAULT_MUTATION_RATE;
+PROBABILITY mutation_rate = DEFAULT_MUTATION_RATE;
 
 // Random numbers.
 RANDOM RandomSeed  = INVALID_RANDOM;
-Random *Randomizer = NULL;
+Random* randomizer = NULL;
 
 // Print mouse brain parameters.
 bool Print = false;
 
 // Population file names.
-char *InputFileName  = NULL;
-char *OutputFileName = NULL;
+char* input_file_name  = NULL;
+char* output_file_name = NULL;
 
 // Room types.
 #define START_ROOM     0
@@ -123,1419 +116,1295 @@ char *OutputFileName = NULL;
 #define CHEESE_GOAL    0.5
 
 // Maze-learning task.
-int DoorAssociations[3];
-vector<vector<int> > MazePaths;
+int door_associations[3];
+Vector<Vector<int> > maze_paths;
 
 // Maze room.
-class Room
-{
+class Room {
 public:
 
-   int            type;
-   int            cx;
-   int            cy;
-   bool           hasCheese;
-   vector<Room *> doors;
+	int            type;
+	int            cx;
+	int            cy;
+	bool           has_cheese;
+	Vector<Room*> doors;
 
-   Room(int type, int cx, int cy)
-   {
-      this->type = type;
-      this->cx   = cx;
-      this->cy   = cy;
-   }
+	Room(int type, int cx, int cy) {
+		this->type = type;
+		this->cx   = cx;
+		this->cy   = cy;
+	}
 
 
-   // Set room doors to other rooms.
-   void setDoors(vector<Room *>& doors)
-   {
-      this->doors = doors;
-   }
+	// Set room doors to other rooms.
+	void SetDoors(Room* left, Room* fwd, Room* right) {
+		doors.SetCount(0);
+		if (left)	doors.Add(left);
+		if (right)	doors.Add(right);
+		if (fwd)	doors.Add(fwd);
+	}
 };
 
 // Maze.
-vector<Room *> maze[7];
-int            beginMazeIndex;
-int            endMazeIndex;
+Vector<Room*> maze[7];
+int            begin_maze_index;
+int            end_maze_index;
 
 // Mouse position.
 int mouseX;
 int mouseY;
 
 // Build maze.
-void buildMaze()
-{
-   vector<Room *> doors;
-   maze[0].resize(3);
-   maze[0][1]     = new Room(START_ROOM, 0, 1);
-   maze[0][0]     = new Room(START_ROOM, 0, 0);
-   maze[0][2]     = new Room(START_ROOM, 0, 2);
-   beginMazeIndex = 1;
-   maze[1].resize(1);
-   maze[1][0] = new Room(BEGIN_MAZE, 1, 0);
-   doors.resize(3);
-   doors[0] = NULL;
-   doors[1] = NULL;
-   doors[2] = maze[1][0];
-   maze[0][0]->setDoors(doors);
-   doors[0] = NULL;
-   doors[1] = maze[1][0];
-   doors[2] = NULL;
-   maze[0][1]->setDoors(doors);
-   doors[0] = maze[1][0];
-   doors[1] = NULL;
-   doors[2] = NULL;
-   maze[0][2]->setDoors(doors);
-   maze[2].resize(3);
-   maze[2][1] = new Room(MAZE_ROOM, 2, 1);
-   maze[2][0] = new Room(MAZE_ROOM, 2, 0);
-   maze[2][2] = new Room(MAZE_ROOM, 2, 2);
-   doors[0]   = maze[2][0];
-   doors[1]   = maze[2][1];
-   doors[2]   = maze[2][2];
-   maze[1][0]->setDoors(doors);
-   maze[3].resize(5);
-   maze[3][2] = new Room(MAZE_ROOM, 3, 2);
-   maze[3][1] = new Room(MAZE_ROOM, 3, 1);
-   maze[3][0] = new Room(MAZE_ROOM, 3, 0);
-   maze[3][3] = new Room(MAZE_ROOM, 3, 3);
-   maze[3][4] = new Room(MAZE_ROOM, 3, 4);
-   doors[0]   = maze[3][0];
-   doors[1]   = maze[3][1];
-   doors[2]   = maze[3][2];
-   maze[2][0]->setDoors(doors);
-   doors[0] = maze[3][1];
-   doors[1] = maze[3][2];
-   doors[2] = maze[3][3];
-   maze[2][1]->setDoors(doors);
-   doors[0] = maze[3][2];
-   doors[1] = maze[3][3];
-   doors[2] = maze[3][4];
-   maze[2][2]->setDoors(doors);
-   maze[4].resize(3);
-   maze[4][1] = new Room(MAZE_ROOM, 4, 1);
-   maze[4][0] = new Room(MAZE_ROOM, 4, 0);
-   maze[4][2] = new Room(MAZE_ROOM, 4, 2);
-   doors[0]   = NULL;
-   doors[1]   = NULL;
-   doors[2]   = maze[4][0];
-   maze[3][0]->setDoors(doors);
-   doors[0] = NULL;
-   doors[1] = maze[4][0];
-   doors[2] = maze[4][1];
-   maze[3][1]->setDoors(doors);
-   doors[0] = maze[4][0];
-   doors[1] = maze[4][1];
-   doors[2] = maze[4][2];
-   maze[3][2]->setDoors(doors);
-   doors[0] = maze[4][1];
-   doors[1] = maze[4][2];
-   doors[2] = NULL;
-   maze[3][3]->setDoors(doors);
-   doors[0] = maze[4][2];
-   doors[1] = NULL;
-   doors[2] = NULL;
-   maze[3][4]->setDoors(doors);
-   endMazeIndex = 5;
-   maze[5].resize(1);
-   maze[5][0] = new Room(END_MAZE, 5, 0);
-   doors[0]   = NULL;
-   doors[1]   = NULL;
-   doors[2]   = maze[5][0];
-   maze[4][0]->setDoors(doors);
-   doors[0] = NULL;
-   doors[1] = maze[5][0];
-   doors[2] = NULL;
-   maze[4][1]->setDoors(doors);
-   doors[0] = maze[5][0];
-   doors[1] = NULL;
-   doors[2] = NULL;
-   maze[4][2]->setDoors(doors);
-   maze[6].resize(3);
-   maze[6][1] = new Room(GOAL_ROOM, 6, 1);
-   maze[6][0] = new Room(GOAL_ROOM, 6, 0);
-   maze[6][2] = new Room(GOAL_ROOM, 6, 2);
-   doors[0]   = maze[6][0];
-   doors[1]   = maze[6][1];
-   doors[2]   = maze[6][2];
-   maze[5][0]->setDoors(doors);
-   doors[0] = NULL;
-   doors[1] = NULL;
-   doors[2] = NULL;
-   maze[6][0]->setDoors(doors);
-   maze[6][1]->setDoors(doors);
-   maze[6][2]->setDoors(doors);
-   mouseX = mouseY = 0;
+void buildMaze() {
+	Vector<Room*> doors;
+	maze[0].SetCount(3);
+	maze[0][1]     = new Room(START_ROOM, 0, 1);
+	maze[0][0]     = new Room(START_ROOM, 0, 0);
+	maze[0][2]     = new Room(START_ROOM, 0, 2);
+	begin_maze_index = 1;
+	maze[1].SetCount(1);
+	maze[1][0] = new Room(BEGIN_MAZE, 1, 0);
+	doors.SetCount(3);
+	doors[0] = NULL;
+	doors[1] = NULL;
+	doors[2] = maze[1][0];
+	maze[0][0]->setDoors(doors);
+	doors[0] = NULL;
+	doors[1] = maze[1][0];
+	doors[2] = NULL;
+	maze[0][1]->setDoors(doors);
+	doors[0] = maze[1][0];
+	doors[1] = NULL;
+	doors[2] = NULL;
+	maze[0][2]->setDoors(doors);
+	maze[2].SetCount(3);
+	maze[2][1] = new Room(MAZE_ROOM, 2, 1);
+	maze[2][0] = new Room(MAZE_ROOM, 2, 0);
+	maze[2][2] = new Room(MAZE_ROOM, 2, 2);
+	doors[0]   = maze[2][0];
+	doors[1]   = maze[2][1];
+	doors[2]   = maze[2][2];
+	maze[1][0]->setDoors(doors);
+	maze[3].SetCount(5);
+	maze[3][2] = new Room(MAZE_ROOM, 3, 2);
+	maze[3][1] = new Room(MAZE_ROOM, 3, 1);
+	maze[3][0] = new Room(MAZE_ROOM, 3, 0);
+	maze[3][3] = new Room(MAZE_ROOM, 3, 3);
+	maze[3][4] = new Room(MAZE_ROOM, 3, 4);
+	doors[0]   = maze[3][0];
+	doors[1]   = maze[3][1];
+	doors[2]   = maze[3][2];
+	maze[2][0]->setDoors(doors);
+	doors[0] = maze[3][1];
+	doors[1] = maze[3][2];
+	doors[2] = maze[3][3];
+	maze[2][1]->setDoors(doors);
+	doors[0] = maze[3][2];
+	doors[1] = maze[3][3];
+	doors[2] = maze[3][4];
+	maze[2][2]->setDoors(doors);
+	maze[4].SetCount(3);
+	maze[4][1] = new Room(MAZE_ROOM, 4, 1);
+	maze[4][0] = new Room(MAZE_ROOM, 4, 0);
+	maze[4][2] = new Room(MAZE_ROOM, 4, 2);
+	doors[0]   = NULL;
+	doors[1]   = NULL;
+	doors[2]   = maze[4][0];
+	maze[3][0]->setDoors(doors);
+	doors[0] = NULL;
+	doors[1] = maze[4][0];
+	doors[2] = maze[4][1];
+	maze[3][1]->setDoors(doors);
+	doors[0] = maze[4][0];
+	doors[1] = maze[4][1];
+	doors[2] = maze[4][2];
+	maze[3][2]->setDoors(doors);
+	doors[0] = maze[4][1];
+	doors[1] = maze[4][2];
+	doors[2] = NULL;
+	maze[3][3]->setDoors(doors);
+	doors[0] = maze[4][2];
+	doors[1] = NULL;
+	doors[2] = NULL;
+	maze[3][4]->setDoors(doors);
+	end_maze_index = 5;
+	maze[5].SetCount(1);
+	maze[5][0] = new Room(END_MAZE, 5, 0);
+	doors[0]   = NULL;
+	doors[1]   = NULL;
+	doors[2]   = maze[5][0];
+	maze[4][0]->setDoors(doors);
+	doors[0] = NULL;
+	doors[1] = maze[5][0];
+	doors[2] = NULL;
+	maze[4][1]->setDoors(doors);
+	doors[0] = maze[5][0];
+	doors[1] = NULL;
+	doors[2] = NULL;
+	maze[4][2]->setDoors(doors);
+	maze[6].SetCount(3);
+	maze[6][1] = new Room(GOAL_ROOM, 6, 1);
+	maze[6][0] = new Room(GOAL_ROOM, 6, 0);
+	maze[6][2] = new Room(GOAL_ROOM, 6, 2);
+	doors[0]   = maze[6][0];
+	doors[1]   = maze[6][1];
+	doors[2]   = maze[6][2];
+	maze[5][0]->setDoors(doors);
+	doors[0] = NULL;
+	doors[1] = NULL;
+	doors[2] = NULL;
+	maze[6][0]->setDoors(doors);
+	maze[6][1]->setDoors(doors);
+	maze[6][2]->setDoors(doors);
+	mouseX = mouseY = 0;
 }
 
 
 // Initialize mouse brain.
-void initBrain(Mona *mouse)
-{
-   vector<Mona::SENSOR> goalSensors;
-
-   mouse->initNet(5, HOP + 1, 1, Randomizer->RAND());
-
-   // Set a long second effect interval
-   // for a higher level mediator.
-   mouse->effectEventIntervals[1].resize(2);
-   mouse->effectEventIntervalWeights[1].resize(2);
-   mouse->effectEventIntervals[1][0]       = 2;
-   mouse->effectEventIntervalWeights[1][0] = 0.5;
-   mouse->effectEventIntervals[1][1]       = 10;
-   mouse->effectEventIntervalWeights[1][1] = 0.5;
-
-   // Set need and goal for cheese.
-   mouse->setNeed(0, CHEESE_NEED);
-   goalSensors.push_back(0.0);
-   goalSensors.push_back(0.0);
-   goalSensors.push_back(0.0);
-   goalSensors.push_back((double)GOAL_ROOM);
-   goalSensors.push_back(1.0);
-   mouse->homeostats[0]->addGoal(goalSensors, 0,
-                                 Mona::NULL_RESPONSE, CHEESE_GOAL);
+void InitBrain(Mona* mouse) {
+	Vector<Mona::SENSOR> goalSensors;
+	mouse->InitNet(5, HOP + 1, 1, randomizer->RAND());
+	// Set a long second effect interval
+	// for a higher level mediator.
+	mouse->effect_event_intervals[1].SetCount(2);
+	mouse->effect_event_interval_weights[1].SetCount(2);
+	mouse->effect_event_intervals[1][0]       = 2;
+	mouse->effect_event_interval_weights[1][0] = 0.5;
+	mouse->effect_event_intervals[1][1]       = 10;
+	mouse->effect_event_interval_weights[1][1] = 0.5;
+	// Set need and goal for cheese.
+	mouse->SetNeed(0, CHEESE_NEED);
+	goalSensors.Add(0.0);
+	goalSensors.Add(0.0);
+	goalSensors.Add(0.0);
+	goalSensors.Add((double)GOAL_ROOM);
+	goalSensors.Add(1.0);
+	mouse->homeostats[0]->AddGoal(goalSensors, 0,
+								  Mona::NULL_RESPONSE, CHEESE_GOAL);
 }
 
 
 // Parameter mutator.
-class ParmMutator
-{
+class ParmMutator {
 public:
 
-   // Probability of random mutation.
-   static PROBABILITY RANDOM_MUTATION;
+	// Probability of random mutation.
+	static PROBABILITY RANDOM_MUTATION;
 
-   typedef enum
-   {
-      INTEGER_PARM, FLOAT_PARM, DOUBLE_PARM
-   }
-   PARM_TYPE;
-   PARM_TYPE type;
-   enum { PARM_NAME_SIZE=50 };
-   char   name[PARM_NAME_SIZE];
-   void   *parm;
-   double min;
-   double max;
-   double delta;
+	typedef enum {
+		INTEGER_PARM, FLOAT_PARM, DOUBLE_PARM
+	}
+	PARM_TYPE;
+	PARM_TYPE type;
+	enum { PARM_NAME_SIZE = 50 };
+	char   name[PARM_NAME_SIZE];
+	void*   parm;
+	double min;
+	double max;
+	double delta;
 
-   // Constructors.
-   ParmMutator()
-   {
-      type    = DOUBLE_PARM;
-      name[0] = '\0';
-      parm    = NULL;
-      min     = max = delta = 0.0f;
-   }
+	// Constructors.
+	ParmMutator() {
+		type    = DOUBLE_PARM;
+		name[0] = '\0';
+		parm    = NULL;
+		min     = max = delta = 0.0f;
+	}
 
 
-   ParmMutator(PARM_TYPE type, char *name, void *parm,
-               double min, double max, double delta)
-   {
-      this->type = type;
-      strncpy(this->name, name, PARM_NAME_SIZE - 1);
-      this->parm  = parm;
-      this->min   = min;
-      this->max   = max;
-      this->delta = delta;
-   }
+	ParmMutator(PARM_TYPE type, char* name, void* parm,
+				double min, double max, double delta) {
+		this->type = type;
+		strncpy(this->name, name, PARM_NAME_SIZE - 1);
+		this->parm  = parm;
+		this->min   = min;
+		this->max   = max;
+		this->delta = delta;
+	}
 
 
-   // Mutate parameter.
-   void mutate()
-   {
-      int    i;
-      float  f;
-      double d;
+	// Mutate parameter.
+	void Mutate() {
+		int    i;
+		float  f;
+		double d;
 
-      if (!Randomizer->RAND_CHANCE(MutationRate)) { return; }
-      switch (type)
-      {
-      case INTEGER_PARM:
-         if (Randomizer->RAND_CHANCE(RANDOM_MUTATION))
-         {
-            *(int *)parm = (int)Randomizer->RAND_INTERVAL(min, max + 0.99);
-         }
-         else
-         {
-            i = *(int *)parm;
-            if (Randomizer->RAND_BOOL())
-            {
-               i += (int)delta;
-               if (i > (int)max) { i = (int)max; }
-            }
-            else
-            {
-               i -= (int)delta;
-               if (i < (int)min) { i = (int)min; }
-            }
-            *(int *)parm = i;
-         }
-         break;
+		if (!randomizer->RAND_CHANCE(mutation_rate))
+			return;
 
-      case FLOAT_PARM:
-         if (Randomizer->RAND_CHANCE(RANDOM_MUTATION))
-         {
-            *(float *)parm = (float)Randomizer->RAND_INTERVAL(min, max);
-         }
-         else
-         {
-            f = *(float *)parm;
-            if (Randomizer->RAND_BOOL())
-            {
-               f += (float)delta;
-               if (f > (float)max) { f = (float)max; }
-            }
-            else
-            {
-               f -= (float)delta;
-               if (f < (float)min) { f = (float)min; }
-            }
-            *(float *)parm = f;
-         }
-         break;
+		switch (type) {
+		case INTEGER_PARM:
+			if (randomizer->RAND_CHANCE(RANDOM_MUTATION))
+				*(int*)parm = (int)randomizer->RAND_INTERVAL(min, max + 0.99);
+			else {
+				i = *(int*)parm;
 
-      case DOUBLE_PARM:
-         if (Randomizer->RAND_CHANCE(RANDOM_MUTATION))
-         {
-            *(double *)parm = (double)Randomizer->RAND_INTERVAL(min, max);
-         }
-         else
-         {
-            d = *(double *)parm;
-            if (Randomizer->RAND_BOOL())
-            {
-               d += delta;
-               if (d > max) { d = max; }
-            }
-            else
-            {
-               d -= delta;
-               if (d < min) { d = min; }
-            }
-            *(double *)parm = d;
-         }
-         break;
-      }
-   }
+				if (randomizer->RAND_BOOL()) {
+					i += (int)delta;
+
+					if (i > (int)max)
+						i = (int)max;
+				}
+				else {
+					i -= (int)delta;
+
+					if (i < (int)min)
+						i = (int)min;
+				}
+
+				*(int*)parm = i;
+			}
+
+			break;
+
+		case FLOAT_PARM:
+			if (randomizer->RAND_CHANCE(RANDOM_MUTATION))
+				*(float*)parm = (float)randomizer->RAND_INTERVAL(min, max);
+			else {
+				f = *(float*)parm;
+
+				if (randomizer->RAND_BOOL()) {
+					f += (float)delta;
+
+					if (f > (float)max)
+						f = (float)max;
+				}
+				else {
+					f -= (float)delta;
+
+					if (f < (float)min)
+						f = (float)min;
+				}
+
+				*(float*)parm = f;
+			}
+
+			break;
+
+		case DOUBLE_PARM:
+			if (randomizer->RAND_CHANCE(RANDOM_MUTATION))
+				*(double*)parm = (double)randomizer->RAND_INTERVAL(min, max);
+			else {
+				d = *(double*)parm;
+
+				if (randomizer->RAND_BOOL()) {
+					d += delta;
+
+					if (d > max)
+						d = max;
+				}
+				else {
+					d -= delta;
+
+					if (d < min)
+						d = min;
+				}
+
+				*(double*)parm = d;
+			}
+
+			break;
+		}
+	}
 
 
-   // Copy parameter from given one.
-   void copy(ParmMutator *from)
-   {
-      switch (type)
-      {
-      case INTEGER_PARM:
-         *(int *)parm = *(int *)from->parm;
-         break;
+	// Copy parameter from given one.
+	void Copy(ParmMutator* from) {
+		switch (type) {
+		case INTEGER_PARM:
+			*(int*)parm = *(int*)from->parm;
+			break;
 
-      case FLOAT_PARM:
-         *(float *)parm = *(float *)from->parm;
-         break;
+		case FLOAT_PARM:
+			*(float*)parm = *(float*)from->parm;
+			break;
 
-      case DOUBLE_PARM:
-         *(double *)parm = *(double *)from->parm;
-         break;
-      }
-   }
+		case DOUBLE_PARM:
+			*(double*)parm = *(double*)from->parm;
+			break;
+		}
+	}
 };
 PROBABILITY ParmMutator::RANDOM_MUTATION = 0.1;
 
 // Brain parameter mutator.
-class BrainParmMutator
-{
+class BrainParmMutator {
 public:
 
-   // Brain.
-   Mona *brain;
+	// Brain.
+	Mona* brain;
 
-   // Parameter mutators.
-   vector<ParmMutator *> parmMutators;
+	// Parameter mutators.
+	Vector<ParmMutator*> param_mutators;
 
-   // Constructor.
-   BrainParmMutator(Mona *brain)
-   {
-      this->brain = brain;
-
-      // INITIAL_ENABLEMENT.
-      ParmMutator *parmMutator =
-         new ParmMutator(ParmMutator::DOUBLE_PARM, (char *)"INITIAL_ENABLEMENT",
-                         (void *)&brain->INITIAL_ENABLEMENT, 0.1, 1.0, 0.1);
-      assert(parmMutator != NULL);
-      parmMutators.push_back(parmMutator);
-
-      // DRIVE_ATTENUATION.
-      parmMutator =
-         new ParmMutator(ParmMutator::DOUBLE_PARM, (char *)"DRIVE_ATTENUATION",
-                         (void *)&brain->DRIVE_ATTENUATION, 0.0, 1.0, 0.1);
-      assert(parmMutator != NULL);
-      parmMutators.push_back(parmMutator);
-
-      // LEARNING_DECREASE_VELOCITY.
-      parmMutator =
-         new ParmMutator(ParmMutator::DOUBLE_PARM, (char *)"LEARNING_DECREASE_VELOCITY",
-                         (void *)&brain->LEARNING_DECREASE_VELOCITY, 0.1, 0.9, 0.1);
-      assert(parmMutator != NULL);
-      parmMutators.push_back(parmMutator);
-
-      // LEARNING_INCREASE_VELOCITY.
-      parmMutator =
-         new ParmMutator(ParmMutator::DOUBLE_PARM, (char *)"LEARNING_INCREASE_VELOCITY",
-                         (void *)&brain->LEARNING_INCREASE_VELOCITY, 0.1, 0.9, 0.1);
-      assert(parmMutator != NULL);
-      parmMutators.push_back(parmMutator);
-
-      // FIRING_STRENGTH_LEARNING_DAMPER.
-      parmMutator =
-         new ParmMutator(ParmMutator::DOUBLE_PARM, (char *)"FIRING_STRENGTH_LEARNING_DAMPER",
-                         (void *)&brain->FIRING_STRENGTH_LEARNING_DAMPER, 0.05, 0.9, 0.05);
-      assert(parmMutator != NULL);
-      parmMutators.push_back(parmMutator);
-   }
+	// Constructor.
+	BrainParmMutator(Mona* brain) {
+		this->brain = brain;
+		// INITIAL_ENABLEMENT.
+		ParmMutator* param_mutator =
+			new ParmMutator(ParmMutator::DOUBLE_PARM, (char*)"INITIAL_ENABLEMENT",
+							(void*)&brain->INITIAL_ENABLEMENT, 0.1, 1.0, 0.1);
+		ASSERT(param_mutator != NULL);
+		param_mutators.Add(param_mutator);
+		// DRIVE_ATTENUATION.
+		param_mutator =
+			new ParmMutator(ParmMutator::DOUBLE_PARM, (char*)"DRIVE_ATTENUATION",
+							(void*)&brain->DRIVE_ATTENUATION, 0.0, 1.0, 0.1);
+		ASSERT(param_mutator != NULL);
+		param_mutators.Add(param_mutator);
+		// LEARNING_DECREASE_VELOCITY.
+		param_mutator =
+			new ParmMutator(ParmMutator::DOUBLE_PARM, (char*)"LEARNING_DECREASE_VELOCITY",
+							(void*)&brain->LEARNING_DECREASE_VELOCITY, 0.1, 0.9, 0.1);
+		ASSERT(param_mutator != NULL);
+		param_mutators.Add(param_mutator);
+		// LEARNING_INCREASE_VELOCITY.
+		param_mutator =
+			new ParmMutator(ParmMutator::DOUBLE_PARM, (char*)"LEARNING_INCREASE_VELOCITY",
+							(void*)&brain->LEARNING_INCREASE_VELOCITY, 0.1, 0.9, 0.1);
+		ASSERT(param_mutator != NULL);
+		param_mutators.Add(param_mutator);
+		// FIRING_STRENGTH_LEARNING_DAMPER.
+		param_mutator =
+			new ParmMutator(ParmMutator::DOUBLE_PARM, (char*)"FIRING_STRENGTH_LEARNING_DAMPER",
+							(void*)&brain->FIRING_STRENGTH_LEARNING_DAMPER, 0.05, 0.9, 0.05);
+		ASSERT(param_mutator != NULL);
+		param_mutators.Add(param_mutator);
+	}
 
 
-   // Destructor.
-   ~BrainParmMutator()
-   {
-      for (int i = 0; i < (int)parmMutators.size(); i++)
-      {
-         delete parmMutators[i];
-      }
-      parmMutators.clear();
-   }
+	// Destructor.
+	~BrainParmMutator() {
+		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+			delete param_mutators[i];
+
+		param_mutators.Clear();
+	}
 
 
-   // Mutate.
-   void mutate()
-   {
-      for (int i = 0; i < (int)parmMutators.size(); i++)
-      {
-         parmMutators[i]->mutate();
-      }
+	// Mutate.
+	void Mutate() {
+		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+			param_mutators[i]->Mutate();
 
-      // Initialize brain with new parameters.
-      initBrain(brain);
-   }
+		// Initialize brain with new parameters.
+		InitBrain(brain);
+	}
 
 
-   // Copy parameters from given brain.
-   void copy(BrainParmMutator *from)
-   {
-      for (int i = 0; i < (int)parmMutators.size(); i++)
-      {
-         parmMutators[i]->copy(from->parmMutators[i]);
-      }
+	// Copy parameters from given brain.
+	void Copy(BrainParmMutator* from) {
+		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+			param_mutators[i]->Copy(from->param_mutators[i]);
 
-      // Initialize brain with new parameters.
-      initBrain(brain);
-   }
+		// Initialize brain with new parameters.
+		InitBrain(brain);
+	}
 
 
-   // Randomly merge parameters from given brains.
-   void meld(BrainParmMutator *from1, BrainParmMutator *from2)
-   {
-      for (int i = 0; i < (int)parmMutators.size(); i++)
-      {
-         if (Randomizer->RAND_BOOL())
-         {
-            parmMutators[i]->copy(from1->parmMutators[i]);
-         }
-         else
-         {
-            parmMutators[i]->copy(from2->parmMutators[i]);
-         }
-      }
+	// Randomly merge parameters from given brains.
+	void MindMeld(BrainParmMutator* from1, BrainParmMutator* from2) {
+		for (int i = 0; i < (int)param_mutators.GetCount(); i++) {
+			if (randomizer->RAND_BOOL())
+				param_mutators[i]->Copy(from1->param_mutators[i]);
+			else
+				param_mutators[i]->Copy(from2->param_mutators[i]);
+		}
 
-      // Initialize brain with new parameters.
-      initBrain(brain);
-   }
+		// Initialize brain with new parameters.
+		InitBrain(brain);
+	}
 };
 
 // Population member.
-class Member
-{
+class Member {
 public:
 
-   static int idDispenser;
+	static int id_dispenser;
 
-   int    id;
-   Mona   *mouse;
-   double fitness;
-   int    generation;
+	int    id;
+	Mona*   mouse;
+	double fitness;
+	int    generation;
 
-   // Brain parameter mutator.
-   BrainParmMutator *brainParmMutator;
+	// Brain parameter mutator.
+	BrainParmMutator* brain_parm_mutator;
 
-   // Constructors.
-   Member(int generation = 0)
-   {
-      id = idDispenser;
-      idDispenser++;
-
-      // Create the mouse brain.
-      mouse = new Mona();
-      assert(mouse != NULL);
-      initBrain(mouse);
-
-      // Create brain parameter mutator.
-      brainParmMutator = new BrainParmMutator(mouse);
-      assert(brainParmMutator != NULL);
-      brainParmMutator->mutate();
-
-      fitness          = 0.0;
-      this->generation = generation;
-   }
+	// Constructors.
+	Member(int generation = 0) {
+		id = id_dispenser;
+		id_dispenser++;
+		// Create the mouse brain.
+		mouse = new Mona();
+		ASSERT(mouse != NULL);
+		InitBrain(mouse);
+		// Create brain parameter mutator.
+		brain_parm_mutator = new BrainParmMutator(mouse);
+		ASSERT(brain_parm_mutator != NULL);
+		brain_parm_mutator->Mutate();
+		fitness          = 0.0;
+		this->generation = generation;
+	}
 
 
-   // Destructor.
-   ~Member()
-   {
-      if (brainParmMutator != NULL) { delete brainParmMutator; }
-      if (mouse != NULL) { delete mouse; }
-   }
+	// Destructor.
+	~Member() {
+		if (brain_parm_mutator != NULL)
+			delete brain_parm_mutator;
+
+		if (mouse != NULL)
+			delete mouse;
+	}
 
 
-   // Evaluate.
-   // Fitness is determined number of correct tests.
-   void evaluate()
-   {
-      int i, j, k;
+	// Evaluate.
+	// Fitness is determined number of correct tests.
+	void Evaluate() {
+		int i, j, k;
+		Vector<int> path;
+		
+		// Clear brain.
+		InitBrain(mouse);
 
-      vector<int> path;
+		// Train door associations.
+		for (i = 0; i < door_training_trial_count; i++) {
+			for (j = 0; j < 3; j++) {
+				path.Clear();
+				path.Add(2 - j);
+				path.Add(HOP);
+				path.Add(door_associations[j]);
+				path.Add(WAIT);
+				RunTrial(0, j, path, true);
+			}
+		}
 
-      // Clear brain.
-      initBrain(mouse);
+		fitness = 0.0;
 
-      // Train door associations.
-      for (i = 0; i < NumDoorTrainingTrials; i++)
-      {
-         for (j = 0; j < 3; j++)
-         {
-            path.clear();
-            path.push_back(2 - j);
-            path.push_back(HOP);
-            path.push_back(DoorAssociations[j]);
-            path.push_back(WAIT);
-            runTrial(0, j, path, true);
-         }
-      }
+		for (i = 0; i < maze_test_count; i++) {
+			// Train maze path.
+			for (j = 0; j < maze_training_trial_count; j++) {
+				path.Clear();
+				path = maze_paths[i];
+				path.Add(WAIT);
+				RunTrial(begin_maze_index, 0, path, true);
+			}
 
-      fitness = 0.0;
-      for (i = 0; i < NumMazeTests; i++)
-      {
-         // Train maze path.
-         for (j = 0; j < NumMazeTrainingTrials; j++)
-         {
-            path.clear();
-            path = MazePaths[i];
-            path.push_back(WAIT);
-            runTrial(beginMazeIndex, 0, path, true);
-         }
+			// Test maze.
+			for (j = 0; j < 3; j++) {
+				path.Clear();
+				path.Add(2 - j);
 
-         // Test maze.
-         for (j = 0; j < 3; j++)
-         {
-            path.clear();
-            path.push_back(2 - j);
-            for (k = 0; k < (int)MazePaths[i].size(); k++)
-            {
-               path.push_back(MazePaths[i][k]);
-            }
-            path.push_back(DoorAssociations[j]);
-            path.push_back(WAIT);
-            if (runTrial(0, j, path, false)) { fitness += 1.0; }
-         }
-      }
-   }
+				for (k = 0; k < (int)maze_paths[i].GetCount(); k++)
+					path.Add(maze_paths[i][k]);
+
+				path.Add(door_associations[j]);
+				path.Add(WAIT);
+
+				if (RunTrial(0, j, path, false))
+					fitness += 1.0;
+			}
+		}
+	}
 
 
-   // Run a trial.
-   bool runTrial(int x, int y, vector<int>& path, bool train)
-   {
-      int i, j, cx, cy, response;
+	// Run a trial.
+	bool RunTrial(int x, int y, Vector<int>& path, bool train) {
+		int i, j, cx, cy, response;
+		Vector<Mona::SENSOR> sensors;
+		bool                 hopped;
+		// Set up sensors.
+		sensors.SetCount(5);
+		// Clear working memory.
+		mouse->ClearWorkingMemory();
+		// Reset need.
+		mouse->SetNeed(0, CHEESE_NEED);
+		// Place mouse.
+		mouseX = x;
+		mouseY = y;
+		// Run maze path.
+		hopped = false;
 
-      vector<Mona::SENSOR> sensors;
-      bool                 hopped;
+		for (i = 0; i < (int)path.GetCount(); i++) {
+			// Override response?
+			if (train || (path[i] == WAIT))
+				mouse->response_override = path[i];
 
-      // Set up sensors.
-      sensors.resize(5);
+			// Prepare sensors.
+			for (j = 0; j < 3; j++) {
+				if (maze[mouseX][mouseY]->doors[j] != NULL)
+					sensors[j] = 1.0;
+				else if (see_all_maze_doors &&
+						 (mouseX > begin_maze_index) && (mouseX < end_maze_index)) {
+					// Maze room door is visible although possibly blocked.
+					sensors[j] = 1.0;
+				}
+				else
+					sensors[j] = 0.0;
+			}
 
-      // Clear working memory.
-      mouse->clearWorkingMemory();
+			sensors[3] = (Mona::SENSOR)maze[mouseX][mouseY]->type;
 
-      // Reset need.
-      mouse->setNeed(0, CHEESE_NEED);
+			if (mouseX == end_maze_index + 1)
+				sensors[4] = 1.0;
+			else
+				sensors[4] = 0.0;
 
-      // Place mouse.
-      mouseX = x;
-      mouseY = y;
+			// Initiate sensory/response cycle.
+			response = mouse->Cycle(sensors);
+			// Clear override.
+			mouse->response_override = Mona::NULL_RESPONSE;
 
-      // Run maze path.
-      hopped = false;
-      for (i = 0; i < (int)path.size(); i++)
-      {
-         // Override response?
-         if (train || (path[i] == WAIT))
-         {
-            mouse->responseOverride = path[i];
-         }
+			// Successful trial?
+			if (path[i] == WAIT)
+				return true;
 
-         // Prepare sensors.
-         for (j = 0; j < 3; j++)
-         {
-            if (maze[mouseX][mouseY]->doors[j] != NULL)
-            {
-               sensors[j] = 1.0;
-            }
-            else if (SeeAllMazeDoors &&
-                     (mouseX > beginMazeIndex) && (mouseX < endMazeIndex))
-            {
-               // Maze room door is visible although possibly blocked.
-               sensors[j] = 1.0;
-            }
-            else
-            {
-               sensors[j] = 0.0;
-            }
-         }
-         sensors[3] = (Mona::SENSOR)maze[mouseX][mouseY]->type;
-         if (mouseX == endMazeIndex + 1)
-         {
-            sensors[4] = 1.0;
-         }
-         else
-         {
-            sensors[4] = 0.0;
-         }
+			// Hop at start of maze is OK.
+			if ((mouseX == begin_maze_index) && (response == HOP) &&
+				(path[i] != HOP) && !hopped) {
+				hopped = true;
+				i--;
+				continue;
+			}
 
-         // Initiate sensory/response cycle.
-         response = mouse->cycle(sensors);
+			// Wrong response ends trial unsuccessfully.
+			if (response != path[i])
+				return (false);
 
-         // Clear override.
-         mouse->responseOverride = Mona::NULL_RESPONSE;
+			// Move mouse.
+			if (response == HOP) {
+				mouseX = end_maze_index;
+				mouseY = 0;
+			}
+			else {
+				cx     = (maze[mouseX][mouseY]->doors[response])->cx;
+				cy     = (maze[mouseX][mouseY]->doors[response])->cy;
+				mouseX = cx;
+				mouseY = cy;
+			}
+		}
 
-         // Successful trial?
-         if (path[i] == WAIT) { return(true); }
-
-         // Hop at start of maze is OK.
-         if ((mouseX == beginMazeIndex) && (response == HOP) &&
-             (path[i] != HOP) && !hopped)
-         {
-            hopped = true;
-            i--;
-            continue;
-         }
-
-         // Wrong response ends trial unsuccessfully.
-         if (response != path[i]) { return(false); }
-
-         // Move mouse.
-         if (response == HOP)
-         {
-            mouseX = endMazeIndex;
-            mouseY = 0;
-         }
-         else
-         {
-            cx     = (maze[mouseX][mouseY]->doors[response])->cx;
-            cy     = (maze[mouseX][mouseY]->doors[response])->cy;
-            mouseX = cx;
-            mouseY = cy;
-         }
-      }
-      return(false);
-   }
+		return (false);
+	}
 
 
-   // Get fitness.
-   double getFitness()
-   {
-      return(fitness);
-   }
+	// Get fitness.
+	double getFitness() {
+		return (fitness);
+	}
 
 
-   // Create mutated member by varying brain parameters.
-   void mutate(Member *member)
-   {
-      brainParmMutator->copy(member->brainParmMutator);
-      brainParmMutator->mutate();
-   }
+	// Create mutated member by varying brain parameters.
+	void Mutate(Member* member) {
+		brain_parm_mutator->Copy(member->brain_parm_mutator);
+		brain_parm_mutator->Mutate();
+	}
 
 
-   // Merge given member brain parameters into this brain.
-   void mindMeld(Member *member1, Member *member2)
-   {
-      brainParmMutator->meld(member1->brainParmMutator,
-                             member2->brainParmMutator);
-   }
+	// Merge given member brain parameters into this brain.
+	void MindMeld(Member* member1, Member* member2) {
+		brain_parm_mutator->MindMeld(member1->brain_parm_mutator,
+							   member2->brain_parm_mutator);
+	}
 
 
-   // Load.
-   void load(FILE *fp)
-   {
-      FREAD_INT(&id, fp);
-      mouse->load(fp);
-      FREAD_DOUBLE(&fitness, fp);
-      FREAD_INT(&generation, fp);
-   }
+	// Load.
+	void Load(FILE* fp) {
+		FREAD_INT(&id, fp);
+		mouse->Load(fp);
+		FREAD_DOUBLE(&fitness, fp);
+		FREAD_INT(&generation, fp);
+	}
 
 
-   // Save.
-   void save(FILE *fp)
-   {
-      FWRITE_INT(&id, fp);
-      mouse->save(fp);
-      FWRITE_DOUBLE(&fitness, fp);
-      FWRITE_INT(&generation, fp);
-   }
+	// Save.
+	void Store(FILE* fp) {
+		FWRITE_INT(&id, fp);
+		mouse->Store(fp);
+		FWRITE_DOUBLE(&fitness, fp);
+		FWRITE_INT(&generation, fp);
+	}
 
 
-   // Print.
-   void print(FILE *out = stdout)
-   {
-      fprintf(out, "id=%d, fitness=%f, generation=%d\n",
-              id, getFitness(), generation);
-      fprintf(out, "mouse brain:\n");
-      mouse->printParms(out);
-   }
+	// Print.
+	void Print(FILE* out = stdout) {
+		fprintf(out, "id=%d, fitness=%f, generation=%d\n",
+				id, getFitness(), generation);
+		fprintf(out, "mouse brain:\n");
+		mouse->PrintParms(out);
+	}
 };
-int Member::idDispenser = 0;
+int Member::id_dispenser = 0;
 
 // Population.
-Member *Population[POPULATION_SIZE];
+Member* population[POPULATION_SIZE];
 
 // Start/end functions.
-void logParameters();
-void print();
-void load();
-void save();
-void loadPopulation(FILE *fp);
-void savePopulation(FILE *fp);
+void LogParameters();
+void Print();
+void Load();
+void Store();
+void LoadPopulation(FILE* fp);
+void StorePopulation(FILE* fp);
 
 // Create maze-learning task.
 void createTask();
 
 // Evolve functions.
-void evolve(), evaluate(), prune(), mutate(), mate();
+void Evolve(), Evaluate(), Prune(), Mutate(), DoMating();
 
 #ifdef WIN32
-#ifdef _DEBUG
-// For Windows memory checking, set CHECK_MEMORY = 1.
-#define CHECK_MEMORY         0
-#if (CHECK_MEMORY == 1)
-#define MEMORY_CHECK_FILE    "memory.txt"
-#include <crtdbg.h>
-#endif
-#endif
+	#ifdef _DEBUG
+		// For Windows memory checking, set CHECK_MEMORY = 1.
+		#define CHECK_MEMORY         0
+		#if (CHECK_MEMORY == 1)
+			#define MEMORY_CHECK_FILE    "memory.txt"
+			#include <crtdbg.h>
+		#endif
+	#endif
 #endif
 
 // Main.
-int main(int argc, char *argv[])
-{
-   int i;
+int main(int argc, char* argv[]) {
+	int i;
+	#if (CHECK_MEMORY == 1)
+	{
+	#endif
+		#ifdef WIN32
 
-#if (CHECK_MEMORY == 1)
-   {
-#endif
+		// Attach to parent console?
+		if (_isatty(1)) {
+			for (i = 1; i < argc; i++) {
+				if (strcmp(argv[i], "-attachConsole") == 0)
+					break;
+			}
 
-#ifdef WIN32
-   // Attach to parent console?
-   if (_isatty(1))
-   {
-      for (i = 1; i < argc; i++)
-      {
-         if (strcmp(argv[i], "-attachConsole") == 0)
-         {
-            break;
-         }
-      }
-      if (i < argc)
-      {
-         FreeConsole();
-         if (AttachConsole(ATTACH_PARENT_PROCESS))
-         {
-            freopen("CONOUT$", "w", stdout);
-            freopen("CONOUT$", "w", stderr);
-            freopen("CONIN$", "r", stdin);
-         }
-      }
-   }
-#endif
+			if (i < argc) {
+				FreeConsole();
 
-   // Initialize logging..
-   Log::LOGGING_FLAG = LOG_TO_PRINT;
+				if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+					freopen("CONOUT$", "w", stdout);
+					freopen("CONOUT$", "w", stderr);
+					freopen("CONIN$", "r", stdin);
+				}
+			}
+		}
 
-   // Parse arguments.
-   for (i = 1; i < argc; i++)
-   {
-      if (strcmp(argv[i], "-generations") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         Generations = atoi(argv[i]);
-         if (Generations < 0)
-         {
-            printUsage();
-            exit(1);
-         }
-         continue;
-      }
+		#endif
+		// Initialize logging..
+		Log::LOGGING_FLAG = LOG_TO_PRINT;
 
-      if (strcmp(argv[i], "-numMazeTests") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         NumMazeTests = atoi(argv[i]);
-         if (NumMazeTests < 0)
-         {
-            printError((char *)"Invalid number of maze tests");
-            printUsage();
-            exit(1);
-         }
-         continue;
-      }
+		// Parse arguments.
+		for (i = 1; i < argc; i++) {
+			if (strcmp(argv[i], "-generations") == 0) {
+				i++;
 
-      if (strcmp(argv[i], "-numDoorTrainingTrials") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         NumDoorTrainingTrials = atoi(argv[i]);
-         if (NumDoorTrainingTrials < 0)
-         {
-            printError((char *)"Invalid number of door association training trials");
-            printUsage();
-            exit(1);
-         }
-         continue;
-      }
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
 
-      if (strcmp(argv[i], "-numMazeTrainingTrials") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         NumMazeTrainingTrials = atoi(argv[i]);
-         if (NumMazeTrainingTrials < 0)
-         {
-            printError((char *)"Invalid number of maze association training trials");
-            printUsage();
-            exit(1);
-         }
-         continue;
-      }
+				generation_count = atoi(argv[i]);
 
-      if (strcmp(argv[i], "-mutationRate") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         MutationRate = atof(argv[i]);
-         if (MutationRate < 0.0)
-         {
-            printUsage();
-            exit(1);
-         }
-         continue;
-      }
+				if (generation_count < 0) {
+					printUsage();
+					exit(1);
+				}
 
-      if (strcmp(argv[i], "-randomSeed") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         RandomSeed = (RANDOM)atoi(argv[i]);
-         continue;
-      }
+				continue;
+			}
 
-      if (strcmp(argv[i], "-print") == 0)
-      {
-         Print = true;
-         continue;
-      }
+			if (strcmp(argv[i], "-numMazeTests") == 0) {
+				i++;
 
-      if (strcmp(argv[i], "-input") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         InputFileName = argv[i];
-         continue;
-      }
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
 
-      if (strcmp(argv[i], "-output") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         OutputFileName = argv[i];
-         continue;
-      }
+				maze_test_count = atoi(argv[i]);
 
-      if (strcmp(argv[i], "-logfile") == 0)
-      {
-         i++;
-         if (i >= argc)
-         {
-            printUsage();
-            exit(1);
-         }
-         Log::LOGGING_FLAG = LOG_TO_FILE;
-         Log::setLogFileName(argv[i]);
-         continue;
-      }
+				if (maze_test_count < 0) {
+					PrintError((char*)"Invalid number of maze tests");
+					printUsage();
+					exit(1);
+				}
 
-      if (strcmp(argv[i], "-ignoreInterrupts") == 0)
-      {
-         signal(SIGINT, SIG_IGN);
-         continue;
-      }
+				continue;
+			}
 
-#ifdef WIN32
-      if (strcmp(argv[i], "-attachConsole") == 0)
-      {
-         continue;
-      }
-#endif
+			if (strcmp(argv[i], "-numDoorTrainingTrials") == 0) {
+				i++;
 
-      if (strcmp(argv[i], "-version") == 0)
-      {
-         printEvolveVersion();
-         Mona::printVersion();
-         exit(0);
-      }
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
 
-      printUsage();
-      exit(1);
-   }
+				door_training_trial_count = atoi(argv[i]);
 
-   // Check operation combinations.
-   if (Generations >= 0)
-   {
-      if (!Print && (OutputFileName == NULL))
-      {
-         printError((char *)"No print or file output");
-         printUsage();
-         exit(1);
-      }
-   }
-   else
-   {
-      if (!Print)
-      {
-         printError((char *)"Must run or print");
-         printUsage();
-         exit(1);
-      }
-   }
+				if (door_training_trial_count < 0) {
+					PrintError((char*)"Invalid number of door association training trials");
+					printUsage();
+					exit(1);
+				}
 
-   // Build the maze.
-   buildMaze();
+				continue;
+			}
 
-   // Initialize.
-   if (InputFileName != NULL)
-   {
-      // Load population.
-      if (RandomSeed != INVALID_RANDOM)
-      {
-         printError((char *)"Random seed is loaded from input file");
-         printUsage();
-         exit(1);
-      }
-      load();
-   }
-   else
-   {
-      if (RandomSeed == INVALID_RANDOM)
-      {
-         RandomSeed = (RANDOM)time(NULL);
-      }
-      Randomizer = new Random(RandomSeed);
-      assert(Randomizer != NULL);
-      Randomizer->SRAND(RandomSeed);
+			if (strcmp(argv[i], "-numMazeTrainingTrials") == 0) {
+				i++;
 
-      // Create maze-learning task.
-      createTask();
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
 
-      // Create population.
-      for (i = 0; i < POPULATION_SIZE; i++)
-      {
-         Population[i] = new Member(0);
-         assert(Population[i] != NULL);
-      }
-   }
+				maze_training_trial_count = atoi(argv[i]);
 
-   // Log run parameters.
-   if (Generations >= 0)
-   {
-      Log::logInformation((char *)"Initializing evolve:");
-      if (Generations >= 0)
-      {
-         sprintf(Log::messageBuf, "generations=%d", Generations);
-         Log::logInformation();
-      }
-      if (InputFileName != NULL)
-      {
-         sprintf(Log::messageBuf, "input=%s", InputFileName);
-         Log::logInformation();
-      }
-      if (OutputFileName != NULL)
-      {
-         sprintf(Log::messageBuf, "output=%s", OutputFileName);
-         Log::logInformation();
-      }
-      logParameters();
+				if (maze_training_trial_count < 0) {
+					PrintError((char*)"Invalid number of maze association training trials");
+					printUsage();
+					exit(1);
+				}
 
-      // Evolution loop.
-      Log::logInformation((char *)"Begin evolve:");
-      for (i = 0; i < Generations; i++, Generation++)
-      {
-         sprintf(Log::messageBuf, "Generation=%d", Generation);
-         Log::logInformation();
-         evolve();
+				continue;
+			}
 
-         // Save population?
-         if (OutputFileName != NULL)
-         {
-            if ((i % SAVE_FREQUENCY) == 0)
-            {
-               save();
-            }
-         }
-      }
-   }
+			if (strcmp(argv[i], "-mutation_rate") == 0) {
+				i++;
 
-   // Save population.
-   if (OutputFileName != NULL)
-   {
-      save();
-   }
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
 
-   // Print population.
-   if (Print)
-   {
-      print();
-   }
+				mutation_rate = atof(argv[i]);
 
-   // Release memory.
-   for (i = 0; i < POPULATION_SIZE; i++)
-   {
-      if (Population[i] != NULL)
-      {
-         delete Population[i];
-         Population[i] = NULL;
-      }
-   }
+				if (mutation_rate < 0.0) {
+					printUsage();
+					exit(1);
+				}
 
-   // Close log.
-   if (Generations >= 0)
-   {
-      Log::logInformation((char *)"End evolve");
-   }
-   Log::close();
+				continue;
+			}
 
-#if (CHECK_MEMORY == 1)
-}
+			if (strcmp(argv[i], "-random_seed") == 0) {
+				i++;
 
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
 
-// Check for memory leaks.
-printf("Checking for memory leaks, report in file %s\n",
-       MEMORY_CHECK_FILE);
-HANDLE hFile = CreateFile(
-   MEMORY_CHECK_FILE,
-   GENERIC_WRITE,
-   FILE_SHARE_WRITE,
-   NULL,
-   OPEN_ALWAYS,
-   0,
-   NULL
-   );
-if (hFile == INVALID_HANDLE_VALUE)
-{
-   fprintf(stderr, "Cannot open memory check file %s",
-           MEMORY_CHECK_FILE);
-   exit(1);
-}
-_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
-_CrtSetReportFile(_CRT_WARN, hFile);
-_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
-_CrtSetReportFile(_CRT_ERROR, hFile);
-if (!_CrtDumpMemoryLeaks())
-{
-   printf("No memory leaks\n");
-}
-else
-{
-   printf("Memory leaks found\n");
-}
-CloseHandle(hFile);
-#endif
+				RandomSeed = (RANDOM)atoi(argv[i]);
+				continue;
+			}
 
-   return(0);
+			if (strcmp(argv[i], "-print") == 0) {
+				Print = true;
+				continue;
+			}
+
+			if (strcmp(argv[i], "-input") == 0) {
+				i++;
+
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
+
+				input_file_name = argv[i];
+				continue;
+			}
+
+			if (strcmp(argv[i], "-output") == 0) {
+				i++;
+
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
+
+				output_file_name = argv[i];
+				continue;
+			}
+
+			if (strcmp(argv[i], "-logfile") == 0) {
+				i++;
+
+				if (i >= argc) {
+					printUsage();
+					exit(1);
+				}
+
+				Log::LOGGING_FLAG = LOG_TO_FILE;
+				Log::setlog_file_name(argv[i]);
+				continue;
+			}
+
+			if (strcmp(argv[i], "-ignoreInterrupts") == 0) {
+				signal(SIGINT, SIG_IGN);
+				continue;
+			}
+
+			#ifdef WIN32
+
+			if (strcmp(argv[i], "-attachConsole") == 0)
+				continue;
+
+			#endif
+
+			if (strcmp(argv[i], "-version") == 0) {
+				printEvolveVersion();
+				Mona::printVersion();
+				exit(0);
+			}
+
+			printUsage();
+			exit(1);
+		}
+
+		// Check operation combinations.
+		if (generation_count >= 0) {
+			if (!Print && (output_file_name == NULL)) {
+				PrintError((char*)"No print or file output");
+				printUsage();
+				exit(1);
+			}
+		}
+		else {
+			if (!Print) {
+				PrintError((char*)"Must run or print");
+				printUsage();
+				exit(1);
+			}
+		}
+
+		// Build the maze.
+		buildMaze();
+
+		// Initialize.
+		if (input_file_name != NULL) {
+			// Load population.
+			if (RandomSeed != INVALID_RANDOM) {
+				PrintError((char*)"Random seed is loaded from input file");
+				printUsage();
+				exit(1);
+			}
+
+			Load();
+		}
+		else {
+			if (RandomSeed == INVALID_RANDOM)
+				RandomSeed = (RANDOM)time(NULL);
+
+			randomizer = new Random(RandomSeed);
+			ASSERT(randomizer != NULL);
+			randomizer->SRAND(RandomSeed);
+			// Create maze-learning task.
+			createTask();
+
+			// Create population.
+			for (i = 0; i < POPULATION_SIZE; i++) {
+				population[i] = new Member(0);
+				ASSERT(population[i] != NULL);
+			}
+		}
+
+		// Log run parameters.
+		if (generation_count >= 0) {
+			LOG("Initializing evolve:");
+
+			if (generation_count >= 0) {
+				sprintf(Log::messageBuf, "generations=%d", generation_count);
+				Log::logInformation();
+			}
+
+			if (input_file_name != NULL) {
+				sprintf(Log::messageBuf, "input=%s", input_file_name);
+				Log::logInformation();
+			}
+
+			if (output_file_name != NULL) {
+				sprintf(Log::messageBuf, "output=%s", output_file_name);
+				Log::logInformation();
+			}
+
+			LogParameters();
+			// Evolution loop.
+			LOG("Begin evolve:");
+
+			for (i = 0; i < generation_count; i++, generation++) {
+				sprintf(Log::messageBuf, "generation=%d", generation);
+				Log::logInformation();
+				Evolve();
+
+				// Save population?
+				if (output_file_name != NULL) {
+					if ((i % SAVE_FREQUENCY) == 0)
+						Store();
+				}
+			}
+		}
+
+		// Save population.
+		if (output_file_name != NULL)
+			Store();
+
+		// Print population.
+		if (Print)
+			Print();
+
+		// Release memory.
+		for (i = 0; i < POPULATION_SIZE; i++) {
+			if (population[i] != NULL) {
+				delete population[i];
+				population[i] = NULL;
+			}
+		}
+
+		// Close log.
+		if (generation_count >= 0)
+			LOG("End evolve");
+
+		Log::close();
+		#if (CHECK_MEMORY == 1)
+	}
+	// Check for memory leaks.
+	printf("Checking for memory leaks, report in file %s\n",
+		   MEMORY_CHECK_FILE);
+	HANDLE hFile = CreateFile(
+					   MEMORY_CHECK_FILE,
+					   GENERIC_WRITE,
+					   FILE_SHARE_WRITE,
+					   NULL,
+					   OPEN_ALWAYS,
+					   0,
+					   NULL
+				   );
+
+	if (hFile == INVALID_HANDLE_VALUE) {
+		fprintf(stderr, "Cannot open memory check file %s",
+				MEMORY_CHECK_FILE);
+		exit(1);
+	}
+
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_WARN, hFile);
+	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_ERROR, hFile);
+
+	if (!_CrtDumpMemoryLeaks())
+		printf("No memory leaks\n");
+	else
+		printf("Memory leaks found\n");
+
+	CloseHandle(hFile);
+		#endif
+	return (0);
 }
 
 
 // Log run parameters.
-void logParameters()
-{
-   Log::logInformation((char *)"Evolve Parameters:");
-   sprintf(Log::messageBuf, "FIT_POPULATION_SIZE = %d", FIT_POPULATION_SIZE);
-   Log::logInformation();
-   sprintf(Log::messageBuf, "NUM_MUTANTS = %d", NUM_MUTANTS);
-   Log::logInformation();
-   sprintf(Log::messageBuf, "NUM_OFFSPRING = %d", NUM_OFFSPRING);
-   Log::logInformation();
-   sprintf(Log::messageBuf, "NumMazeTests = %d", NumMazeTests);
-   Log::logInformation();
-   sprintf(Log::messageBuf, "NumDoorTrainingTrials = %d", NumDoorTrainingTrials);
-   Log::logInformation();
-   sprintf(Log::messageBuf, "NumMazeTrainingTrials = %d", NumMazeTrainingTrials);
-   Log::logInformation();
-   sprintf(Log::messageBuf, "MutationRate = %f", MutationRate);
-   Log::logInformation();
-   sprintf(Log::messageBuf, "RandomSeed = %lu", RandomSeed);
-   Log::logInformation();
-   sprintf(Log::messageBuf, "Door associations: 0->%d, 1->%d, 2->%d",
-           DoorAssociations[0], DoorAssociations[1], DoorAssociations[2]);
-   Log::logInformation();
-   Log::logInformation((char *)"Maze paths (doors):");
-   for (int i = 0; i < (int)MazePaths.size(); i++)
-   {
-      sprintf(Log::messageBuf, "%d %d %d %d",
-              MazePaths[i][0], MazePaths[i][1], MazePaths[i][2], MazePaths[i][3]);
-      Log::logInformation();
-   }
+void LogParameters() {
+	LOG("Evolve Parameters:");
+	sprintf(Log::messageBuf, "FIT_POPULATION_SIZE = %d", FIT_POPULATION_SIZE);
+	Log::logInformation();
+	sprintf(Log::messageBuf, "NUM_MUTANTS = %d", NUM_MUTANTS);
+	Log::logInformation();
+	sprintf(Log::messageBuf, "NUM_OFFSPRING = %d", NUM_OFFSPRING);
+	Log::logInformation();
+	sprintf(Log::messageBuf, "maze_test_count = %d", maze_test_count);
+	Log::logInformation();
+	sprintf(Log::messageBuf, "door_training_trial_count = %d", door_training_trial_count);
+	Log::logInformation();
+	sprintf(Log::messageBuf, "maze_training_trial_count = %d", maze_training_trial_count);
+	Log::logInformation();
+	sprintf(Log::messageBuf, "mutation_rate = %f", mutation_rate);
+	Log::logInformation();
+	sprintf(Log::messageBuf, "RandomSeed = %lu", RandomSeed);
+	Log::logInformation();
+	sprintf(Log::messageBuf, "Door associations: 0->%d, 1->%d, 2->%d",
+			door_associations[0], door_associations[1], door_associations[2]);
+	Log::logInformation();
+	LOG("Maze paths (doors):");
+
+	for (int i = 0; i < (int)maze_paths.GetCount(); i++) {
+		sprintf(Log::messageBuf, "%d %d %d %d",
+				maze_paths[i][0], maze_paths[i][1], maze_paths[i][2], maze_paths[i][3]);
+		Log::logInformation();
+	}
 }
 
 
 // Print population.
-void print()
-{
-   if ((Log::LOGGING_FLAG == LOG_TO_FILE) ||
-       (Log::LOGGING_FLAG == LOG_TO_BOTH))
-   {
-      if (Log::logfp != NULL)
-      {
-         for (int i = 0; i < POPULATION_SIZE; i++)
-         {
-            Population[i]->print(Log::logfp);
-         }
-         fflush(Log::logfp);
-      }
-   }
+void Print() {
+	if ((Log::LOGGING_FLAG == LOG_TO_FILE) ||
+		(Log::LOGGING_FLAG == LOG_TO_BOTH)) {
+		if (Log::logfp != NULL) {
+			for (int i = 0; i < POPULATION_SIZE; i++)
+				population[i]->Print(Log::logfp);
 
-   if ((Log::LOGGING_FLAG == LOG_TO_PRINT) ||
-       (Log::LOGGING_FLAG == LOG_TO_BOTH))
-   {
-      for (int i = 0; i < POPULATION_SIZE; i++)
-      {
-         Population[i]->print();
-      }
-   }
+			fflush(Log::logfp);
+		}
+	}
+
+	if ((Log::LOGGING_FLAG == LOG_TO_PRINT) ||
+		(Log::LOGGING_FLAG == LOG_TO_BOTH)) {
+		for (int i = 0; i < POPULATION_SIZE; i++)
+			population[i]->Print();
+	}
 }
 
 
 // Load evolve.
-void load()
-{
-   int  i, j, k, n;
-   FILE *fp;
-   char buf[200];
+void Load() {
+	int  i, j, k, n;
+	FILE* fp;
+	char buf[200];
+	ASSERT(input_file_name != NULL);
 
-   assert(InputFileName != NULL);
-   if ((fp = FOPEN_READ(InputFileName)) == NULL)
-   {
-      sprintf(buf, "Cannot load population file %s", InputFileName);
-      printError(buf);
-      exit(1);
-   }
-   FREAD_INT(&Member::idDispenser, fp);
-   FREAD_LONG(&RandomSeed, fp);
-   Randomizer = new Random(RandomSeed);
-   assert(Randomizer != NULL);
-   Randomizer->RAND_LOAD(fp);
-   FREAD_INT(&Generation, fp);
-   for (i = 0; i < 3; i++)
-   {
-      FREAD_INT(&DoorAssociations[i], fp);
-   }
-   MazePaths.clear();
-   FREAD_INT(&i, fp);
-   MazePaths.resize(i);
-   for (j = 0; j < i; j++)
-   {
-      for (k = 0; k < 4; k++)
-      {
-         FREAD_INT(&n, fp);
-         MazePaths[j].push_back(n);
-      }
-   }
-   loadPopulation(fp);
-   FCLOSE(fp);
+	if ((fp = FOPEN_READ(input_file_name)) == NULL) {
+		sprintf(buf, "Cannot load population file %s", input_file_name);
+		PrintError(buf);
+		exit(1);
+	}
+
+	FREAD_INT(&Member::id_dispenser, fp);
+	FREAD_LONG(&RandomSeed, fp);
+	randomizer = new Random(RandomSeed);
+	ASSERT(randomizer != NULL);
+	randomizer->RAND_LOAD(fp);
+	FREAD_INT(&generation, fp);
+
+	for (i = 0; i < 3; i++)
+		FREAD_INT(&door_associations[i], fp);
+
+	maze_paths.Clear();
+	FREAD_INT(&i, fp);
+	maze_paths.SetCount(i);
+
+	for (j = 0; j < i; j++) {
+		for (k = 0; k < 4; k++) {
+			FREAD_INT(&n, fp);
+			maze_paths[j].Add(n);
+		}
+	}
+
+	LoadPopulation(fp);
+	FCLOSE(fp);
 }
 
 
 // Save evolve.
-void save()
-{
-   int  i, j, k, n;
-   FILE *fp;
-   char buf[200];
+void Store() {
+	int  i, j, k, n;
+	FILE* fp;
+	char buf[200];
+	ASSERT(output_file_name != NULL);
 
-   assert(OutputFileName != NULL);
-   if ((fp = FOPEN_WRITE(OutputFileName)) == NULL)
-   {
-      sprintf(buf, "Cannot save to population file %s", OutputFileName);
-      printError(buf);
-      exit(1);
-   }
-   FWRITE_INT(&Member::idDispenser, fp);
-   FWRITE_LONG(&RandomSeed, fp);
-   Randomizer->RAND_SAVE(fp);
-   FWRITE_INT(&Generation, fp);
-   for (i = 0; i < 3; i++)
-   {
-      FWRITE_INT(&DoorAssociations[i], fp);
-   }
-   i = (int)MazePaths.size();
-   FWRITE_INT(&i, fp);
-   for (j = 0; j < i; j++)
-   {
-      for (k = 0; k < 4; k++)
-      {
-         n = MazePaths[j][k];
-         FWRITE_INT(&n, fp);
-      }
-   }
-   savePopulation(fp);
-   FCLOSE(fp);
+	if ((fp = FOPEN_WRITE(output_file_name)) == NULL) {
+		sprintf(buf, "Cannot save to population file %s", output_file_name);
+		PrintError(buf);
+		exit(1);
+	}
+
+	FWRITE_INT(&Member::id_dispenser, fp);
+	FWRITE_LONG(&RandomSeed, fp);
+	randomizer->RAND_SAVE(fp);
+	FWRITE_INT(&generation, fp);
+
+	for (i = 0; i < 3; i++)
+		FWRITE_INT(&door_associations[i], fp);
+
+	i = (int)maze_paths.GetCount();
+	FWRITE_INT(&i, fp);
+
+	for (j = 0; j < i; j++) {
+		for (k = 0; k < 4; k++) {
+			n = maze_paths[j][k];
+			FWRITE_INT(&n, fp);
+		}
+	}
+
+	StorePopulation(fp);
+	FCLOSE(fp);
 }
 
 
 // Load evolution population.
-void loadPopulation(FILE *fp)
-{
-   for (int i = 0; i < POPULATION_SIZE; i++)
-   {
-      Population[i] = new Member();
-      assert(Population[i] != NULL);
-      Population[i]->load(fp);
-   }
+void LoadPopulation(FILE* fp) {
+	for (int i = 0; i < POPULATION_SIZE; i++) {
+		population[i] = new Member();
+		ASSERT(population[i] != NULL);
+		population[i]->Load(fp);
+	}
 }
 
 
 // Save evolution population.
-void savePopulation(FILE *fp)
-{
-   for (int i = 0; i < POPULATION_SIZE; i++)
-   {
-      Population[i]->save(fp);
-   }
+void StorePopulation(FILE* fp) {
+	for (int i = 0; i < POPULATION_SIZE; i++)
+		population[i]->Store(fp);
 }
 
 
 // Create maze-learning task.
-void createTask()
-{
-   int i, j, k;
+void createTask() {
+	int i, j, k;
+	door_associations[0] = randomizer->RAND_CHOICE(3);
+	door_associations[1] = door_associations[0];
 
-   DoorAssociations[0] = Randomizer->RAND_CHOICE(3);
-   DoorAssociations[1] = DoorAssociations[0];
-   while (DoorAssociations[1] == DoorAssociations[0])
-   {
-      DoorAssociations[1] = Randomizer->RAND_CHOICE(3);
-   }
-   DoorAssociations[2] = DoorAssociations[0];
-   while (DoorAssociations[2] == DoorAssociations[0] ||
-          DoorAssociations[2] == DoorAssociations[1])
-   {
-      DoorAssociations[2] = Randomizer->RAND_CHOICE(3);
-   }
-   MazePaths.clear();
-   MazePaths.resize(NumMazeTests);
-   for (i = 0; i < NumMazeTests; i++)
-   {
-      while (true)
-      {
-         MazePaths[i].clear();
-         for (j = k = 0; j < 4; j++)
-         {
-            MazePaths[i].push_back(Randomizer->RAND_CHOICE(3));
-            k += (MazePaths[i][j] - 1);
-         }
-         if (k == 0)
-         {
-            break;
-         }
-      }
-   }
+	while (door_associations[1] == door_associations[0])
+		door_associations[1] = randomizer->RAND_CHOICE(3);
+
+	door_associations[2] = door_associations[0];
+
+	while (door_associations[2] == door_associations[0] ||
+		   door_associations[2] == door_associations[1])
+		door_associations[2] = randomizer->RAND_CHOICE(3);
+
+	maze_paths.Clear();
+	maze_paths.SetCount(maze_test_count);
+
+	for (i = 0; i < maze_test_count; i++) {
+		while true {
+			maze_paths[i].Clear();
+
+			for (j = k = 0; j < 4; j++) {
+				maze_paths[i].Add(randomizer->RAND_CHOICE(3));
+				k += (maze_paths[i][j] - 1);
+			}
+
+			if (k == 0)
+				break;
+		}
+	}
 }
 
 
 // Evolution generation.
-void evolve()
-{
-   // Evaluate member fitness.
-   evaluate();
-
-   // Prune unfit members.
-   prune();
-
-   // Create new members by mutation.
-   mutate();
-
-   // Create new members by mating.
-   mate();
+void Evolve() {
+	// Evaluate member fitness.
+	Evaluate();
+	// Prune unfit members.
+	Prune();
+	// Create new members by mutation.
+	Mutate();
+	// Create new members by mating.
+	DoMating();
 }
 
 
 // Evaluate member fitnesses.
-void evaluate()
-{
-   Log::logInformation((char *)"Evaluate:");
+void Evaluate() {
+	LOG("Evaluate:");
 
-   for (int i = 0; i < POPULATION_SIZE; i++)
-   {
-      Population[i]->evaluate();
-      sprintf(Log::messageBuf, "  Member=%d, Mouse=%d, Fitness=%f, Generation=%d",
-              i, Population[i]->id, Population[i]->getFitness(),
-              Population[i]->generation);
-      Log::logInformation();
-   }
+	for (int i = 0; i < POPULATION_SIZE; i++) {
+		population[i]->Evaluate();
+		sprintf(Log::messageBuf, "  Member=%d, Mouse=%d, Fitness=%f, generation=%d",
+				i, population[i]->id, population[i]->getFitness(),
+				population[i]->generation);
+		Log::logInformation();
+	}
 }
 
 
 // Prune unfit members.
-void prune()
-{
-   double max;
-   int    i, j, m;
-   Member *member;
-   Member *fitPopulation[FIT_POPULATION_SIZE];
+void Prune() {
+	double max;
+	int    i, j, m;
+	Member* member;
+	Member* fitpopulation[FIT_POPULATION_SIZE];
+	LOG("Select:");
 
-   Log::logInformation((char *)"Select:");
-   for (i = 0; i < FIT_POPULATION_SIZE; i++)
-   {
-      m = -1;
-      for (j = 0; j < POPULATION_SIZE; j++)
-      {
-         member = Population[j];
-         if (member == NULL)
-         {
-            continue;
-         }
-         if ((m == -1) || (member->getFitness() > max))
-         {
-            m   = j;
-            max = member->getFitness();
-         }
-      }
-      member           = Population[m];
-      Population[m]    = NULL;
-      fitPopulation[i] = member;
-      sprintf(Log::messageBuf, "  Mouse=%d, Fitness=%f, Generation=%d",
-              member->id, member->getFitness(), member->generation);
-      Log::logInformation();
-   }
-   for (i = 0; i < POPULATION_SIZE; i++)
-   {
-      if (Population[i] != NULL)
-      {
-         delete Population[i];
-         Population[i] = NULL;
-      }
-   }
-   for (i = 0; i < FIT_POPULATION_SIZE; i++)
-   {
-      Population[i] = fitPopulation[i];
-   }
+	for (i = 0; i < FIT_POPULATION_SIZE; i++) {
+		m = -1;
+
+		for (j = 0; j < POPULATION_SIZE; j++) {
+			member = population[j];
+
+			if (member == NULL)
+				continue;
+
+			if ((m == -1) || (member->getFitness() > max)) {
+				m   = j;
+				max = member->getFitness();
+			}
+		}
+
+		member           = population[m];
+		population[m]    = NULL;
+		fitpopulation[i] = member;
+		sprintf(Log::messageBuf, "  Mouse=%d, Fitness=%f, generation=%d",
+				member->id, member->getFitness(), member->generation);
+		Log::logInformation();
+	}
+
+	for (i = 0; i < POPULATION_SIZE; i++) {
+		if (population[i] != NULL) {
+			delete population[i];
+			population[i] = NULL;
+		}
+	}
+
+	for (i = 0; i < FIT_POPULATION_SIZE; i++)
+		population[i] = fitpopulation[i];
 }
 
 
 // Mutate members.
-void mutate()
-{
-   int    i, j;
-   Member *member, *mutant;
+void Mutate() {
+	int    i, j;
+	Member* member, *mutant;
+	LOG("Mutate:");
 
-   Log::logInformation((char *)"Mutate:");
-   for (i = 0; i < NUM_MUTANTS; i++)
-   {
-      // Select a fit member to mutate.
-      j      = Randomizer->RAND_CHOICE(FIT_POPULATION_SIZE);
-      member = Population[j];
-
-      // Create mutant member.
-      mutant = new Member(member->generation + 1);
-      assert(mutant != NULL);
-      Population[FIT_POPULATION_SIZE + i] = mutant;
-      sprintf(Log::messageBuf, "  Member=%d, Mouse=%d -> Member=%d, Mouse=%d",
-              j, member->id, FIT_POPULATION_SIZE + i,
-              mutant->id);
-      Log::logInformation();
-
-      // Mutate.
-      mutant->mutate(member);
-   }
+	for (i = 0; i < NUM_MUTANTS; i++) {
+		// Select a fit member to mutate.
+		j      = randomizer->RAND_CHOICE(FIT_POPULATION_SIZE);
+		member = population[j];
+		// Create mutant member.
+		mutant = new Member(member->generation + 1);
+		ASSERT(mutant != NULL);
+		population[FIT_POPULATION_SIZE + i] = mutant;
+		sprintf(Log::messageBuf, "  Member=%d, Mouse=%d -> Member=%d, Mouse=%d",
+				j, member->id, FIT_POPULATION_SIZE + i,
+				mutant->id);
+		Log::logInformation();
+		// Mutate.
+		mutant->Mutate(member);
+	}
 }
 
 
 // Produce offspring by "mind melding" parent brain parameters.
-void mate()
-{
-   int    i, j, k;
-   Member *member1, *member2, *offspring;
+void DoMating() {
+	int    i, j, k;
+	Member* member1, *member2, *offspring;
+	LOG("Mate:");
 
-   Log::logInformation((char *)"Mate:");
-   if (FIT_POPULATION_SIZE < 2)
-   {
-      return;
-   }
-   for (i = 0; i < NUM_OFFSPRING; i++)
-   {
-      // Select a pair of fit members to mate.
-      j       = Randomizer->RAND_CHOICE(FIT_POPULATION_SIZE);
-      member1 = Population[j];
-      while ((k = Randomizer->RAND_CHOICE(FIT_POPULATION_SIZE)) == j)
-      {
-      }
-      member2 = Population[k];
+	if (FIT_POPULATION_SIZE < 2)
+		return;
 
-      // Create offspring.
-      offspring = new Member((member1->generation > member2->generation ?
-                              member1->generation : member2->generation) + 1);
-      assert(offspring != NULL);
-      Population[FIT_POPULATION_SIZE + NUM_MUTANTS + i] = offspring;
-      sprintf(Log::messageBuf, "  Members=%d,%d, Mice=%d,%d -> Member=%d, Mouse=%d",
-              j, k, member1->id, member2->id,
-              FIT_POPULATION_SIZE + NUM_MUTANTS + i, offspring->id);
-      Log::logInformation();
+	for (i = 0; i < NUM_OFFSPRING; i++) {
+		// Select a pair of fit members to mate.
+		j       = randomizer->RAND_CHOICE(FIT_POPULATION_SIZE);
+		member1 = population[j];
 
-      // Combine parent brains into offspring.
-      offspring->mindMeld(member1, member2);
-   }
+		while ((k = randomizer->RAND_CHOICE(FIT_POPULATION_SIZE)) == j) {
+		}
+
+		member2 = population[k];
+		// Create offspring.
+		offspring = new Member((member1->generation > member2->generation ?
+								member1->generation : member2->generation) + 1);
+		ASSERT(offspring != NULL);
+		population[FIT_POPULATION_SIZE + NUM_MUTANTS + i] = offspring;
+		sprintf(Log::messageBuf, "  Members=%d,%d, Mice=%d,%d -> Member=%d, Mouse=%d",
+				j, k, member1->id, member2->id,
+				FIT_POPULATION_SIZE + NUM_MUTANTS + i, offspring->id);
+		Log::logInformation();
+		// Combine parent brains into offspring.
+		offspring->MindMeld(member1, member2);
+	}
 }

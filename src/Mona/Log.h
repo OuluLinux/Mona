@@ -1,3 +1,4 @@
+#if 0
 /*
  * Basic logging.
  */
@@ -36,7 +37,7 @@ public:
    // Log file name.
    static char logFileNameBuf[LOG_FILE_NAMESZ + 1];
    static char *logFileName;
-   static void setLogFileName(char *name);
+   static void setlog_file_name(char *name);
 
    // Message composition buffer.
    static char messageBuf[MESSAGE_SIZE + 1];
@@ -72,4 +73,5 @@ public:
    // Log a message.
    static void log(char *prefix, char *message);
 };
+#endif
 #endif

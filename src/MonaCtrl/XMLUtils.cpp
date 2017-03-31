@@ -5,39 +5,39 @@
 /*                                                                                         */
 /*******************************************************************************************/
 
-IOXMLObject::IOXMLObject(const std::string &ionameArg)
+IOXMLObject::IOXMLObject(const String &ionameArg)
 {
   ioname = ionameArg;
 }
 
-bool IOXMLObject::loadXMLSettings(const std::string  &path  )
+bool IOXMLObject::loadXMLSettings(const String  &path  )
 {
-  if(!ioname.size())
+  if(!ioname.GetCount())
     return Logger::writeErrorLog("Cannot load XML settings -> NULL element name");
 
-  std::string verified = MediaPathManager::lookUpMediaPath(path);
+  String verified = MediaPathManager::lookUpMediaPath(path);
 
-  if(!verified.size())
-    return Logger::writeErrorLog(std::string("Couldn't locate the <") +
+  if(!verified.GetCount())
+    return Logger::writeErrorLog(String("Couldn't locate the <") +
                                  ioname + "> XML file at \""       +
                                  path   + "\" even with a look up");
 
   TiXmlDocument xmlStack(verified);
 
   if(!xmlStack.LoadFile())
-    return Logger::writeErrorLog(std::string("Invalid XML file -> ") + verified);
+    return Logger::writeErrorLog(String("Invalid XML file -> ") + verified);
 
 
-  for(const TiXmlElement *child = xmlStack.FirstChildElement();
-      child;
-   	  child = child->NextSiblingElement() )
-    if(ioname == child->Value())
-      return loadXMLSettings(child);
+  for(const TiXmlElement *outer = xmlStack.FirstChildElement();
+      outer;
+   	  outer = outer->NextSiblingElement() )
+    if(ioname == outer->Value())
+      return loadXMLSettings(outer);
 
-  return Logger::writeErrorLog(std::string("Need a <") + ioname + "> tag in the XML file");
+  return Logger::writeErrorLog(String("Need a <") + ioname + "> tag in the XML file");
 }
 
-bool IOXMLObject::exportXMLSettings(const std::string &xmlPath)
+bool IOXMLObject::exportXMLSettings(const String &xmlPath)
 {
   ofstream xmlFile(xmlPath.c_str(), ios::app | ios::binary);
   bool result = exportXMLSettings(xmlFile);
@@ -48,10 +48,10 @@ bool IOXMLObject::exportXMLSettings(const std::string &xmlPath)
 bool IOXMLObject::isSuitable(const TiXmlElement *element)
 {
   if(!element)
-    return  Logger::writeErrorLog(std::string("NULL <") + ioname +  "> node");
+    return  Logger::writeErrorLog(String("NULL <") + ioname +  "> node");
 
   if(ioname != element->Value())
-    return Logger::writeErrorLog(std::string("Need a <") + ioname + "> tag in the XML Node");
+    return Logger::writeErrorLog(String("Need a <") + ioname + "> tag in the XML Node");
 
   return true;
 }
@@ -389,13 +389,13 @@ const TiXmlElement *XMLArbiter::getChildElementByName(const TiXmlElement *elemen
                                                       const char         *name)
 {
   if(element && name)
-  for(const TiXmlElement *child = element->FirstChildElement();
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    const char *value = child->Value();
+    const char *value = outer->Value();
     if(value && !strcmp(name, value))
-      return child;
+      return outer;
   }
   return NULL;
 }
@@ -639,7 +639,7 @@ TiXmlNode* TiXmlNode::InsertBeforeChild( TiXmlNode* beforeThis, const TiXmlNode&
 	}
 	else
 	{
-		assert( firstChild == beforeThis );
+		ASSERT( firstChild == beforeThis );
 		firstChild = node;
 	}
 	beforeThis->prev = node;
@@ -665,7 +665,7 @@ TiXmlNode* TiXmlNode::InsertAfterChild( TiXmlNode* afterThis, const TiXmlNode& a
 	}
 	else
 	{
-		assert( lastChild == afterThis );
+		ASSERT( lastChild == afterThis );
 		lastChild = node;
 	}
 	afterThis->next = node;
@@ -705,7 +705,7 @@ bool TiXmlNode::RemoveChild( TiXmlNode* removeThis )
 {
 	if ( removeThis->parent != this )
 	{
-		assert( 0 );
+		ASSERT( 0 );
 		return false;
 	}
 
@@ -777,7 +777,7 @@ const TiXmlNode* TiXmlNode::IterateChildren( const TiXmlNode* previous ) const
 	}
 	else
 	{
-		assert( previous->parent == this );
+		ASSERT( previous->parent == this );
 		return previous->NextSibling();
 	}
 }
@@ -790,7 +790,7 @@ TiXmlNode* TiXmlNode::IterateChildren( TiXmlNode* previous )
 	}
 	else
 	{
-		assert( previous->parent == this );
+		ASSERT( previous->parent == this );
 		return previous->NextSibling();
 	}
 }
@@ -803,7 +803,7 @@ const TiXmlNode* TiXmlNode::IterateChildren( const char * val, const TiXmlNode* 
 	}
 	else
 	{
-		assert( previous->parent == this );
+		ASSERT( previous->parent == this );
 		return previous->NextSibling( val );
 	}
 }
@@ -816,7 +816,7 @@ TiXmlNode* TiXmlNode::IterateChildren( const char * val, TiXmlNode* previous )
 	}
 	else
 	{
-		assert( previous->parent == this );
+		ASSERT( previous->parent == this );
 		return previous->NextSibling( val );
 	}
 }
@@ -1021,7 +1021,7 @@ TiXmlElement::TiXmlElement (const char * _value)
 
 
 #ifdef TIXML_USE_STL
-TiXmlElement::TiXmlElement( const std::string& _value )
+TiXmlElement::TiXmlElement( const String& _value )
 	: TiXmlNode( TiXmlNode::ELEMENT )
 {
 	firstChild = lastChild = 0;
@@ -1177,9 +1177,9 @@ void TiXmlElement::Print( FILE* cfile, int depth ) const
 	}
 
 	// There are 3 different formatting approaches:
-	// 1) An element without children is printed as a <foo /> node
-	// 2) An element with only a text child is printed as <foo> text </foo>
-	// 3) An element with children is printed on multiple lines.
+	// 1) An element without outerren is printed as a <foo /> node
+	// 2) An element with only a text outer is printed as <foo> text </foo>
+	// 3) An element with outerren is printed on multiple lines.
 	TiXmlNode* node;
 	if ( !firstChild )
 	{
@@ -1221,7 +1221,7 @@ void TiXmlElement::StreamOut( TIXML_OSTREAM * stream ) const
 		attrib->StreamOut( stream );
 	}
 
-	// If this node has children, give it a closing tag. Else
+	// If this node has outerren, give it a closing tag. Else
 	// make it an empty tag.
 	TiXmlNode* node;
 	if ( firstChild )
@@ -1247,7 +1247,7 @@ void TiXmlElement::CopyTo( TiXmlElement* target ) const
 	TiXmlNode::CopyTo( target );
 
 	// Element class:
-	// Clone the attributes, then clone the children.
+	// Clone the attributes, then clone the outerren.
 	const TiXmlAttribute* attribute = 0;
 	for(	attribute = attributeSet.First();
 	attribute;
@@ -1290,7 +1290,7 @@ TiXmlDocument::TiXmlDocument( const char * documentName ) : TiXmlNode( TiXmlNode
 
 
 #ifdef TIXML_USE_STL
-TiXmlDocument::TiXmlDocument( const std::string& documentName ) : TiXmlNode( TiXmlNode::DOCUMENT )
+TiXmlDocument::TiXmlDocument( const String& documentName ) : TiXmlNode( TiXmlNode::DOCUMENT )
 {
 	tabsize = 4;
     value = documentName;
@@ -1343,8 +1343,8 @@ bool TiXmlDocument::LoadFile( const char* filename, TiXmlEncoding encoding )
 
 	// There was a really terrifying little bug here. The code:
 	//		value = filename
-	// in the STL case, cause the assignment method of the std::string to
-	// be called. What is strange, is that the std::string had the same
+	// in the STL case, cause the assignment method of the String to
+	// be called. What is strange, is that the String had the same
 	// address as it's c_str() method, and so bad things happen. Looks
 	// like a bug in the Microsoft STL implementation.
 	// See STL_STRING_BUG above.
@@ -1660,9 +1660,9 @@ TiXmlDeclaration::TiXmlDeclaration( const char * _version,
 
 
 #ifdef TIXML_USE_STL
-TiXmlDeclaration::TiXmlDeclaration(	const std::string& _version,
-									const std::string& _encoding,
-									const std::string& _standalone )
+TiXmlDeclaration::TiXmlDeclaration(	const String& _version,
+									const String& _encoding,
+									const String& _standalone )
 	: TiXmlNode( TiXmlNode::DECLARATION )
 {
 	version = _version;
@@ -1788,14 +1788,14 @@ TiXmlAttributeSet::TiXmlAttributeSet()
 
 TiXmlAttributeSet::~TiXmlAttributeSet()
 {
-	assert( sentinel.next == &sentinel );
-	assert( sentinel.prev == &sentinel );
+	ASSERT( sentinel.next == &sentinel );
+	ASSERT( sentinel.prev == &sentinel );
 }
 
 
 void TiXmlAttributeSet::Add( TiXmlAttribute* addMe )
 {
-	assert( !Find( addMe->Name() ) );	// Shouldn't be multiply adding to the set.
+	ASSERT( !Find( addMe->Name() ) );	// Shouldn't be multiply adding to the set.
 
 	addMe->next = &sentinel;
 	addMe->prev = sentinel.prev;
@@ -1819,7 +1819,7 @@ void TiXmlAttributeSet::Remove( TiXmlAttribute* removeMe )
 			return;
 		}
 	}
-	assert( 0 );		// we tried to remove a non-linked attribute.
+	ASSERT( 0 );		// we tried to remove a non-linked attribute.
 }
 
 const TiXmlAttribute* TiXmlAttributeSet::Find( const char * name ) const
@@ -1867,7 +1867,7 @@ TIXML_OSTREAM & operator<< (TIXML_OSTREAM & out, const TiXmlNode & base)
 
 
 #ifdef TIXML_USE_STL
-std::string & operator<< (std::string& out, const TiXmlNode& base )
+String & operator<< (String& out, const TiXmlNode& base )
 {
    std::ostringstream os_stream( std::ostringstream::out );
    base.StreamOut( &os_stream );
@@ -1882,9 +1882,9 @@ TiXmlHandle TiXmlHandle::FirstChild() const
 {
 	if ( node )
 	{
-		TiXmlNode* child = node->FirstChild();
-		if ( child )
-			return TiXmlHandle( child );
+		TiXmlNode* outer = node->FirstChild();
+		if ( outer )
+			return TiXmlHandle( outer );
 	}
 	return TiXmlHandle( 0 );
 }
@@ -1894,9 +1894,9 @@ TiXmlHandle TiXmlHandle::FirstChild( const char * value ) const
 {
 	if ( node )
 	{
-		TiXmlNode* child = node->FirstChild( value );
-		if ( child )
-			return TiXmlHandle( child );
+		TiXmlNode* outer = node->FirstChild( value );
+		if ( outer )
+			return TiXmlHandle( outer );
 	}
 	return TiXmlHandle( 0 );
 }
@@ -1906,9 +1906,9 @@ TiXmlHandle TiXmlHandle::FirstChildElement() const
 {
 	if ( node )
 	{
-		TiXmlElement* child = node->FirstChildElement();
-		if ( child )
-			return TiXmlHandle( child );
+		TiXmlElement* outer = node->FirstChildElement();
+		if ( outer )
+			return TiXmlHandle( outer );
 	}
 	return TiXmlHandle( 0 );
 }
@@ -1918,9 +1918,9 @@ TiXmlHandle TiXmlHandle::FirstChildElement( const char * value ) const
 {
 	if ( node )
 	{
-		TiXmlElement* child = node->FirstChildElement( value );
-		if ( child )
-			return TiXmlHandle( child );
+		TiXmlElement* outer = node->FirstChildElement( value );
+		if ( outer )
+			return TiXmlHandle( outer );
 	}
 	return TiXmlHandle( 0 );
 }
@@ -1931,15 +1931,15 @@ TiXmlHandle TiXmlHandle::Child( int count ) const
 	if ( node )
 	{
 		int i;
-		TiXmlNode* child = node->FirstChild();
+		TiXmlNode* outer = node->FirstChild();
 		for (	i=0;
-				child && i<count;
-				child = child->NextSibling(), ++i )
+				outer && i<count;
+				outer = outer->NextSibling(), ++i )
 		{
 			// nothing
 		}
-		if ( child )
-			return TiXmlHandle( child );
+		if ( outer )
+			return TiXmlHandle( outer );
 	}
 	return TiXmlHandle( 0 );
 }
@@ -1950,15 +1950,15 @@ TiXmlHandle TiXmlHandle::Child( const char* value, int count ) const
 	if ( node )
 	{
 		int i;
-		TiXmlNode* child = node->FirstChild( value );
+		TiXmlNode* outer = node->FirstChild( value );
 		for (	i=0;
-				child && i<count;
-				child = child->NextSibling( value ), ++i )
+				outer && i<count;
+				outer = outer->NextSibling( value ), ++i )
 		{
 			// nothing
 		}
-		if ( child )
-			return TiXmlHandle( child );
+		if ( outer )
+			return TiXmlHandle( outer );
 	}
 	return TiXmlHandle( 0 );
 }
@@ -1969,15 +1969,15 @@ TiXmlHandle TiXmlHandle::ChildElement( int count ) const
 	if ( node )
 	{
 		int i;
-		TiXmlElement* child = node->FirstChildElement();
+		TiXmlElement* outer = node->FirstChildElement();
 		for (	i=0;
-				child && i<count;
-				child = child->NextSiblingElement(), ++i )
+				outer && i<count;
+				outer = outer->NextSiblingElement(), ++i )
 		{
 			// nothing
 		}
-		if ( child )
-			return TiXmlHandle( child );
+		if ( outer )
+			return TiXmlHandle( outer );
 	}
 	return TiXmlHandle( 0 );
 }
@@ -1988,15 +1988,15 @@ TiXmlHandle TiXmlHandle::ChildElement( const char* value, int count ) const
 	if ( node )
 	{
 		int i;
-		TiXmlElement* child = node->FirstChildElement( value );
+		TiXmlElement* outer = node->FirstChildElement( value );
 		for (	i=0;
-				child && i<count;
-				child = child->NextSiblingElement( value ), ++i )
+				outer && i<count;
+				outer = outer->NextSiblingElement( value ), ++i )
 		{
 			// nothing
 		}
-		if ( child )
-			return TiXmlHandle( child );
+		if ( outer )
+			return TiXmlHandle( outer );
 	}
 	return TiXmlHandle( 0 );
 }
@@ -2148,7 +2148,7 @@ class TiXmlParsingData
 	// Only used by the document!
 	TiXmlParsingData( const char* start, int _tabsize, int row, int col )
 	{
-		assert( start );
+		ASSERT( start );
 		stamp = start;
 		tabsize = _tabsize;
 		cursor.row = row;
@@ -2163,7 +2163,7 @@ class TiXmlParsingData
 
 void TiXmlParsingData::Stamp( const char* now, TiXmlEncoding encoding )
 {
-	assert( now );
+	ASSERT( now );
 
 	// Do nothing if the tabsize is 0.
 	if ( tabsize < 1 )
@@ -2175,7 +2175,7 @@ void TiXmlParsingData::Stamp( const char* now, TiXmlEncoding encoding )
 	int row = cursor.row;
 	int col = cursor.col;
 	const char* p = stamp;
-	assert( p );
+	ASSERT( p );
 
 	while ( p < now )
 	{
@@ -2272,10 +2272,10 @@ void TiXmlParsingData::Stamp( const char* now, TiXmlEncoding encoding )
 	}
 	cursor.row = row;
 	cursor.col = col;
-	assert( cursor.row >= -1 );
-	assert( cursor.col >= -1 );
+	ASSERT( cursor.row >= -1 );
+	ASSERT( cursor.col >= -1 );
 	stamp = p;
-	assert( stamp );
+	ASSERT( stamp );
 }
 
 
@@ -2347,7 +2347,7 @@ const char* TiXmlBase::SkipWhiteSpace( const char* p, TiXmlEncoding encoding )
 
 /*static*/ bool TiXmlBase::StreamTo( TIXML_ISTREAM * in, int character, TIXML_STRING * tag )
 {
-	//assert( character > 0 && character < 128 );	// else it won't work in utf-8
+	//ASSERT( character > 0 && character < 128 );	// else it won't work in utf-8
 	while ( in->good() )
 	{
 		int c = in->peek();
@@ -2366,7 +2366,7 @@ const char* TiXmlBase::SkipWhiteSpace( const char* p, TiXmlEncoding encoding )
 const char* TiXmlBase::ReadName( const char* p, TIXML_STRING * name, TiXmlEncoding encoding )
 {
 	*name = "";
-	assert( p );
+	ASSERT( p );
 
 	// Names start with letters or underscores.
 	// Of course, in unicode, tinyxml has no idea what a letter *is*. The
@@ -2474,7 +2474,7 @@ const char* TiXmlBase::GetEntity( const char* p, char* value, int* length, TiXml
 	{
 		if ( strncmp( entity[i].str, p, entity[i].strLength ) == 0 )
 		{
-			assert( strlen( entity[i].str ) == entity[i].strLength );
+			ASSERT( strlen( entity[i].str ) == entity[i].strLength );
 			*value = entity[i].chr;
 			*length = 1;
 			return ( p + entity[i].strLength );
@@ -2492,11 +2492,11 @@ bool TiXmlBase::StringEqual( const char* p,
 							 bool ignoreCase,
 							 TiXmlEncoding encoding )
 {
-	assert( p );
-	assert( tag );
+	ASSERT( p );
+	ASSERT( tag );
 	if ( !p || !*p )
 	{
-		assert( 0 );
+		ASSERT( 0 );
 		return false;
 	}
 
@@ -2723,7 +2723,7 @@ const char* TiXmlDocument::Parse( const char* p, TiXmlParsingData* prevData, TiX
 		{
 			TiXmlDeclaration* dec = node->ToDeclaration();
 			const char* enc = dec->Encoding();
-			assert( enc );
+			ASSERT( enc );
 
 			if ( *enc == 0 )
 				encoding = TIXML_ENCODING_UTF8;
@@ -2754,7 +2754,7 @@ void TiXmlDocument::SetError( int err, const char* pError, TiXmlParsingData* dat
 	if ( error )
 		return;
 
-	assert( err > 0 && err < TIXML_ERROR_STRING_COUNT );
+	ASSERT( err > 0 && err < TIXML_ERROR_STRING_COUNT );
 	error   = true;
 	errorId = err;
 	errorDesc = errorString[ errorId ];
@@ -2906,7 +2906,7 @@ void TiXmlElement::StreamIn (TIXML_ISTREAM * in, TIXML_STRING * tag)
 			// We now have either a closing tag...or another node.
 			// We should be at a "<", regardless.
 			if ( !in->good() ) return;
-			assert( in->peek() == '<' );
+			ASSERT( in->peek() == '<' );
 			size_t tagIndex = tag->length();
 
 			bool closingTag = false;
@@ -2954,7 +2954,7 @@ void TiXmlElement::StreamIn (TIXML_ISTREAM * in, TIXML_STRING * tag)
 						document->SetError( TIXML_ERROR_EMBEDDED_NULL, 0, 0, TIXML_ENCODING_UNKNOWN );
 					return;
 				}
-				assert( c == '>' );
+				ASSERT( c == '>' );
 				*tag += (char) c;
 
 				// We are done, once we've found our closing tag.

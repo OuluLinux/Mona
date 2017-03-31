@@ -13,18 +13,18 @@ bool GUIFrame::loadXMLSettings(const TiXmlElement *element)
 
   bool defaultFont = true;
 
-  for(const TiXmlElement *child = element->FirstChildElement();	
-      child;
-   	  child = child->NextSiblingElement() )
+  for(const TiXmlElement *outer = element->FirstChildElement();	
+      outer;
+   	  outer = outer->NextSiblingElement() )
   {
-    std::string elementName  = child->Value();
+    String elementName  = outer->Value();
 
-    if(!elementName.size())
+    if(!elementName.GetCount())
       continue;
     
     if(elementName == "Font")
     {
-      int fontIndex = GUIFontManager::addFont(child);
+      int fontIndex = GUIFontManager::addFont(outer);
       if(defaultFont && fontIndex >= 0)
       {
         GUIFontManager::setDefaultFont(fontIndex);
@@ -35,7 +35,7 @@ bool GUIFrame::loadXMLSettings(const TiXmlElement *element)
  
     if(elementName == "Texture")
     {
-      if(elementsTexture.loadXMLSettings(child))
+      if(elementsTexture.loadXMLSettings(outer))
       {
         GUITexCoordDescriptor::setTextureHeight(elementsTexture.getHeight());
         GUITexCoordDescriptor::setTextureWidth(elementsTexture.getWidth());
@@ -46,7 +46,7 @@ bool GUIFrame::loadXMLSettings(const TiXmlElement *element)
     if(elementName == "TexCoordsDesc")
     {
       GUITexCoordDescriptor descriptor;
-      descriptor.loadXMLSettings(child);
+      descriptor.loadXMLSettings(outer);
       addOrReplaceTexCoordsInfo(descriptor);
       continue;
     }
@@ -61,31 +61,31 @@ void  GUIFrame::render(float tick)
 
   size_t t = 0;
 
-  while(updateCount)
+  while(update_count)
   {
-    for(t = 0; t < elements.size(); t++)
+    for(t = 0; t < elements.GetCount(); t++)
       elements[t]->forceUpdate(true);
-    updateCount--;
+    update_count--;
   }
 
-  for(t = 0; t < elements.size(); t++)
+  for(t = 0; t < elements.GetCount(); t++)
     elements[t]->render(tick);
 }
 
 void GUIFrame::addOrReplaceTexCoordsInfo(GUITexCoordDescriptor &info)
 {
-  for(size_t t = 0; t < texCoords.size(); t++)
+  for(size_t t = 0; t < texCoords.GetCount(); t++)
     if(texCoords[t].getType() == info.getType())
     {
       texCoords[t].setTexCoords(info.getTexCoords());
       return;
     }
-  texCoords.push_back(info);
+  texCoords.Add(info);
 }
 
 GUITexCoordDescriptor *GUIFrame::getTexCoordsInfo(int type)
 {
-  for(size_t t = 0; t < texCoords.size(); t++)
+  for(size_t t = 0; t < texCoords.GetCount(); t++)
     if(texCoords[t].getType() == type)
       return &texCoords[t];
   return NULL;
@@ -129,14 +129,14 @@ void  GUIFrame::disableGUITexture()
 
 void GUIFrame::forceUpdate(bool update)
 {
-  updateCount = update ? getTreeHeight() + 1 : 0;
+  update_count = update ? getTreeHeight() + 1 : 0;
 }
 
-void GUIFrame::clear()
+void GUIFrame::Clear()
 {
   elementsTexture.destroy();
-  texCoords.clear();
-  GUIPanel::clear();
+  texCoords.Clear();
+  GUIPanel::Clear();
 }
 
 const Tuple4i &GUIFrame::getWindowBounds()
@@ -147,5 +147,5 @@ const Tuple4i &GUIFrame::getWindowBounds()
 
 GUIFrame::~GUIFrame()
 {
-  clear();
+  Clear();
 }

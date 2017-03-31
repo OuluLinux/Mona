@@ -10,7 +10,7 @@
 #include "TmazeGrammar.h"
 
 // Mazes.
-vector<Tmaze *> Mazes;
+Vector<Tmaze *> Mazes;
 
 char *Usage[] =
 {
@@ -50,7 +50,7 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          mazeSeed = atoi(argv[i]);
          continue;
@@ -62,13 +62,13 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          numMazeMarks = atoi(argv[i]);
          if (numMazeMarks < 2)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -85,7 +85,7 @@ main(int argc, char *argv[])
          if (numMazes < 0)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          continue;
       }
@@ -96,20 +96,20 @@ main(int argc, char *argv[])
          if (i >= argc)
          {
             printUsage();
-            return(1);
+            return (1);
          }
          outputFile = argv[i];
          continue;
       }
 
       printUsage();
-      return(1);
+      return (1);
    }
 
    if ((mazeSeed < 0) || (numMazeMarks < 0) || (numMazes < 0))
    {
       printUsage();
-      return(1);
+      return (1);
    }
 
    // Generate mazes.
@@ -117,8 +117,8 @@ main(int argc, char *argv[])
    for (m = 0; m < numMazes; m++)
    {
       maze = tmg->generateMaze();
-      assert(maze != NULL);
-      Mazes.push_back(maze);
+      ASSERT(maze != NULL);
+      Mazes.Add(maze);
    }
 
    // Output mazes.
@@ -127,7 +127,7 @@ main(int argc, char *argv[])
       if ((fp = fopen(outputFile, "w")) == NULL)
       {
          fprintf(stderr, "Cannot open maze output file %s for writing\n", outputFile);
-         return(1);
+         return (1);
       }
    }
    else
@@ -138,17 +138,17 @@ main(int argc, char *argv[])
    for (m = 0; m < numMazes; m++)
    {
       maze = Mazes[m];
-      if (intervals < (int)maze->path.size())
+      if (intervals < (int)maze->path.GetCount())
       {
-         intervals = (int)maze->path.size();
+         intervals = (int)maze->path.GetCount();
       }
       fprintf(fp, "name: { ");
-      for (i = 0; i < (int)maze->path.size(); i++)
+      for (i = 0; i < (int)maze->path.GetCount(); i++)
       {
          fprintf(fp, "%d ", maze->path[i].mark);
       }
-      fprintf(fp, "} %d\n", (int)maze->path.size());
-      for (i = 0; i < (int)maze->path.size(); i++)
+      fprintf(fp, "} %d\n", (int)maze->path.GetCount());
+      for (i = 0; i < (int)maze->path.GetCount(); i++)
       {
          fprintf(fp, "I:");
          for (j = 0; j < numMazeMarks; j++)
@@ -171,7 +171,7 @@ main(int argc, char *argv[])
          {
             fprintf(fp, "1 0");
          }
-         if (i < (int)maze->path.size() - 1)
+         if (i < (int)maze->path.GetCount() - 1)
          {
             fprintf(fp, "\n");
          }
@@ -185,5 +185,5 @@ main(int argc, char *argv[])
    {
       fclose(fp);
    }
-   return(0);
+   return (0);
 }

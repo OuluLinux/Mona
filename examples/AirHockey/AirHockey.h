@@ -53,7 +53,7 @@ public:
 	virtual void DockInit();
 	
 	void Reset(bool init_reward, bool start);
-	void Reload();
+	void ReLoad();
 	void Refresher();
 	void RefreshEpsilon();
 	void LoadPretrained();

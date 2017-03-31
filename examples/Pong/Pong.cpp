@@ -35,7 +35,7 @@ void Pong::Paddle::setPosition(float y)
 }
 
 
-void Pong::Paddle::load(FILE *fp)
+void Pong::Paddle::Load(FILE *fp)
 {
    FREAD_FLOAT(&width, fp);
    FREAD_FLOAT(&length, fp);
@@ -43,7 +43,7 @@ void Pong::Paddle::load(FILE *fp)
 }
 
 
-void Pong::Paddle::save(FILE *fp)
+void Pong::Paddle::Store(FILE *fp)
 {
    FWRITE_FLOAT(&width, fp);
    FWRITE_FLOAT(&length, fp);
@@ -120,11 +120,11 @@ Pong::STEP_OUTCOME Pong::Ball::step(Paddle& paddle)
    }
    position.x += velocity.x;
    position.y += velocity.y;
-   return(outcome);
+   return (outcome);
 }
 
 
-void Pong::Ball::load(FILE *fp)
+void Pong::Ball::Load(FILE *fp)
 {
    FREAD_FLOAT(&radius, fp);
    FREAD_FLOAT(&position.x, fp);
@@ -134,7 +134,7 @@ void Pong::Ball::load(FILE *fp)
 }
 
 
-void Pong::Ball::save(FILE *fp)
+void Pong::Ball::Store(FILE *fp)
 {
    FWRITE_FLOAT(&radius, fp);
    FWRITE_FLOAT(&position.x, fp);
@@ -181,14 +181,14 @@ void Pong::setBallVelocity(float dx, float dy)
 
 
 // Step: returns true if ball scores.
-Pong::STEP_OUTCOME Pong::step()
+Pong::STEP_OUTCOME Pong::Step()
 {
-   return(ball.step(paddle));
+   return (ball.step(paddle));
 }
 
 
 // Load pong.
-void Pong::load(char *filename)
+void Pong::Load(char *filename)
 {
    FILE *fp;
 
@@ -197,20 +197,20 @@ void Pong::load(char *filename)
       fprintf(stderr, "Cannot load pong from file %s\n", filename);
       exit(1);
    }
-   load(fp);
+   Load(fp);
    FCLOSE(fp);
 }
 
 
-void Pong::load(FILE *fp)
+void Pong::Load(FILE *fp)
 {
-   paddle.load(fp);
-   ball.load(fp);
+   paddle.Load(fp);
+   ball.Load(fp);
 }
 
 
 // Save pong.
-void Pong::save(char *filename)
+void Pong::Store(char *filename)
 {
    FILE *fp;
 
@@ -219,13 +219,13 @@ void Pong::save(char *filename)
       fprintf(stderr, "Cannot save pong to file %s\n", filename);
       exit(1);
    }
-   save(fp);
+   Store(fp);
    FCLOSE(fp);
 }
 
 
-void Pong::save(FILE *fp)
+void Pong::Store(FILE *fp)
 {
-   paddle.save(fp);
-   ball.save(fp);
+   paddle.Store(fp);
+   ball.Store(fp);
 }

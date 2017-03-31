@@ -1,3 +1,4 @@
+#if 0
 /*
  * This code implements the MD5 message-digest algorithm.
  * The algorithm is due to Ron Rivest.	This code was
@@ -267,3 +268,4 @@ void MD5Transform(uint32 buf[4], uint32 in[16])
    buf[2] += c;
    buf[3] += d;
 }
+#endif

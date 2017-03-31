@@ -13,13 +13,13 @@ public class MoxWorldBuilder
       "    java MoxWorldBuilder\n" +
       "      -steps <steps>\n" +
       "      -gridSize <width> <height>\n" +
-      "      -liveCellProbability <0.0-1.0>\n" +
-      "     [-randomSeed <random number seed>]\n" +
-      "     [-minBlueCells <quantity>]\n" +
-      "     [-maxBlueCells <quantity>]\n" +
-      "     [-minGreenCells <quantity>]\n" +
-      "     [-maxGreenCells <quantity>]\n" +
-      "     [-maxBuildAttempts <quantity>]\n" +
+      "      -live_cell_probability <0.0-1.0>\n" +
+      "     [-random_seed <random number seed>]\n" +
+      "     [-blue_cell_count <quantity>]\n" +
+      "     [-max_blue_cell_count <quantity>]\n" +
+      "     [-min_green_cell_count <quantity>]\n" +
+      "     [-max_green_cell_count <quantity>]\n" +
+      "     [-max_build_attempts <quantity>]\n" +
       "      -save <file name>\n" +
       "     [-dashboard]";
 
@@ -30,89 +30,89 @@ public class MoxWorldBuilder
    public static final int DEFAULT_MAX_BUILD_ATTEMPTS = 1000;
 
    // Game of Life mox world.
-   public GameOfLife gameOfLife;
+   public GameOfLife game_of_life;
 
    // Random numbers.
    Random randomizer;
 
-   // Dashboard display.
+   // dashboard display.
    MoxWorldDashboard dashboard;
 
    // Constructor.
    public MoxWorldBuilder(int width, int height)
    {
       // Create Game of Life.
-      gameOfLife = new GameOfLife(new Dimension(width, height));
+      game_of_life = new GameOfLife(new Size(width, height));
    }
 
 
    // Build.
-   public boolean build(int steps, float liveCellProb, int randomSeed,
-                        int minBlueCells, int maxBlueCells,
-                        int minGreenCells, int maxGreenCells,
-                        int maxBuildAttempts)
+   public bool build(int steps, float live_cell_prob, int random_seed,
+                        int blue_cell_count, int max_blue_cell_count,
+                        int min_green_cell_count, int max_green_cell_count,
+                        int max_build_attempts)
    {
       // Random numbers.
-      randomizer = new Random(randomSeed);
+      randomizer = new Random(random_seed);
 
       // Try to build world.
-      for (int i = 0; i < maxBuildAttempts; i++)
+      for (int i = 0; i < max_build_attempts; i++)
       {
          // Initialize.
-         init(liveCellProb);
+         Init(live_cell_prob);
 
          // Run steps.
-         run(steps);
+         Run(steps);
 
          // Check properties.
-         if (check(minBlueCells, maxBlueCells, minGreenCells, maxGreenCells))
+         if (check(blue_cell_count, max_blue_cell_count, min_green_cell_count, max_green_cell_count))
          {
-            return(true);
+            return true;
          }
       }
-      return(false);
+      return (false);
    }
 
 
    // Initialize.
-   public void init(float liveCellProb)
+   public void Init(float live_cell_prob)
    {
       int x, y;
-      int width  = gameOfLife.getWidth();
-      int height = gameOfLife.getHeight();
+      int width  = game_of_life.getWidth();
+      int height = game_of_life.getHeight();
 
-      synchronized (gameOfLife.lock)
+      synchronized (game_of_life.lock)
       {
          for (x = 0; x < width; x++)
          {
             for (y = 0; y < height; y++)
             {
-               if (randomizer.nextFloat() < liveCellProb)
+               if (randomizer.nextFloat() < live_cell_prob)
                {
-                  gameOfLife.cells[x][y] = 1;
+                  game_of_life.cells[x][y] = 1;
                }
             }
          }
-         gameOfLife.step();
-         gameOfLife.checkpoint();
+         game_of_life.Step();
+         game_of_life.checkpoint();
       }
    }
 
 
    // Run steps.
-   public void run(int steps)
+   public void Run(int steps)
    {
       for (int i = 0; i < steps; i++)
       {
          // Update dashboard.
-         updateDashboard(i + 1, steps);
+         updatedashboard(i + 1, steps);
 
          // Step Game of Life.
          stepGameOfLife();
       }
-      synchronized (gameOfLife.lock)
+      synchronized (game_of_life.lock)
       {
-         gameOfLife.checkpoint();
+         game_of_life.checkpoint();
       }
    }
 
@@ -120,20 +120,20 @@ public class MoxWorldBuilder
    // Step Game Of Life.
    public void stepGameOfLife()
    {
-      synchronized (gameOfLife.lock)
+      synchronized (game_of_life.lock)
       {
-         gameOfLife.step();
+         game_of_life.Step();
       }
    }
 
 
    // Check.
-   public boolean check(int minBlueCells, int maxBlueCells,
-                        int minGreenCells, int maxGreenCells)
+   public bool check(int blue_cell_count, int max_blue_cell_count,
+                        int min_green_cell_count, int max_green_cell_count)
    {
       int x, y;
-      int width      = gameOfLife.getWidth();
-      int height     = gameOfLife.getHeight();
+      int width      = game_of_life.getWidth();
+      int height     = game_of_life.getHeight();
       int blueCount  = 0;
       int greenCount = 0;
 
@@ -141,41 +141,41 @@ public class MoxWorldBuilder
       {
          for (y = 0; y < height; y++)
          {
-            if (gameOfLife.cells[x][y] == GameOfLife.BLUE_CELL_COLOR_VALUE)
+            if (game_of_life.cells[x][y] == GameOfLife.BLUE_CELL_COLOR_VALUE)
             {
                blueCount++;
             }
-            if (gameOfLife.cells[x][y] == GameOfLife.GREEN_CELL_COLOR_VALUE)
+            if (game_of_life.cells[x][y] == GameOfLife.GREEN_CELL_COLOR_VALUE)
             {
                greenCount++;
             }
          }
       }
 
-      if ((blueCount >= minBlueCells) && (blueCount <= maxBlueCells) &&
-          (greenCount >= minGreenCells) && (greenCount <= maxGreenCells))
+      if ((blueCount >= blue_cell_count) && (blueCount <= max_blue_cell_count) &&
+          (greenCount >= min_green_cell_count) && (greenCount <= max_green_cell_count))
       {
-         return(true);
+         return true;
       }
       else
       {
-         return(false);
+         return (false);
       }
    }
 
 
    // Create dashboard.
-   public void createDashboard()
+   public void createdashboard()
    {
       if (dashboard == null)
       {
-         dashboard = new MoxWorldDashboard(gameOfLife);
+         dashboard = new MoxWorldDashboard(game_of_life);
       }
    }
 
 
    // Destroy dashboard.
-   public void destroyDashboard()
+   public void destroydashboard()
    {
       if (dashboard != null)
       {
@@ -188,7 +188,7 @@ public class MoxWorldBuilder
 
    // Update dashboard.
    // Return true if dashboard operational.
-   public boolean updateDashboard(int step, int steps, String message)
+   public bool updatedashboard(int step, int steps, String message)
    {
       if (dashboard != null)
       {
@@ -197,44 +197,44 @@ public class MoxWorldBuilder
          if (dashboard.quit)
          {
             dashboard = null;
-            return(false);
+            return (false);
          }
          else
          {
-            return(true);
+            return true;
          }
       }
       else
       {
-         return(false);
+         return (false);
       }
    }
 
 
-   public boolean updateDashboard(int step, int steps)
+   public bool updatedashboard(int step, int steps)
    {
-      return(updateDashboard(step, steps, ""));
+      return (updatedashboard(step, steps, ""));
    }
 
 
-   public boolean updateDashboard()
+   public bool updatedashboard()
    {
       if (dashboard != null)
       {
-         dashboard.update();
+         dashboard.Update();
          if (dashboard.quit)
          {
             dashboard = null;
-            return(false);
+            return (false);
          }
          else
          {
-            return(true);
+            return true;
          }
       }
       else
       {
-         return(false);
+         return (false);
       }
    }
 
@@ -246,15 +246,15 @@ public class MoxWorldBuilder
       int     steps            = -1;
       int     width            = -1;
       int     height           = -1;
-      float   liveCellProb     = -1.0f;
-      int     randomSeed       = DEFAULT_RANDOM_SEED;
-      int     minBlueCells     = 0;
-      int     maxBlueCells     = -1;
-      int     minGreenCells    = 0;
-      int     maxGreenCells    = -1;
-      int     maxBuildAttempts = DEFAULT_MAX_BUILD_ATTEMPTS;
+      float   live_cell_prob     = -1.0f;
+      int     random_seed       = DEFAULT_RANDOM_SEED;
+      int     blue_cell_count     = 0;
+      int     max_blue_cell_count     = -1;
+      int     min_green_cell_count    = 0;
+      int     max_green_cell_count    = -1;
+      int     max_build_attempts = DEFAULT_MAX_BUILD_ATTEMPTS;
       String  savefile         = null;
-      boolean dashboard        = false;
+      bool dashboard        = false;
 
       for (int i = 0; i < args.length; i++)
       {
@@ -332,177 +332,177 @@ public class MoxWorldBuilder
             }
             continue;
          }
-         if (args[i].equals("-liveCellProbability"))
+         if (args[i].equals("-live_cell_probability"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid liveCellProbability option");
+               System.err.println("Invalid live_cell_probability option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             try
             {
-               liveCellProb = Float.parseFloat(args[i]);
+               live_cell_prob = Float.parseFloat(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid liveCellProbability option");
+               System.err.println("Invalid live_cell_probability option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
-            if ((liveCellProb < 0.0f) || (liveCellProb > 1.0f))
+            if ((live_cell_prob < 0.0f) || (live_cell_prob > 1.0f))
             {
-               System.err.println("Invalid liveCellProbability option");
+               System.err.println("Invalid live_cell_probability option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             continue;
          }
-         if (args[i].equals("-randomSeed"))
+         if (args[i].equals("-random_seed"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid randomSeed option");
+               System.err.println("Invalid random_seed option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             try
             {
-               randomSeed = Integer.parseInt(args[i]);
+               random_seed = Integer.parseInt(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid randomSeed option");
+               System.err.println("Invalid random_seed option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             continue;
          }
-         if (args[i].equals("-minBlueCells"))
+         if (args[i].equals("-blue_cell_count"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid minBlueCells option");
+               System.err.println("Invalid blue_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             try
             {
-               minBlueCells = Integer.parseInt(args[i]);
+               blue_cell_count = Integer.parseInt(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid minBlueCells option");
+               System.err.println("Invalid blue_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
-            if (minBlueCells < 0)
+            if (blue_cell_count < 0)
             {
-               System.err.println("Invalid minBlueCells option");
+               System.err.println("Invalid blue_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             continue;
          }
-         if (args[i].equals("-maxBlueCells"))
+         if (args[i].equals("-max_blue_cell_count"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid maxBlueCells option");
+               System.err.println("Invalid max_blue_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             try
             {
-               maxBlueCells = Integer.parseInt(args[i]);
+               max_blue_cell_count = Integer.parseInt(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid maxBlueCells option");
+               System.err.println("Invalid max_blue_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
-            if (maxBlueCells < 0)
+            if (max_blue_cell_count < 0)
             {
-               System.err.println("Invalid maxBlueCells option");
+               System.err.println("Invalid max_blue_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             continue;
          }
-         if (args[i].equals("-minGreenCells"))
+         if (args[i].equals("-min_green_cell_count"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid minGreenCells option");
+               System.err.println("Invalid min_green_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             try
             {
-               minGreenCells = Integer.parseInt(args[i]);
+               min_green_cell_count = Integer.parseInt(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid minGreenCells option");
+               System.err.println("Invalid min_green_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
-            if (minGreenCells < 0)
+            if (min_green_cell_count < 0)
             {
-               System.err.println("Invalid minGreenCells option");
+               System.err.println("Invalid min_green_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             continue;
          }
-         if (args[i].equals("-maxGreenCells"))
+         if (args[i].equals("-max_green_cell_count"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid maxGreenCells option");
+               System.err.println("Invalid max_green_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             try
             {
-               maxGreenCells = Integer.parseInt(args[i]);
+               max_green_cell_count = Integer.parseInt(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid maxGreenCells option");
+               System.err.println("Invalid max_green_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
-            if (maxGreenCells < 0)
+            if (max_green_cell_count < 0)
             {
-               System.err.println("Invalid maxGreenCells option");
+               System.err.println("Invalid max_green_cell_count option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             continue;
          }
-         if (args[i].equals("-maxBuildAttempts"))
+         if (args[i].equals("-max_build_attempts"))
          {
             i++;
             if (i >= args.length)
             {
-               System.err.println("Invalid maxBuildAttempts option");
+               System.err.println("Invalid max_build_attempts option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
             try
             {
-               maxBuildAttempts = Integer.parseInt(args[i]);
+               max_build_attempts = Integer.parseInt(args[i]);
             }
             catch (NumberFormatException e) {
-               System.err.println("Invalid maxBuildAttempts option");
+               System.err.println("Invalid max_build_attempts option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
-            if (maxBuildAttempts < 1)
+            if (max_build_attempts < 1)
             {
-               System.err.println("Invalid maxBuildAttempts option");
+               System.err.println("Invalid max_build_attempts option");
                System.err.println(MoxWorldBuilder.Usage);
                System.exit(1);
             }
@@ -540,50 +540,50 @@ public class MoxWorldBuilder
 
       // Check options.
       if ((steps < 0) || (width == -1) ||
-          (height == -1) || (liveCellProb < 0.0f) ||
+          (height == -1) || (live_cell_prob < 0.0f) ||
           (savefile == null))
       {
          System.err.println(MoxWorldBuilder.Usage);
          System.exit(1);
       }
-      if (maxBlueCells == -1)
+      if (max_blue_cell_count == -1)
       {
-         maxBlueCells = width * height;
+         max_blue_cell_count = width * height;
       }
-      if (maxGreenCells == -1)
+      if (max_green_cell_count == -1)
       {
-         maxGreenCells = width * height;
+         max_green_cell_count = width * height;
       }
-      if (minBlueCells > maxBlueCells)
-      {
-         System.err.println(MoxWorldBuilder.Usage);
-         System.exit(1);
-      }
-      if (minGreenCells > maxGreenCells)
+      if (blue_cell_count > max_blue_cell_count)
       {
          System.err.println(MoxWorldBuilder.Usage);
          System.exit(1);
       }
-      if ((minBlueCells + minGreenCells) > (width * height))
+      if (min_green_cell_count > max_green_cell_count)
+      {
+         System.err.println(MoxWorldBuilder.Usage);
+         System.exit(1);
+      }
+      if ((blue_cell_count + min_green_cell_count) > (width * height))
       {
          System.err.println(MoxWorldBuilder.Usage);
          System.exit(1);
       }
 
       // Create.
-      MoxWorldBuilder moxWorldBuilder = new MoxWorldBuilder(width, height);
+      MoxWorldBuilder mox_world_builder = new MoxWorldBuilder(width, height);
 
       // Create dashboard?
       if (dashboard)
       {
-         moxWorldBuilder.createDashboard();
+         mox_world_builder.createdashboard();
       }
 
       // Build mox world.
-      if (!moxWorldBuilder.build(steps, liveCellProb, randomSeed,
-                                 minBlueCells, maxBlueCells,
-                                 minGreenCells, maxGreenCells,
-                                 maxBuildAttempts))
+      if (!mox_world_builder.build(steps, live_cell_prob, random_seed,
+                                 blue_cell_count, max_blue_cell_count,
+                                 min_green_cell_count, max_green_cell_count,
+                                 max_build_attempts))
       {
          System.err.println("Cannot build mox world");
          System.exit(1);
@@ -592,7 +592,7 @@ public class MoxWorldBuilder
       // Save.
       try
       {
-         moxWorldBuilder.gameOfLife.save(savefile);
+         mox_world_builder.game_of_life.Store(savefile);
       }
       catch (Exception e)
       {

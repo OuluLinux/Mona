@@ -3,23 +3,23 @@
 const double TmazeGrammar::NEAR_ZERO = 0.0001;
 
 // Constructor.
-TmazeGrammar::TmazeGrammar(RANDOM randomSeed, int numMarks)
+TmazeGrammar::TmazeGrammar(RANDOM random_seed, int numMarks)
 {
-   assert(numMarks > 1);
+   ASSERT(numMarks > 1);
 
-   this->randomSeed = randomSeed;
+   this->random_seed = random_seed;
    this->numMarks   = numMarks;
-   mazeRandomizer   = new Random(randomSeed);
-   assert(mazeRandomizer != NULL);
+   mazerandomizer   = new Random(random_seed);
+   ASSERT(mazerandomizer != NULL);
 }
 
 
 // Destructor.
 TmazeGrammar::~TmazeGrammar()
 {
-   if (mazeRandomizer != NULL)
+   if (mazerandomizer != NULL)
    {
-      delete mazeRandomizer;
+      delete mazerandomizer;
    }
 }
 
@@ -32,15 +32,15 @@ Tmaze *TmazeGrammar::generateMaze()
    Random *randomizer;
 
    maze = new Tmaze();
-   assert(maze != NULL);
+   ASSERT(maze != NULL);
 
-   randomizer = new Random(randomSeed);
-   assert(randomizer != NULL);
+   randomizer = new Random(random_seed);
+   ASSERT(randomizer != NULL);
 
    while (extendMazePath(randomizer, maze) != Tmaze::GOAL)
    {
    }
-   return(maze);
+   return (maze);
 }
 
 
@@ -51,7 +51,7 @@ int TmazeGrammar::extendMazePath(Random *randomizer, Tmaze *maze)
    Tmaze::Junction junction;
 
    // Select mark.
-   if (maze->path.size() == 0)
+   if (maze->path.GetCount() == 0)
    {
       junction.mark = Tmaze::START;
    }
@@ -69,7 +69,7 @@ int TmazeGrammar::extendMazePath(Random *randomizer, Tmaze *maze)
    else
    {
       junction.probability = randomizer->RAND_PROB();
-      if (mazeRandomizer->RAND_PROB() <= junction.probability)
+      if (mazerandomizer->RAND_PROB() <= junction.probability)
       {
          junction.direction = Tmaze::LEFT;
       }
@@ -78,9 +78,9 @@ int TmazeGrammar::extendMazePath(Random *randomizer, Tmaze *maze)
          junction.direction = Tmaze::RIGHT;
       }
    }
-   maze->path.push_back(junction);
+   maze->path.Add(junction);
 
    // Incorporate direction choice into context.
    randomizer->SRAND(randomizer->RAND() ^ (RANDOM)(junction.direction + 1));
-   return(junction.mark);
+   return (junction.mark);
 }

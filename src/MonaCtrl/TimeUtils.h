@@ -68,7 +68,7 @@ class FPSCounter
 class Benchmark : public FPSCounter, IOXMLObject
 {
   private:
-    std::string  logFilePath;
+    String  logFilePath;
     float        framesCounter,
                  elapsedTime,
                  averageFPS,
@@ -78,14 +78,14 @@ class Benchmark : public FPSCounter, IOXMLObject
      bool        enabled;
 
   public:
-    Benchmark(const std::string &logFilePath = "Results.xml");
+    Benchmark(const String &logFilePath = "Results.xml");
 
-    void    setLogFilePath(const std::string &logFilePath);
-    const   std::string &getLogFilePath() const;
+    void    setLogFilePath(const String &logFilePath);
+    const   String &getLogFilePath() const;
 
     void    setDuration(float);
 
-    virtual bool exportXMLSettings(const std::string &xmlPath);
+    virtual bool exportXMLSettings(const String &xmlPath);
     virtual bool loadXMLSettings(const TiXmlElement *element);
 
     virtual void  markFrameEnd();

@@ -113,14 +113,14 @@ glmUnitize(GLMmodel *model);
 GLvoid
 glmBounds(GLMmodel *model, GLfloat *mins, GLfloat *maxs);
 
-/* glmDimensions: Calculates the dimensions (width, height, depth) of
+/* glmSizes: Calculates the dimensions (width, height, depth) of
  * a model.
  *
  * model      - initialized GLMmodel structure
  * dimensions - array of 3 GLfloats (GLfloat dimensions[3])
  */
 GLvoid
-glmDimensions(GLMmodel *model, GLfloat *dimensions);
+glmSizes(GLMmodel *model, GLfloat *dimensions);
 
 /* glmHeightmap: Calculates a facet heightmap for a model.
  * Height is defined as the Y dimension on the XZ plane.

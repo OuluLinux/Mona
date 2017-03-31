@@ -1,3 +1,5 @@
+#if 0
+
 /*
  * A C-program for MT19937, with initialization improved 2002/1/26.
  * Coded by Takuji Nishimura and Makoto Matsumoto.
@@ -151,21 +153,21 @@ RANDOM Random::genrand_int32(void)
    {
       y = 0x7fffffffUL;
    }
-   return(y);
+   return (y);
 }
 
 
 /* generates a random number on [0,0x7fffffff]-interval */
 long Random::genrand_int31(void)
 {
-   return((unsigned long)(genrand_int32() >> 1));
+   return ((unsigned long)(genrand_int32() >> 1));
 }
 
 
 /* generates a random number on [0,1]-real-interval */
 double Random::genrand_real1(void)
 {
-   return(genrand_int32() * (1.0 / 4294967295.0));
+   return (genrand_int32() * (1.0 / 4294967295.0));
    /* divided by 2^32-1 */
 }
 
@@ -173,7 +175,7 @@ double Random::genrand_real1(void)
 /* generates a random number on [0,1)-real-interval */
 double Random::genrand_real2(void)
 {
-   return(genrand_int32() * (1.0 / 4294967296.0));
+   return (genrand_int32() * (1.0 / 4294967296.0));
    /* divided by 2^32 */
 }
 
@@ -181,7 +183,7 @@ double Random::genrand_real2(void)
 /* generates a random number on (0,1)-real-interval */
 double Random::genrand_real3(void)
 {
-   return((((double)genrand_int32()) + 0.5) * (1.0 / 4294967296.0));
+   return ((((double)genrand_int32()) + 0.5) * (1.0 / 4294967296.0));
    /* divided by 2^32 */
 }
 
@@ -191,7 +193,7 @@ double Random::genrand_res53(void)
 {
    RANDOM a = genrand_int32() >> 5, b = genrand_int32() >> 6;
 
-   return((a * 67108864.0 + b) * (1.0 / 9007199254740992.0));
+   return ((a * 67108864.0 + b) * (1.0 / 9007199254740992.0));
 }
 
 
@@ -227,7 +229,7 @@ void Random::push_genrand()
    RANDOM *mtp;
 
    mtp = new RANDOM[RAND_N];
-   assert(mtp != NULL);
+   ASSERT(mtp != NULL);
    for (int i = 0; i < RAND_N; i++)
    {
       mtp[i] = mt[i];
@@ -242,7 +244,7 @@ void Random::pop_genrand()
 {
    RANDOM *mtp;
 
-   assert(smt.size() > 0);
+   ASSERT(smt.GetCount() > 0);
    mtp = smt.top();
    smt.pop();
    for (int i = 0; i < RAND_N; i++)
@@ -265,21 +267,21 @@ void Random::SRAND(RANDOM seed)
 // Get random number
 RANDOM Random::RAND()
 {
-   return(genrand_int32());
+   return (genrand_int32());
 }
 
 
 // Random probability >= 0.0 && <= 1.0
 double Random::RAND_PROB()
 {
-   return(genrand_real1());
+   return (genrand_real1());
 }
 
 
 // Random within interval >= min && <= max
 double Random::RAND_INTERVAL(double min, double max)
 {
-   return((genrand_real1() * (max - min)) + min);
+   return ((genrand_real1() * (max - min)) + min);
 }
 
 
@@ -288,27 +290,27 @@ bool Random::RAND_CHANCE(double p)
 {
    if (p <= 0.0)
    {
-      return(false);
+      return false;
    }
    if (RAND_PROB() <= p)
    {
-      return(true);
+      return true;
    }
-   return(false);
+   return false;
 }
 
 
 // Random choice of 0 to n-1.
 int Random::RAND_CHOICE(int n)
 {
-   return(genrand_int32() % n);
+   return (genrand_int32() % n);
 }
 
 
 // Random boolean.
 bool Random::RAND_BOOL()
 {
-   return((RAND() % 2) == 0 ? false : true);
+   return ((RAND() % 2) == 0 ? false : true);
 }
 
 
@@ -343,7 +345,7 @@ void Random::RAND_POP()
 // Clear random stack
 void Random::RAND_CLEAR()
 {
-   while (smt.size() > 0)
+   while (smt.GetCount() > 0)
    {
       pop_genrand();
    }
@@ -365,7 +367,7 @@ void Random::RAND_CLONE(Random& random)
    }
    random.mti = mti;
 
-   while (smt.size() > 0)
+   while (smt.GetCount() > 0)
    {
       mtp = smt.top();
       smt.pop();
@@ -375,13 +377,13 @@ void Random::RAND_CLONE(Random& random)
       smti2.push(r);
    }
 
-   while (smt2.size() > 0)
+   while (smt2.GetCount() > 0)
    {
       mtp = smt2.top();
       smt2.pop();
       smt.push(mtp);
       mtp2 = new RANDOM[RAND_N];
-      assert(mtp2 != NULL);
+      ASSERT(mtp2 != NULL);
       for (int i = 0; i < RAND_N; i++)
       {
          mtp2[i] = mtp[i];
@@ -398,5 +400,7 @@ void Random::RAND_CLONE(Random& random)
 // Return random probability for given random object.
 double external_rand(void *random)
 {
-   return(((Random *)random)->RAND_PROB());
+   return (((Random *)random)->RAND_PROB());
 }
+
+#endif
