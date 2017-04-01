@@ -1,7 +1,7 @@
 #if 0
 /*
- * Basic logging.
- */
+    Basic logging.
+*/
 
 #include "Log.h"
 
@@ -10,166 +10,137 @@ int Log::LOGGING_FLAG = LOG_TO_PRINT;
 
 // Log file name.
 char Log:: logFileNameBuf[LOG_FILE_NAMESZ + 1];
-char *Log::logFileName = (char *)DEFAULT_LOG_FILE_NAME;
+char* Log::logFileName = (char*)DEFAULT_LOG_FILE_NAME;
 
 // Message composition buffer.
 char Log::messageBuf[MESSAGE_SIZE + 1];
 
-FILE *Log::logfp     = NULL;
+FILE* Log::logfp     = NULL;
 bool Log:: logOpened = false;
 
-void Log::setlog_file_name(char *name)
-{
-   strncpy(logFileNameBuf, name, LOG_FILE_NAMESZ);
-   logFileName = logFileNameBuf;
+void Log::setlog_file_name(char* name) {
+	strncpy(logFileNameBuf, name, LOG_FILE_NAMESZ);
+	logFileName = logFileNameBuf;
 }
 
 
 // Log error message.
-void Log::logError(char *message)
-{
-   strncpy(messageBuf, message, MESSAGE_SIZE);
-   logError();
+void Log::logError(char* message) {
+	strncpy(messageBuf, message, MESSAGE_SIZE);
+	logError();
 }
 
 
-void Log::logError()
-{
-   log((char *)"ERROR: ", messageBuf);
+void Log::logError() {
+	log((char*)"ERROR: ", messageBuf);
 }
 
 
 // Log warning message.
-void Log::logWarning(char *message)
-{
-   strncpy(messageBuf, message, MESSAGE_SIZE);
-   logWarning();
+void Log::logWarning(char* message) {
+	strncpy(messageBuf, message, MESSAGE_SIZE);
+	logWarning();
 }
 
 
-void Log::logWarning()
-{
-   log((char *)"WARNING: ", messageBuf);
+void Log::logWarning() {
+	log((char*)"WARNING: ", messageBuf);
 }
 
 
 // Log debugging message.
-void Log::logDebug(char *message)
-{
-   strncpy(messageBuf, message, MESSAGE_SIZE);
-   logDebug();
+void Log::logDebug(char* message) {
+	strncpy(messageBuf, message, MESSAGE_SIZE);
+	logDebug();
 }
 
 
-void Log::logDebug()
-{
-   log((char *)"DEBUG: ", messageBuf);
+void Log::logDebug() {
+	log((char*)"DEBUG: ", messageBuf);
 }
 
 
 // Log information message.
-void Log::logInformation(char *message)
-{
-   strncpy(messageBuf, message, MESSAGE_SIZE);
-   logInformation();
+void Log::logInformation(char* message) {
+	strncpy(messageBuf, message, MESSAGE_SIZE);
+	logInformation();
 }
 
 
-void Log::logInformation()
-{
-   log(NULL, messageBuf);
+void Log::logInformation() {
+	log(NULL, messageBuf);
 }
 
 
 // Append temporary log.
-void Log::appendTempLog()
-{
-   Stream& fp;
-   char buf[500];
+void Log::appendTempLog() {
+	Stream& fp;
+	char buf[500];
 
-   if ((fp = fopen(TEMP_LOG_FILE_NAME, "r")) == NULL)
-   {
-      return;
-   }
-   while (fgets(buf, 499, fp) != NULL)
-   {
-      log(NULL, buf);
-   }
-   fclose(fp);
+	if ((fp = fopen(TEMP_LOG_FILE_NAME, "r")) == NULL)
+		return;
+
+	while (fgets(buf, 499, fp) != NULL)
+		log(NULL, buf);
+
+	fclose(fp);
 }
 
 
 // Close log.
-void Log::close()
-{
-   if (logOpened && (logfp != NULL))
-   {
-      fclose(logfp);
-      logfp = NULL;
-   }
-   removeTempLog();
+void Log::close() {
+	if (logOpened && (logfp != NULL)) {
+		fclose(logfp);
+		logfp = NULL;
+	}
+
+	removeTempLog();
 }
 
 
 // Remove temporary log file.
-void Log::removeTempLog()
-{
-#ifdef WIN32
-   _unlink(TEMP_LOG_FILE_NAME);
-#else
-   unlink(TEMP_LOG_FILE_NAME);
-#endif
+void Log::removeTempLog() {
+	#ifdef WIN32
+	_unlink(TEMP_LOG_FILE_NAME);
+	#else
+	unlink(TEMP_LOG_FILE_NAME);
+	#endif
 }
 
 
 // Log a message.
-void Log::log(char *prefix, char *message)
-{
-   if (LOGGING_FLAG == NO_LOG)
-   {
-      return;
-   }
+void Log::log(char* prefix, char* message) {
+	if (LOGGING_FLAG == NO_LOG)
+		return;
 
-   // Open log file?
-   if ((LOGGING_FLAG == LOG_TO_FILE) || (LOGGING_FLAG == LOG_TO_BOTH))
-   {
-      if (!logOpened)
-      {
-         logOpened = true;
-         if ((logfp = fopen(logFileName, "w")) == NULL)
-         {
-            fprintf(stderr, "Cannot open log file: %s\n", logFileName);
-         }
-      }
-   }
+	// Open log file?
+	if ((LOGGING_FLAG == LOG_TO_FILE) || (LOGGING_FLAG == LOG_TO_BOTH)) {
+		if (!logOpened) {
+			logOpened = true;
 
-   if ((LOGGING_FLAG == LOG_TO_FILE) || (LOGGING_FLAG == LOG_TO_BOTH))
-   {
-      if (logfp != NULL)
-      {
-         if (prefix != NULL)
-         {
-            fprintf(logfp, "%s%s\n", prefix, message);
-         }
-         else
-         {
-            fprintf(logfp, "%s\n", message);
-         }
-         fflush(logfp);
-      }
-   }
+			if ((logfp = fopen(logFileName, "w")) == NULL)
+				fprintf(stderr, "Cannot open log file: %s\n", logFileName);
+		}
+	}
 
-   if ((LOGGING_FLAG == LOG_TO_PRINT) || (LOGGING_FLAG == LOG_TO_BOTH))
-   {
-      if (prefix != NULL)
-      {
-         printf("%s%s\n", prefix, message);
-      }
-      else
-      {
-         printf("%s\n", message);
-      }
-      fflush(stdout);
-   }
+	if ((LOGGING_FLAG == LOG_TO_FILE) || (LOGGING_FLAG == LOG_TO_BOTH)) {
+		if (logfp != NULL) {
+			if (prefix != NULL)
+				fprintf(logfp, "%s%s\n", prefix, message);
+			else
+				fprintf(logfp, "%s\n", message);
+
+			fflush(logfp);
+		}
+	}
+
+	if ((LOGGING_FLAG == LOG_TO_PRINT) || (LOGGING_FLAG == LOG_TO_BOTH)) {
+		if (prefix != NULL)
+			printf("%s%s\n", prefix, message);
+		else
+			printf("%s\n", message);
+
+		fflush(stdout);
+	}
 }
 #endif

@@ -92,7 +92,7 @@ public:
 		WATER    = 1,
 		NUM_NEEDS = 2
 	};
-	
+
 	static NEED       INIT_HUNGER;
 	static NEED       INIT_THIRST;
 	static const NEED EAT_GOAL_VALUE;
@@ -101,7 +101,7 @@ public:
 	static const double HOVER_height;
 	static const double max_height_change;
 	static const double max_angle_adjustment;
-	
+
 	Muzz(const Color& color, BlockTerrain& terrain, int placement_seed);
 	Muzz(BlockTerrain& terrain);
 	~Muzz();
@@ -115,9 +115,15 @@ public:
 	void Place(double x, double y, double direction);
 	void Place();
 
-	inline double GetPlaceX() {return (m_place_position[0]);}
-	inline double GetPlaceY() {return (m_place_position[2]);}
-	inline double GetPlaceDirection() {return m_place_direction;}
+	inline double GetPlaceX() {
+		return (m_place_position[0]);
+	}
+	inline double GetPlaceY() {
+		return (m_place_position[2]);
+	}
+	inline double GetPlaceDirection() {
+		return m_place_direction;
+	}
 
 	void Forward(double step);
 	void Backward(double step);
@@ -125,13 +131,17 @@ public:
 	void Left(double angle);
 
 	enum {MOVE_FORWARD, TURN_RIGHT, TURN_LEFT};
-	
+
 	bool MoveOverTerrain(int type, double amount);
 	void Draw();
 	void Highlight();
 
-	double GetNeed(int need) {return (brain.GetNeed(need));}
-	void SetNeed(int need, double value) {brain.SetNeed(need, value);}
+	double GetNeed(int need) {
+		return (brain.GetNeed(need));
+	}
+	void SetNeed(int need, double value) {
+		brain.SetNeed(need, value);
+	}
 	void Reset();
 	void ReSetNeed(int need);
 	void ClearNeed(int need);
@@ -143,7 +153,7 @@ public:
 	void Store(Stream& s);
 	void PrintBrain(Stream& s);
 	void PrintResponsePotentials(Stream& s);
-	
+
 
 	bool has_food;
 	bool has_water;
@@ -161,10 +171,10 @@ public:
 	BlockTerrain* m_terrain;
 
 	// OpenGL display for drawing.
-/*	GLuint display;
+	/*	 GLuint display;
 
-	// "Turret" components.
-	GLUquadricObj* turretCylinder, *turretTopInner, *turretTopOuter,
-				   *turretEye, *turretRightEar, *turretLeftEar;*/
+		// "Turret" components.
+		GLUquadricObj* turretCylinder, *turretTopInner, *turretTopOuter,
+					   turretEye, *turretRightEar, *turretLeftEar;*/
 };
 #endif

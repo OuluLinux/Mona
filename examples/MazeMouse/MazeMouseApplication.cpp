@@ -1,119 +1,87 @@
 #include "MazeMouseApplication.h"
 
 MazeMouseApplication::MazeMouseApplication() {
-	
 	// Sizes.
 	WIDTH  = 700;
 	HEIGHT = 500;
-	
 	// Cheese need and goal.
 	CHEESE_NEED = 1.0;
 	CHEESE_GOAL = 0.5;
-
 	// Modes
 	TRAIN = 0;
 	RUN   = 1;
-
 	// Random seed.
 	DEFAULT_RANDOM_SEED = 7671;
-
 	// Step delay (ms).
 	STEP_DELAY = 1000;
-
 	// Display update frequency (ms).
 	DISPLAY_DELAY = 50;
-
 	// Mouse and cheese images.
 	MOUSE_IMAGE_FILE  = "mouse.gif";
 	CHEESE_IMAGE_FILE = "cheese.jpg";
-
 	// Mouse squeak sound.
 	SQUEAK_SOUND_FILE = "squeak.wav";
-
 	HELP_TEXT =
-		"Create a path for the mouse to follow to the cheese by clicking on a sequence of rooms from one of the","\n",
-		"start rooms through the maze to one of the cheese goal rooms. Then train the mouse by selecting train","\n",
-		"mode and running a few trials. You run a trial by clicking the start trial control which starts the","\n",
-		"mouse moving through the rooms. When the mouse finishes moving, click stop trial. When the mouse is","\n",
-		"training, it is being shown the correct responses to make in each room. Now use test mode to test the","\n",
-		"mouse to see if it can find the cheese on its own!","\n",
-		"","\n",
-		"Now try something interesting! First click reset to make the mouse forget everything.","\n",
-		"Then select just one of the start rooms, the entry, exit, and one of the goal rooms. The mouse will","\n",
-		"\"hop\" over the maze. Train that a few times and test the mouse on it.","\n",
-		"","\n",
-		"Now train a path through just the maze by selecting the entry room, three connected maze rooms, and the","\n",
-		"exit room. Don't bother to test that now since the mouse didn't find any cheese that would make it want","\n",
-		"to do that on its own.","\n",
-		"","\n",
-		"Now comes the tricky part. Combine the paths that you trained separately into one path by selecting all","\n",
-		"the rooms from the start to the entry, then through the maze to the exit, then to the cheese goal. Test","\n",
-		"the mouse a few times to see if it can find the cheese. You may see it do an extra hop at the entry that","\n",
-		"it doesn't need to, but that's OK. If the mouse can find the cheese that means that it can combine things","\n",
-		"that it knows together to solve the problem!","\n",
-		"","\n",
-		"You can try other fancy stuff like training more than one start->entry->exit->goal room path, or changing","\n",
-		"the maze path while keeping the start->entry->exit->goal room path the same.","\n",
-		"","\n",
+		"Create a path for the mouse to follow to the cheese by clicking on a sequence of rooms from one of the", "\n",
+		"start rooms through the maze to one of the cheese goal rooms. Then train the mouse by selecting train", "\n",
+		"mode and running a few trials. You run a trial by clicking the start trial control which starts the", "\n",
+		"mouse moving through the rooms. When the mouse finishes moving, click stop trial. When the mouse is", "\n",
+		"training, it is being shown the correct responses to make in each room. Now use test mode to test the", "\n",
+		"mouse to see if it can find the cheese on its own!", "\n",
+		"", "\n",
+		"Now try something interesting! First click reset to make the mouse forget everything.", "\n",
+		"Then select just one of the start rooms, the entry, exit, and one of the goal rooms. The mouse will", "\n",
+		"\"hop\" over the maze. Train that a few times and test the mouse on it.", "\n",
+		"", "\n",
+		"Now train a path through just the maze by selecting the entry room, three connected maze rooms, and the", "\n",
+		"exit room. Don't bother to test that now since the mouse didn't find any cheese that would make it want", "\n",
+		"to do that on its own.", "\n",
+		"", "\n",
+		"Now comes the tricky part. Combine the paths that you trained separately into one path by selecting all", "\n",
+		"the rooms from the start to the entry, then through the maze to the exit, then to the cheese goal. Test", "\n",
+		"the mouse a few times to see if it can find the cheese. You may see it do an extra hop at the entry that", "\n",
+		"it doesn't need to, but that's OK. If the mouse can find the cheese that means that it can combine things", "\n",
+		"that it knows together to solve the problem!", "\n",
+		"", "\n",
+		"You can try other fancy stuff like training more than one start->entry->exit->goal room path, or changing", "\n",
+		"the maze path while keeping the start->entry->exit->goal room path the same.", "\n",
+		"", "\n",
 		"Type 'p' to print the network.";
-	
 	see_all_maze_doors = false;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// Set title.
 	Title("Maze-learning Mouse");
-	
 	// Create mona.
 	CreateMona(Random());
-	
-	
-	/*// Add controls.
-	controls = new JPanel();
-	controls.setLayout(new FlowLayout());
-	start = new JCheckBox("Start Trial");
-	start.addItemListener(this);
-	start.setToolTipText("Go mouse!");
-	controls.Add(start);
-	controls.Add(new JLabel("Mode:"));
-	mode = new Choice();
-	mode.Add("Train");
-	mode.Add("Test");
-	controls.Add(mode);
-	controls.Add(new JLabel("Mouse Response:"));
-	response = new TextField(10);
-	response.setEditable(false);
-	controls.Add(response);
-	mute = new JCheckBox("Mute");
-	mute.setToolTipText("No squeaking!");
-	controls.Add(mute);
-	reset = new JButton("Reset");
-	reset.addActionListener(this);
-	controls.Add(reset);
-	help = new JButton("Help");
-	help.addActionListener(this);
-	controls.Add(help);
-	screen.Add(controls, BorderLayout.SOUTH);
-	helpDisplay = false;*/
-	
-	
+	/*  // Add controls.
+	    controls = new JPanel();
+	    controls.setLayout(new FlowLayout());
+	    start = new JCheckBox("Start Trial");
+	    start.addItemListener(this);
+	    start.setToolTipText("Go mouse!");
+	    controls.Add(start);
+	    controls.Add(new JLabel("Mode:"));
+	    mode = new Choice();
+	    mode.Add("Train");
+	    mode.Add("Test");
+	    controls.Add(mode);
+	    controls.Add(new JLabel("Mouse Response:"));
+	    response = new TextField(10);
+	    response.setEditable(false);
+	    controls.Add(response);
+	    mute = new JCheckBox("Mute");
+	    mute.setToolTipText("No squeaking!");
+	    controls.Add(mute);
+	    reset = new JButton("Reset");
+	    reset.addActionListener(this);
+	    controls.Add(reset);
+	    help = new JButton("Help");
+	    help.addActionListener(this);
+	    controls.Add(help);
+	    screen.Add(controls, BorderLayout.SOUTH);
+	    helpDisplay = false;*/
 	// Build maze.
 	int x;
 	int y;
-	
 	mazeSize		= Size(WIDTH, HEIGHT);
 	roomSize		= Size(mazeSize.cx / 15, mazeSize.cy / 11);
 	maze.SetCount(7);
@@ -124,7 +92,6 @@ MazeMouseApplication::MazeMouseApplication() {
 	maze[4].SetCount(3);
 	maze[5].SetCount(1);
 	maze[6].SetCount(3);
-	
 	x              = roomSize.cx;
 	y              = (mazeSize.cy / 2) - (roomSize.cy / 2);
 	maze[0][1]     .Init(x, y, START_ROOM, 0, 1);
@@ -184,105 +151,103 @@ MazeMouseApplication::MazeMouseApplication() {
 	maze[0][0].selected = true;
 	maze[end_maze_index + 1][2].has_cheese = true;
 	maze[end_maze_index + 1][2].selected  = true;
-	
 	// Show app.
 	Pack();
 	SetVisible(true);
+	/*
+		mazeImage     = createImage(mazeSize.width, mazeSize.height);
+		imageGraphics = mazeImage.getGraphics();
+		// Set font.
+		font = new Font("Helvetica", Font.PLAIN, 12);
+		canvasGraphics.setFont(font);
+		imageGraphics.setFont(font);
+		fontMetrics = canvasGraphics.getFontMetrics();
+		fontAscent  = fontMetrics.getMaxAscent();
+		fontWidth   = fontMetrics.getMaxAdvance();
+		fontHeight  = fontMetrics.GetHeight();
+		// Get mouse and cheese images.
+		Image mouse = null;
+		mouse_image = null;
+		Image cheese = null;
+		cheese_image = null;
+		int w1;
+		int h1;
+		int w2;
+		int h2;
+		URL imgURL = MazeMouse.class .getResource(MOUSE_IMAGE_FILE);
 
-/*
-	mazeImage     = createImage(mazeSize.width, mazeSize.height);
-	imageGraphics = mazeImage.getGraphics();
-	// Set font.
-	font = new Font("Helvetica", Font.PLAIN, 12);
-	canvasGraphics.setFont(font);
-	imageGraphics.setFont(font);
-	fontMetrics = canvasGraphics.getFontMetrics();
-	fontAscent  = fontMetrics.getMaxAscent();
-	fontWidth   = fontMetrics.getMaxAdvance();
-	fontHeight  = fontMetrics.GetHeight();
-	// Get mouse and cheese images.
-	Image mouse = null;
-	mouse_image = null;
-	Image cheese = null;
-	cheese_image = null;
-	int w1;
-	int h1;
-	int w2;
-	int h2;
-	URL imgURL = MazeMouse.class .getResource(MOUSE_IMAGE_FILE);
+		if (imgURL != null)
+			mouse = new ImageIcon(imgURL).getImage();
 
-	if (imgURL != null)
-		mouse = new ImageIcon(imgURL).getImage();
+		if (mouse == null)
+			error = "Cannot get image: " + MOUSE_IMAGE_FILE;
 
-	if (mouse == null)
-		error = "Cannot get image: " + MOUSE_IMAGE_FILE;
+		imgURL = MazeMouse.class .getResource(CHEESE_IMAGE_FILE);
 
-	imgURL = MazeMouse.class .getResource(CHEESE_IMAGE_FILE);
+		if (imgURL != null)
+			cheese = new ImageIcon(imgURL).getImage();
 
-	if (imgURL != null)
-		cheese = new ImageIcon(imgURL).getImage();
+		if (cheese == null)
+			error = "Cannot get image: " + CHEESE_IMAGE_FILE;
 
-	if (cheese == null)
-		error = "Cannot get image: " + CHEESE_IMAGE_FILE;
+		if (mouse != null) {
+			w1 = mouse.GetWidth(this);
+			h1 = mouse.GetHeight(this);
 
-	if (mouse != null) {
-		w1 = mouse.GetWidth(this);
-		h1 = mouse.GetHeight(this);
-
-		if ((w1 <= 0) || (h1 <= 0))
-			error = "Invalid image: " + MOUSE_IMAGE_FILE;
-		else {
-			w2         = roomSize.width / 2;
-			h2         = roomSize.height / 2;
-			mouse_image = createImage(w2, h2);
-			Graphics graphics = mouse_image.getGraphics();
-			graphics.drawImage(mouse, 0, 0, w2 - 1, h2 - 1, 0, 0, w1 - 1,
-							   h1 - 1, Color.white, this);
+			if ((w1 <= 0) || (h1 <= 0))
+				error = "Invalid image: " + MOUSE_IMAGE_FILE;
+			else {
+				w2         = roomSize.width / 2;
+				h2         = roomSize.height / 2;
+				mouse_image = createImage(w2, h2);
+				Graphics graphics = mouse_image.getGraphics();
+				graphics.drawImage(mouse, 0, 0, w2 - 1, h2 - 1, 0, 0, w1 - 1,
+								   h1 - 1, Color.white, this);
+			}
 		}
-	}
 
-	if (cheese != null) {
-		w1 = cheese.GetWidth(this);
-		h1 = cheese.GetHeight(this);
+		if (cheese != null) {
+			w1 = cheese.GetWidth(this);
+			h1 = cheese.GetHeight(this);
 
-		if ((w1 <= 0) || (h1 <= 0))
-			error = "Invalid image: " + CHEESE_IMAGE_FILE;
-		else {
-			w2          = roomSize.width / 2;
-			h2          = roomSize.height / 2;
-			cheese_image = createImage(w2, h2);
-			Graphics graphics = cheese_image.getGraphics();
-			graphics.drawImage(cheese, 0, 0, w2 - 1, h2 - 1, 0, 0, w1 - 1,
-							   h1 - 1, Color.white, this);
+			if ((w1 <= 0) || (h1 <= 0))
+				error = "Invalid image: " + CHEESE_IMAGE_FILE;
+			else {
+				w2          = roomSize.width / 2;
+				h2          = roomSize.height / 2;
+				cheese_image = createImage(w2, h2);
+				Graphics graphics = cheese_image.getGraphics();
+				graphics.drawImage(cheese, 0, 0, w2 - 1, h2 - 1, 0, 0, w1 - 1,
+								   h1 - 1, Color.white, this);
+			}
 		}
-	}
 
-	// Load mouse squeak sound.
-	squeakSound = null;
-	URL url = MazeMouse.class .getResource(SQUEAK_SOUND_FILE);
+		// Load mouse squeak sound.
+		squeakSound = null;
+		URL url = MazeMouse.class .getResource(SQUEAK_SOUND_FILE);
 
-	if (url != null)
-		squeakSound = Applet.newAudioClip(url);
+		if (url != null)
+			squeakSound = Applet.newAudioClip(url);
 
-	if (squeakSound == null)
-		error = "Cannot load sound file: " + SQUEAK_SOUND_FILE;
-	else {
-		// Playing and stopping ensures sound completely loaded.
-		squeakSound.play();
-		squeakSound.Stop();
-	}
+		if (squeakSound == null)
+			error = "Cannot load sound file: " + SQUEAK_SOUND_FILE;
+		else {
+			// Playing and stopping ensures sound completely loaded.
+			squeakSound.play();
+			squeakSound.Stop();
+		}
 
-	if (displayThread == null) {
-		displayThread = new Thread(this);
-		displayThread.setPriority(Thread.MIN_PRIORITY);
-		displayThread.start();
-	}
+		if (displayThread == null) {
+			displayThread = new Thread(this);
+			displayThread.setPriority(Thread.MIN_PRIORITY);
+			displayThread.start();
+		}
 
-	if ((stepThread == null) && (error == null)) {
-		stepThread = new Thread(this);
-		stepThread.setPriority(Thread.MIN_PRIORITY);
-		stepThread.start();
-	}
+		if ((stepThread == null) && (error == null)) {
+			stepThread = new Thread(this);
+			stepThread.setPriority(Thread.MIN_PRIORITY);
+			stepThread.start();
+		}
 	*/
 }
 
@@ -608,5 +573,6 @@ bool MazeMouseApplication::Key(dword key, int count) {
 		mona.Print();
 		return true;
 	}
+
 	return false;
 }

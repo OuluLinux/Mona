@@ -139,8 +139,11 @@ public:
 	// Set room doors to other rooms.
 	void SetDoors(Room* left, Room* fwd, Room* right) {
 		doors.SetCount(0);
+
 		if (left)	doors.Add(left);
+
 		if (right)	doors.Add(right);
+
 		if (fwd)	doors.Add(fwd);
 	}
 };
@@ -562,7 +565,6 @@ public:
 	void Evaluate() {
 		int i, j, k;
 		Vector<int> path;
-		
 		// Clear brain.
 		InitBrain(mouse);
 
@@ -703,7 +705,7 @@ public:
 	// Merge given member brain parameters into this brain.
 	void MindMeld(Member* member1, Member* member2) {
 		brain_parm_mutator->MindMeld(member1->brain_parm_mutator,
-							   member2->brain_parm_mutator);
+									 member2->brain_parm_mutator);
 	}
 
 	void Serialize(Stream& fp) {
@@ -1256,7 +1258,7 @@ void createTask() {
 
 	for (i = 0; i < maze_test_count; i++) {
 		while true {
-			maze_paths[i].Clear();
+		maze_paths[i].Clear();
 
 			for (j = k = 0; j < 4; j++) {
 				maze_paths[i].Add(randomizer->RAND_CHOICE(3));

@@ -1,7 +1,7 @@
 #if 0
 /*
- * Get time in milliseconds since the initial call.
- */
+    Get time in milliseconds since the initial call.
+*/
 
 #ifdef _WIN32
 #ifndef WIN32

@@ -94,47 +94,46 @@ void displayMuzzView(void) {
 void displayTerrainView(void) {
 	if (ViewSelection == MUZZ_VIEW_ONLY)
 		return;
-	
-	/*
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	// Set viewport and frustum.
-	glViewport(viewports[TERRAIN_VIEWPORT].x, viewports[TERRAIN_VIEWPORT].y,
-			   viewports[TERRAIN_VIEWPORT].width, viewports[TERRAIN_VIEWPORT].height);
-	camera.setFrustum(TERRAIN_FRUSTUM_ANGLE, viewports[TERRAIN_VIEWPORT].aspect,
-					  MUZZ_FRUSTUM_NEAR, MUZZ_FRUSTUM_FAR);
-	// Position camera.
-	camera.clearSpacial();
-	camera.SetPosition(TerrainViewPosition);
-	camera.setPitch(-90.0f);
-	camera.setRoll(180.0f);
-	camera.Place();
 
-	// Rendering to select a muzz?
-	if (renderMode == GL_SELECT)
+	/*
+	    glMatrixMode(GL_MODELVIEW);
+	    glLoadIdentity();
+	    // Set viewport and frustum.
+	    glViewport(viewports[TERRAIN_VIEWPORT].x, viewports[TERRAIN_VIEWPORT].y,
+			   viewports[TERRAIN_VIEWPORT].width, viewports[TERRAIN_VIEWPORT].height);
+	    camera.setFrustum(TERRAIN_FRUSTUM_ANGLE, viewports[TERRAIN_VIEWPORT].aspect,
+					  MUZZ_FRUSTUM_NEAR, MUZZ_FRUSTUM_FAR);
+	    // Position camera.
+	    camera.clearSpacial();
+	    camera.SetPosition(TerrainViewPosition);
+	    camera.setPitch(-90.0f);
+	    camera.setRoll(180.0f);
+	    camera.Place();
+
+	    // Rendering to select a muzz?
+	    if (renderMode == GL_SELECT)
 		StartPicking();
 
-	// Draw the world with a small perspective angle.
-	glPushMatrix();
-	glRotatef(20.0f, 1.0f, 0.0f, 1.0f);
-	drawWorld(-1);
+	    // Draw the world with a small perspective angle.
+	    glPushMatrix();
+	    glRotatef(20.0f, 1.0f, 0.0f, 1.0f);
+	    drawWorld(-1);
 
-	if (renderMode == GL_SELECT)
+	    if (renderMode == GL_SELECT)
 		stopPicking();
-	else {
+	    else {
 		// Highlight current muzz.
 		if (current_muzz != -1)
 			muzzes[current_muzz]->Highlight();
-	}
+	    }
 
-	glPopMatrix();
-	// Label view.
-	glLineWidth(2.0);
-	enter2Dmode();
-	draw2Dstring(5, 12, FONT, (char*)"Terrain");
-	exit2Dmode();
+	    glPopMatrix();
+	    // Label view.
+	    glLineWidth(2.0);
+	    enter2Dmode();
+	    draw2Dstring(5, 12, FONT, (char*)"Terrain");
+	    exit2Dmode();
 	*/
-	
 }
 
 
@@ -539,7 +538,7 @@ void configureviewports() {
 
 	// Set GUI frame dimensions.
 	guiFrame->setSizes(viewports[CONTROLS_VIEWPORT].width,
-							viewports[CONTROLS_VIEWPORT].height);
+					   viewports[CONTROLS_VIEWPORT].height);
 	guiFrame->forceUpdatetrue;
 }
 

@@ -1,29 +1,29 @@
 description "Mona creatures evolving in a Conway's Game of Life cellular automaton environment\377";
 
 uses
-	MonaCtrl;
+MonaCtrl;
 
 file
-	Evolve.h,
-	EvolveCommon.cpp,
-	EvolveMoxen.cpp,
-	EvolveMoxenSystem.cpp,
-	ForagerMox.cpp,
-	GameOfLife.h,
-	GameOfLife.cpp,
-	GameOfLifeApplication.cpp,
-	GameOfLifeCanvas.cpp,
-	Gene.cpp,
-	Genome.cpp,
-	Mox.h,
-	Mox.cpp,
-	MoxDashboard.cpp,
-	MoxWorld.h,
-	MoxWorld.cpp,
-	MoxWorldBuilder.cpp,
-	MoxWorldDashboard.cpp,
-	PredatorMox.cpp,
-	ProcessInformation.cpp,
-	ProcessInformationUpp.cpp,
-	Utility.cpp;
+Evolve.h,
+EvolveCommon.cpp,
+EvolveMoxen.cpp,
+EvolveMoxenSystem.cpp,
+ForagerMox.cpp,
+GameOfLife.h,
+GameOfLife.cpp,
+GameOfLifeApplication.cpp,
+GameOfLifeCanvas.cpp,
+Gene.cpp,
+Genome.cpp,
+Mox.h,
+Mox.cpp,
+MoxDashboard.cpp,
+MoxWorld.h,
+MoxWorld.cpp,
+MoxWorldBuilder.cpp,
+MoxWorldDashboard.cpp,
+PredatorMox.cpp,
+ProcessInformation.cpp,
+ProcessInformationUpp.cpp,
+Utility.cpp;
 

@@ -3,36 +3,28 @@
 #include "Tmaze.h"
 
 // Constructor.
-Tmaze::Tmaze()
-{
+Tmaze::Tmaze() {
 }
 
 
 // Destructor.
-Tmaze::~Tmaze()
-{
-   path.Clear();
+Tmaze::~Tmaze() {
+	path.Clear();
 }
 
 
 // Is given maze a duplicate?
-bool Tmaze::IsDuplicate(Tmaze *maze)
-{
-   if ((int)path.GetCount() != (int)maze->path.GetCount())
-   {
-      return false;
-   }
-   for (int i = 0; i < (int)path.GetCount(); i++)
-   {
-      if (path[i].mark != maze->path[i].mark)
-      {
-         return false;
-      }
+bool Tmaze::IsDuplicate(Tmaze* maze) {
+	if ((int)path.GetCount() != (int)maze->path.GetCount())
+		return false;
 
-      if (path[i].direction != maze->path[i].direction)
-      {
-         return false;
-      }
-   }
-   return true;
+	for (int i = 0; i < (int)path.GetCount(); i++) {
+		if (path[i].mark != maze->path[i].mark)
+			return false;
+
+		if (path[i].direction != maze->path[i].direction)
+			return false;
+	}
+
+	return true;
 }

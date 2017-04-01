@@ -1,7 +1,7 @@
 #include "TmazeTerrain.h"
 
 TmazeTerrain::TmazeTerrain(int random_seed, int width, int height, double block_size)
-	: BlockTerrain(random_seed, width, height, 1, 1, 1, 0, 0, block_size){
+	: BlockTerrain(random_seed, width, height, 1, 1, 1, 0, 0, block_size) {
 	GenerateMaze();
 }
 

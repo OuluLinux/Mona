@@ -1,9 +1,9 @@
 /*
- * Homeostat.
- * Regulates:
- * 1. A need value based on environmental and timing conditions.
- * 2. Goal values that change the need value.
- */
+    Homeostat.
+    Regulates:
+    1. A need value based on environmental and timing conditions.
+    2. Goal values that change the need value.
+*/
 
 #ifndef __HOMEOSTAT__
 #define __HOMEOSTAT__
@@ -13,135 +13,136 @@
 class Mona;
 
 // Homeostat.
-class Homeostat
-{
+class Homeostat {
 public:
 
-   // Data types.
-   typedef unsigned long long   ID;
-   typedef double                SENSOR;
-   typedef int                  SENSOR_MODE;
-   typedef int                  RESPONSE;
-   typedef double               NEED;
-   static const ID NULL_ID;
-   enum { NULL_RESPONSE = 0x7fffffff };
+	// Data types.
+	typedef unsigned long long   ID;
+	typedef double                SENSOR;
+	typedef int                  SENSOR_MODE;
+	typedef int                  RESPONSE;
+	typedef double               NEED;
+	static const ID NULL_ID;
+	enum { NULL_RESPONSE = 0x7fffffff };
 
-   // Sensory-response goal.
-   // Environmental stimuli and response that produce need changes.
-   // Used to update receptor neuron goal values.
-   class Goal
-   {
-public:
-      Vector<SENSOR> sensors;
-      SENSOR_MODE    sensor_mode;
-      void           *receptor;
-      RESPONSE       response;
-      void           *motor;
-      NEED           goal_value;
-      bool           enabled;
-      int id;
-      
-      void Serialize(Stream& s) {
-          s % sensors % sensor_mode % id % response % goal_value % enabled;
-          if (s.IsLoading()) {motor = NULL; receptor = NULL;}
-      }
-   };
+	// Sensory-response goal.
+	// Environmental stimuli and response that produce need changes.
+	// Used to update receptor neuron goal values.
+	class Goal {
+	public:
+		Vector<SENSOR> sensors;
+		SENSOR_MODE    sensor_mode;
+		void*           receptor;
+		RESPONSE       response;
+		void*           motor;
+		NEED           goal_value;
+		bool           enabled;
+		int id;
 
-   NEED         need;
-   int          need_index;
-   NEED         need_delta;
-   Mona         *mona;
-   NEED         periodic_need;
-   int          frequency;
-   int          freq_timer;
-   Vector<Goal> goals;
+		void Serialize(Stream& s) {
+			s % sensors % sensor_mode % id % response % goal_value % enabled;
 
-   // Constructors.
-   Homeostat();
-   Homeostat(int need_index, Mona *mona);
+			if (s.IsLoading()) {
+				motor = NULL;
+				receptor = NULL;
+			}
+		}
+	};
 
-   // Destructor.
-   ~Homeostat();
+	NEED         need;
+	int          need_index;
+	NEED         need_delta;
+	Mona*         mona;
+	NEED         periodic_need;
+	int          frequency;
+	int          freq_timer;
+	Vector<Goal> goals;
 
-   // Get current need.
-   inline NEED GetNeed() { return (need); }
-   inline NEED GetAndClearNeedDelta()
-   {
-      NEED d = need_delta;
+	// Constructors.
+	Homeostat();
+	Homeostat(int need_index, Mona* mona);
 
-      need_delta = 0.0;
-      return d;
-   }
+	// Destructor.
+	~Homeostat();
 
-
-   // Set current need.
-   inline void SetNeed(NEED need)
-   {
-      need_delta  = need - this->need;
-      this->need = need;
-   }
+	// Get current need.
+	inline NEED GetNeed() {
+		return (need);
+	}
+	inline NEED GetAndClearNeedDelta() {
+		NEED d = need_delta;
+		need_delta = 0.0;
+		return d;
+	}
 
 
-   // Set periodic need.
-   void SetPeriodicNeed(int frequency, NEED need);
-   void ClearPeriodicNeed();
+	// Set current need.
+	inline void SetNeed(NEED need) {
+		need_delta  = need - this->need;
+		this->need = need;
+	}
 
-   // Add goal.
-   // Replace response and goal value of duplicate.
-   int AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
-               RESPONSE response, NEED goal_value);
-   int AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
-               NEED goal_value);
 
-   // Add goal value to receptor if needed.
-   void AddGoal(void *receptor);
+	// Set periodic need.
+	void SetPeriodicNeed(int frequency, NEED need);
+	void ClearPeriodicNeed();
 
-   // Find index of goal matching sensors, sensor mode
-   // and response. Return -1 for no match.
-   int FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
-                RESPONSE response);
+	// Add goal.
+	// Replace response and goal value of duplicate.
+	int AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
+				RESPONSE response, NEED goal_value);
+	int AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
+				NEED goal_value);
 
-   // Find index of goal matching sensors and sensor mode.
-   // Return -1 for no match.
-   int FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode);
+	// Add goal value to receptor if needed.
+	void AddGoal(void* receptor);
 
-   // Get goal information at index.
-   bool GetGoalInfo(int goal_index, Vector<SENSOR>& sensors,
-                    SENSOR_MODE& sensor_mode, RESPONSE& response,
-                    NEED& goal_value, bool& enabled);
+	// Find index of goal matching sensors, sensor mode
+	// and response. Return -1 for no match.
+	int FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
+				 RESPONSE response);
 
-   // Is goal enabled?
-   bool IsGoalEnabled(int goal_index);
+	// Find index of goal matching sensors and sensor mode.
+	// Return -1 for no match.
+	int FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode);
 
-   // Enable goal.
-   bool EnableGoal(int goal_index);
+	// Get goal information at index.
+	bool GetGoalInfo(int goal_index, Vector<SENSOR>& sensors,
+					 SENSOR_MODE& sensor_mode, RESPONSE& response,
+					 NEED& goal_value, bool& enabled);
 
-   // Disable goal.
-   bool DisableGoal(int goal_index);
+	// Is goal enabled?
+	bool IsGoalEnabled(int goal_index);
 
-   // Remove goal.
-   bool RemoveGoal(int goal_index);
+	// Enable goal.
+	bool EnableGoal(int goal_index);
 
-   // Activate/deactivate goal with periodic need.
-   bool ActivateGoal(int goal_index, int frequency, NEED periodic_need);
-   bool DeactivateGoal(int goal_index);
+	// Disable goal.
+	bool DisableGoal(int goal_index);
 
-   // Remove neuron from goals.
-   void RemoveNeuron(void *neuron);
+	// Remove goal.
+	bool RemoveGoal(int goal_index);
 
-   // Update homeostat based on sensors.
-   void SensorsUpdate();
+	// Activate/deactivate goal with periodic need.
+	bool ActivateGoal(int goal_index, int frequency, NEED periodic_need);
+	bool DeactivateGoal(int goal_index);
 
-   // Update homeostat based on response.
-   void ResponseUpdate();
+	// Remove neuron from goals.
+	void RemoveNeuron(void* neuron);
 
-   // Load homeostat.
-   void Load(String filename);
-   void Serialize(Stream& fp);
-   void Store(String filename);
+	// Update homeostat based on sensors.
+	void SensorsUpdate();
 
-   // Print homeostat.
-   //void Print(FILE *out = stdout);
+	// Update homeostat based on response.
+	void ResponseUpdate();
+
+	// Load homeostat.
+	void Load(String filename);
+	void Serialize(Stream& fp);
+	void Store(String filename);
+
+	// Print homeostat.
+	//void Print(FILE *out = stdout);
 };
 
 #endif

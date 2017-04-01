@@ -5,7 +5,7 @@ GUI_APP_MAIN {
 	String usage      = "Usage: java mona.MazeMouseApplication [-random_seed <random seed>]";
 	int    random_seed = GetSysTime().Get();
 
-	/*for (int i = 0; i < args.length; i++) {
+	/*  for (int i = 0; i < args.length; i++) {
 		if (args[i].equals("-random_seed")) {
 			i++;
 
@@ -21,9 +21,9 @@ GUI_APP_MAIN {
 			System.err.println(usage);
 			System.exit(1);
 		}
-	}*/
+	    }*/
 
 	MazeMouseApplication mazeMouse;
 	mazeMouse.Run();
-	
+
 }

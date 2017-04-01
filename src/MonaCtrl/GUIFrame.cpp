@@ -1,151 +1,134 @@
 #include "EasyGL.h"
 
-GUIFrame::GUIFrame() : GUIPanel("GUI MAIN PANEL")
-{
-  listener = NULL;
-  update   = true;
+GUIFrame::GUIFrame() : GUIPanel("GUI MAIN PANEL") {
+	listener = NULL;
+	update   = true;
 }
 
-bool GUIFrame::LoadXMLSettings(const TiXmlElement *element) 
-{
-  if(!XMLArbiter::inspectElementInfo(element, "Panel"))
-    return Logger::writeErrorLog("Need a Panel node in the xml file");
+bool GUIFrame::LoadXMLSettings(const TiXmlElement* element) {
+	if (!XMLArbiter::inspectElementInfo(element, "Panel"))
+		return Logger::writeErrorLog("Need a Panel node in the xml file");
 
-  bool defaultFont = true;
+	bool defaultFont = true;
 
-  for(const TiXmlElement *outer = element->FirstChildElement();	
-      outer;
-   	  outer = outer->NextSiblingElement() )
-  {
-    String elementName  = outer->Value();
+	for (const TiXmlElement* outer = element->FirstChildElement();
+		 outer;
+		 outer = outer->NextSiblingElement() ) {
+		String elementName  = outer->Value();
 
-    if(!elementName.GetCount())
-      continue;
-    
-    if(elementName == "Font")
-    {
-      int fontIndex = GUIFontManager::addFont(outer);
-      if(defaultFont && fontIndex >= 0)
-      {
-        GUIFontManager::setDefaultFont(fontIndex);
-        defaultFont = false;
-      }
-      continue;
-    }
- 
-    if(elementName == "Texture")
-    {
-      if(elementsTexture.LoadXMLSettings(outer))
-      {
-        GUITexCoordDescriptor::setTextureHeight(elementsTexture.GetHeight());
-        GUITexCoordDescriptor::setTextureWidth(elementsTexture.GetWidth());
-      }
-      continue;
-    }
+		if (!elementName.GetCount())
+			continue;
 
-    if(elementName == "TexCoordsDesc")
-    {
-      GUITexCoordDescriptor descriptor;
-      descriptor.LoadXMLSettings(outer);
-      addOrReplaceTexCoordsInfo(descriptor);
-      continue;
-    }
-  }
-  return   GUIPanel::LoadXMLSettings(element);
+		if (elementName == "Font") {
+			int fontIndex = GUIFontManager::addFont(outer);
+
+			if (defaultFont && fontIndex >= 0) {
+				GUIFontManager::setDefaultFont(fontIndex);
+				defaultFont = false;
+			}
+
+			continue;
+		}
+
+		if (elementName == "Texture") {
+			if (elementsTexture.LoadXMLSettings(outer)) {
+				GUITexCoordDescriptor::setTextureHeight(elementsTexture.GetHeight());
+				GUITexCoordDescriptor::setTextureWidth(elementsTexture.GetWidth());
+			}
+
+			continue;
+		}
+
+		if (elementName == "TexCoordsDesc") {
+			GUITexCoordDescriptor descriptor;
+			descriptor.LoadXMLSettings(outer);
+			addOrReplaceTexCoordsInfo(descriptor);
+			continue;
+		}
+	}
+
+	return   GUIPanel::LoadXMLSettings(element);
 }
 
-void  GUIFrame::render(double tick)
-{
-  if(!visible)
-    return;
+void  GUIFrame::render(double tick) {
+	if (!visible)
+		return;
 
-  size_t t = 0;
+	size_t t = 0;
 
-  while(update_count)
-  {
-    for(t = 0; t < elements.GetCount(); t++)
-      elements[t]->forceUpdate(true);
-    update_count--;
-  }
+	while (update_count) {
+		for (t = 0; t < elements.GetCount(); t++)
+			elements[t]->forceUpdate(true);
 
-  for(t = 0; t < elements.GetCount(); t++)
-    elements[t]->render(tick);
+		update_count--;
+	}
+
+	for (t = 0; t < elements.GetCount(); t++)
+		elements[t]->render(tick);
 }
 
-void GUIFrame::addOrReplaceTexCoordsInfo(GUITexCoordDescriptor &info)
-{
-  for(size_t t = 0; t < texCoords.GetCount(); t++)
-    if(texCoords[t].getType() == info.getType())
-    {
-      texCoords[t].setTexCoords(info.getTexCoords());
-      return;
-    }
-  texCoords.Add(info);
+void GUIFrame::addOrReplaceTexCoordsInfo(GUITexCoordDescriptor& info) {
+	for (size_t t = 0; t < texCoords.GetCount(); t++)
+		if (texCoords[t].getType() == info.getType()) {
+			texCoords[t].setTexCoords(info.getTexCoords());
+			return;
+		}
+
+	texCoords.Add(info);
 }
 
-GUITexCoordDescriptor *GUIFrame::getTexCoordsInfo(int type)
-{
-  for(size_t t = 0; t < texCoords.GetCount(); t++)
-    if(texCoords[t].getType() == type)
-      return &texCoords[t];
-  return NULL;
+GUITexCoordDescriptor* GUIFrame::getTexCoordsInfo(int type) {
+	for (size_t t = 0; t < texCoords.GetCount(); t++)
+		if (texCoords[t].getType() == type)
+			return &texCoords[t];
+
+	return NULL;
 }
 
-void  GUIFrame::setGUIEventListener(GUIEventListener *listener_)
-{
-  listener = listener_;
+void  GUIFrame::setGUIEventListener(GUIEventListener* listener_) {
+	listener = listener_;
 }
 
-GUIEventListener *GUIFrame::getEventsListener()
-{
-  return listener;
+GUIEventListener* GUIFrame::getEventsListener() {
+	return listener;
 }
 
-void  GUIFrame::setElementsTexture(const char* texturePath)
-{
-  elementsTexture.load2D(texturePath);
+void  GUIFrame::setElementsTexture(const char* texturePath) {
+	elementsTexture.load2D(texturePath);
 }
 
-void  GUIFrame::setElementsTexture(const Texture &texture)
-{
-  elementsTexture = texture;
+void  GUIFrame::setElementsTexture(const Texture& texture) {
+	elementsTexture = texture;
 }
 
-Texture *GUIFrame::getElementsTexture()
-{
-  return !elementsTexture.getID() ? NULL : &elementsTexture;
+Texture* GUIFrame::getElementsTexture() {
+	return !elementsTexture.getID() ? NULL : &elementsTexture;
 }
 
-void  GUIFrame::enableGUITexture()
-{
-  if(elementsTexture.getID())
-    elementsTexture.activate();
+void  GUIFrame::enableGUITexture() {
+	if (elementsTexture.getID())
+		elementsTexture.activate();
 }
 
-void  GUIFrame::disableGUITexture()
-{
-  elementsTexture.deactivate();
+void  GUIFrame::disableGUITexture() {
+	elementsTexture.deactivate();
 }
 
-void GUIFrame::forceUpdate(bool update)
-{
-  update_count = update ? getTreeHeight() + 1 : 0;
+void GUIFrame::forceUpdate(bool update) {
+	update_count = update ? getTreeHeight() + 1 : 0;
 }
 
-void GUIFrame::Clear()
-{
-  elementsTexture.destroy();
-  texCoords.Clear();
-  GUIPanel::Clear();
+void GUIFrame::Clear() {
+	elementsTexture.destroy();
+	texCoords.Clear();
+	GUIPanel::Clear();
 }
 
-const Tuple4i &GUIFrame::getWindowBounds()
-{
-  windowBounds.Set(0, 0, int(dimensions.x), int(dimensions.y));
-  return windowBounds;
+const Tuple4i& GUIFrame::getWindowBounds() {
+	windowBounds.Set(0, 0, int(dimensions.x), int(dimensions.y));
+	return windowBounds;
 }
 
-GUIFrame::~GUIFrame()
-{
-  Clear();
+GUIFrame::~GUIFrame() {
+	Clear();
 }

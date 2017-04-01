@@ -3,32 +3,30 @@
 
 #include <Mona/Common.h>
 
-class Tmaze
-{
+class Tmaze {
 public:
 
-   // Special maze symbols.
-   enum { START=0, GOAL=1, LEFT=0, RIGHT=1 };
+	// Special maze symbols.
+	enum { START = 0, GOAL = 1, LEFT = 0, RIGHT = 1 };
 
-   // Junction.
-   class Junction
-   {
-public:
-      int    mark;
-      int    direction;
-      double probability;
-   };
+	// Junction.
+	class Junction {
+	public:
+		int    mark;
+		int    direction;
+		double probability;
+	};
 
-   // Maze path.
-   Vector<Junction> path;
+	// Maze path.
+	Vector<Junction> path;
 
-   // Constructor.
-   Tmaze();
+	// Constructor.
+	Tmaze();
 
-   // Destructor.
-   ~Tmaze();
+	// Destructor.
+	~Tmaze();
 
-   // Is given maze a duplicate?
-   bool IsDuplicate(Tmaze *maze);
+	// Is given maze a duplicate?
+	bool IsDuplicate(Tmaze* maze);
 };
 #endif

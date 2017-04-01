@@ -51,7 +51,7 @@ void MazeMouse::Init() {
 	screen.setLayout(new FlowLayout());
 	screen_size = getSize();
 	mazeSize   = new Size(screen_size.width,
-							   (int)((double)screen_size.height * .90));
+						  (int)((double)screen_size.height * .90));
 	mazeCanvas = new Canvas();
 	mazeCanvas.setSize(mazeSize.width, mazeSize.height);
 	mazeCanvas.addMouseListener(new MazeMouseListener());

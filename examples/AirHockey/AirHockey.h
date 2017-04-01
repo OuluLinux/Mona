@@ -20,13 +20,13 @@ using namespace ConvNet;
 #include "AirHockeyGame.h"
 
 namespace GameCtrl {
-	
+
 class AirHockeyDQN : public DockWindow {
-	
-	
+
+
 protected:
 	friend class Player;
-	
+
 	HeatmapView network_view;
 	GameCtrl::Table2 world;
 	Label lbl_eps;
@@ -44,14 +44,14 @@ protected:
 	SpinLock ticking_lock;
 	String t;
 	int simspeed;
-	
+
 public:
 	typedef AirHockeyDQN CLASSNAME;
 	AirHockeyDQN();
 	~AirHockeyDQN();
-	
+
 	virtual void DockInit();
-	
+
 	void Reset(bool init_reward, bool start);
 	void Reload();
 	void Refresher();
@@ -59,10 +59,12 @@ public:
 	void LoadPretrained();
 	void RefreshStatus();
 	void SetDrawEyes();
-	void PostRefreshStatus() {PostCallback(THISBACK(RefreshStatus));}
+	void PostRefreshStatus() {
+		PostCallback(THISBACK(RefreshStatus));
+	}
 	void SetSpeed(int i);
 	void AddReward(int id, double reward);
-	
+
 };
 
 }

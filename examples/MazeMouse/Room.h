@@ -13,7 +13,7 @@ enum {TAKE_DOOR_0, TAKE_DOOR_1, TAKE_DOOR_2, WAIT, HOP};
 
 
 class Room : public Ctrl {
-	
+
 protected:
 	Rect r;
 	int     type;

@@ -120,9 +120,9 @@ void MuzzWorld::Runmuzzes() {
 			// Manual response provided?
 			if (manual_response != INVALID_RESPONSE) {
 				// Override muzz with manual response.
-				muzzes[current_muzz],brain->response_override = manual_response;
+				muzzes[current_muzz], brain->response_override = manual_response;
 				RunMuzz(current_muzz);
-				muzzes[current_muzz],brain->response_override = Mona::NULL_RESPONSE;
+				muzzes[current_muzz], brain->response_override = Mona::NULL_RESPONSE;
 				// Wait for next manual response.
 				manual_response = INVALID_RESPONSE;
 			}
@@ -176,7 +176,7 @@ void MuzzWorld::Runmuzzes() {
 		// For forced response training, get response to obtain food and water.
 		if (forced_response_train && (current_trial < training_trial_count)) {
 			if ((response_index >= 0) && (response_index <
-									   (int)forced_response_sequence.GetCount())) {
+										  (int)forced_response_sequence.GetCount())) {
 				muzzes[i]->brain->response_override =
 					forced_response_sequence[response_index].response;
 				response_index++;
@@ -936,7 +936,7 @@ void MuzzWorld::RunMuzz(int i, int forcedResponse) {
 			case BlockTerrain::Block::LANDING:
 				if (terrain.blocks[x2][z2].type == BlockTerrain::Block::RAMP) {
 					muzz_states[i].moveAmount = (terrain.block_size * 0.5f) +
-											   (terrain.block_size * (2.236f / 4.0f));
+												(terrain.block_size * (2.236f / 4.0f));
 				}
 
 				break;
@@ -946,7 +946,7 @@ void MuzzWorld::RunMuzz(int i, int forcedResponse) {
 					muzz_states[i].moveAmount = terrain.block_size * (2.236f / 2.0f);
 				else if (terrain.blocks[x2][z2].type == BlockTerrain::Block::LANDING) {
 					muzz_states[i].moveAmount = (terrain.block_size * 0.5f) +
-											   (terrain.block_size * (2.236f / 4.0f));
+												(terrain.block_size * (2.236f / 4.0f));
 				}
 
 				break;
@@ -1171,7 +1171,7 @@ void MuzzWorld::InitMuzzWorld() {
 	}
 	else {
 		maze_terrain = new TmazeTerrain(TerrainSeed, terrain_dimension, terrain_dimension,
-									   BlockTerrain::default_block_size);
+										BlockTerrain::default_block_size);
 		ASSERT(maze_terrain != NULL);
 		Terrain = (BlockTerrain*)maze_terrain;
 	}

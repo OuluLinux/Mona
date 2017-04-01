@@ -13,8 +13,12 @@ public:
 	Mushroom(Color& color, BlockTerrain& terrain);
 	~Mushroom();
 
-	bool IsAlive() {return m_alive;}
-	void SetAlive(bool alive) {m_alive = alive;}
+	bool IsAlive() {
+		return m_alive;
+	}
+	void SetAlive(bool alive) {
+		m_alive = alive;
+	}
 
 	void GetColor(Color& color);
 	void SetColor(const Color& color);
@@ -24,8 +28,12 @@ public:
 	void Place(double x, double y);
 	void Place();
 
-	inline double GetPlaceX() {return (m_place_position[0]);}
-	inline double GetPlaceY() {return (m_place_position[2]);}
+	inline double GetPlaceX() {
+		return (m_place_position[0]);
+	}
+	inline double GetPlaceY() {
+		return (m_place_position[2]);
+	}
 
 	void Draw();
 	void Load(String filename);
@@ -42,9 +50,9 @@ private:
 	//Random*       m_randomizer;
 
 	// OpenGL display for drawing.
-	/*GLuint display;
+	/*  GLuint display;
 
-	// Components.
-	GLUquadricObj* stem, *cap, *capBorder;*/
+	    // Components.
+	    GLUquadricObj* stem, *cap, *capBorder;*/
 };
 #endif

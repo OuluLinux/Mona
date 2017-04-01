@@ -1,19 +1,19 @@
 description "Maze-learning mouse\377";
 
 uses
-	Mona,
-	CtrlLib;
+Mona,
+CtrlLib;
 
 file
-	main.cpp,
-	MazeMouseApplication.h,
-	MazeMouseApplication.cpp,
-	EvolveMouse.h,
-	Room.h,
-	EvolveMouse.cpp,
-	Room.cpp,
-	Obsolete readonly separator,
-	MazeMouse.h,
-	MazeMouse.cpp,
-	Socker.cpp;
+main.cpp,
+MazeMouseApplication.h,
+MazeMouseApplication.cpp,
+EvolveMouse.h,
+Room.h,
+EvolveMouse.cpp,
+Room.cpp,
+Obsolete readonly separator,
+MazeMouse.h,
+MazeMouse.cpp,
+Socker.cpp;
 

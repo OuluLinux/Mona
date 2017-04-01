@@ -23,9 +23,13 @@ public:
 	void Place(double x, double y);
 	void Place();
 
-	inline double GetPlaceX() {return (m_place_position[0]);}
-	inline double GetPlaceY() {return (m_place_position[2]);}
-	
+	inline double GetPlaceX() {
+		return (m_place_position[0]);
+	}
+	inline double GetPlaceY() {
+		return (m_place_position[2]);
+	}
+
 	void Draw();
 	void Load(String filename);
 	void Load(Stream& s);
@@ -40,10 +44,10 @@ private:
 	//Random        m_randomizer;
 
 	// OpenGL display for drawing.
-	/*GLuint display;
+	/*  GLuint display;
 
-	// Components.
-	GLUquadricObj* poolBase, *poolSurface;*/
-	
+	    // Components.
+	    GLUquadricObj* poolBase, *poolSurface;*/
+
 };
 #endif

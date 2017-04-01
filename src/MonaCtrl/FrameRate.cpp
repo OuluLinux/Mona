@@ -17,56 +17,47 @@ double FrameRate::initialSpeedFactor = 0.0;
 double FrameRate::maxSpeedFactor = 5.0;
 
 // Constructor.
-FrameRate::FrameRate(double targetFPS)
-{
-   this->targetFPS = targetFPS;
-   FPS             = targetFPS;
-   speedFactor     = initialSpeedFactor;
-   m_frameCount    = 0;
-   m_lastTime      = gettime();
+FrameRate::FrameRate(double targetFPS) {
+	this->targetFPS = targetFPS;
+	FPS             = targetFPS;
+	speedFactor     = initialSpeedFactor;
+	m_frameCount    = 0;
+	m_lastTime      = gettime();
 }
 
 
 // Update: call per frame.
-void FrameRate::Update()
-{
-   Time currentTime, delta;
+void FrameRate::Update() {
+	Time currentTime, delta;
+	// Count the frame.
+	m_frameCount++;
+	// Get the time delta.
+	currentTime = gettime();
+	delta       = (currentTime - m_lastTime) / 1000;
 
-   // Count the frame.
-   m_frameCount++;
+	// Time to recalculate frame rate?
+	if (delta >= FRAME_RECALC_FREQUENCY) {
+		// Calculate new values.
+		FPS = (float)m_frameCount / (float)delta;
 
-   // Get the time delta.
-   currentTime = gettime();
-   delta       = (currentTime - m_lastTime) / 1000;
+		if (FPS > 0.0f)
+			speedFactor = targetFPS / FPS;
+		else
+			speedFactor = 0.0;
 
-   // Time to recalculate frame rate?
-   if (delta >= FRAME_RECALC_FREQUENCY)
-   {
-      // Calculate new values.
-      FPS = (float)m_frameCount / (float)delta;
-      if (FPS > 0.0f)
-      {
-         speedFactor = targetFPS / FPS;
-      }
-      else
-      {
-         speedFactor = 0.0;
-      }
-      if (speedFactor > maxSpeedFactor)
-      {
-         speedFactor = maxSpeedFactor;
-      }
-      m_frameCount = 0;
-      m_lastTime   = currentTime;
-   }
+		if (speedFactor > maxSpeedFactor)
+			speedFactor = maxSpeedFactor;
+
+		m_frameCount = 0;
+		m_lastTime   = currentTime;
+	}
 }
 
 
 // Reset.
-void FrameRate::reset()
-{
-   FPS          = targetFPS;
-   speedFactor  = initialSpeedFactor;
-   m_frameCount = 0;
-   m_lastTime   = gettime();
+void FrameRate::reset() {
+	FPS          = targetFPS;
+	speedFactor  = initialSpeedFactor;
+	m_frameCount = 0;
+	m_lastTime   = gettime();
 }

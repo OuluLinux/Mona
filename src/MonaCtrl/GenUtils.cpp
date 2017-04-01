@@ -5,64 +5,57 @@
 /*                                                                                         */
 /*******************************************************************************************/
 
-NamedObject::NamedObject(const char*  argName)
-{
-  if(argName)
-    name =  argName;
+NamedObject::NamedObject(const char*  argName) {
+	if (argName)
+		name =  argName;
 }
 
-NamedObject::NamedObject(const String &argName)
-{
-  name = argName;
+NamedObject::NamedObject(const String& argName) {
+	name = argName;
 }
 
-NamedObject::NamedObject(const NamedObject &copy)
-{
-  if(this != &copy)
-    name = copy.name;
+NamedObject::NamedObject(const NamedObject& copy) {
+	if (this != &copy)
+		name = copy.name;
 }
 
-NamedObject &NamedObject::operator=(const NamedObject &copy)
-{
-  if(this != &copy)
-    name = copy.name;
-  return *this;
+NamedObject& NamedObject::operator=(const NamedObject& copy) {
+	if (this != &copy)
+		name = copy.name;
+
+	return *this;
 }
 
-void NamedObject::SetName(const char   *nameArg)
-{
-  if(nameArg)
-    name = nameArg;
-  else
-  #ifdef WIN32
-    name.Clear();
-  #else
-    name = "";
-  #endif
+void NamedObject::SetName(const char*   nameArg) {
+	if (nameArg)
+		name = nameArg;
+	else
+	#ifdef WIN32
+		name.Clear();
+
+	#else
+		name = "";
+	#endif
 }
 
-void NamedObject::SetName(const String &nameArg)
-{
-  name = nameArg;
+void NamedObject::SetName(const String& nameArg) {
+	name = nameArg;
 }
 
-const String &NamedObject::GetName() const
-{
-  return name;
+const String& NamedObject::GetName() const {
+	return name;
 }
 
-const char *NamedObject::getCharName() const
-{
-  return  name.c_str();
+const char* NamedObject::getCharName() const {
+	return  name.c_str();
 }
 
-NamedObject::~NamedObject()
-{
-  #ifdef WIN32
-    name.Clear();
-  #else
-    name = "";
-  #endif
+NamedObject::~NamedObject() {
+	#ifdef WIN32
+	name.Clear();
+	#else
+	name = "";
+	#endif
 }
 
 /*******************************************************************************************/
@@ -73,62 +66,55 @@ NamedObject::~NamedObject()
 Vector<String> Logger::log_strings;
 String              Logger::logPath;
 
-void Logger::initialize(const char* logfilename)
-{
-  logPath     = !logfilename ? "Log.txt" : logfilename;
-  std::ofstream logFile(logPath.c_str());
-  logFile.close();
+void Logger::initialize(const char* logfilename) {
+	logPath     = !logfilename ? "Log.txt" : logfilename;
+	std::ofstream logFile(logPath.c_str());
+	logFile.close();
 }
 
-void Logger::flush()
-{
-  if(!logPath.GetCount() || !log_strings.GetCount())
-    return;
+void Logger::flush() {
+	if (!logPath.GetCount() || !log_strings.GetCount())
+		return;
 
-  std::ofstream logFile(logPath.c_str(), std::ios::app);
+	std::ofstream logFile(logPath.c_str(), std::ios::app);
 
-  for(size_t t = 0; t < log_strings.GetCount(); t++)
-    logFile << log_strings[t];
+	for (size_t t = 0; t < log_strings.GetCount(); t++)
+		logFile << log_strings[t];
 
-  log_strings.Clear();
-  logFile.close();
+	log_strings.Clear();
+	logFile.close();
 }
 
-void Logger::writeImmidiateInfoLog(const String &info)
-{
-  if(info.GetCount())
-  {
-    log_strings.Add(String("<+>") + info + "\n");
-    flush();
-  }
+void Logger::writeImmidiateInfoLog(const String& info) {
+	if (info.GetCount()) {
+		log_strings.Add(String("<+>") + info + "\n");
+		flush();
+	}
 }
 
-void Logger::writeInfoLog(const String &info)
-{
-  log_strings.Add(String("<+>") + info + "\n");
-  if(log_strings.GetCount() >= 10)
-    flush();
+void Logger::writeInfoLog(const String& info) {
+	log_strings.Add(String("<+>") + info + "\n");
+
+	if (log_strings.GetCount() >= 10)
+		flush();
 }
 
-bool Logger::writeErrorLog(const String &info)
-{
-  if(info.GetCount())
-  {
-    log_strings.Add(String("<!>") + info + "\n");
-    flush();
-  }
-  return false;
+bool Logger::writeErrorLog(const String& info) {
+	if (info.GetCount()) {
+		log_strings.Add(String("<!>") + info + "\n");
+		flush();
+	}
+
+	return false;
 }
 
-void Logger::writeFatalErrorLog(const String &info)
-{
-  if(info.GetCount())
-  {
-   log_strings.Add(String("<X>") + info + "\n");
+void Logger::writeFatalErrorLog(const String& info) {
+	if (info.GetCount()) {
+		log_strings.Add(String("<X>") + info + "\n");
+		flush();
+	}
 
-    flush();
-  }
-  exit(1);
+	exit(1);
 }
 
 /*******************************************************************************************/
@@ -138,81 +124,72 @@ void Logger::writeFatalErrorLog(const String &info)
 
 Vector<String> MediaPathManager::data_paths;
 
-const String MediaPathManager::lookUpMediaPath(const String  &path)
-{
-  FileIn test;
-  String   pathBuffer = path;
-  size_t        count      = data_paths.GetCount();
+const String MediaPathManager::lookUpMediaPath(const String&  path) {
+	FileIn test;
+	String   pathBuffer = path;
+	size_t        count      = data_paths.GetCount();
+	test.open(path.c_str());
 
-  test.open(path.c_str());
+	if (test.is_open()) {
+		test.close();
+		return pathBuffer;
+	}
 
-  if(test.is_open())
-  {
-    test.close();
-    return pathBuffer;
-  }
+	for (size_t i = 0; i < count; i++) {
+		pathBuffer  = data_paths[i];
+		pathBuffer += path;
+		test.open(pathBuffer.c_str());
 
-  for(size_t i = 0; i < count; i++)
-  {
-    pathBuffer  = data_paths[i];
-    pathBuffer += path;
+		if (test.is_open()) {
+			test.close();
+			break;
+		}
+	}
 
-    test.open(pathBuffer.c_str());
-    if(test.is_open())
-    {
-      test.close();
-      break;
-    }
-  }
-
-  return pathBuffer;
+	return pathBuffer;
 }
 
-bool MediaPathManager::registerPath(const TiXmlElement *mediaPathNode)
+bool MediaPathManager::registerPath(const TiXmlElement* mediaPathNode)
 
 {
-  if(mediaPathNode)
-   return  registerPath(mediaPathNode->Attribute("path"));
+	if (mediaPathNode)
+		return  registerPath(mediaPathNode->Attribute("path"));
 
-  return false;
+	return false;
 }
 
-bool MediaPathManager::registerPath(const String  &path)
-{
-  if(!path.GetCount())
-    return Logger::writeErrorLog("Failed to register data path -> NULL");
+bool MediaPathManager::registerPath(const String&  path) {
+	if (!path.GetCount())
+		return Logger::writeErrorLog("Failed to register data path -> NULL");
 
-  for(size_t i = 0; i < data_paths.GetCount(); i++)
-    if(data_paths[i] == path)
-      return true;
+	for (size_t i = 0; i < data_paths.GetCount(); i++)
+		if (data_paths[i] == path)
+			return true;
 
-  String stringBuffer = path;
-
-  Logger::writeInfoLog(String("Registering data path -> ") + path);
-  data_paths.Add(stringBuffer);
-  return true;
+	String stringBuffer = path;
+	Logger::writeInfoLog(String("Registering data path -> ") + path);
+	data_paths.Add(stringBuffer);
+	return true;
 }
 
-int MediaPathManager::getPathCount()
-{
-  return int(data_paths.GetCount());
+int MediaPathManager::getPathCount() {
+	return int(data_paths.GetCount());
 }
 
-const String MediaPathManager::getPathAt(int index)
-{
-  if(!data_paths.GetCount() || index >= int(data_paths.GetCount()) || index < 0)
-    return NULL;
-  return data_paths[size_t(index)];
+const String MediaPathManager::getPathAt(int index) {
+	if (!data_paths.GetCount() || index >= int(data_paths.GetCount()) || index < 0)
+		return NULL;
+
+	return data_paths[size_t(index)];
 }
 
-void  MediaPathManager::printAllPaths()
-{
-  std::cout << "List of registred Media Paths: \n";
+void  MediaPathManager::printAllPaths() {
+	std::cout << "List of registred Media Paths: \n";
 
-  for(size_t i = 0; i < data_paths.GetCount(); i++)
-    std::cout << int(i) << "-" << data_paths[i].c_str() << std::endl;
+	for (size_t i = 0; i < data_paths.GetCount(); i++)
+		std::cout << int(i) << "-" << data_paths[i].c_str() << std::endl;
 
-  std::cout << std::endl;
+	std::cout << std::endl;
 }
 
 /*******************************************************************************************/
@@ -221,7 +198,7 @@ void  MediaPathManager::printAllPaths()
 /*******************************************************************************************/
 
 #ifdef WIN32
-#include <sstream>
+	#include <sstream>
 #endif
 
 #define MAXB 0x100
@@ -233,11 +210,11 @@ void  MediaPathManager::printAllPaths()
 #define lerp(t, a, b) ( a + t * (b - a) )
 #ifdef WIN32
 #define setup(i, b0, b1, r0, r1)\
-        t = vec[i] + N;\
-        b0 = ((int)t) & BM;\
-        b1 = (b0+1) & BM;\
-        r0 = t - (int)t;\
-        r1 = r0 - 1.;
+	t = vec[i] + N;\
+	b0 = ((int)t) & BM;\
+	b1 = (b0+1) & BM;\
+	r0 = t - (int)t;\
+	r1 = r0 - 1.;
 #else
 #define setup(i, b0, b1, r0, r1) t = vec[i] + N; b0 = ((int)t) & BM; b1 = (b0+1) & BM; r0 = t - (int)t; r1 = r0 - 1.;
 #endif
@@ -254,84 +231,72 @@ int B     = 4;
 int BM    = 3;
 
 
-int  Perlin::getNoiseFrequency()
-{
-  return B;
+int  Perlin::getNoiseFrequency() {
+	return B;
 }
 
-void Perlin::setNoiseFrequency(int frequency)
-{
-  start = 1;
-  B     = frequency;
-  BM    = B-1;
+void Perlin::setNoiseFrequency(int frequency) {
+	start = 1;
+	B     = frequency;
+	BM    = B - 1;
 }
 
-double Perlin::noise1(double arg)
-{
+double Perlin::noise1(double arg) {
 	int bx0, bx1;
 	double rx0, rx1, sx, t, u, v, vec[1];
-
 	vec[0] = arg;
-	if (start)
-	{
+
+	if (start) {
 		start = 0;
 		initialize();
 	}
 
 	setup(0, bx0, bx1, rx0, rx1);
-
 	sx = s_curve(rx0);
 	u = rx0 * g1[p[bx0]];
 	v = rx1 * g1[p[bx1]];
-
 	return (lerp(sx, u, v));
 }
 
-double Perlin::noise2(double vec[2])
-{
+double Perlin::noise2(double vec[2]) {
 	int bx0, bx1, by0, by1, b00, b10, b01, b11;
 	double rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
 	int i, j;
 
-	if (start)
-	{
+	if (start) {
 		start = 0;
 		initialize();
 	}
 
 	setup(0, bx0, bx1, rx0, rx1);
 	setup(1, by0, by1, ry0, ry1);
-
 	i = p[bx0];
 	j = p[bx1];
-
 	b00 = p[i + by0];
 	b10 = p[j + by0];
 	b01 = p[i + by1];
 	b11 = p[j + by1];
-
 	sx = s_curve(rx0);
 	sy = s_curve(ry0);
-
-	q = g2[b00]; u = at2(rx0, ry0);
-	q = g2[b10]; v = at2(rx1, ry0);
+	q = g2[b00];
+	u = at2(rx0, ry0);
+	q = g2[b10];
+	v = at2(rx1, ry0);
 	a = lerp(sx, u, v);
-
-	q = g2[b01]; u = at2(rx0, ry1);
-	q = g2[b11]; v = at2(rx1, ry1);
+	q = g2[b01];
+	u = at2(rx0, ry1);
+	q = g2[b11];
+	v = at2(rx1, ry1);
 	b = lerp(sx, u, v);
-
 	return lerp(sy, a, b);
 }
 
-double Perlin::noise3(double vec[3])
-{
+double Perlin::noise3(double vec[3]) {
 	int bx0, bx1, by0, by1, bz0, bz1, b00, b10, b01, b11;
 	double rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
 	int i, j;
 
-	if (start)
-	{
+	if (start) {
 		start = 0;
 		initialize();
 	}
@@ -339,93 +304,87 @@ double Perlin::noise3(double vec[3])
 	setup(0, bx0, bx1, rx0, rx1);
 	setup(1, by0, by1, ry0, ry1);
 	setup(2, bz0, bz1, rz0, rz1);
-
 	i = p[bx0];
 	j = p[bx1];
-
 	b00 = p[i + by0];
 	b10 = p[j + by0];
 	b01 = p[i + by1];
 	b11 = p[j + by1];
-
 	t  = s_curve(rx0);
 	sy = s_curve(ry0);
 	sz = s_curve(rz0);
-
-	q = g3[b00 + bz0]; u = at3(rx0, ry0, rz0);
-	q = g3[b10 + bz0]; v = at3(rx1, ry0, rz0);
+	q = g3[b00 + bz0];
+	u = at3(rx0, ry0, rz0);
+	q = g3[b10 + bz0];
+	v = at3(rx1, ry0, rz0);
 	a = lerp(t, u, v);
-
-	q = g3[b01 + bz0]; u = at3(rx0, ry1, rz0);
-	q = g3[b11 + bz0]; v = at3(rx1, ry1, rz0);
+	q = g3[b01 + bz0];
+	u = at3(rx0, ry1, rz0);
+	q = g3[b11 + bz0];
+	v = at3(rx1, ry1, rz0);
 	b = lerp(t, u, v);
-
 	c = lerp(sy, a, b);
-
-	q = g3[b00 + bz1]; u = at3(rx0, ry0, rz1);
-	q = g3[b10 + bz1]; v = at3(rx1, ry0, rz1);
+	q = g3[b00 + bz1];
+	u = at3(rx0, ry0, rz1);
+	q = g3[b10 + bz1];
+	v = at3(rx1, ry0, rz1);
 	a = lerp(t, u, v);
-
-	q = g3[b01 + bz1]; u = at3(rx0, ry1, rz1);
-	q = g3[b11 + bz1]; v = at3(rx1, ry1, rz1);
+	q = g3[b01 + bz1];
+	u = at3(rx0, ry1, rz1);
+	q = g3[b11 + bz1];
+	v = at3(rx1, ry1, rz1);
 	b = lerp(t, u, v);
-
 	d = lerp(sy, a, b);
-
 	return lerp(sz, c, d);
 }
 
-void Perlin::normalize2(double v[2])
-{
+void Perlin::normalize2(double v[2]) {
 	double s;
-
 	s = sqrt(v[0] * v[0] + v[1] * v[1]);
 	v[0] = v[0] / s;
 	v[1] = v[1] / s;
 }
 
-void Perlin::normalize3(double v[3])
-{
-   double s;
-
-  s    = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-  v[0] = v[0] / s;
-  v[1] = v[1] / s;
-  v[2] = v[2] / s;
+void Perlin::normalize3(double v[3]) {
+	double s;
+	s    = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+	v[0] = v[0] / s;
+	v[1] = v[1] / s;
+	v[2] = v[2] / s;
 }
 
-void Perlin::initialize()
-{
+void Perlin::initialize() {
 	int i, j, k;
-
 	srand(30757);
-	for (i = 0; i < B; i++)
-	{
+
+	for (i = 0; i < B; i++) {
 		p[i] = i;
 		g1[i] = (double)((rand() % (B + B)) - B) / B;
 
 		for (j = 0; j < 2; j++)
 			g2[i][j] = (double)((rand() % (B + B)) - B) / B;
+
 		normalize2(g2[i]);
 
 		for (j = 0; j < 3; j++)
 			g3[i][j] = (double)((rand() % (B + B)) - B) / B;
+
 		normalize3(g3[i]);
 	}
 
-	while (--i)
-	{
+	while (--i) {
 		k = p[i];
 		p[i] = p[j = rand() % B];
 		p[j] = k;
 	}
 
-	for (i = 0; i < B + 2; i++)
-	{
+	for (i = 0; i < B + 2; i++) {
 		p[B + i] = p[i];
 		g1[B + i] = g1[i];
+
 		for (j = 0; j < 2; j++)
 			g2[B + i][j] = g2[i][j];
+
 		for (j = 0; j < 3; j++)
 			g3[B + i][j] = g3[i][j];
 	}
@@ -439,62 +398,58 @@ void Perlin::initialize()
 // "beta" is the harmonic scaling/spacing, typically 2.
 //
 
-double Perlin::noise1D(double x,double alpha,double beta,int n)
-{
+double Perlin::noise1D(double x, double alpha, double beta, int n) {
 	int i;
-	double val,sum = 0;
-	double p,scale = 1;
-
+	double val, sum = 0;
+	double p, scale = 1;
 	p = x;
-	for (i = 0; i < n; i++)
-	{
+
+	for (i = 0; i < n; i++) {
 		val = noise1(p);
 		sum += val / scale;
 		scale *= alpha;
 		p *= beta;
 	}
+
 	return (sum);
 }
 
-double Perlin::noise2D(double x, double y, double alpha, double beta, int n)
-{
+double Perlin::noise2D(double x, double y, double alpha, double beta, int n) {
 	int i;
 	double val, sum = 0;
 	double p[2], scale = 1;
-
 	p[0] = x;
 	p[1] = y;
-	for (i = 0; i < n; i++)
-	{
+
+	for (i = 0; i < n; i++) {
 		val = noise2(p);
 		sum += val / scale;
 		scale *= alpha;
 		p[0] *= beta;
 		p[1] *= beta;
 	}
+
 	return (sum);
+}
+
+double Perlin::noise3D(double x, double y, double z, double alpha, double beta, int n) {
+	int i;
+	double val, sum = 0;
+	double p[3], scale = 1;
+	p[0] = x;
+	p[1] = y;
+	p[2] = z;
+
+	for (i = 0; i < n; i++) {
+		val    = noise3(p);
+		sum   += val / scale;
+		scale *= alpha;
+		p[0]  *= beta;
+		p[1]  *= beta;
+		p[2]  *= beta;
 	}
 
-double Perlin::noise3D(double x, double y, double z, double alpha, double beta, int n)
-{
-  int i;
-  double val,sum = 0;
-  double p[3],scale = 1;
-
-  p[0] = x;
-  p[1] = y;
-  p[2] = z;
-
-  for (i = 0; i < n; i++)
-  {
-    val    = noise3(p);
-    sum   += val / scale;
-    scale *= alpha;
-    p[0]  *= beta;
-    p[1]  *= beta;
-    p[2]  *= beta;
-  }
-  return (sum);
+	return (sum);
 }
 
 

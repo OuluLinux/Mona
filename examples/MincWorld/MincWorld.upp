@@ -1,20 +1,20 @@
 description "The Minc T-maze world. A T-maze is generated from a grammar.\377";
 
 uses
-	MonaCtrl;
+MonaCtrl;
 
 file
-	MincWorld.h,
-	MincWorld.cpp,
-	MincRunViewer.cpp,
-	Minc.h,
-	Minc.cpp,
-	Tmaze.h,
-	Tmaze.cpp,
-	TmazeApp.cpp,
-	TmazeDisplay.cpp,
-	TmazeMaker.cpp,
-	TmazeViewer.cpp,
-	TmazeGrammar.h,
-	TmazeGrammar.cpp;
+MincWorld.h,
+MincWorld.cpp,
+MincRunViewer.cpp,
+Minc.h,
+Minc.cpp,
+Tmaze.h,
+Tmaze.cpp,
+TmazeApp.cpp,
+TmazeDisplay.cpp,
+TmazeMaker.cpp,
+TmazeViewer.cpp,
+TmazeGrammar.h,
+TmazeGrammar.cpp;
 

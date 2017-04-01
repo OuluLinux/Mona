@@ -30,49 +30,49 @@ Mushroom::Mushroom(const Color& color, BlockTerrain* terrain) : BaseObject() {
 	}
 
 	// Build drawing display.
-	/*display = glGenLists(1);
-	glNewList(display, GL_COMPILE);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glDisable(GL_TEXTURE_2D);
-	glColor3f(m_color[0], m_color[1], m_color[2]);
-	stem = gluNewQuadric();
-	gluQuadricDrawStyle(stem, GLU_FILL);
-	gluQuadricNormals(stem, GLU_SMOOTH);
-	glPushMatrix();
-	glTranslatef(0.0f, height * 0.75f, 0.0f);
-	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-	gluCylinder(stem, width * 0.5f, width * 0.5f, height * 0.75f, 20, 10);
-	glPopMatrix();
-	cap = gluNewQuadric();
-	gluQuadricDrawStyle(cap, GLU_FILL);
-	gluQuadricNormals(cap, GLU_SMOOTH);
-	glPushMatrix();
-	glTranslatef(0.0f, height * 0.9f, 0.0f);
-	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-	gluCylinder(cap, 0.0f, width, height * 0.25f, 20, 5);
-	glPopMatrix();
-	glColor3f(0.5f, 0.5f, 0.5f);
-	capBorder = gluNewQuadric();
-	gluQuadricDrawStyle(capBorder, GLU_FILL);
-	gluQuadricNormals(capBorder, GLU_SMOOTH);
-	glPushMatrix();
-	glTranslatef(0.0f, height * 0.7f, 0.0f);
-	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-	gluCylinder(capBorder, width, width, height * 0.1f, 20, 2);
-	glPopMatrix();
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glPopMatrix();
-	glEndList();*/
+	/*  display = glGenLists(1);
+	    glNewList(display, GL_COMPILE);
+	    glMatrixMode(GL_MODELVIEW);
+	    glPushMatrix();
+	    glDisable(GL_TEXTURE_2D);
+	    glColor3f(m_color[0], m_color[1], m_color[2]);
+	    stem = gluNewQuadric();
+	    gluQuadricDrawStyle(stem, GLU_FILL);
+	    gluQuadricNormals(stem, GLU_SMOOTH);
+	    glPushMatrix();
+	    glTranslatef(0.0f, height * 0.75f, 0.0f);
+	    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+	    gluCylinder(stem, width * 0.5f, width * 0.5f, height * 0.75f, 20, 10);
+	    glPopMatrix();
+	    cap = gluNewQuadric();
+	    gluQuadricDrawStyle(cap, GLU_FILL);
+	    gluQuadricNormals(cap, GLU_SMOOTH);
+	    glPushMatrix();
+	    glTranslatef(0.0f, height * 0.9f, 0.0f);
+	    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+	    gluCylinder(cap, 0.0f, width, height * 0.25f, 20, 5);
+	    glPopMatrix();
+	    glColor3f(0.5f, 0.5f, 0.5f);
+	    capBorder = gluNewQuadric();
+	    gluQuadricDrawStyle(capBorder, GLU_FILL);
+	    gluQuadricNormals(capBorder, GLU_SMOOTH);
+	    glPushMatrix();
+	    glTranslatef(0.0f, height * 0.7f, 0.0f);
+	    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+	    gluCylinder(capBorder, width, width, height * 0.1f, 20, 2);
+	    glPopMatrix();
+	    glColor3f(1.0f, 1.0f, 1.0f);
+	    glPopMatrix();
+	    glEndList();*/
 }
 
 
 // Destructor.
 Mushroom::~Mushroom() {
-	/*gluDeleteQuadric(stem);
-	gluDeleteQuadric(cap);
-	gluDeleteQuadric(capBorder);
-	glDeleteLists(display, 1);*/
+	/*  gluDeleteQuadric(stem);
+	    gluDeleteQuadric(cap);
+	    gluDeleteQuadric(capBorder);
+	    glDeleteLists(display, 1);*/
 }
 
 
@@ -135,17 +135,17 @@ void Mushroom::Place() {
 
 // Draw the mushroom.
 void Mushroom::Draw() {
-	/*glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	// Transform.
-	glTranslatef(m_spacial->getX(), m_spacial->getY(), m_spacial->getZ());
-	glMultMatrixf(&m_spacial->m_rotmatrix[0][0]);
-	double scale = m_spacial->getScale();
-	glScalef(scale, scale, scale);
-	// Draw.
-	glDisable(GL_TEXTURE_2D);
-	glCallList(display);
-	glPopMatrix();*/
+	/*  glMatrixMode(GL_MODELVIEW);
+	    glPushMatrix();
+	    // Transform.
+	    glTranslatef(m_spacial->getX(), m_spacial->getY(), m_spacial->getZ());
+	    glMultMatrixf(&m_spacial->m_rotmatrix[0][0]);
+	    double scale = m_spacial->getScale();
+	    glScalef(scale, scale, scale);
+	    // Draw.
+	    glDisable(GL_TEXTURE_2D);
+	    glCallList(display);
+	    glPopMatrix();*/
 }
 
 

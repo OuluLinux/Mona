@@ -347,7 +347,6 @@ public:
 		brain->InitEffectEventIntervals();
 		brain->InitEffectEventIntervalWeights();
 		brain->InitMaxLearningEffectEventIntervals();
-		
 		// Initialize brain with new parameters.
 		Muzz::InitBrain(brain);
 	}
@@ -478,11 +477,11 @@ public:
 	// Merge given member brain parameters into this brain.
 	void MindMeld(Member* member1, Member* member2) {
 		brain_parm_mutator->MindMeld(member1->brain_parm_mutator,
-							   member2->brain_parm_mutator);
+									 member2->brain_parm_mutator);
 	}
 
 
-	
+
 	void Serialize(Stream& fp) {
 		muzz->Serialze(fp);
 		fp % fitness % generation;

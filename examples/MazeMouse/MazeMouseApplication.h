@@ -5,12 +5,12 @@
 
 
 class MazeMouseApplication : public TopWindow {
-	
+
 protected:
-	
+
 	// Sizes.
 	int WIDTH, HEIGHT;
-	
+
 	// Cheese need and goal.
 	double CHEESE_NEED, CHEESE_GOAL;
 
@@ -51,23 +51,23 @@ protected:
 	bool see_all_maze_doors;
 
 	Size mazeSize;
-	
-	// Display.
-	/*Size screen_size;
-	Canvas    mazeCanvas;
-	Graphics  canvasGraphics;
-	Image     mazeImage;
-	Graphics  imageGraphics;
-	String    error;
 
-	// Controls.
-	JPanel    controls;
-	JCheckBox start;
-	Choice    mode;
-	TextField response;
-	JCheckBox mute;
-	JButton   reset;
-	JButton   help;*/
+	// Display.
+	/*  Size screen_size;
+	    Canvas    mazeCanvas;
+	    Graphics  canvasGraphics;
+	    Image     mazeImage;
+	    Graphics  imageGraphics;
+	    String    error;
+
+	    // Controls.
+	    JPanel    controls;
+	    JCheckBox start;
+	    Choice    mode;
+	    TextField response;
+	    JCheckBox mute;
+	    JButton   reset;
+	    JButton   help;*/
 	bool   helpDisplay;
 
 	// Font.
@@ -86,7 +86,7 @@ protected:
 	//private Thread displayThread;
 	//private Thread stepThread;
 	//Toolkit        toolkit;
-	
+
 public:
 	// Constructor.
 	MazeMouseApplication();
@@ -101,8 +101,8 @@ public:
 
 
 	// Display.
-	
-	/*synchronized void display() {
+
+	/*  synchronized void display() {
 		// Clear display.
 		imageGraphics.setColor(Color.white);
 		imageGraphics.fillRect(0, 0, mazeSize.width, mazeSize.height);
@@ -151,7 +151,7 @@ public:
 
 		// Refresh display.
 		canvasGraphics.drawImage(mazeImage, 0, 0, this);
-	}*/
+	    }*/
 
 
 	// Step.
@@ -160,7 +160,7 @@ public:
 
 	// Button listener.
 	void ButtonPressed();
-	
+
 
 	// CheckBox listener.
 	void ItemStateChanged();

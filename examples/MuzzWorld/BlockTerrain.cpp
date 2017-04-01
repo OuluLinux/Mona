@@ -270,8 +270,8 @@ bool BlockTerrain::ConnectPlatforms() {
 
 	// Connect all platforms with ramps.
 	while true {
-		// Get connectable platforms.
-		GetConnectablePlatforms(connectable_platforms);
+	// Get connectable platforms.
+	GetConnectablePlatforms(connectable_platforms);
 
 		// All possible connections made?
 		if (connectable_platforms.GetCount() == 0) {

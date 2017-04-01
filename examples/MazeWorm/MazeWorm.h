@@ -18,14 +18,14 @@ class MazeWorm : public TopWindow {
 	int pos;
 	int grid;
 	One<ImageDraw> id;
-	
+
 public:
 	typedef MazeWorm CLASSNAME;
 	MazeWorm();
-	
+
 	void RefreshBoard();
 	void NewMaze();
-	
+
 };
 
 #endif

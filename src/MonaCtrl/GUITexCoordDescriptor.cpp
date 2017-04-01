@@ -1,128 +1,153 @@
 #include "EasyGL.h"
 
-Tuple2i textureGUISizes(256,256);
+Tuple2i textureGUISizes(256, 256);
 
-void GUITexCoordDescriptor::setTextureWidth(int width)
-{
-  textureGUISizes.x = clamp(width, 8, 1024);
+void GUITexCoordDescriptor::setTextureWidth(int width) {
+	textureGUISizes.x = clamp(width, 8, 1024);
 }
 
-void GUITexCoordDescriptor::setTextureHeight(int height)
-{  
-  textureGUISizes.y = clamp(height, 8, 1024);
+void GUITexCoordDescriptor::setTextureHeight(int height) {
+	textureGUISizes.y = clamp(height, 8, 1024);
 }
 
-GUITexCoordDescriptor::GUITexCoordDescriptor(int widgetTypeArg)
-{
-  texCoords.Set(0.0f,0.0f,1.0f,1.0f);
-  widgetType = widgetTypeArg;
+GUITexCoordDescriptor::GUITexCoordDescriptor(int widgetTypeArg) {
+	texCoords.Set(0.0f, 0.0f, 1.0f, 1.0f);
+	widgetType = widgetTypeArg;
 }
 
-GUITexCoordDescriptor::GUITexCoordDescriptor(const GUITexCoordDescriptor &copy)
-{
-  this->operator=(copy);
+GUITexCoordDescriptor::GUITexCoordDescriptor(const GUITexCoordDescriptor& copy) {
+	this->operator=(copy);
 }
 
-GUITexCoordDescriptor &GUITexCoordDescriptor::operator =(const GUITexCoordDescriptor &copy)
-{
+GUITexCoordDescriptor& GUITexCoordDescriptor::operator =(const GUITexCoordDescriptor& copy) {
+	if (this != &copy) {
+		texCoords  = copy.texCoords;
+		widgetType = copy.widgetType;
+	}
 
-  if(this != &copy)
-  {
-    texCoords  = copy.texCoords;
-    widgetType = copy.widgetType;
-  } 
-  return *this;
+	return *this;
 }
 
-void GUITexCoordDescriptor::setType(int type)
-{
-  switch(type)
-  {
-    case WT_SLIDER :
-    case WT_BUTTON:
-    case WT_CHECK_BOX:
-    case WT_CHECK_BOX_MARK:
-    case WT_RADIO_BUTTON:
-    case WT_CHECK_RB_MARK:
-      widgetType = type;
-    break;
-    default: widgetType = WT_UNKNOWN;
-  }
+void GUITexCoordDescriptor::setType(int type) {
+	switch (type) {
+	case WT_SLIDER :
+	case WT_BUTTON:
+	case WT_CHECK_BOX:
+	case WT_CHECK_BOX_MARK:
+	case WT_RADIO_BUTTON:
+	case WT_CHECK_RB_MARK:
+		widgetType = type;
+		break;
+
+	default:
+		widgetType = WT_UNKNOWN;
+	}
 }
 
-void GUITexCoordDescriptor::setType(const String &type)
-{
-  if(!type.GetCount())
-  {
-    Logger::writeErrorLog("NULL GUITexCoordDescriptor type");
-    return;
-  }
+void GUITexCoordDescriptor::setType(const String& type) {
+	if (!type.GetCount()) {
+		Logger::writeErrorLog("NULL GUITexCoordDescriptor type");
+		return;
+	}
 
-  if(type == "MATERIAL_SURFACE"){ widgetType = WT_MATERIAL_SURFACE; return; }
-  if(type == "CHECK_BOX_MARK")  { widgetType = WT_CHECK_BOX_MARK;   return; }
-  if(type == "CHECK_RB_MARK")   { widgetType = WT_CHECK_RB_MARK;    return; }
-  if(type == "RADIO_BUTTON")    { widgetType = WT_RADIO_BUTTON;     return; }
-  if(type == "SEPARATOR")       { widgetType = WT_SEPARATOR;        return; }
-  if(type == "CHECK_BOX")       { widgetType = WT_CHECK_BOX;        return; }
-  if(type == "TEXT_AREA")       { widgetType = WT_TEXT_AREA;        return; }
-  if(type == "BUTTON")          { widgetType = WT_BUTTON;           return; }
-  if(type == "SLIDER")          { widgetType = WT_SLIDER;           return; }
-  if(type == "PANEL")           { widgetType = WT_PANEL;            return; }
-  if(type == "LABEL")           { widgetType = WT_LABEL;            return; }
+	if (type == "MATERIAL_SURFACE") {
+		widgetType = WT_MATERIAL_SURFACE;
+		return;
+	}
 
-  Logger::writeErrorLog(String("Unknow GUITexCoordDescriptor type -> ") + type);
-  widgetType = WT_UNKNOWN;
+	if (type == "CHECK_BOX_MARK")  {
+		widgetType = WT_CHECK_BOX_MARK;
+		return;
+	}
+
+	if (type == "CHECK_RB_MARK")   {
+		widgetType = WT_CHECK_RB_MARK;
+		return;
+	}
+
+	if (type == "RADIO_BUTTON")    {
+		widgetType = WT_RADIO_BUTTON;
+		return;
+	}
+
+	if (type == "SEPARATOR")       {
+		widgetType = WT_SEPARATOR;
+		return;
+	}
+
+	if (type == "CHECK_BOX")       {
+		widgetType = WT_CHECK_BOX;
+		return;
+	}
+
+	if (type == "TEXT_AREA")       {
+		widgetType = WT_TEXT_AREA;
+		return;
+	}
+
+	if (type == "BUTTON")          {
+		widgetType = WT_BUTTON;
+		return;
+	}
+
+	if (type == "SLIDER")          {
+		widgetType = WT_SLIDER;
+		return;
+	}
+
+	if (type == "PANEL")           {
+		widgetType = WT_PANEL;
+		return;
+	}
+
+	if (type == "LABEL")           {
+		widgetType = WT_LABEL;
+		return;
+	}
+
+	Logger::writeErrorLog(String("Unknow GUITexCoordDescriptor type -> ") + type);
+	widgetType = WT_UNKNOWN;
 }
 
-int GUITexCoordDescriptor::getType()
-{
-  return widgetType;
+int GUITexCoordDescriptor::getType() {
+	return widgetType;
 }
 
-void GUITexCoordDescriptor::LoadXMLSettings(const TiXmlElement *element)
-{
-  if(!XMLArbiter::inspectElementInfo(element, "TexCoordsDesc"))
-    return;
+void GUITexCoordDescriptor::LoadXMLSettings(const TiXmlElement* element) {
+	if (!XMLArbiter::inspectElementInfo(element, "TexCoordsDesc"))
+		return;
 
-  String name;
-  int         xStart        = 0,
-              yStart        = 0,
-              xEnd          = 0,
-              yEnd          = 0;
-
-  xStart = XMLArbiter::fillComponents1i(element, "xStart", xStart);
-  yStart = XMLArbiter::fillComponents1i(element, "yStart", yStart);
- 
-  xEnd = XMLArbiter::fillComponents1i(element, "xEnd", xEnd);
-  yEnd = XMLArbiter::fillComponents1i(element, "yEnd", yEnd);
-   
-  setTexCoords(xStart/float(textureGUISizes.x), yStart/float(textureGUISizes.y),
-               xEnd  /float(textureGUISizes.x), yEnd  /float(textureGUISizes.y));
-  setType(element->Attribute("type"));
+	String name;
+	int         xStart        = 0,
+				yStart        = 0,
+				xEnd          = 0,
+				yEnd          = 0;
+	xStart = XMLArbiter::fillComponents1i(element, "xStart", xStart);
+	yStart = XMLArbiter::fillComponents1i(element, "yStart", yStart);
+	xEnd = XMLArbiter::fillComponents1i(element, "xEnd", xEnd);
+	yEnd = XMLArbiter::fillComponents1i(element, "yEnd", yEnd);
+	setTexCoords(xStart / float(textureGUISizes.x), yStart / float(textureGUISizes.y),
+				 xEnd  / float(textureGUISizes.x), yEnd  / float(textureGUISizes.y));
+	setType(element->Attribute("type"));
 }
 
-int GUITexCoordDescriptor::getTextureWidth()
-{
-  return textureGUISizes.x;
+int GUITexCoordDescriptor::getTextureWidth() {
+	return textureGUISizes.x;
 }
 
-int GUITexCoordDescriptor::getTextureHeight()
-{
-  return textureGUISizes.y;
+int GUITexCoordDescriptor::getTextureHeight() {
+	return textureGUISizes.y;
 }
 
-void GUITexCoordDescriptor::setTexCoords(double x, double y, double z, double w)
-{
-  texCoords.Set(clamp(x,0.0f, 1.0f), clamp(y,0.0f, 1.0f),
-                clamp(z,0.0f, 1.0f), clamp(w,0.0f, 1.0f));
+void GUITexCoordDescriptor::setTexCoords(double x, double y, double z, double w) {
+	texCoords.Set(clamp(x, 0.0f, 1.0f), clamp(y, 0.0f, 1.0f),
+				  clamp(z, 0.0f, 1.0f), clamp(w, 0.0f, 1.0f));
 }
 
-void GUITexCoordDescriptor::setTexCoords(const Tuple4f& texCoordsArg)
-{
-  texCoords =  texCoordsArg;
+void GUITexCoordDescriptor::setTexCoords(const Tuple4f& texCoordsArg) {
+	texCoords =  texCoordsArg;
 };
 
-const Tuple4f &GUITexCoordDescriptor::getTexCoords()
-{
-  return texCoords;
+const Tuple4f& GUITexCoordDescriptor::getTexCoords() {
+	return texCoords;
 }

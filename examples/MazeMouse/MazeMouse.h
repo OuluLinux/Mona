@@ -41,7 +41,7 @@ enum {TAKE_DOOR_0, TAKE_DOOR_1, TAKE_DOOR_2, WAIT, HOP};
 
 
 class Room : public Ctrl {
-	
+
 protected:
 	Rect r;
 	int     type;
@@ -53,7 +53,7 @@ protected:
 	Vector<Room> doors;
 
 public:
-	
+
 	Room(int x, int y, int type, int cx, int cy);
 	void SetDoors(Vector<Room>& doors);
 	virtual void Paint(Draw& w);
@@ -91,29 +91,29 @@ class MazeMouse : public TopWindow {
 	int       mouseY;
 
 	// Display.
-	/*Size screen_size;
-	Canvas    mazeCanvas;
-	Size mazeSize;
-	Graphics  canvasGraphics;
-	Image     mazeImage;
-	Graphics  imageGraphics;
-	String    error;*/
+	/*  Size screen_size;
+	    Canvas    mazeCanvas;
+	    Size mazeSize;
+	    Graphics  canvasGraphics;
+	    Image     mazeImage;
+	    Graphics  imageGraphics;
+	    String    error;*/
 
 	// Controls.
-	/*JPanel    controls;
-	JCheckBox start;
-	Choice    mode;
-	TextField response;
-	JCheckBox mute;
-	JButton   reset;*/
+	/*  JPanel    controls;
+	    JCheckBox start;
+	    Choice    mode;
+	    TextField response;
+	    JCheckBox mute;
+	    JButton   reset;*/
 	bool   logging;
 
 	// Font.
-	/*Font        font;
-	FontMetrics fontMetrics;*/
-	/*int         fontAscent;
-	int         fontWidth;
-	int         fontHeight;*/
+	/*  Font        font;
+	    FontMetrics fontMetrics;*/
+	/*  int         fontAscent;
+	    int         fontWidth;
+	    int         fontHeight;*/
 
 	// Images and sound.
 	Image     mouse_image;
@@ -121,9 +121,9 @@ class MazeMouse : public TopWindow {
 	AudioClip squeakSound;
 
 	// Threads.
-	/*private Thread displayThread;
-	private Thread stepThread;
-	Toolkit        toolkit;*/
+	/*  private Thread displayThread;
+	    private Thread stepThread;
+	    Toolkit        toolkit;*/
 
 
 	void Init();

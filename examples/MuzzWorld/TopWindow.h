@@ -83,9 +83,9 @@ class MuzzWorld;
 class ResponseSearch {
 public:
 	struct SensoryResponse experience;
-	
+
 	MuzzWorld* world;
-	
+
 	ResponseSearch*         parent;
 	int x, z, dir;
 	BlockTerrain::Block::DIRECTION forward, backward;
@@ -100,24 +100,24 @@ public:
 	// "Lobotomize" muzz to save space.
 	ResponseSearch(int response, ResponseSearch* parent,
 				   Muzz* parentMuzz, int depth);
-				   
+
 	// Destructor.
 	~ResponseSearch();
-	
+
 	// Set city-block distance to closest needed goal.
 	// Distance is zero when goals are achieved.
 	// Return true if needed goals are available.
 	bool SetGoalDist();
 	bool Equals(ResponseSearch* r);
-	
+
 };
 
 class MuzzWorld : public DockWindow {
-	
+
 protected:
 	friend class ResponseSearch;
-	
-	
+
+
 	int cycles;
 	int cycle_counter;
 

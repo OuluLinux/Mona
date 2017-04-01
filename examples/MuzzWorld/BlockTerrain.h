@@ -78,7 +78,7 @@ public:
 	// Random seed.
 	enum { default_random_seed = 4517 };
 	int random_seed;
-	
+
 	//Random randomizer;
 
 	// Terrain width and height.
@@ -112,7 +112,7 @@ public:
 
 	// Terrain blocks
 	Array<Block> blocks;
-	
+
 	//Block** saveBlocks;
 
 	// Constructors.
@@ -187,12 +187,12 @@ protected:
 	void DrawRightRamp();
 
 	// OpenGL displays for drawing.
-/*	bool   displays_created;
-	GLuint blockDisplay;
-	GLuint rampSurfaceDisplay;
-	GLuint leftRampDisplay;
-	GLuint rightRampDisplay;
-*/
+	/*	 bool   displays_created;
+		GLuint blockDisplay;
+		GLuint rampSurfaceDisplay;
+		GLuint leftRampDisplay;
+		GLuint rightRampDisplay;
+	*/
 	// Terrain height map.
 	// Height is defined as the Y dimension on the XZ plane.
 	QuadTree* heightmap;

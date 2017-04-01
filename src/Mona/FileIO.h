@@ -24,9 +24,9 @@
 
 // Find paths to files.
 #define ENV_HOME    "MONA_HOME"
-char *getResourcePath(char *file);
-char *getDataPath(char *file);
-char *getPath(char *dir, char *file);
+char* getResourcePath(char* file);
+char* getDataPath(char* file);
+char* getPath(char* dir, char* file);
 
 // File I/O.
 #define FOPEN_READ          myfopenRead
@@ -52,28 +52,28 @@ char *getPath(char *dir, char *file);
 #define FWRITE_BYTES        myfwriteBytes
 #define FREAD_STRING        myfreadString
 #define FWRITE_STRING       myfwriteString
-FILE *myfopenRead(String filename);
-FILE *myfopenWrite(String filename);
+FILE* myfopenRead(String filename);
+FILE* myfopenWrite(String filename);
 int myfclose(Stream& fp);
-int myfreadInt(int *, FILE *);
-int myfwriteInt(int *, FILE *);
-int myfreadShort(short *, FILE *);
-int myfwriteShort(short *, FILE *);
-int myfreadLong(unsigned long *, FILE *);
-int myfwriteLong(unsigned long *, FILE *);
-int myfreadLongLong(unsigned long long *, FILE *);
-int myfwriteLongLong(unsigned long long *, FILE *);
-int myfreadFloat(double *, FILE *);
-int myfwriteFloat(double *, FILE *);
-int myfreadDouble(double *, FILE *);
-int myfwriteDouble(double *, FILE *);
-int myfreadBool(bool *, FILE *);
-int myfwriteBool(bool *, FILE *);
-int myfreadChar(unsigned char *, FILE *);
-int myfwriteChar(unsigned char *, FILE *);
-int myfreadBytes(unsigned char *, int size, FILE *);
-int myfwriteBytes(unsigned char *, int size, FILE *);
-int myfreadString(char *, int size, FILE *);
-int myfwriteString(char *, int size, FILE *);
+int myfreadInt(int*, FILE*);
+int myfwriteInt(int*, FILE*);
+int myfreadShort(short*, FILE*);
+int myfwriteShort(short*, FILE*);
+int myfreadLong(unsigned long*, FILE*);
+int myfwriteLong(unsigned long*, FILE*);
+int myfreadLongLong(unsigned long long*, FILE*);
+int myfwriteLongLong(unsigned long long*, FILE*);
+int myfreadFloat(double*, FILE*);
+int myfwriteFloat(double*, FILE*);
+int myfreadDouble(double*, FILE*);
+int myfwriteDouble(double*, FILE*);
+int myfreadBool(bool*, FILE*);
+int myfwriteBool(bool*, FILE*);
+int myfreadChar(unsigned char*, FILE*);
+int myfwriteChar(unsigned char*, FILE*);
+int myfreadBytes(unsigned char*, int size, FILE*);
+int myfwriteBytes(unsigned char*, int size, FILE*);
+int myfreadString(char*, int size, FILE*);
+int myfwriteString(char*, int size, FILE*);
 #endif
 #endif
