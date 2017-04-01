@@ -8,10 +8,9 @@
 
 // Random value.
 typedef unsigned long   RANDOM;
-#define INVALID_RANDOM    0xffffffffUL
 
 // Probability type.
-typedef double          PROBABILITY;
+typedef double          double;
 
 // Period parameters.
 #define RAND_N             624
@@ -30,11 +29,11 @@ public:
 
    // The array for the state vector.
    // mti==RAND_N+1 means mt[RAND_N] is not initialized.
-   RANDOM mt[RAND_N];
+   int mt[RAND_N];
    int    mti;
 
    // Save/restore random state on stack.
-   stack<RANDOM *> smt;
+   stack<int *> smt;
    stack<int>      smti;
 
    // Constructors.
@@ -44,7 +43,7 @@ public:
    }
 
 
-   Random(RANDOM seed)
+   Random(int seed)
    {
       mti = RAND_N + 1;
       SRAND(seed);
@@ -59,10 +58,10 @@ public:
 
 
    // Seed random numbers.
-   void SRAND(RANDOM seed);
+   void SRAND(int seed);
 
    // Get random number
-   RANDOM RAND(); // genrand_int32
+   int RAND(); // genrand_int32
 
    // Random probability >= 0.0 && <= 1.0
    double RAND_PROB();
@@ -80,10 +79,10 @@ public:
    bool RAND_BOOL();
 
    // Load random state
-   void RAND_LOAD(FILE *fp);
+   void RAND_LOAD(Stream& fp);
 
    // Save random state
-   void RAND_SAVE(FILE *fp);
+   void RAND_SAVE(Stream& fp);
 
    // Save random state
    void RAND_PUSH();
@@ -100,16 +99,16 @@ public:
 private:
 
    /* initializes mt[N] with a seed */
-   void init_genrand(RANDOM s);
+   void init_genrand(int s);
 
    /* initialize by an array with array-length */
    /* init_key is the array for initializing keys */
    /* key_length is its length */
    /* slight change for C++, 2004/2/26 */
-   void init_by_array(RANDOM init_key[], int key_length);
+   void init_by_array(int init_key[], int key_length);
 
    /* generates a random number on [0,0xffffffff]-interval */
-   RANDOM genrand_int32(void);
+   int genrand_int32(void);
 
    /* generates a random number on [0,0x7fffffff]-interval */
    long genrand_int31(void);
@@ -127,10 +126,10 @@ private:
    double genrand_res53(void);
 
    /* load state from file pointer */
-   void load_genrand(FILE *fp);
+   void load_genrand(Stream& fp);
 
    /* save state to file pointer */
-   void save_genrand(FILE *fp);
+   void save_genrand(Stream& fp);
 
    // Save random state.
    void push_genrand();

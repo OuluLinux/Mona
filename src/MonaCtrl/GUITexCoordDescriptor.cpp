@@ -14,7 +14,7 @@ void GUITexCoordDescriptor::setTextureHeight(int height)
 
 GUITexCoordDescriptor::GUITexCoordDescriptor(int widgetTypeArg)
 {
-  texCoords.set(0.0f,0.0f,1.0f,1.0f);
+  texCoords.Set(0.0f,0.0f,1.0f,1.0f);
   widgetType = widgetTypeArg;
 }
 
@@ -79,7 +79,7 @@ int GUITexCoordDescriptor::getType()
   return widgetType;
 }
 
-void GUITexCoordDescriptor::loadXMLSettings(const TiXmlElement *element)
+void GUITexCoordDescriptor::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "TexCoordsDesc"))
     return;
@@ -111,9 +111,9 @@ int GUITexCoordDescriptor::getTextureHeight()
   return textureGUISizes.y;
 }
 
-void GUITexCoordDescriptor::setTexCoords(float x, float y, float z, float w)
+void GUITexCoordDescriptor::setTexCoords(double x, double y, double z, double w)
 {
-  texCoords.set(clamp(x,0.0f, 1.0f), clamp(y,0.0f, 1.0f),
+  texCoords.Set(clamp(x,0.0f, 1.0f), clamp(y,0.0f, 1.0f),
                 clamp(z,0.0f, 1.0f), clamp(w,0.0f, 1.0f));
 }
 

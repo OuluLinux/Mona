@@ -10,7 +10,7 @@ IOXMLObject::IOXMLObject(const String &ionameArg)
   ioname = ionameArg;
 }
 
-bool IOXMLObject::loadXMLSettings(const String  &path  )
+bool IOXMLObject::LoadXMLSettings(const String  &path  )
 {
   if(!ioname.GetCount())
     return Logger::writeErrorLog("Cannot load XML settings -> NULL element name");
@@ -32,7 +32,7 @@ bool IOXMLObject::loadXMLSettings(const String  &path  )
       outer;
    	  outer = outer->NextSiblingElement() )
     if(ioname == outer->Value())
-      return loadXMLSettings(outer);
+      return LoadXMLSettings(outer);
 
   return Logger::writeErrorLog(String("Need a <") + ioname + "> tag in the XML file");
 }
@@ -337,9 +337,9 @@ double  XMLArbiter::fillComponents1d(const TiXmlElement *element,
   return valueArg;
 }
 
-float   XMLArbiter::fillComponents1f(const TiXmlElement *element,
+double   XMLArbiter::fillComponents1f(const TiXmlElement *element,
                                      const char         *attr,
-                                     float               valueArg)
+                                     double               valueArg)
 {
   double value = valueArg;
 
@@ -1396,7 +1396,7 @@ bool TiXmlDocument::LoadFile( const char* filename, TiXmlEncoding encoding )
 bool TiXmlDocument::SaveFile( const char * filename ) const
 {
 	// The old c stuff lives on...
-	FILE* fp = fopen( filename, "w" );
+	Stream& fp = fopen( filename, "w" );
 	if ( fp )
 	{
 		Print( fp, 0 );

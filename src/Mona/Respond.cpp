@@ -1,5 +1,3 @@
-// For conditions of distribution and use, see copyright notice in mona.h
-
 #include "Mona.h"
 
 // Respond.
@@ -39,7 +37,7 @@ Mona::Respond()
    }
 
    // Make a random response selection?
-   if (random.RAND_CHANCE(RESPONSE_RANDOMNESS))
+   if (RandomChance(RESPONSE_RANDOMNESS))
    {
       if (response_count > 0)
       {
@@ -54,7 +52,7 @@ Mona::Respond()
             }
          }
          int    j = response_count - 1;
-         double n = random.RAND_INTERVAL(0.0, responseWeights[j]);
+         double n = RandomInterval(0.0, responseWeights[j]);
          for (i = 0; i < j; i++)
          {
             if (n <= responseWeights[i])
@@ -74,7 +72,7 @@ Mona::Respond()
    {
       // Select maximum response potential.
       bool first = true;
-      j = random.RAND_CHOICE(response_count);
+      j = Random(response_count);
       for (i = response = 0, max = 0.0; i < response_count; i++)
       {
          if (first || (response_potentials[j] > max))
@@ -150,7 +148,7 @@ Mona::Respond()
 
 
 // Add a response.
-Mona::RESPONSE Mona::AddResponse()
+RESPONSE Mona::AddResponse()
 {
    int i;
 
@@ -167,7 +165,7 @@ Mona::RESPONSE Mona::AddResponse()
 
 
 // Get response potential.
-Mona::RESPONSE_POTENTIAL Mona::GetResponsePotential(RESPONSE response)
+RESPONSE_POTENTIAL Mona::GetResponsePotential(RESPONSE response)
 {
    if ((response >= 0) && (response < response_count))
    {
@@ -224,7 +222,7 @@ void Mona::ClearResponseOverride()
 
 
 // Find motor by response.
-Mona::Motor *Mona::FindMotorByResponse(RESPONSE response)
+Motor *Mona::FindMotorByResponse(RESPONSE response)
 {
    Motor *motor;
 

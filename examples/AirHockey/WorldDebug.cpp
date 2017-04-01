@@ -12,7 +12,7 @@ void WorldDebug::Init(Draw& d, Size s)
 {
 	w = &d;
 	sz = s;
-	zoom = 15.0f;
+	zoom = 15.0;
 	cx = float(sz.cx / 2.0f + xoff);
 	cy = float(sz.cy / 2.0f + yoff);
 	aspect = float(sz.cx / sz.cy);

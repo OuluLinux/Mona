@@ -11,13 +11,13 @@ bool CreateTexture(char *strFileName, GLuint *textureArray, GLint textureID)
 
    if (!strFileName)                              // Return from the function if no file name was passed in
    {
-      return (false);
+      return false;
    }
 
    //try to load the specified file--if it fails, dip out
    if (!glbmp_LoadBitmap(strFileName, GLBMP_ANY_SIZE, &bitmap))
    {
-      return (false);
+      return false;
    }
 
    // Now that we have the texture data, we need to register our texture with OpenGL
@@ -85,12 +85,12 @@ bool LoadTGA(TextureImage *texture, char *filename)
    {
       if (file == NULL)
       {
-         return (false);
+         return false;
       }
       else
       {
          fclose(file);
-         return (false);
+         return false;
       }
    }
 
@@ -102,7 +102,7 @@ bool LoadTGA(TextureImage *texture, char *filename)
        ((header[4] != 24) && (header[4] != 32)))
    {
       fclose(file);
-      return (false);
+      return false;
    }
 
    texture->bpp  = header[4];
@@ -120,7 +120,7 @@ bool LoadTGA(TextureImage *texture, char *filename)
       }
 
       fclose(file);
-      return (false);
+      return false;
    }
 
    for (unsigned int k = 0; k < imageSize; k += bytesPerPixel)

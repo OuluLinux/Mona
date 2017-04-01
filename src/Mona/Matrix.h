@@ -233,7 +233,7 @@ typedef int   bool;
 #endif
 
 #if (defined(__BORLANDC__) || _MSC_VER) && !defined(__GNUG__)
-//inline float abs (float v) { return (float)fabs( v); }
+//inline double abs (double v) { return (float)fabs( v); }
 //inline double abs (double v) { return fabs( v); }
 //inline long double abs (long double v) { return fabsl( v); }
 #endif
@@ -579,7 +579,7 @@ operator ==(const matrixT& m1, const matrixT& m2) _NO_THROW
 {
    if ((m1.RowNo() != m2.RowNo()) || (m1.ColNo() != m2.ColNo()))
    {
-      return (false);
+      return false;
    }
 
    for (size_t i = 0; i < m1.RowNo(); i++)
@@ -588,7 +588,7 @@ operator ==(const matrixT& m1, const matrixT& m2) _NO_THROW
       {
          if (m1(i, j) != m2(i, j))
          {
-            return (false);
+            return false;
          }
       }
    }
@@ -1248,7 +1248,7 @@ matrixT::IsSingular() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return (false);
+      return false;
    }
    return (Det() == T(0));
 }
@@ -1260,7 +1260,7 @@ matrixT::IsDiagonal() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return (false);
+      return false;
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -1268,7 +1268,7 @@ matrixT::IsDiagonal() _NO_THROW
       {
          if ((i != j) && (_m->Val[i][j] != T(0)))
          {
-            return (false);
+            return false;
          }
       }
    }
@@ -1282,14 +1282,14 @@ matrixT::IsScalar() _NO_THROW
 {
    if (!IsDiagonal())
    {
-      return (false);
+      return false;
    }
    T v = _m->Val[0][0];
    for (size_t i = 1; i < _m->Row; i++)
    {
       if (_m->Val[i][i] != v)
       {
-         return (false);
+         return false;
       }
    }
    return (true);
@@ -1304,7 +1304,7 @@ matrixT::IsUnit() _NO_THROW
    {
       return (true);
    }
-   return (false);
+   return false;
 }
 
 
@@ -1318,7 +1318,7 @@ matrixT::IsNull() _NO_THROW
       {
          if (_m->Val[i][j] != T(0))
          {
-            return (false);
+            return false;
          }
       }
    }
@@ -1332,7 +1332,7 @@ matrixT::IsSymmetric() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return (false);
+      return false;
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -1340,7 +1340,7 @@ matrixT::IsSymmetric() _NO_THROW
       {
          if (_m->Val[i][j] != _m->Val[j][i])
          {
-            return (false);
+            return false;
          }
       }
    }
@@ -1354,7 +1354,7 @@ matrixT::IsSkewSymmetric() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return (false);
+      return false;
    }
    for (size_t i = 0; i < _m->Row; i++)
    {
@@ -1362,7 +1362,7 @@ matrixT::IsSkewSymmetric() _NO_THROW
       {
          if (_m->Val[i][j] != -_m->Val[j][i])
          {
-            return (false);
+            return false;
          }
       }
    }
@@ -1376,7 +1376,7 @@ matrixT::IsUpperTriangular() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return (false);
+      return false;
    }
    for (size_t i = 1; i < _m->Row; i++)
    {
@@ -1384,7 +1384,7 @@ matrixT::IsUpperTriangular() _NO_THROW
       {
          if (_m->Val[i][j] != T(0))
          {
-            return (false);
+            return false;
          }
       }
    }
@@ -1398,7 +1398,7 @@ matrixT::IsLowerTriangular() _NO_THROW
 {
    if (_m->Row != _m->Col)
    {
-      return (false);
+      return false;
    }
 
    for (size_t j = 1; j < _m->Col; j++)
@@ -1407,7 +1407,7 @@ matrixT::IsLowerTriangular() _NO_THROW
       {
          if (_m->Val[i][j] != T(0))
          {
-            return (false);
+            return false;
          }
       }
    }

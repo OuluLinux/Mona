@@ -45,7 +45,7 @@
 #include "Random.h"
 
 /* initializes mt[N] with a seed */
-void Random::init_genrand(RANDOM s)
+void Random::init_genrand(int s)
 {
    mt[0] = s & 0xffffffffUL;
    for (mti = 1; mti < RAND_N; mti++)
@@ -66,7 +66,7 @@ void Random::init_genrand(RANDOM s)
 /* init_key is the array for initializing keys */
 /* key_length is its length */
 /* slight change for C++, 2004/2/26 */
-void Random::init_by_array(RANDOM init_key[], int key_length)
+void Random::init_by_array(int init_key[], int key_length)
 {
    int i, j, k;
 
@@ -109,10 +109,10 @@ void Random::init_by_array(RANDOM init_key[], int key_length)
 
 
 /* generates a random number on [0,0xffffffff]-interval */
-RANDOM Random::genrand_int32(void)
+int Random::genrand_int32(void)
 {
-   RANDOM        y;
-   static RANDOM mag01[2] = { 0x0UL, RAND_MATRIX_A };
+   int        y;
+   static int mag01[2] = { 0x0UL, RAND_MATRIX_A };
 
    /* mag01[x] = x * RAND_MATRIX_A  for x=0,1 */
 
@@ -191,7 +191,7 @@ double Random::genrand_real3(void)
 /* generates a random number on [0,1) with 53-bit resolution*/
 double Random::genrand_res53(void)
 {
-   RANDOM a = genrand_int32() >> 5, b = genrand_int32() >> 6;
+   int a = genrand_int32() >> 5, b = genrand_int32() >> 6;
 
    return ((a * 67108864.0 + b) * (1.0 / 9007199254740992.0));
 }
@@ -202,7 +202,7 @@ double Random::genrand_res53(void)
 /* Load and save added by TEP: */
 
 /* load state from file pointer */
-void Random::load_genrand(FILE *fp)
+void Random::load_genrand(Stream& fp)
 {
    for (int i = 0; i < RAND_N; i++)
    {
@@ -213,7 +213,7 @@ void Random::load_genrand(FILE *fp)
 
 
 /* save state to file pointer */
-void Random::save_genrand(FILE *fp)
+void Random::save_genrand(Stream& fp)
 {
    for (int i = 0; i < RAND_N; i++)
    {
@@ -226,7 +226,7 @@ void Random::save_genrand(FILE *fp)
 // Save random state.
 void Random::push_genrand()
 {
-   RANDOM *mtp;
+   int *mtp;
 
    mtp = new RANDOM[RAND_N];
    ASSERT(mtp != NULL);
@@ -242,7 +242,7 @@ void Random::push_genrand()
 // Restore random state.
 void Random::pop_genrand()
 {
-   RANDOM *mtp;
+   int *mtp;
 
    ASSERT(smt.GetCount() > 0);
    mtp = smt.top();
@@ -258,14 +258,14 @@ void Random::pop_genrand()
 
 
 // Seed random numbers.
-void Random::SRAND(RANDOM seed)
+void Random::SRAND(int seed)
 {
    init_genrand(seed);
 }
 
 
 // Get random number
-RANDOM Random::RAND()
+int Random::RAND()
 {
    return (genrand_int32());
 }
@@ -315,14 +315,14 @@ bool Random::RAND_BOOL()
 
 
 // Load random state
-void Random::RAND_LOAD(FILE *fp)
+void Random::RAND_LOAD(Stream& fp)
 {
    load_genrand(fp);
 }
 
 
 // Save random state
-void Random::RAND_SAVE(FILE *fp)
+void Random::RAND_SAVE(Stream& fp)
 {
    save_genrand(fp);
 }
@@ -355,10 +355,10 @@ void Random::RAND_CLEAR()
 // Clone random state
 void Random::RAND_CLONE(Random& random)
 {
-   stack<RANDOM *> smt2;
+   stack<int *> smt2;
    stack<int>      smti2;
-   RANDOM          *mtp, *mtp2;
-   RANDOM          r;
+   int          *mtp, *mtp2;
+   int          r;
 
    random.RAND_CLEAR();
    for (int i = 0; i < RAND_N; i++)

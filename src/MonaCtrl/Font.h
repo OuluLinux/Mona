@@ -15,19 +15,19 @@ class CFont
     CFont();
    ~CFont();
 
-    void printProportional(float widthRatio , float heightRatio,
-                           float width,       float height,
-                           float r,  float g, float b,
+    void printProportional(double widthRatio , double heightRatio,
+                           double width,       double height,
+                           double r,  double g, double b,
                            const String &string);
 
-    void Print(float x,     float y,
-               float width, float height,
-               float r,     float g, float b,
+    void Print(double x,     double y,
+               double width, double height,
+               double r,     double g, double b,
                const String &string);
 
-    void printSubString(float x,     float y,
-                        float width, float height,
-                        float r,     float g, float b,
+    void printSubString(double x,     double y,
+                        double width, double height,
+                        double r,     double g, double b,
                         int   start, int end,
                         const String &string);
 

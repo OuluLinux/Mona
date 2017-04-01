@@ -85,7 +85,7 @@ int GUIFontManager::addFont(const TiXmlElement *fontNode)
   GUIFont *newFont  = new GUIFont();
   int      index    = -1;
 
-  if(newFont->loadXMLSettings(fontNode))
+  if(newFont->LoadXMLSettings(fontNode))
   {
     index = findFontIndex(newFont);
     if(index >= 0)
@@ -94,13 +94,13 @@ int GUIFontManager::addFont(const TiXmlElement *fontNode)
     }
     else
     {
-      if(!newFont->build())
+      if(!newFont->Build())
       {
         deleteObject(newFont);
       }
       else
       {
-        if(newFont->build())
+        if(newFont->Build())
         {
           addFont(newFont);
           index = int(guiFontList.GetCount() - 1);

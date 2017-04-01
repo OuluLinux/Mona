@@ -16,26 +16,26 @@ class Pong
    // Ball.
    class Ball
    {
-      final static float RADIUS_SCALE = .05f;
-      float              radius; // Radius.
-      float              x, y;   // Position.
-      float              dx, dy; // Velocity.
+      final static double RADIUS_SCALE = .05f;
+      double              radius; // Radius.
+      double              x, y;   // Position.
+      double              dx, dy; // Velocity.
 
       // Constructor.
       public Ball()
       {
-         float a;
+         double a;
 
          radius = (float)DISPLAY_SIZE * RADIUS_SCALE;
-         x      = y = (float)DISPLAY_SIZE / 2.0f;
-         a      = (float)Math.random() * 360.0f;
-         dx     = (float)Math.cos(toRadians(a)) * 10.0f;
-         dy     = (float)Math.sin(toRadians(a)) * 10.0f;
+         x      = y = (float)DISPLAY_SIZE / 2.0;
+         a      = (float)Math.random() * 360.0;
+         dx     = (float)Math.cos(toRadians(a)) * 10.0;
+         dy     = (float)Math.sin(toRadians(a)) * 10.0;
       }
 
 
       // Convert degrees to radians.
-      float toRadians(float angle)
+      double toRadians(double angle)
       {
          return (angle * ((float)Math.PI / 180.0f));
       }
@@ -64,7 +64,7 @@ class Pong
             if (bounceSound != null) { bounceSound.play(); }
             dy = -dy;
          }
-         float l2 = paddle.length / 2.0f;
+         double l2 = paddle.length / 2.0;
          if (((x + radius + dx) >= ((float)DISPLAY_SIZE - paddle.width)) &&
              (y <= (paddle.position + l2)) && (y >= (paddle.position - l2)))
          {
@@ -79,24 +79,24 @@ class Pong
    // Paddle.
    class Paddle
    {
-      final static float WIDTH_SCALE  = 0.025f;
-      final static float LENGTH_SCALE = .2f;
-      float              position;         // Position.
-      float              width, length;    // Size.
+      final static double WIDTH_SCALE  = 0.025f;
+      final static double LENGTH_SCALE = .2f;
+      double              position;         // Position.
+      double              width, length;    // Size.
 
       // Constructor.
       public Paddle()
       {
          width    = (float)DISPLAY_SIZE * WIDTH_SCALE;
          length   = (float)DISPLAY_SIZE * LENGTH_SCALE;
-         position = (float)DISPLAY_SIZE / 2.0f;
+         position = (float)DISPLAY_SIZE / 2.0;
       }
 
 
       // Move paddle based on mouse Y position.
       void move(int mouseY)
       {
-         float l2 = length / 2.0f;
+         double l2 = length / 2.0;
 
          position = (float)(DISPLAY_SIZE - mouseY);
          if ((position - l2) < 0.0f) { position = l2; }
@@ -375,13 +375,13 @@ class Pong
       class Step
       {
          int     step;
-         float   ballX, ballY;
-         float   paddleY;
-         float   playerX, playerY;
+         double   ballX, ballY;
+         double   paddleY;
+         double   playerX, playerY;
          bool last;
 
-         Step(int step, float ballX, float ballY,
-              float paddleY, float playerX, float playerY)
+         Step(int step, double ballX, double ballY,
+              double paddleY, double playerX, double playerY)
          {
             this.step    = step;
             this.ballX   = ballX;
@@ -420,11 +420,11 @@ class Pong
                   if (s.hasNext())
                   {
                      int   n       = s.nextInt();
-                     float ballX   = s.nextFloat();
-                     float ballY   = s.nextFloat();
-                     float paddleY = s.nextFloat();
-                     float playerX = s.nextFloat();
-                     float playerY = s.nextFloat();
+                     double ballX   = s.nextFloat();
+                     double ballY   = s.nextFloat();
+                     double paddleY = s.nextFloat();
+                     double playerX = s.nextFloat();
+                     double playerY = s.nextFloat();
                      Step  step    = new Step(n, ballX, ballY, paddleY, playerX, playerY);
                      steps.Add(step);
                   }
@@ -649,7 +649,7 @@ class Pong
          }
          else
          {
-            return (false);
+            return false;
          }
       }
    }

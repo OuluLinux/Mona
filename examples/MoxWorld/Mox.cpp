@@ -135,7 +135,7 @@ public abstract class Mox
    }
 
    // Mona sensor resolution.
-   public static final float SENSOR_RESOLUTION = 0.0f;
+   public static final double SENSOR_RESOLUTION = 0.0;
 
    // Needs.
    public double[] needValues;
@@ -211,7 +211,7 @@ public abstract class Mox
       driverResponse = RESPONSE_TYPE.NULL_RESPONSE.GetValue();
       for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++)
       {
-         sensors[i] = 0.0f;
+         sensors[i] = 0.0;
       }
       response = RESPONSE_TYPE.NULL_RESPONSE.GetValue();
 
@@ -233,7 +233,7 @@ public abstract class Mox
       driverResponse = RESPONSE_TYPE.NULL_RESPONSE.GetValue();
       for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++)
       {
-         sensors[i] = 0.0f;
+         sensors[i] = 0.0;
       }
       response             = RESPONSE_TYPE.NULL_RESPONSE.GetValue();
       accumulateCycleTime  = false;

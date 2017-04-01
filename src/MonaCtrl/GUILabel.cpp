@@ -8,15 +8,15 @@ GUILabel::GUILabel(const String &ls,
   widgetType = WT_LABEL;
 }
 
-bool GUILabel::loadXMLSettings(const TiXmlElement *element)
+bool GUILabel::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "Label"))
     return Logger::writeErrorLog("Need a Label node in the xml file");
 
-  return  GUIAlphaElement::loadXMLSettings(element);
+  return  GUIAlphaElement::LoadXMLSettings(element);
 }
 
-void GUILabel::render(float clockTick)
+void GUILabel::render(double clockTick)
 {
   if(!parent || !visible)
     return;
@@ -54,7 +54,7 @@ const Tuple4i &GUILabel::getWindowBounds()
     else
       height  = GetHeight()   < label.GetHeight() ? label.GetHeight() : GetHeight();
 
-    dimensions.set(float(width),  float(height));
+    dimensions.Set(float(width),  float(height));
     GUIRectangle::computeWindowBounds();
   }
   return windowBounds;

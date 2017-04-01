@@ -49,7 +49,7 @@ public:
 
 
    // Is given point inside the bounding rectangle?
-   bool contains(float x, float z);
+   bool contains(double x, double z);
 
    // Is given bounds contained within this?
    bool contains(Bounds& bounds);
@@ -74,7 +74,7 @@ public:
 
       // Constructors.
       Plane() {}
-      Plane(Vector3f& normal, float d)
+      Plane(Vector3f& normal, double d)
       {
          this->normal = normal;
          this->d      = d;
@@ -82,7 +82,7 @@ public:
 
 
       Vector3f normal;
-      float  d;
+      double  d;
    };
 
    // Constructors.
@@ -93,7 +93,7 @@ public:
    Poly(Vector<Vector3f>& vertices);
 
    // Is given point inside the polygon projected on the XZ plane?
-   bool contains(float x, float z);
+   bool contains(double x, double z);
 
    // Print polygon.
    void Print();
@@ -130,7 +130,7 @@ public:
    void Insert(Poly *polygon);
 
    // Search for polygons containing coordinate.
-   void Search(float x, float z, Vector<Poly *>& found);
+   void Search(double x, double z, Vector<Poly *>& found);
 
    // Print node.
    void Print();
@@ -162,7 +162,7 @@ public:
    bool Insert(Poly *polygon);
 
    // Search for polygons containing coordinate.
-   void Search(float x, float z, Vector<Poly *>& found);
+   void Search(double x, double z, Vector<Poly *>& found);
 
    // Print tree.
    void Print();

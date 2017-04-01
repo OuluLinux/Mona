@@ -47,18 +47,18 @@ class cSpacial
 public:
 
    // Rotation.
-   GLfloat     m_pitchRate, m_yawRate, m_rollRate;
-   GLfloat     m_rotmatrix[4][4];
+   GLdouble     m_pitchRate, m_yawRate, m_rollRate;
+   GLdouble     m_rotmatrix[4][4];
    CQuaternion *m_qcalc;
 
    // Position.
-   GLfloat m_x, m_y, m_z;
+   GLdouble m_x, m_y, m_z;
 
    // Scale.
-   GLfloat m_scale;
+   GLdouble m_scale;
 
    // Speed.
-   GLfloat m_speed;
+   GLdouble m_speed;
 
    // Constructors.
    cSpacial()
@@ -69,9 +69,9 @@ public:
    }
 
 
-   cSpacial(GLfloat pitch, GLfloat yaw, GLfloat roll,
-            GLfloat pitchRate, GLfloat yawRate, GLfloat rollRate,
-            GLfloat x, GLfloat y, GLfloat z, GLfloat scale, GLfloat speed)
+   cSpacial(GLdouble pitch, GLdouble yaw, GLdouble roll,
+            GLdouble pitchRate, GLdouble yawRate, GLdouble rollRate,
+            GLdouble x, GLdouble y, GLdouble z, GLdouble scale, GLdouble speed)
    {
       m_qcalc = new CQuaternion();
       ASSERT(m_qcalc != NULL);
@@ -86,49 +86,49 @@ public:
    }
 
 
-   void initialize(GLfloat pitch, GLfloat yaw, GLfloat roll,
-                   GLfloat pitchRate, GLfloat yawRate, GLfloat rollRate,
-                   GLfloat x, GLfloat y, GLfloat z, GLfloat scale, GLfloat speed);
+   void initialize(GLdouble pitch, GLdouble yaw, GLdouble roll,
+                   GLdouble pitchRate, GLdouble yawRate, GLdouble rollRate,
+                   GLdouble x, GLdouble y, GLdouble z, GLdouble scale, GLdouble speed);
 
    // Destructor.
    ~cSpacial() { delete m_qcalc; }
 
    // Get and set Euler angles.
-   GLfloat getPitch();
-   GLfloat getYaw();
-   GLfloat getRoll();
-   void setPitch(GLfloat pitch);
-   void setYaw(GLfloat yaw);
-   void setRoll(GLfloat roll);
+   GLdouble getPitch();
+   GLdouble getYaw();
+   GLdouble getRoll();
+   void setPitch(GLdouble pitch);
+   void setYaw(GLdouble yaw);
+   void setRoll(GLdouble roll);
 
    // Get and set angular rates.
-   inline GLfloat getPitchRate() { return (m_pitchRate); }
-   inline GLfloat getYawRate() { return (m_yawRate); }
-   inline GLfloat getRollRate() { return (m_rollRate); }
-   inline void setPitchRate(GLfloat pitchRate) { m_pitchRate = pitchRate; }
-   inline void setYawRate(GLfloat yawRate) { m_yawRate = yawRate; }
-   inline void setRollRate(GLfloat rollRate) { m_rollRate = rollRate; }
+   inline GLdouble getPitchRate() { return (m_pitchRate); }
+   inline GLdouble getYawRate() { return (m_yawRate); }
+   inline GLdouble getRollRate() { return (m_rollRate); }
+   inline void setPitchRate(GLdouble pitchRate) { m_pitchRate = pitchRate; }
+   inline void setYawRate(GLdouble yawRate) { m_yawRate = yawRate; }
+   inline void setRollRate(GLdouble rollRate) { m_rollRate = rollRate; }
 
    // Get direction vectors.
-   void getRight(GLfloat *v);
-   void getUp(GLfloat *v);
-   void getForward(GLfloat *v);
+   void getRight(GLdouble *v);
+   void getUp(GLdouble *v);
+   void getForward(GLdouble *v);
 
    // Get and set position.
-   inline GLfloat getX() { return (m_x); }
-   inline GLfloat getY() { return (m_y); }
-   inline GLfloat getZ() { return (m_z); }
-   inline void setX(GLfloat x) { m_x = x; }
-   inline void setY(GLfloat y) { m_y = y; }
-   inline void setZ(GLfloat z) { m_z = z; }
+   inline GLdouble getX() { return (m_x); }
+   inline GLdouble getY() { return (m_y); }
+   inline GLdouble getZ() { return (m_z); }
+   inline void setX(GLdouble x) { m_x = x; }
+   inline void setY(GLdouble y) { m_y = y; }
+   inline void setZ(GLdouble z) { m_z = z; }
 
    // Get and set scale.
-   inline GLfloat getScale() { return (m_scale); }
-   inline void setScale(GLfloat scale) { m_scale = scale; }
+   inline GLdouble getScale() { return (m_scale); }
+   inline void setScale(GLdouble scale) { m_scale = scale; }
 
    // Get and set speed.
-   inline GLfloat getSpeed() { return (m_speed); }
-   inline void setSpeed(GLfloat speed) { m_speed = speed; }
+   inline GLdouble getSpeed() { return (m_speed); }
+   inline void setSpeed(GLdouble speed) { m_speed = speed; }
 
    // Update rotation and translation state.
    void Update();
@@ -141,7 +141,7 @@ public:
 
 
    // Load an axis-angle rotation.
-   inline void LoadRotation(GLfloat angle, GLfloat *axis)
+   inline void LoadRotation(GLdouble angle, GLdouble *axis)
    {
       m_qcalc->LoadRotation(DegreesToRadians(angle), axis);
       BuildRotationMatrix();
@@ -149,7 +149,7 @@ public:
 
 
    // Merge an axis-angle rotation.
-   inline void MergeRotation(GLfloat angle, GLfloat *axis)
+   inline void MergeRotation(GLdouble angle, GLdouble *axis)
    {
       m_qcalc->MergeRotation(DegreesToRadians(angle), axis);
       BuildRotationMatrix();
@@ -157,10 +157,10 @@ public:
 
 
    // Get billboard rotation to given target point.
-   void getBillboard(GLfloat *target, GLfloat *rotation);
+   void getBillboard(GLdouble *target, GLdouble *rotation);
 
    // Get billboard rotation from source to target vectors.
-   void getBillboard(GLfloat *target, GLfloat *source, GLfloat *rotation);
+   void getBillboard(GLdouble *target, GLdouble *source, GLdouble *rotation);
 
    // Build rotation matrix from quaternion.
    inline void BuildRotationMatrix()
@@ -170,28 +170,28 @@ public:
 
 
    // Get model transformation matrix.
-   void getModelTransform(GLfloat *matrix);
+   void getModelTransform(GLdouble *matrix);
 
    // Get world coordinates from local.
-   void localToWorld(GLfloat *local, GLfloat *world);
+   void localToWorld(GLdouble *local, GLdouble *world);
 
    // Transform local point.
-   inline void transformPoint(GLfloat *point)
+   inline void transformPoint(GLdouble *point)
    {
       localToWorld(point, point);
    }
 
 
    // Inverse transform local point.
-   void inverseTransformPoint(GLfloat *point);
+   void inverseTransformPoint(GLdouble *point);
 
    // Point-to-point distance.
-   static GLfloat pointDistance(GLfloat *p1, GLfloat *p2);
+   static GLdouble pointDistance(GLdouble *p1, GLdouble *p2);
 
    // Normalize vector.
-   inline static void normalize(GLfloat *v)
+   inline static void normalize(GLdouble *v)
    {
-      GLfloat d = (sqrt((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2])));
+      GLdouble d = (sqrt((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2])));
 
       v[0] = v[0] / d;
       v[1] = v[1] / d;
@@ -203,7 +203,7 @@ public:
    cSpacial *Clone();
 
    // Load and save.
-   void Load(FILE *fp);
-   void Store(FILE *fp);
+   void Serialize(Stream& fp);
+   void Store(Stream& fp);
 };
 #endif

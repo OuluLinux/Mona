@@ -54,7 +54,7 @@ public class MoxWorld
 
 
    // Initialize cells.
-   public void InitCells(int width, int height, float live_cell_prob, int random_seed)
+   public void InitCells(int width, int height, double live_cell_prob, int random_seed)
    {
       int x, y;
 
@@ -433,7 +433,7 @@ public class MoxWorld
    {
       int     x, y, mx, my, x1, y1, x2, y2, x3, y3;
       int     range, rangeIndex, colorHueIndex, colorIntensityIndex, response, numMox;
-      float   distance;
+      double   distance;
       Mox     mox, preyMox;
       bool gotGoal;
 
@@ -514,8 +514,8 @@ public class MoxWorld
          if ((ForagerMox.MAX_SENSOR_RANGE >= 0.0f) &&
              ((float)range > ForagerMox.MAX_SENSOR_RANGE))
          {
-            sensors[colorHueIndex]       = 0.0f;
-            sensors[colorIntensityIndex] = 0.0f;
+            sensors[colorHueIndex]       = 0.0;
+            sensors[colorIntensityIndex] = 0.0;
          }
          else
          {
@@ -528,8 +528,8 @@ public class MoxWorld
          if ((PredatorMox.MAX_SENSOR_RANGE >= 0.0f) &&
              ((float)range > PredatorMox.MAX_SENSOR_RANGE))
          {
-            sensors[colorHueIndex]       = 0.0f;
-            sensors[colorIntensityIndex] = 0.0f;
+            sensors[colorHueIndex]       = 0.0;
+            sensors[colorIntensityIndex] = 0.0;
          }
          else
          {
@@ -836,11 +836,11 @@ public class MoxWorld
       if (dashboard != null)
       {
          dashboard.setMessage(message);
-         dashboard.update(step, steps);
+         dashboard.Update(step, steps);
          if (dashboard.quit)
          {
             dashboard = null;
-            return (false);
+            return false;
          }
          else
          {
@@ -849,7 +849,7 @@ public class MoxWorld
       }
       else
       {
-         return (false);
+         return false;
       }
    }
 
@@ -868,7 +868,7 @@ public class MoxWorld
          if (dashboard.quit)
          {
             dashboard = null;
-            return (false);
+            return false;
          }
          else
          {
@@ -877,7 +877,7 @@ public class MoxWorld
       }
       else
       {
-         return (false);
+         return false;
       }
    }
 
@@ -890,7 +890,7 @@ public class MoxWorld
       bool stepGameOfLife = false;
       int     width          = -1;
       int     height         = -1;
-      float   live_cell_prob   = -1.0f;
+      double   live_cell_prob   = -1.0;
       int     numForagers    = 0;
       int     numPredators   = 0;
       int     random_seed     = DEFAULT_RANDOM_SEED;

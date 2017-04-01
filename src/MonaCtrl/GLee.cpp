@@ -104,9 +104,9 @@ GLbool _GLEE_ARB_point_sprite = GL_FALSE;
 GLbool _GLEE_ARB_fragment_program_shadow = GL_FALSE;
 GLbool _GLEE_ARB_draw_buffers = GL_FALSE;
 GLbool _GLEE_ARB_texture_rectangle = GL_FALSE;
-GLbool _GLEE_ARB_color_buffer_float = GL_FALSE;
+GLbool _GLEE_ARB_color_buffer_double = GL_FALSE;
 GLbool _GLEE_ARB_half_float_pixel = GL_FALSE;
-GLbool _GLEE_ARB_texture_float = GL_FALSE;
+GLbool _GLEE_ARB_texture_double = GL_FALSE;
 GLbool _GLEE_ARB_pixel_buffer_object = GL_FALSE;
 GLbool _GLEE_EXT_abgr = GL_FALSE;
 GLbool _GLEE_EXT_blend_color = GL_FALSE;
@@ -298,12 +298,12 @@ GLbool _GLEE_APPLE_vertex_array_range = GL_FALSE;
 GLbool _GLEE_APPLE_ycbcr_422 = GL_FALSE;
 GLbool _GLEE_S3_s3tc = GL_FALSE;
 GLbool _GLEE_ATI_draw_buffers = GL_FALSE;
-GLbool _GLEE_ATI_pixel_format_float = GL_FALSE;
+GLbool _GLEE_ATI_pixel_format_double = GL_FALSE;
 GLbool _GLEE_ATI_texture_env_combine3 = GL_FALSE;
-GLbool _GLEE_ATI_texture_float = GL_FALSE;
+GLbool _GLEE_ATI_texture_double = GL_FALSE;
 GLbool _GLEE_NV_float_buffer = GL_FALSE;
 GLbool _GLEE_NV_fragment_program = GL_FALSE;
-GLbool _GLEE_NV_half_float = GL_FALSE;
+GLbool _GLEE_NV_half_double = GL_FALSE;
 GLbool _GLEE_NV_pixel_data_range = GL_FALSE;
 GLbool _GLEE_NV_primitive_restart = GL_FALSE;
 GLbool _GLEE_NV_texture_expand_normal = GL_FALSE;
@@ -627,32 +627,32 @@ void __stdcall _Lazy_glBlendColor(GLclampf red, GLclampf green, GLclampf blue, G
 void __stdcall _Lazy_glBlendEquation(GLenum mode)                                         {if (GLeeInit()) glBlendEquation(mode);}
 void __stdcall _Lazy_glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid * indices)  {if (GLeeInit()) glDrawRangeElements(mode, start, end, count, type, indices);}
 void __stdcall _Lazy_glColorTable(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const GLvoid * table)  {if (GLeeInit()) glColorTable(target, internalformat, width, format, type, table);}
-void __stdcall _Lazy_glColorTableParameterfv(GLenum target, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glColorTableParameterfv(target, pname, params);}
+void __stdcall _Lazy_glColorTableParameterfv(GLenum target, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glColorTableParameterfv(target, pname, params);}
 void __stdcall _Lazy_glColorTableParameteriv(GLenum target, GLenum pname, const GLint * params)  {if (GLeeInit()) glColorTableParameteriv(target, pname, params);}
 void __stdcall _Lazy_glCopyColorTable(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width)  {if (GLeeInit()) glCopyColorTable(target, internalformat, x, y, width);}
 void __stdcall _Lazy_glGetColorTable(GLenum target, GLenum format, GLenum type, GLvoid * table)  {if (GLeeInit()) glGetColorTable(target, format, type, table);}
-void __stdcall _Lazy_glGetColorTableParameterfv(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetColorTableParameterfv(target, pname, params);}
+void __stdcall _Lazy_glGetColorTableParameterfv(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetColorTableParameterfv(target, pname, params);}
 void __stdcall _Lazy_glGetColorTableParameteriv(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetColorTableParameteriv(target, pname, params);}
 void __stdcall _Lazy_glColorSubTable(GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, const GLvoid * data)  {if (GLeeInit()) glColorSubTable(target, start, count, format, type, data);}
 void __stdcall _Lazy_glCopyColorSubTable(GLenum target, GLsizei start, GLint x, GLint y, GLsizei width)  {if (GLeeInit()) glCopyColorSubTable(target, start, x, y, width);}
 void __stdcall _Lazy_glConvolutionFilter1D(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const GLvoid * image)  {if (GLeeInit()) glConvolutionFilter1D(target, internalformat, width, format, type, image);}
 void __stdcall _Lazy_glConvolutionFilter2D(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid * image)  {if (GLeeInit()) glConvolutionFilter2D(target, internalformat, width, height, format, type, image);}
-void __stdcall _Lazy_glConvolutionParameterf(GLenum target, GLenum pname, GLfloat params)  {if (GLeeInit()) glConvolutionParameterf(target, pname, params);}
-void __stdcall _Lazy_glConvolutionParameterfv(GLenum target, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glConvolutionParameterfv(target, pname, params);}
+void __stdcall _Lazy_glConvolutionParameterf(GLenum target, GLenum pname, GLdouble params)  {if (GLeeInit()) glConvolutionParameterf(target, pname, params);}
+void __stdcall _Lazy_glConvolutionParameterfv(GLenum target, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glConvolutionParameterfv(target, pname, params);}
 void __stdcall _Lazy_glConvolutionParameteri(GLenum target, GLenum pname, GLint params)   {if (GLeeInit()) glConvolutionParameteri(target, pname, params);}
 void __stdcall _Lazy_glConvolutionParameteriv(GLenum target, GLenum pname, const GLint * params)  {if (GLeeInit()) glConvolutionParameteriv(target, pname, params);}
 void __stdcall _Lazy_glCopyConvolutionFilter1D(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width)  {if (GLeeInit()) glCopyConvolutionFilter1D(target, internalformat, x, y, width);}
 void __stdcall _Lazy_glCopyConvolutionFilter2D(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height)  {if (GLeeInit()) glCopyConvolutionFilter2D(target, internalformat, x, y, width, height);}
 void __stdcall _Lazy_glGetConvolutionFilter(GLenum target, GLenum format, GLenum type, GLvoid * image)  {if (GLeeInit()) glGetConvolutionFilter(target, format, type, image);}
-void __stdcall _Lazy_glGetConvolutionParameterfv(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetConvolutionParameterfv(target, pname, params);}
+void __stdcall _Lazy_glGetConvolutionParameterfv(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetConvolutionParameterfv(target, pname, params);}
 void __stdcall _Lazy_glGetConvolutionParameteriv(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetConvolutionParameteriv(target, pname, params);}
 void __stdcall _Lazy_glGetSeparableFilter(GLenum target, GLenum format, GLenum type, GLvoid * row, GLvoid * column, GLvoid * span)  {if (GLeeInit()) glGetSeparableFilter(target, format, type, row, column, span);}
 void __stdcall _Lazy_glSeparableFilter2D(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid * row, const GLvoid * column)  {if (GLeeInit()) glSeparableFilter2D(target, internalformat, width, height, format, type, row, column);}
 void __stdcall _Lazy_glGetHistogram(GLenum target, GLbool reset, GLenum format, GLenum type, GLvoid * values)  {if (GLeeInit()) glGetHistogram(target, reset, format, type, values);}
-void __stdcall _Lazy_glGetHistogramParameterfv(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetHistogramParameterfv(target, pname, params);}
+void __stdcall _Lazy_glGetHistogramParameterfv(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetHistogramParameterfv(target, pname, params);}
 void __stdcall _Lazy_glGetHistogramParameteriv(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetHistogramParameteriv(target, pname, params);}
 void __stdcall _Lazy_glGetMinmax(GLenum target, GLbool reset, GLenum format, GLenum type, GLvoid * values)  {if (GLeeInit()) glGetMinmax(target, reset, format, type, values);}
-void __stdcall _Lazy_glGetMinmaxParameterfv(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetMinmaxParameterfv(target, pname, params);}
+void __stdcall _Lazy_glGetMinmaxParameterfv(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetMinmaxParameterfv(target, pname, params);}
 void __stdcall _Lazy_glGetMinmaxParameteriv(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetMinmaxParameteriv(target, pname, params);}
 void __stdcall _Lazy_glHistogram(GLenum target, GLsizei width, GLenum internalformat, GLbool sink)  {if (GLeeInit()) glHistogram(target, width, internalformat, sink);}
 void __stdcall _Lazy_glMinmax(GLenum target, GLenum internalformat, GLbool sink)       {if (GLeeInit()) glMinmax(target, internalformat, sink);}
@@ -713,39 +713,39 @@ void __stdcall _Lazy_glActiveTexture(GLenum texture)                            
 void __stdcall _Lazy_glClientActiveTexture(GLenum texture)                                {if (GLeeInit()) glClientActiveTexture(texture);}
 void __stdcall _Lazy_glMultiTexCoord1d(GLenum target, GLdouble s)                         {if (GLeeInit()) glMultiTexCoord1d(target, s);}
 void __stdcall _Lazy_glMultiTexCoord1dv(GLenum target, const GLdouble * v)                {if (GLeeInit()) glMultiTexCoord1dv(target, v);}
-void __stdcall _Lazy_glMultiTexCoord1f(GLenum target, GLfloat s)                          {if (GLeeInit()) glMultiTexCoord1f(target, s);}
-void __stdcall _Lazy_glMultiTexCoord1fv(GLenum target, const GLfloat * v)                 {if (GLeeInit()) glMultiTexCoord1fv(target, v);}
+void __stdcall _Lazy_glMultiTexCoord1f(GLenum target, GLdouble s)                          {if (GLeeInit()) glMultiTexCoord1f(target, s);}
+void __stdcall _Lazy_glMultiTexCoord1fv(GLenum target, const GLdouble * v)                 {if (GLeeInit()) glMultiTexCoord1fv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord1i(GLenum target, GLint s)                            {if (GLeeInit()) glMultiTexCoord1i(target, s);}
 void __stdcall _Lazy_glMultiTexCoord1iv(GLenum target, const GLint * v)                   {if (GLeeInit()) glMultiTexCoord1iv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord1s(GLenum target, GLshort s)                          {if (GLeeInit()) glMultiTexCoord1s(target, s);}
 void __stdcall _Lazy_glMultiTexCoord1sv(GLenum target, const GLshort * v)                 {if (GLeeInit()) glMultiTexCoord1sv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord2d(GLenum target, GLdouble s, GLdouble t)             {if (GLeeInit()) glMultiTexCoord2d(target, s, t);}
 void __stdcall _Lazy_glMultiTexCoord2dv(GLenum target, const GLdouble * v)                {if (GLeeInit()) glMultiTexCoord2dv(target, v);}
-void __stdcall _Lazy_glMultiTexCoord2f(GLenum target, GLfloat s, GLfloat t)               {if (GLeeInit()) glMultiTexCoord2f(target, s, t);}
-void __stdcall _Lazy_glMultiTexCoord2fv(GLenum target, const GLfloat * v)                 {if (GLeeInit()) glMultiTexCoord2fv(target, v);}
+void __stdcall _Lazy_glMultiTexCoord2f(GLenum target, GLdouble s, GLdouble t)               {if (GLeeInit()) glMultiTexCoord2f(target, s, t);}
+void __stdcall _Lazy_glMultiTexCoord2fv(GLenum target, const GLdouble * v)                 {if (GLeeInit()) glMultiTexCoord2fv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord2i(GLenum target, GLint s, GLint t)                   {if (GLeeInit()) glMultiTexCoord2i(target, s, t);}
 void __stdcall _Lazy_glMultiTexCoord2iv(GLenum target, const GLint * v)                   {if (GLeeInit()) glMultiTexCoord2iv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord2s(GLenum target, GLshort s, GLshort t)               {if (GLeeInit()) glMultiTexCoord2s(target, s, t);}
 void __stdcall _Lazy_glMultiTexCoord2sv(GLenum target, const GLshort * v)                 {if (GLeeInit()) glMultiTexCoord2sv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord3d(GLenum target, GLdouble s, GLdouble t, GLdouble r)  {if (GLeeInit()) glMultiTexCoord3d(target, s, t, r);}
 void __stdcall _Lazy_glMultiTexCoord3dv(GLenum target, const GLdouble * v)                {if (GLeeInit()) glMultiTexCoord3dv(target, v);}
-void __stdcall _Lazy_glMultiTexCoord3f(GLenum target, GLfloat s, GLfloat t, GLfloat r)    {if (GLeeInit()) glMultiTexCoord3f(target, s, t, r);}
-void __stdcall _Lazy_glMultiTexCoord3fv(GLenum target, const GLfloat * v)                 {if (GLeeInit()) glMultiTexCoord3fv(target, v);}
+void __stdcall _Lazy_glMultiTexCoord3f(GLenum target, GLdouble s, GLdouble t, GLdouble r)    {if (GLeeInit()) glMultiTexCoord3f(target, s, t, r);}
+void __stdcall _Lazy_glMultiTexCoord3fv(GLenum target, const GLdouble * v)                 {if (GLeeInit()) glMultiTexCoord3fv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord3i(GLenum target, GLint s, GLint t, GLint r)          {if (GLeeInit()) glMultiTexCoord3i(target, s, t, r);}
 void __stdcall _Lazy_glMultiTexCoord3iv(GLenum target, const GLint * v)                   {if (GLeeInit()) glMultiTexCoord3iv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord3s(GLenum target, GLshort s, GLshort t, GLshort r)    {if (GLeeInit()) glMultiTexCoord3s(target, s, t, r);}
 void __stdcall _Lazy_glMultiTexCoord3sv(GLenum target, const GLshort * v)                 {if (GLeeInit()) glMultiTexCoord3sv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord4d(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q)  {if (GLeeInit()) glMultiTexCoord4d(target, s, t, r, q);}
 void __stdcall _Lazy_glMultiTexCoord4dv(GLenum target, const GLdouble * v)                {if (GLeeInit()) glMultiTexCoord4dv(target, v);}
-void __stdcall _Lazy_glMultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q)  {if (GLeeInit()) glMultiTexCoord4f(target, s, t, r, q);}
-void __stdcall _Lazy_glMultiTexCoord4fv(GLenum target, const GLfloat * v)                 {if (GLeeInit()) glMultiTexCoord4fv(target, v);}
+void __stdcall _Lazy_glMultiTexCoord4f(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q)  {if (GLeeInit()) glMultiTexCoord4f(target, s, t, r, q);}
+void __stdcall _Lazy_glMultiTexCoord4fv(GLenum target, const GLdouble * v)                 {if (GLeeInit()) glMultiTexCoord4fv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord4i(GLenum target, GLint s, GLint t, GLint r, GLint q)  {if (GLeeInit()) glMultiTexCoord4i(target, s, t, r, q);}
 void __stdcall _Lazy_glMultiTexCoord4iv(GLenum target, const GLint * v)                   {if (GLeeInit()) glMultiTexCoord4iv(target, v);}
 void __stdcall _Lazy_glMultiTexCoord4s(GLenum target, GLshort s, GLshort t, GLshort r, GLshort q)  {if (GLeeInit()) glMultiTexCoord4s(target, s, t, r, q);}
 void __stdcall _Lazy_glMultiTexCoord4sv(GLenum target, const GLshort * v)                 {if (GLeeInit()) glMultiTexCoord4sv(target, v);}
-void __stdcall _Lazy_glLoadTransposeMatrixf(const GLfloat * m)                            {if (GLeeInit()) glLoadTransposeMatrixf(m);}
+void __stdcall _Lazy_glLoadTransposeMatrixf(const GLdouble * m)                            {if (GLeeInit()) glLoadTransposeMatrixf(m);}
 void __stdcall _Lazy_glLoadTransposeMatrixd(const GLdouble * m)                           {if (GLeeInit()) glLoadTransposeMatrixd(m);}
-void __stdcall _Lazy_glMultTransposeMatrixf(const GLfloat * m)                            {if (GLeeInit()) glMultTransposeMatrixf(m);}
+void __stdcall _Lazy_glMultTransposeMatrixf(const GLdouble * m)                            {if (GLeeInit()) glMultTransposeMatrixf(m);}
 void __stdcall _Lazy_glMultTransposeMatrixd(const GLdouble * m)                           {if (GLeeInit()) glMultTransposeMatrixd(m);}
 void __stdcall _Lazy_glSampleCoverage(GLclampf value, GLbool invert)                   {if (GLeeInit()) glSampleCoverage(value, invert);}
 void __stdcall _Lazy_glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid * data)  {if (GLeeInit()) glCompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);}
@@ -807,23 +807,23 @@ PFNGLGETCOMPRESSEDTEXIMAGEPROC pglGetCompressedTexImage=_Lazy_glGetCompressedTex
 
 #ifdef __GLEE_GL_VERSION_1_4
 void __stdcall _Lazy_glBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha)  {if (GLeeInit()) glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);}
-void __stdcall _Lazy_glFogCoordf(GLfloat coord)                                           {if (GLeeInit()) glFogCoordf(coord);}
-void __stdcall _Lazy_glFogCoordfv(const GLfloat * coord)                                  {if (GLeeInit()) glFogCoordfv(coord);}
+void __stdcall _Lazy_glFogCoordf(GLdouble coord)                                           {if (GLeeInit()) glFogCoordf(coord);}
+void __stdcall _Lazy_glFogCoordfv(const GLdouble * coord)                                  {if (GLeeInit()) glFogCoordfv(coord);}
 void __stdcall _Lazy_glFogCoordd(GLdouble coord)                                          {if (GLeeInit()) glFogCoordd(coord);}
 void __stdcall _Lazy_glFogCoorddv(const GLdouble * coord)                                 {if (GLeeInit()) glFogCoorddv(coord);}
 void __stdcall _Lazy_glFogCoordPointer(GLenum type, GLsizei stride, const GLvoid * pointer)  {if (GLeeInit()) glFogCoordPointer(type, stride, pointer);}
 void __stdcall _Lazy_glMultiDrawArrays(GLenum mode, GLint * first, GLsizei * count, GLsizei primcount)  {if (GLeeInit()) glMultiDrawArrays(mode, first, count, primcount);}
 void __stdcall _Lazy_glMultiDrawElements(GLenum mode, const GLsizei * count, GLenum type, const GLvoid* * indices, GLsizei primcount)  {if (GLeeInit()) glMultiDrawElements(mode, count, type, indices, primcount);}
-void __stdcall _Lazy_glPointParameterf(GLenum pname, GLfloat param)                       {if (GLeeInit()) glPointParameterf(pname, param);}
-void __stdcall _Lazy_glPointParameterfv(GLenum pname, const GLfloat * params)             {if (GLeeInit()) glPointParameterfv(pname, params);}
+void __stdcall _Lazy_glPointParameterf(GLenum pname, GLdouble param)                       {if (GLeeInit()) glPointParameterf(pname, param);}
+void __stdcall _Lazy_glPointParameterfv(GLenum pname, const GLdouble * params)             {if (GLeeInit()) glPointParameterfv(pname, params);}
 void __stdcall _Lazy_glPointParameteri(GLenum pname, GLint param)                         {if (GLeeInit()) glPointParameteri(pname, param);}
 void __stdcall _Lazy_glPointParameteriv(GLenum pname, const GLint * params)               {if (GLeeInit()) glPointParameteriv(pname, params);}
 void __stdcall _Lazy_glSecondaryColor3b(GLbyte red, GLbyte green, GLbyte blue)            {if (GLeeInit()) glSecondaryColor3b(red, green, blue);}
 void __stdcall _Lazy_glSecondaryColor3bv(const GLbyte * v)                                {if (GLeeInit()) glSecondaryColor3bv(v);}
 void __stdcall _Lazy_glSecondaryColor3d(GLdouble red, GLdouble green, GLdouble blue)      {if (GLeeInit()) glSecondaryColor3d(red, green, blue);}
 void __stdcall _Lazy_glSecondaryColor3dv(const GLdouble * v)                              {if (GLeeInit()) glSecondaryColor3dv(v);}
-void __stdcall _Lazy_glSecondaryColor3f(GLfloat red, GLfloat green, GLfloat blue)         {if (GLeeInit()) glSecondaryColor3f(red, green, blue);}
-void __stdcall _Lazy_glSecondaryColor3fv(const GLfloat * v)                               {if (GLeeInit()) glSecondaryColor3fv(v);}
+void __stdcall _Lazy_glSecondaryColor3f(GLdouble red, GLdouble green, GLdouble blue)         {if (GLeeInit()) glSecondaryColor3f(red, green, blue);}
+void __stdcall _Lazy_glSecondaryColor3fv(const GLdouble * v)                               {if (GLeeInit()) glSecondaryColor3fv(v);}
 void __stdcall _Lazy_glSecondaryColor3i(GLint red, GLint green, GLint blue)               {if (GLeeInit()) glSecondaryColor3i(red, green, blue);}
 void __stdcall _Lazy_glSecondaryColor3iv(const GLint * v)                                 {if (GLeeInit()) glSecondaryColor3iv(v);}
 void __stdcall _Lazy_glSecondaryColor3s(GLshort red, GLshort green, GLshort blue)         {if (GLeeInit()) glSecondaryColor3s(red, green, blue);}
@@ -837,16 +837,16 @@ void __stdcall _Lazy_glSecondaryColor3usv(const GLushort * v)                   
 void __stdcall _Lazy_glSecondaryColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid * pointer)  {if (GLeeInit()) glSecondaryColorPointer(size, type, stride, pointer);}
 void __stdcall _Lazy_glWindowPos2d(GLdouble x, GLdouble y)                                {if (GLeeInit()) glWindowPos2d(x, y);}
 void __stdcall _Lazy_glWindowPos2dv(const GLdouble * v)                                   {if (GLeeInit()) glWindowPos2dv(v);}
-void __stdcall _Lazy_glWindowPos2f(GLfloat x, GLfloat y)                                  {if (GLeeInit()) glWindowPos2f(x, y);}
-void __stdcall _Lazy_glWindowPos2fv(const GLfloat * v)                                    {if (GLeeInit()) glWindowPos2fv(v);}
+void __stdcall _Lazy_glWindowPos2f(GLdouble x, GLdouble y)                                  {if (GLeeInit()) glWindowPos2f(x, y);}
+void __stdcall _Lazy_glWindowPos2fv(const GLdouble * v)                                    {if (GLeeInit()) glWindowPos2fv(v);}
 void __stdcall _Lazy_glWindowPos2i(GLint x, GLint y)                                      {if (GLeeInit()) glWindowPos2i(x, y);}
 void __stdcall _Lazy_glWindowPos2iv(const GLint * v)                                      {if (GLeeInit()) glWindowPos2iv(v);}
 void __stdcall _Lazy_glWindowPos2s(GLshort x, GLshort y)                                  {if (GLeeInit()) glWindowPos2s(x, y);}
 void __stdcall _Lazy_glWindowPos2sv(const GLshort * v)                                    {if (GLeeInit()) glWindowPos2sv(v);}
 void __stdcall _Lazy_glWindowPos3d(GLdouble x, GLdouble y, GLdouble z)                    {if (GLeeInit()) glWindowPos3d(x, y, z);}
 void __stdcall _Lazy_glWindowPos3dv(const GLdouble * v)                                   {if (GLeeInit()) glWindowPos3dv(v);}
-void __stdcall _Lazy_glWindowPos3f(GLfloat x, GLfloat y, GLfloat z)                       {if (GLeeInit()) glWindowPos3f(x, y, z);}
-void __stdcall _Lazy_glWindowPos3fv(const GLfloat * v)                                    {if (GLeeInit()) glWindowPos3fv(v);}
+void __stdcall _Lazy_glWindowPos3f(GLdouble x, GLdouble y, GLdouble z)                       {if (GLeeInit()) glWindowPos3f(x, y, z);}
+void __stdcall _Lazy_glWindowPos3fv(const GLdouble * v)                                    {if (GLeeInit()) glWindowPos3fv(v);}
 void __stdcall _Lazy_glWindowPos3i(GLint x, GLint y, GLint z)                             {if (GLeeInit()) glWindowPos3i(x, y, z);}
 void __stdcall _Lazy_glWindowPos3iv(const GLint * v)                                      {if (GLeeInit()) glWindowPos3iv(v);}
 void __stdcall _Lazy_glWindowPos3s(GLshort x, GLshort y, GLshort z)                       {if (GLeeInit()) glWindowPos3s(x, y, z);}
@@ -969,10 +969,10 @@ void __stdcall _Lazy_glGetShaderiv(GLuint shader, GLenum pname, GLint * params) 
 void __stdcall _Lazy_glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei * length, GLchar * infoLog)  {if (GLeeInit()) glGetShaderInfoLog(shader, bufSize, length, infoLog);}
 void __stdcall _Lazy_glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei * length, GLchar * source)  {if (GLeeInit()) glGetShaderSource(shader, bufSize, length, source);}
 GLint __stdcall _Lazy_glGetUniformLocation(GLuint program, const GLchar * name)           {if (GLeeInit()) return glGetUniformLocation(program, name); return (GLint)0;}
-void __stdcall _Lazy_glGetUniformfv(GLuint program, GLint location, GLfloat * params)     {if (GLeeInit()) glGetUniformfv(program, location, params);}
+void __stdcall _Lazy_glGetUniformfv(GLuint program, GLint location, GLdouble * params)     {if (GLeeInit()) glGetUniformfv(program, location, params);}
 void __stdcall _Lazy_glGetUniformiv(GLuint program, GLint location, GLint * params)       {if (GLeeInit()) glGetUniformiv(program, location, params);}
 void __stdcall _Lazy_glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble * params)   {if (GLeeInit()) glGetVertexAttribdv(index, pname, params);}
-void __stdcall _Lazy_glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat * params)    {if (GLeeInit()) glGetVertexAttribfv(index, pname, params);}
+void __stdcall _Lazy_glGetVertexAttribfv(GLuint index, GLenum pname, GLdouble * params)    {if (GLeeInit()) glGetVertexAttribfv(index, pname, params);}
 void __stdcall _Lazy_glGetVertexAttribiv(GLuint index, GLenum pname, GLint * params)      {if (GLeeInit()) glGetVertexAttribiv(index, pname, params);}
 void __stdcall _Lazy_glGetVertexAttribPointerv(GLuint index, GLenum pname, GLvoid* * pointer)  {if (GLeeInit()) glGetVertexAttribPointerv(index, pname, pointer);}
 GLbool __stdcall _Lazy_glIsProgram(GLuint program)                                     {if (GLeeInit()) return glIsProgram(program); return (GLboolean)0;}
@@ -980,42 +980,42 @@ GLbool __stdcall _Lazy_glIsShader(GLuint shader)                                
 void __stdcall _Lazy_glLinkProgram(GLuint program)                                        {if (GLeeInit()) glLinkProgram(program);}
 void __stdcall _Lazy_glShaderSource(GLuint shader, GLsizei count, const GLchar* * string, const GLint * length)  {if (GLeeInit()) glShaderSource(shader, count, string, length);}
 void __stdcall _Lazy_glUseProgram(GLuint program)                                         {if (GLeeInit()) glUseProgram(program);}
-void __stdcall _Lazy_glUniform1f(GLint location, GLfloat v0)                              {if (GLeeInit()) glUniform1f(location, v0);}
-void __stdcall _Lazy_glUniform2f(GLint location, GLfloat v0, GLfloat v1)                  {if (GLeeInit()) glUniform2f(location, v0, v1);}
-void __stdcall _Lazy_glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2)      {if (GLeeInit()) glUniform3f(location, v0, v1, v2);}
-void __stdcall _Lazy_glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)  {if (GLeeInit()) glUniform4f(location, v0, v1, v2, v3);}
+void __stdcall _Lazy_glUniform1f(GLint location, GLdouble v0)                              {if (GLeeInit()) glUniform1f(location, v0);}
+void __stdcall _Lazy_glUniform2f(GLint location, GLdouble v0, GLdouble v1)                  {if (GLeeInit()) glUniform2f(location, v0, v1);}
+void __stdcall _Lazy_glUniform3f(GLint location, GLdouble v0, GLdouble v1, GLdouble v2)      {if (GLeeInit()) glUniform3f(location, v0, v1, v2);}
+void __stdcall _Lazy_glUniform4f(GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3)  {if (GLeeInit()) glUniform4f(location, v0, v1, v2, v3);}
 void __stdcall _Lazy_glUniform1i(GLint location, GLint v0)                                {if (GLeeInit()) glUniform1i(location, v0);}
 void __stdcall _Lazy_glUniform2i(GLint location, GLint v0, GLint v1)                      {if (GLeeInit()) glUniform2i(location, v0, v1);}
 void __stdcall _Lazy_glUniform3i(GLint location, GLint v0, GLint v1, GLint v2)            {if (GLeeInit()) glUniform3i(location, v0, v1, v2);}
 void __stdcall _Lazy_glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3)  {if (GLeeInit()) glUniform4i(location, v0, v1, v2, v3);}
-void __stdcall _Lazy_glUniform1fv(GLint location, GLsizei count, const GLfloat * value)   {if (GLeeInit()) glUniform1fv(location, count, value);}
-void __stdcall _Lazy_glUniform2fv(GLint location, GLsizei count, const GLfloat * value)   {if (GLeeInit()) glUniform2fv(location, count, value);}
-void __stdcall _Lazy_glUniform3fv(GLint location, GLsizei count, const GLfloat * value)   {if (GLeeInit()) glUniform3fv(location, count, value);}
-void __stdcall _Lazy_glUniform4fv(GLint location, GLsizei count, const GLfloat * value)   {if (GLeeInit()) glUniform4fv(location, count, value);}
+void __stdcall _Lazy_glUniform1fv(GLint location, GLsizei count, const GLdouble * value)   {if (GLeeInit()) glUniform1fv(location, count, value);}
+void __stdcall _Lazy_glUniform2fv(GLint location, GLsizei count, const GLdouble * value)   {if (GLeeInit()) glUniform2fv(location, count, value);}
+void __stdcall _Lazy_glUniform3fv(GLint location, GLsizei count, const GLdouble * value)   {if (GLeeInit()) glUniform3fv(location, count, value);}
+void __stdcall _Lazy_glUniform4fv(GLint location, GLsizei count, const GLdouble * value)   {if (GLeeInit()) glUniform4fv(location, count, value);}
 void __stdcall _Lazy_glUniform1iv(GLint location, GLsizei count, const GLint * value)     {if (GLeeInit()) glUniform1iv(location, count, value);}
 void __stdcall _Lazy_glUniform2iv(GLint location, GLsizei count, const GLint * value)     {if (GLeeInit()) glUniform2iv(location, count, value);}
 void __stdcall _Lazy_glUniform3iv(GLint location, GLsizei count, const GLint * value)     {if (GLeeInit()) glUniform3iv(location, count, value);}
 void __stdcall _Lazy_glUniform4iv(GLint location, GLsizei count, const GLint * value)     {if (GLeeInit()) glUniform4iv(location, count, value);}
-void __stdcall _Lazy_glUniformMatrix2fv(GLint location, GLsizei count, GLbool transpose, const GLfloat * value)  {if (GLeeInit()) glUniformMatrix2fv(location, count, transpose, value);}
-void __stdcall _Lazy_glUniformMatrix3fv(GLint location, GLsizei count, GLbool transpose, const GLfloat * value)  {if (GLeeInit()) glUniformMatrix3fv(location, count, transpose, value);}
-void __stdcall _Lazy_glUniformMatrix4fv(GLint location, GLsizei count, GLbool transpose, const GLfloat * value)  {if (GLeeInit()) glUniformMatrix4fv(location, count, transpose, value);}
+void __stdcall _Lazy_glUniformMatrix2fv(GLint location, GLsizei count, GLbool transpose, const GLdouble * value)  {if (GLeeInit()) glUniformMatrix2fv(location, count, transpose, value);}
+void __stdcall _Lazy_glUniformMatrix3fv(GLint location, GLsizei count, GLbool transpose, const GLdouble * value)  {if (GLeeInit()) glUniformMatrix3fv(location, count, transpose, value);}
+void __stdcall _Lazy_glUniformMatrix4fv(GLint location, GLsizei count, GLbool transpose, const GLdouble * value)  {if (GLeeInit()) glUniformMatrix4fv(location, count, transpose, value);}
 void __stdcall _Lazy_glValidateProgram(GLuint program)                                    {if (GLeeInit()) glValidateProgram(program);}
 void __stdcall _Lazy_glVertexAttrib1d(GLuint index, GLdouble x)                           {if (GLeeInit()) glVertexAttrib1d(index, x);}
 void __stdcall _Lazy_glVertexAttrib1dv(GLuint index, const GLdouble * v)                  {if (GLeeInit()) glVertexAttrib1dv(index, v);}
-void __stdcall _Lazy_glVertexAttrib1f(GLuint index, GLfloat x)                            {if (GLeeInit()) glVertexAttrib1f(index, x);}
-void __stdcall _Lazy_glVertexAttrib1fv(GLuint index, const GLfloat * v)                   {if (GLeeInit()) glVertexAttrib1fv(index, v);}
+void __stdcall _Lazy_glVertexAttrib1f(GLuint index, GLdouble x)                            {if (GLeeInit()) glVertexAttrib1f(index, x);}
+void __stdcall _Lazy_glVertexAttrib1fv(GLuint index, const GLdouble * v)                   {if (GLeeInit()) glVertexAttrib1fv(index, v);}
 void __stdcall _Lazy_glVertexAttrib1s(GLuint index, GLshort x)                            {if (GLeeInit()) glVertexAttrib1s(index, x);}
 void __stdcall _Lazy_glVertexAttrib1sv(GLuint index, const GLshort * v)                   {if (GLeeInit()) glVertexAttrib1sv(index, v);}
 void __stdcall _Lazy_glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y)               {if (GLeeInit()) glVertexAttrib2d(index, x, y);}
 void __stdcall _Lazy_glVertexAttrib2dv(GLuint index, const GLdouble * v)                  {if (GLeeInit()) glVertexAttrib2dv(index, v);}
-void __stdcall _Lazy_glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y)                 {if (GLeeInit()) glVertexAttrib2f(index, x, y);}
-void __stdcall _Lazy_glVertexAttrib2fv(GLuint index, const GLfloat * v)                   {if (GLeeInit()) glVertexAttrib2fv(index, v);}
+void __stdcall _Lazy_glVertexAttrib2f(GLuint index, GLdouble x, GLdouble y)                 {if (GLeeInit()) glVertexAttrib2f(index, x, y);}
+void __stdcall _Lazy_glVertexAttrib2fv(GLuint index, const GLdouble * v)                   {if (GLeeInit()) glVertexAttrib2fv(index, v);}
 void __stdcall _Lazy_glVertexAttrib2s(GLuint index, GLshort x, GLshort y)                 {if (GLeeInit()) glVertexAttrib2s(index, x, y);}
 void __stdcall _Lazy_glVertexAttrib2sv(GLuint index, const GLshort * v)                   {if (GLeeInit()) glVertexAttrib2sv(index, v);}
 void __stdcall _Lazy_glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdouble z)   {if (GLeeInit()) glVertexAttrib3d(index, x, y, z);}
 void __stdcall _Lazy_glVertexAttrib3dv(GLuint index, const GLdouble * v)                  {if (GLeeInit()) glVertexAttrib3dv(index, v);}
-void __stdcall _Lazy_glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z)      {if (GLeeInit()) glVertexAttrib3f(index, x, y, z);}
-void __stdcall _Lazy_glVertexAttrib3fv(GLuint index, const GLfloat * v)                   {if (GLeeInit()) glVertexAttrib3fv(index, v);}
+void __stdcall _Lazy_glVertexAttrib3f(GLuint index, GLdouble x, GLdouble y, GLdouble z)      {if (GLeeInit()) glVertexAttrib3f(index, x, y, z);}
+void __stdcall _Lazy_glVertexAttrib3fv(GLuint index, const GLdouble * v)                   {if (GLeeInit()) glVertexAttrib3fv(index, v);}
 void __stdcall _Lazy_glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort z)      {if (GLeeInit()) glVertexAttrib3s(index, x, y, z);}
 void __stdcall _Lazy_glVertexAttrib3sv(GLuint index, const GLshort * v)                   {if (GLeeInit()) glVertexAttrib3sv(index, v);}
 void __stdcall _Lazy_glVertexAttrib4Nbv(GLuint index, const GLbyte * v)                   {if (GLeeInit()) glVertexAttrib4Nbv(index, v);}
@@ -1028,8 +1028,8 @@ void __stdcall _Lazy_glVertexAttrib4Nusv(GLuint index, const GLushort * v)      
 void __stdcall _Lazy_glVertexAttrib4bv(GLuint index, const GLbyte * v)                    {if (GLeeInit()) glVertexAttrib4bv(index, v);}
 void __stdcall _Lazy_glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glVertexAttrib4d(index, x, y, z, w);}
 void __stdcall _Lazy_glVertexAttrib4dv(GLuint index, const GLdouble * v)                  {if (GLeeInit()) glVertexAttrib4dv(index, v);}
-void __stdcall _Lazy_glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glVertexAttrib4f(index, x, y, z, w);}
-void __stdcall _Lazy_glVertexAttrib4fv(GLuint index, const GLfloat * v)                   {if (GLeeInit()) glVertexAttrib4fv(index, v);}
+void __stdcall _Lazy_glVertexAttrib4f(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glVertexAttrib4f(index, x, y, z, w);}
+void __stdcall _Lazy_glVertexAttrib4fv(GLuint index, const GLdouble * v)                   {if (GLeeInit()) glVertexAttrib4fv(index, v);}
 void __stdcall _Lazy_glVertexAttrib4iv(GLuint index, const GLint * v)                     {if (GLeeInit()) glVertexAttrib4iv(index, v);}
 void __stdcall _Lazy_glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w)  {if (GLeeInit()) glVertexAttrib4s(index, x, y, z, w);}
 void __stdcall _Lazy_glVertexAttrib4sv(GLuint index, const GLshort * v)                   {if (GLeeInit()) glVertexAttrib4sv(index, v);}
@@ -1139,32 +1139,32 @@ void __stdcall _Lazy_glActiveTextureARB(GLenum texture)                         
 void __stdcall _Lazy_glClientActiveTextureARB(GLenum texture)                             {if (GLeeInit()) glClientActiveTextureARB(texture);}
 void __stdcall _Lazy_glMultiTexCoord1dARB(GLenum target, GLdouble s)                      {if (GLeeInit()) glMultiTexCoord1dARB(target, s);}
 void __stdcall _Lazy_glMultiTexCoord1dvARB(GLenum target, const GLdouble * v)             {if (GLeeInit()) glMultiTexCoord1dvARB(target, v);}
-void __stdcall _Lazy_glMultiTexCoord1fARB(GLenum target, GLfloat s)                       {if (GLeeInit()) glMultiTexCoord1fARB(target, s);}
-void __stdcall _Lazy_glMultiTexCoord1fvARB(GLenum target, const GLfloat * v)              {if (GLeeInit()) glMultiTexCoord1fvARB(target, v);}
+void __stdcall _Lazy_glMultiTexCoord1fARB(GLenum target, GLdouble s)                       {if (GLeeInit()) glMultiTexCoord1fARB(target, s);}
+void __stdcall _Lazy_glMultiTexCoord1fvARB(GLenum target, const GLdouble * v)              {if (GLeeInit()) glMultiTexCoord1fvARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord1iARB(GLenum target, GLint s)                         {if (GLeeInit()) glMultiTexCoord1iARB(target, s);}
 void __stdcall _Lazy_glMultiTexCoord1ivARB(GLenum target, const GLint * v)                {if (GLeeInit()) glMultiTexCoord1ivARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord1sARB(GLenum target, GLshort s)                       {if (GLeeInit()) glMultiTexCoord1sARB(target, s);}
 void __stdcall _Lazy_glMultiTexCoord1svARB(GLenum target, const GLshort * v)              {if (GLeeInit()) glMultiTexCoord1svARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord2dARB(GLenum target, GLdouble s, GLdouble t)          {if (GLeeInit()) glMultiTexCoord2dARB(target, s, t);}
 void __stdcall _Lazy_glMultiTexCoord2dvARB(GLenum target, const GLdouble * v)             {if (GLeeInit()) glMultiTexCoord2dvARB(target, v);}
-void __stdcall _Lazy_glMultiTexCoord2fARB(GLenum target, GLfloat s, GLfloat t)            {if (GLeeInit()) glMultiTexCoord2fARB(target, s, t);}
-void __stdcall _Lazy_glMultiTexCoord2fvARB(GLenum target, const GLfloat * v)              {if (GLeeInit()) glMultiTexCoord2fvARB(target, v);}
+void __stdcall _Lazy_glMultiTexCoord2fARB(GLenum target, GLdouble s, GLdouble t)            {if (GLeeInit()) glMultiTexCoord2fARB(target, s, t);}
+void __stdcall _Lazy_glMultiTexCoord2fvARB(GLenum target, const GLdouble * v)              {if (GLeeInit()) glMultiTexCoord2fvARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord2iARB(GLenum target, GLint s, GLint t)                {if (GLeeInit()) glMultiTexCoord2iARB(target, s, t);}
 void __stdcall _Lazy_glMultiTexCoord2ivARB(GLenum target, const GLint * v)                {if (GLeeInit()) glMultiTexCoord2ivARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord2sARB(GLenum target, GLshort s, GLshort t)            {if (GLeeInit()) glMultiTexCoord2sARB(target, s, t);}
 void __stdcall _Lazy_glMultiTexCoord2svARB(GLenum target, const GLshort * v)              {if (GLeeInit()) glMultiTexCoord2svARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord3dARB(GLenum target, GLdouble s, GLdouble t, GLdouble r)  {if (GLeeInit()) glMultiTexCoord3dARB(target, s, t, r);}
 void __stdcall _Lazy_glMultiTexCoord3dvARB(GLenum target, const GLdouble * v)             {if (GLeeInit()) glMultiTexCoord3dvARB(target, v);}
-void __stdcall _Lazy_glMultiTexCoord3fARB(GLenum target, GLfloat s, GLfloat t, GLfloat r)  {if (GLeeInit()) glMultiTexCoord3fARB(target, s, t, r);}
-void __stdcall _Lazy_glMultiTexCoord3fvARB(GLenum target, const GLfloat * v)              {if (GLeeInit()) glMultiTexCoord3fvARB(target, v);}
+void __stdcall _Lazy_glMultiTexCoord3fARB(GLenum target, GLdouble s, GLdouble t, GLdouble r)  {if (GLeeInit()) glMultiTexCoord3fARB(target, s, t, r);}
+void __stdcall _Lazy_glMultiTexCoord3fvARB(GLenum target, const GLdouble * v)              {if (GLeeInit()) glMultiTexCoord3fvARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord3iARB(GLenum target, GLint s, GLint t, GLint r)       {if (GLeeInit()) glMultiTexCoord3iARB(target, s, t, r);}
 void __stdcall _Lazy_glMultiTexCoord3ivARB(GLenum target, const GLint * v)                {if (GLeeInit()) glMultiTexCoord3ivARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord3sARB(GLenum target, GLshort s, GLshort t, GLshort r)  {if (GLeeInit()) glMultiTexCoord3sARB(target, s, t, r);}
 void __stdcall _Lazy_glMultiTexCoord3svARB(GLenum target, const GLshort * v)              {if (GLeeInit()) glMultiTexCoord3svARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord4dARB(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q)  {if (GLeeInit()) glMultiTexCoord4dARB(target, s, t, r, q);}
 void __stdcall _Lazy_glMultiTexCoord4dvARB(GLenum target, const GLdouble * v)             {if (GLeeInit()) glMultiTexCoord4dvARB(target, v);}
-void __stdcall _Lazy_glMultiTexCoord4fARB(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q)  {if (GLeeInit()) glMultiTexCoord4fARB(target, s, t, r, q);}
-void __stdcall _Lazy_glMultiTexCoord4fvARB(GLenum target, const GLfloat * v)              {if (GLeeInit()) glMultiTexCoord4fvARB(target, v);}
+void __stdcall _Lazy_glMultiTexCoord4fARB(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q)  {if (GLeeInit()) glMultiTexCoord4fARB(target, s, t, r, q);}
+void __stdcall _Lazy_glMultiTexCoord4fvARB(GLenum target, const GLdouble * v)              {if (GLeeInit()) glMultiTexCoord4fvARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord4iARB(GLenum target, GLint s, GLint t, GLint r, GLint q)  {if (GLeeInit()) glMultiTexCoord4iARB(target, s, t, r, q);}
 void __stdcall _Lazy_glMultiTexCoord4ivARB(GLenum target, const GLint * v)                {if (GLeeInit()) glMultiTexCoord4ivARB(target, v);}
 void __stdcall _Lazy_glMultiTexCoord4sARB(GLenum target, GLshort s, GLshort t, GLshort r, GLshort q)  {if (GLeeInit()) glMultiTexCoord4sARB(target, s, t, r, q);}
@@ -1208,9 +1208,9 @@ PFNGLMULTITEXCOORD4SVARBPROC pglMultiTexCoord4svARB=_Lazy_glMultiTexCoord4svARB;
 //GL_ARB_transpose_matrix
 
 #ifdef __GLEE_GL_ARB_transpose_matrix
-void __stdcall _Lazy_glLoadTransposeMatrixfARB(const GLfloat * m)                         {if (GLeeInit()) glLoadTransposeMatrixfARB(m);}
+void __stdcall _Lazy_glLoadTransposeMatrixfARB(const GLdouble * m)                         {if (GLeeInit()) glLoadTransposeMatrixfARB(m);}
 void __stdcall _Lazy_glLoadTransposeMatrixdARB(const GLdouble * m)                        {if (GLeeInit()) glLoadTransposeMatrixdARB(m);}
-void __stdcall _Lazy_glMultTransposeMatrixfARB(const GLfloat * m)                         {if (GLeeInit()) glMultTransposeMatrixfARB(m);}
+void __stdcall _Lazy_glMultTransposeMatrixfARB(const GLdouble * m)                         {if (GLeeInit()) glMultTransposeMatrixfARB(m);}
 void __stdcall _Lazy_glMultTransposeMatrixdARB(const GLdouble * m)                        {if (GLeeInit()) glMultTransposeMatrixdARB(m);}
 PFNGLLOADTRANSPOSEMATRIXFARBPROC pglLoadTransposeMatrixfARB=_Lazy_glLoadTransposeMatrixfARB;
 PFNGLLOADTRANSPOSEMATRIXDARBPROC pglLoadTransposeMatrixdARB=_Lazy_glLoadTransposeMatrixdARB;
@@ -1262,8 +1262,8 @@ PFNGLGETCOMPRESSEDTEXIMAGEARBPROC pglGetCompressedTexImageARB=_Lazy_glGetCompres
 //GL_ARB_point_parameters
 
 #ifdef __GLEE_GL_ARB_point_parameters
-void __stdcall _Lazy_glPointParameterfARB(GLenum pname, GLfloat param)                    {if (GLeeInit()) glPointParameterfARB(pname, param);}
-void __stdcall _Lazy_glPointParameterfvARB(GLenum pname, const GLfloat * params)          {if (GLeeInit()) glPointParameterfvARB(pname, params);}
+void __stdcall _Lazy_glPointParameterfARB(GLenum pname, GLdouble param)                    {if (GLeeInit()) glPointParameterfARB(pname, param);}
+void __stdcall _Lazy_glPointParameterfvARB(GLenum pname, const GLdouble * params)          {if (GLeeInit()) glPointParameterfvARB(pname, params);}
 PFNGLPOINTPARAMETERFARBPROC pglPointParameterfARB=_Lazy_glPointParameterfARB;
 PFNGLPOINTPARAMETERFVARBPROC pglPointParameterfvARB=_Lazy_glPointParameterfvARB;
 #endif 
@@ -1274,7 +1274,7 @@ PFNGLPOINTPARAMETERFVARBPROC pglPointParameterfvARB=_Lazy_glPointParameterfvARB;
 void __stdcall _Lazy_glWeightbvARB(GLint size, const GLbyte * weights)                    {if (GLeeInit()) glWeightbvARB(size, weights);}
 void __stdcall _Lazy_glWeightsvARB(GLint size, const GLshort * weights)                   {if (GLeeInit()) glWeightsvARB(size, weights);}
 void __stdcall _Lazy_glWeightivARB(GLint size, const GLint * weights)                     {if (GLeeInit()) glWeightivARB(size, weights);}
-void __stdcall _Lazy_glWeightfvARB(GLint size, const GLfloat * weights)                   {if (GLeeInit()) glWeightfvARB(size, weights);}
+void __stdcall _Lazy_glWeightfvARB(GLint size, const GLdouble * weights)                   {if (GLeeInit()) glWeightfvARB(size, weights);}
 void __stdcall _Lazy_glWeightdvARB(GLint size, const GLdouble * weights)                  {if (GLeeInit()) glWeightdvARB(size, weights);}
 void __stdcall _Lazy_glWeightubvARB(GLint size, const GLubyte * weights)                  {if (GLeeInit()) glWeightubvARB(size, weights);}
 void __stdcall _Lazy_glWeightusvARB(GLint size, const GLushort * weights)                 {if (GLeeInit()) glWeightusvARB(size, weights);}
@@ -1348,16 +1348,16 @@ PFNGLMATRIXINDEXPOINTERARBPROC pglMatrixIndexPointerARB=_Lazy_glMatrixIndexPoint
 #ifdef __GLEE_GL_ARB_window_pos
 void __stdcall _Lazy_glWindowPos2dARB(GLdouble x, GLdouble y)                             {if (GLeeInit()) glWindowPos2dARB(x, y);}
 void __stdcall _Lazy_glWindowPos2dvARB(const GLdouble * v)                                {if (GLeeInit()) glWindowPos2dvARB(v);}
-void __stdcall _Lazy_glWindowPos2fARB(GLfloat x, GLfloat y)                               {if (GLeeInit()) glWindowPos2fARB(x, y);}
-void __stdcall _Lazy_glWindowPos2fvARB(const GLfloat * v)                                 {if (GLeeInit()) glWindowPos2fvARB(v);}
+void __stdcall _Lazy_glWindowPos2fARB(GLdouble x, GLdouble y)                               {if (GLeeInit()) glWindowPos2fARB(x, y);}
+void __stdcall _Lazy_glWindowPos2fvARB(const GLdouble * v)                                 {if (GLeeInit()) glWindowPos2fvARB(v);}
 void __stdcall _Lazy_glWindowPos2iARB(GLint x, GLint y)                                   {if (GLeeInit()) glWindowPos2iARB(x, y);}
 void __stdcall _Lazy_glWindowPos2ivARB(const GLint * v)                                   {if (GLeeInit()) glWindowPos2ivARB(v);}
 void __stdcall _Lazy_glWindowPos2sARB(GLshort x, GLshort y)                               {if (GLeeInit()) glWindowPos2sARB(x, y);}
 void __stdcall _Lazy_glWindowPos2svARB(const GLshort * v)                                 {if (GLeeInit()) glWindowPos2svARB(v);}
 void __stdcall _Lazy_glWindowPos3dARB(GLdouble x, GLdouble y, GLdouble z)                 {if (GLeeInit()) glWindowPos3dARB(x, y, z);}
 void __stdcall _Lazy_glWindowPos3dvARB(const GLdouble * v)                                {if (GLeeInit()) glWindowPos3dvARB(v);}
-void __stdcall _Lazy_glWindowPos3fARB(GLfloat x, GLfloat y, GLfloat z)                    {if (GLeeInit()) glWindowPos3fARB(x, y, z);}
-void __stdcall _Lazy_glWindowPos3fvARB(const GLfloat * v)                                 {if (GLeeInit()) glWindowPos3fvARB(v);}
+void __stdcall _Lazy_glWindowPos3fARB(GLdouble x, GLdouble y, GLdouble z)                    {if (GLeeInit()) glWindowPos3fARB(x, y, z);}
+void __stdcall _Lazy_glWindowPos3fvARB(const GLdouble * v)                                 {if (GLeeInit()) glWindowPos3fvARB(v);}
 void __stdcall _Lazy_glWindowPos3iARB(GLint x, GLint y, GLint z)                          {if (GLeeInit()) glWindowPos3iARB(x, y, z);}
 void __stdcall _Lazy_glWindowPos3ivARB(const GLint * v)                                   {if (GLeeInit()) glWindowPos3ivARB(v);}
 void __stdcall _Lazy_glWindowPos3sARB(GLshort x, GLshort y, GLshort z)                    {if (GLeeInit()) glWindowPos3sARB(x, y, z);}
@@ -1385,20 +1385,20 @@ PFNGLWINDOWPOS3SVARBPROC pglWindowPos3svARB=_Lazy_glWindowPos3svARB;
 #ifdef __GLEE_GL_ARB_vertex_program
 void __stdcall _Lazy_glVertexAttrib1dARB(GLuint index, GLdouble x)                        {if (GLeeInit()) glVertexAttrib1dARB(index, x);}
 void __stdcall _Lazy_glVertexAttrib1dvARB(GLuint index, const GLdouble * v)               {if (GLeeInit()) glVertexAttrib1dvARB(index, v);}
-void __stdcall _Lazy_glVertexAttrib1fARB(GLuint index, GLfloat x)                         {if (GLeeInit()) glVertexAttrib1fARB(index, x);}
-void __stdcall _Lazy_glVertexAttrib1fvARB(GLuint index, const GLfloat * v)                {if (GLeeInit()) glVertexAttrib1fvARB(index, v);}
+void __stdcall _Lazy_glVertexAttrib1fARB(GLuint index, GLdouble x)                         {if (GLeeInit()) glVertexAttrib1fARB(index, x);}
+void __stdcall _Lazy_glVertexAttrib1fvARB(GLuint index, const GLdouble * v)                {if (GLeeInit()) glVertexAttrib1fvARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib1sARB(GLuint index, GLshort x)                         {if (GLeeInit()) glVertexAttrib1sARB(index, x);}
 void __stdcall _Lazy_glVertexAttrib1svARB(GLuint index, const GLshort * v)                {if (GLeeInit()) glVertexAttrib1svARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib2dARB(GLuint index, GLdouble x, GLdouble y)            {if (GLeeInit()) glVertexAttrib2dARB(index, x, y);}
 void __stdcall _Lazy_glVertexAttrib2dvARB(GLuint index, const GLdouble * v)               {if (GLeeInit()) glVertexAttrib2dvARB(index, v);}
-void __stdcall _Lazy_glVertexAttrib2fARB(GLuint index, GLfloat x, GLfloat y)              {if (GLeeInit()) glVertexAttrib2fARB(index, x, y);}
-void __stdcall _Lazy_glVertexAttrib2fvARB(GLuint index, const GLfloat * v)                {if (GLeeInit()) glVertexAttrib2fvARB(index, v);}
+void __stdcall _Lazy_glVertexAttrib2fARB(GLuint index, GLdouble x, GLdouble y)              {if (GLeeInit()) glVertexAttrib2fARB(index, x, y);}
+void __stdcall _Lazy_glVertexAttrib2fvARB(GLuint index, const GLdouble * v)                {if (GLeeInit()) glVertexAttrib2fvARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib2sARB(GLuint index, GLshort x, GLshort y)              {if (GLeeInit()) glVertexAttrib2sARB(index, x, y);}
 void __stdcall _Lazy_glVertexAttrib2svARB(GLuint index, const GLshort * v)                {if (GLeeInit()) glVertexAttrib2svARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib3dARB(GLuint index, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glVertexAttrib3dARB(index, x, y, z);}
 void __stdcall _Lazy_glVertexAttrib3dvARB(GLuint index, const GLdouble * v)               {if (GLeeInit()) glVertexAttrib3dvARB(index, v);}
-void __stdcall _Lazy_glVertexAttrib3fARB(GLuint index, GLfloat x, GLfloat y, GLfloat z)   {if (GLeeInit()) glVertexAttrib3fARB(index, x, y, z);}
-void __stdcall _Lazy_glVertexAttrib3fvARB(GLuint index, const GLfloat * v)                {if (GLeeInit()) glVertexAttrib3fvARB(index, v);}
+void __stdcall _Lazy_glVertexAttrib3fARB(GLuint index, GLdouble x, GLdouble y, GLdouble z)   {if (GLeeInit()) glVertexAttrib3fARB(index, x, y, z);}
+void __stdcall _Lazy_glVertexAttrib3fvARB(GLuint index, const GLdouble * v)                {if (GLeeInit()) glVertexAttrib3fvARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib3sARB(GLuint index, GLshort x, GLshort y, GLshort z)   {if (GLeeInit()) glVertexAttrib3sARB(index, x, y, z);}
 void __stdcall _Lazy_glVertexAttrib3svARB(GLuint index, const GLshort * v)                {if (GLeeInit()) glVertexAttrib3svARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib4NbvARB(GLuint index, const GLbyte * v)                {if (GLeeInit()) glVertexAttrib4NbvARB(index, v);}
@@ -1411,8 +1411,8 @@ void __stdcall _Lazy_glVertexAttrib4NusvARB(GLuint index, const GLushort * v)   
 void __stdcall _Lazy_glVertexAttrib4bvARB(GLuint index, const GLbyte * v)                 {if (GLeeInit()) glVertexAttrib4bvARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib4dARB(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glVertexAttrib4dARB(index, x, y, z, w);}
 void __stdcall _Lazy_glVertexAttrib4dvARB(GLuint index, const GLdouble * v)               {if (GLeeInit()) glVertexAttrib4dvARB(index, v);}
-void __stdcall _Lazy_glVertexAttrib4fARB(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glVertexAttrib4fARB(index, x, y, z, w);}
-void __stdcall _Lazy_glVertexAttrib4fvARB(GLuint index, const GLfloat * v)                {if (GLeeInit()) glVertexAttrib4fvARB(index, v);}
+void __stdcall _Lazy_glVertexAttrib4fARB(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glVertexAttrib4fARB(index, x, y, z, w);}
+void __stdcall _Lazy_glVertexAttrib4fvARB(GLuint index, const GLdouble * v)                {if (GLeeInit()) glVertexAttrib4fvARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib4ivARB(GLuint index, const GLint * v)                  {if (GLeeInit()) glVertexAttrib4ivARB(index, v);}
 void __stdcall _Lazy_glVertexAttrib4sARB(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w)  {if (GLeeInit()) glVertexAttrib4sARB(index, x, y, z, w);}
 void __stdcall _Lazy_glVertexAttrib4svARB(GLuint index, const GLshort * v)                {if (GLeeInit()) glVertexAttrib4svARB(index, v);}
@@ -1428,20 +1428,20 @@ void __stdcall _Lazy_glDeleteProgramsARB(GLsizei n, const GLuint * programs)    
 void __stdcall _Lazy_glGenProgramsARB(GLsizei n, GLuint * programs)                       {if (GLeeInit()) glGenProgramsARB(n, programs);}
 void __stdcall _Lazy_glProgramEnvParameter4dARB(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glProgramEnvParameter4dARB(target, index, x, y, z, w);}
 void __stdcall _Lazy_glProgramEnvParameter4dvARB(GLenum target, GLuint index, const GLdouble * params)  {if (GLeeInit()) glProgramEnvParameter4dvARB(target, index, params);}
-void __stdcall _Lazy_glProgramEnvParameter4fARB(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glProgramEnvParameter4fARB(target, index, x, y, z, w);}
-void __stdcall _Lazy_glProgramEnvParameter4fvARB(GLenum target, GLuint index, const GLfloat * params)  {if (GLeeInit()) glProgramEnvParameter4fvARB(target, index, params);}
+void __stdcall _Lazy_glProgramEnvParameter4fARB(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glProgramEnvParameter4fARB(target, index, x, y, z, w);}
+void __stdcall _Lazy_glProgramEnvParameter4fvARB(GLenum target, GLuint index, const GLdouble * params)  {if (GLeeInit()) glProgramEnvParameter4fvARB(target, index, params);}
 void __stdcall _Lazy_glProgramLocalParameter4dARB(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glProgramLocalParameter4dARB(target, index, x, y, z, w);}
 void __stdcall _Lazy_glProgramLocalParameter4dvARB(GLenum target, GLuint index, const GLdouble * params)  {if (GLeeInit()) glProgramLocalParameter4dvARB(target, index, params);}
-void __stdcall _Lazy_glProgramLocalParameter4fARB(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glProgramLocalParameter4fARB(target, index, x, y, z, w);}
-void __stdcall _Lazy_glProgramLocalParameter4fvARB(GLenum target, GLuint index, const GLfloat * params)  {if (GLeeInit()) glProgramLocalParameter4fvARB(target, index, params);}
+void __stdcall _Lazy_glProgramLocalParameter4fARB(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glProgramLocalParameter4fARB(target, index, x, y, z, w);}
+void __stdcall _Lazy_glProgramLocalParameter4fvARB(GLenum target, GLuint index, const GLdouble * params)  {if (GLeeInit()) glProgramLocalParameter4fvARB(target, index, params);}
 void __stdcall _Lazy_glGetProgramEnvParameterdvARB(GLenum target, GLuint index, GLdouble * params)  {if (GLeeInit()) glGetProgramEnvParameterdvARB(target, index, params);}
-void __stdcall _Lazy_glGetProgramEnvParameterfvARB(GLenum target, GLuint index, GLfloat * params)  {if (GLeeInit()) glGetProgramEnvParameterfvARB(target, index, params);}
+void __stdcall _Lazy_glGetProgramEnvParameterfvARB(GLenum target, GLuint index, GLdouble * params)  {if (GLeeInit()) glGetProgramEnvParameterfvARB(target, index, params);}
 void __stdcall _Lazy_glGetProgramLocalParameterdvARB(GLenum target, GLuint index, GLdouble * params)  {if (GLeeInit()) glGetProgramLocalParameterdvARB(target, index, params);}
-void __stdcall _Lazy_glGetProgramLocalParameterfvARB(GLenum target, GLuint index, GLfloat * params)  {if (GLeeInit()) glGetProgramLocalParameterfvARB(target, index, params);}
+void __stdcall _Lazy_glGetProgramLocalParameterfvARB(GLenum target, GLuint index, GLdouble * params)  {if (GLeeInit()) glGetProgramLocalParameterfvARB(target, index, params);}
 void __stdcall _Lazy_glGetProgramivARB(GLenum target, GLenum pname, GLint * params)       {if (GLeeInit()) glGetProgramivARB(target, pname, params);}
 void __stdcall _Lazy_glGetProgramStringARB(GLenum target, GLenum pname, GLvoid * string)  {if (GLeeInit()) glGetProgramStringARB(target, pname, string);}
 void __stdcall _Lazy_glGetVertexAttribdvARB(GLuint index, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetVertexAttribdvARB(index, pname, params);}
-void __stdcall _Lazy_glGetVertexAttribfvARB(GLuint index, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetVertexAttribfvARB(index, pname, params);}
+void __stdcall _Lazy_glGetVertexAttribfvARB(GLuint index, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetVertexAttribfvARB(index, pname, params);}
 void __stdcall _Lazy_glGetVertexAttribivARB(GLuint index, GLenum pname, GLint * params)   {if (GLeeInit()) glGetVertexAttribivARB(index, pname, params);}
 void __stdcall _Lazy_glGetVertexAttribPointervARB(GLuint index, GLenum pname, GLvoid* * pointer)  {if (GLeeInit()) glGetVertexAttribPointervARB(index, pname, pointer);}
 GLbool __stdcall _Lazy_glIsProgramARB(GLuint program)                                  {if (GLeeInit()) return glIsProgramARB(program); return (GLboolean)0;}
@@ -1576,32 +1576,32 @@ void __stdcall _Lazy_glAttachObjectARB(GLhandleARB containerObj, GLhandleARB obj
 void __stdcall _Lazy_glLinkProgramARB(GLhandleARB programObj)                             {if (GLeeInit()) glLinkProgramARB(programObj);}
 void __stdcall _Lazy_glUseProgramObjectARB(GLhandleARB programObj)                        {if (GLeeInit()) glUseProgramObjectARB(programObj);}
 void __stdcall _Lazy_glValidateProgramARB(GLhandleARB programObj)                         {if (GLeeInit()) glValidateProgramARB(programObj);}
-void __stdcall _Lazy_glUniform1fARB(GLint location, GLfloat v0)                           {if (GLeeInit()) glUniform1fARB(location, v0);}
-void __stdcall _Lazy_glUniform2fARB(GLint location, GLfloat v0, GLfloat v1)               {if (GLeeInit()) glUniform2fARB(location, v0, v1);}
-void __stdcall _Lazy_glUniform3fARB(GLint location, GLfloat v0, GLfloat v1, GLfloat v2)   {if (GLeeInit()) glUniform3fARB(location, v0, v1, v2);}
-void __stdcall _Lazy_glUniform4fARB(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)  {if (GLeeInit()) glUniform4fARB(location, v0, v1, v2, v3);}
+void __stdcall _Lazy_glUniform1fARB(GLint location, GLdouble v0)                           {if (GLeeInit()) glUniform1fARB(location, v0);}
+void __stdcall _Lazy_glUniform2fARB(GLint location, GLdouble v0, GLdouble v1)               {if (GLeeInit()) glUniform2fARB(location, v0, v1);}
+void __stdcall _Lazy_glUniform3fARB(GLint location, GLdouble v0, GLdouble v1, GLdouble v2)   {if (GLeeInit()) glUniform3fARB(location, v0, v1, v2);}
+void __stdcall _Lazy_glUniform4fARB(GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3)  {if (GLeeInit()) glUniform4fARB(location, v0, v1, v2, v3);}
 void __stdcall _Lazy_glUniform1iARB(GLint location, GLint v0)                             {if (GLeeInit()) glUniform1iARB(location, v0);}
 void __stdcall _Lazy_glUniform2iARB(GLint location, GLint v0, GLint v1)                   {if (GLeeInit()) glUniform2iARB(location, v0, v1);}
 void __stdcall _Lazy_glUniform3iARB(GLint location, GLint v0, GLint v1, GLint v2)         {if (GLeeInit()) glUniform3iARB(location, v0, v1, v2);}
 void __stdcall _Lazy_glUniform4iARB(GLint location, GLint v0, GLint v1, GLint v2, GLint v3)  {if (GLeeInit()) glUniform4iARB(location, v0, v1, v2, v3);}
-void __stdcall _Lazy_glUniform1fvARB(GLint location, GLsizei count, const GLfloat * value)  {if (GLeeInit()) glUniform1fvARB(location, count, value);}
-void __stdcall _Lazy_glUniform2fvARB(GLint location, GLsizei count, const GLfloat * value)  {if (GLeeInit()) glUniform2fvARB(location, count, value);}
-void __stdcall _Lazy_glUniform3fvARB(GLint location, GLsizei count, const GLfloat * value)  {if (GLeeInit()) glUniform3fvARB(location, count, value);}
-void __stdcall _Lazy_glUniform4fvARB(GLint location, GLsizei count, const GLfloat * value)  {if (GLeeInit()) glUniform4fvARB(location, count, value);}
+void __stdcall _Lazy_glUniform1fvARB(GLint location, GLsizei count, const GLdouble * value)  {if (GLeeInit()) glUniform1fvARB(location, count, value);}
+void __stdcall _Lazy_glUniform2fvARB(GLint location, GLsizei count, const GLdouble * value)  {if (GLeeInit()) glUniform2fvARB(location, count, value);}
+void __stdcall _Lazy_glUniform3fvARB(GLint location, GLsizei count, const GLdouble * value)  {if (GLeeInit()) glUniform3fvARB(location, count, value);}
+void __stdcall _Lazy_glUniform4fvARB(GLint location, GLsizei count, const GLdouble * value)  {if (GLeeInit()) glUniform4fvARB(location, count, value);}
 void __stdcall _Lazy_glUniform1ivARB(GLint location, GLsizei count, const GLint * value)  {if (GLeeInit()) glUniform1ivARB(location, count, value);}
 void __stdcall _Lazy_glUniform2ivARB(GLint location, GLsizei count, const GLint * value)  {if (GLeeInit()) glUniform2ivARB(location, count, value);}
 void __stdcall _Lazy_glUniform3ivARB(GLint location, GLsizei count, const GLint * value)  {if (GLeeInit()) glUniform3ivARB(location, count, value);}
 void __stdcall _Lazy_glUniform4ivARB(GLint location, GLsizei count, const GLint * value)  {if (GLeeInit()) glUniform4ivARB(location, count, value);}
-void __stdcall _Lazy_glUniformMatrix2fvARB(GLint location, GLsizei count, GLbool transpose, const GLfloat * value)  {if (GLeeInit()) glUniformMatrix2fvARB(location, count, transpose, value);}
-void __stdcall _Lazy_glUniformMatrix3fvARB(GLint location, GLsizei count, GLbool transpose, const GLfloat * value)  {if (GLeeInit()) glUniformMatrix3fvARB(location, count, transpose, value);}
-void __stdcall _Lazy_glUniformMatrix4fvARB(GLint location, GLsizei count, GLbool transpose, const GLfloat * value)  {if (GLeeInit()) glUniformMatrix4fvARB(location, count, transpose, value);}
-void __stdcall _Lazy_glGetObjectParameterfvARB(GLhandleARB obj, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetObjectParameterfvARB(obj, pname, params);}
+void __stdcall _Lazy_glUniformMatrix2fvARB(GLint location, GLsizei count, GLbool transpose, const GLdouble * value)  {if (GLeeInit()) glUniformMatrix2fvARB(location, count, transpose, value);}
+void __stdcall _Lazy_glUniformMatrix3fvARB(GLint location, GLsizei count, GLbool transpose, const GLdouble * value)  {if (GLeeInit()) glUniformMatrix3fvARB(location, count, transpose, value);}
+void __stdcall _Lazy_glUniformMatrix4fvARB(GLint location, GLsizei count, GLbool transpose, const GLdouble * value)  {if (GLeeInit()) glUniformMatrix4fvARB(location, count, transpose, value);}
+void __stdcall _Lazy_glGetObjectParameterfvARB(GLhandleARB obj, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetObjectParameterfvARB(obj, pname, params);}
 void __stdcall _Lazy_glGetObjectParameterivARB(GLhandleARB obj, GLenum pname, GLint * params)  {if (GLeeInit()) glGetObjectParameterivARB(obj, pname, params);}
 void __stdcall _Lazy_glGetInfoLogARB(GLhandleARB obj, GLsizei maxLength, GLsizei * length, GLcharARB * infoLog)  {if (GLeeInit()) glGetInfoLogARB(obj, maxLength, length, infoLog);}
 void __stdcall _Lazy_glGetAttachedObjectsARB(GLhandleARB containerObj, GLsizei maxCount, GLsizei * count, GLhandleARB * obj)  {if (GLeeInit()) glGetAttachedObjectsARB(containerObj, maxCount, count, obj);}
 GLint __stdcall _Lazy_glGetUniformLocationARB(GLhandleARB programObj, const GLcharARB * name)  {if (GLeeInit()) return glGetUniformLocationARB(programObj, name); return (GLint)0;}
 void __stdcall _Lazy_glGetActiveUniformARB(GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei * length, GLint * size, GLenum * type, GLcharARB * name)  {if (GLeeInit()) glGetActiveUniformARB(programObj, index, maxLength, length, size, type, name);}
-void __stdcall _Lazy_glGetUniformfvARB(GLhandleARB programObj, GLint location, GLfloat * params)  {if (GLeeInit()) glGetUniformfvARB(programObj, location, params);}
+void __stdcall _Lazy_glGetUniformfvARB(GLhandleARB programObj, GLint location, GLdouble * params)  {if (GLeeInit()) glGetUniformfvARB(programObj, location, params);}
 void __stdcall _Lazy_glGetUniformivARB(GLhandleARB programObj, GLint location, GLint * params)  {if (GLeeInit()) glGetUniformivARB(programObj, location, params);}
 void __stdcall _Lazy_glGetShaderSourceARB(GLhandleARB obj, GLsizei maxLength, GLsizei * length, GLcharARB * source)  {if (GLeeInit()) glGetShaderSourceARB(obj, maxLength, length, source);}
 PFNGLDELETEOBJECTARBPROC pglDeleteObjectARB=_Lazy_glDeleteObjectARB;
@@ -1730,7 +1730,7 @@ PFNGLBLENDCOLOREXTPROC pglBlendColorEXT=_Lazy_glBlendColorEXT;
 //GL_EXT_polygon_offset
 
 #ifdef __GLEE_GL_EXT_polygon_offset
-void __stdcall _Lazy_glPolygonOffsetEXT(GLfloat factor, GLfloat bias)                     {if (GLeeInit()) glPolygonOffsetEXT(factor, bias);}
+void __stdcall _Lazy_glPolygonOffsetEXT(GLdouble factor, GLdouble bias)                     {if (GLeeInit()) glPolygonOffsetEXT(factor, bias);}
 PFNGLPOLYGONOFFSETEXTPROC pglPolygonOffsetEXT=_Lazy_glPolygonOffsetEXT;
 #endif 
 
@@ -1751,8 +1751,8 @@ PFNGLTEXSUBIMAGE3DEXTPROC pglTexSubImage3DEXT=_Lazy_glTexSubImage3DEXT;
 //GL_SGIS_texture_filter4
 
 #ifdef __GLEE_GL_SGIS_texture_filter4
-void __stdcall _Lazy_glGetTexFilterFuncSGIS(GLenum target, GLenum filter, GLfloat * weights)  {if (GLeeInit()) glGetTexFilterFuncSGIS(target, filter, weights);}
-void __stdcall _Lazy_glTexFilterFuncSGIS(GLenum target, GLenum filter, GLsizei n, const GLfloat * weights)  {if (GLeeInit()) glTexFilterFuncSGIS(target, filter, n, weights);}
+void __stdcall _Lazy_glGetTexFilterFuncSGIS(GLenum target, GLenum filter, GLdouble * weights)  {if (GLeeInit()) glGetTexFilterFuncSGIS(target, filter, weights);}
+void __stdcall _Lazy_glTexFilterFuncSGIS(GLenum target, GLenum filter, GLsizei n, const GLdouble * weights)  {if (GLeeInit()) glTexFilterFuncSGIS(target, filter, n, weights);}
 PFNGLGETTEXFILTERFUNCSGISPROC pglGetTexFilterFuncSGIS=_Lazy_glGetTexFilterFuncSGIS;
 PFNGLTEXFILTERFUNCSGISPROC pglTexFilterFuncSGIS=_Lazy_glTexFilterFuncSGIS;
 #endif 
@@ -1785,10 +1785,10 @@ PFNGLCOPYTEXSUBIMAGE3DEXTPROC pglCopyTexSubImage3DEXT=_Lazy_glCopyTexSubImage3DE
 
 #ifdef __GLEE_GL_EXT_histogram
 void __stdcall _Lazy_glGetHistogramEXT(GLenum target, GLbool reset, GLenum format, GLenum type, GLvoid * values)  {if (GLeeInit()) glGetHistogramEXT(target, reset, format, type, values);}
-void __stdcall _Lazy_glGetHistogramParameterfvEXT(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetHistogramParameterfvEXT(target, pname, params);}
+void __stdcall _Lazy_glGetHistogramParameterfvEXT(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetHistogramParameterfvEXT(target, pname, params);}
 void __stdcall _Lazy_glGetHistogramParameterivEXT(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetHistogramParameterivEXT(target, pname, params);}
 void __stdcall _Lazy_glGetMinmaxEXT(GLenum target, GLbool reset, GLenum format, GLenum type, GLvoid * values)  {if (GLeeInit()) glGetMinmaxEXT(target, reset, format, type, values);}
-void __stdcall _Lazy_glGetMinmaxParameterfvEXT(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetMinmaxParameterfvEXT(target, pname, params);}
+void __stdcall _Lazy_glGetMinmaxParameterfvEXT(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetMinmaxParameterfvEXT(target, pname, params);}
 void __stdcall _Lazy_glGetMinmaxParameterivEXT(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetMinmaxParameterivEXT(target, pname, params);}
 void __stdcall _Lazy_glHistogramEXT(GLenum target, GLsizei width, GLenum internalformat, GLbool sink)  {if (GLeeInit()) glHistogramEXT(target, width, internalformat, sink);}
 void __stdcall _Lazy_glMinmaxEXT(GLenum target, GLenum internalformat, GLbool sink)    {if (GLeeInit()) glMinmaxEXT(target, internalformat, sink);}
@@ -1811,14 +1811,14 @@ PFNGLRESETMINMAXEXTPROC pglResetMinmaxEXT=_Lazy_glResetMinmaxEXT;
 #ifdef __GLEE_GL_EXT_convolution
 void __stdcall _Lazy_glConvolutionFilter1DEXT(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const GLvoid * image)  {if (GLeeInit()) glConvolutionFilter1DEXT(target, internalformat, width, format, type, image);}
 void __stdcall _Lazy_glConvolutionFilter2DEXT(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid * image)  {if (GLeeInit()) glConvolutionFilter2DEXT(target, internalformat, width, height, format, type, image);}
-void __stdcall _Lazy_glConvolutionParameterfEXT(GLenum target, GLenum pname, GLfloat params)  {if (GLeeInit()) glConvolutionParameterfEXT(target, pname, params);}
-void __stdcall _Lazy_glConvolutionParameterfvEXT(GLenum target, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glConvolutionParameterfvEXT(target, pname, params);}
+void __stdcall _Lazy_glConvolutionParameterfEXT(GLenum target, GLenum pname, GLdouble params)  {if (GLeeInit()) glConvolutionParameterfEXT(target, pname, params);}
+void __stdcall _Lazy_glConvolutionParameterfvEXT(GLenum target, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glConvolutionParameterfvEXT(target, pname, params);}
 void __stdcall _Lazy_glConvolutionParameteriEXT(GLenum target, GLenum pname, GLint params)  {if (GLeeInit()) glConvolutionParameteriEXT(target, pname, params);}
 void __stdcall _Lazy_glConvolutionParameterivEXT(GLenum target, GLenum pname, const GLint * params)  {if (GLeeInit()) glConvolutionParameterivEXT(target, pname, params);}
 void __stdcall _Lazy_glCopyConvolutionFilter1DEXT(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width)  {if (GLeeInit()) glCopyConvolutionFilter1DEXT(target, internalformat, x, y, width);}
 void __stdcall _Lazy_glCopyConvolutionFilter2DEXT(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height)  {if (GLeeInit()) glCopyConvolutionFilter2DEXT(target, internalformat, x, y, width, height);}
 void __stdcall _Lazy_glGetConvolutionFilterEXT(GLenum target, GLenum format, GLenum type, GLvoid * image)  {if (GLeeInit()) glGetConvolutionFilterEXT(target, format, type, image);}
-void __stdcall _Lazy_glGetConvolutionParameterfvEXT(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetConvolutionParameterfvEXT(target, pname, params);}
+void __stdcall _Lazy_glGetConvolutionParameterfvEXT(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetConvolutionParameterfvEXT(target, pname, params);}
 void __stdcall _Lazy_glGetConvolutionParameterivEXT(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetConvolutionParameterivEXT(target, pname, params);}
 void __stdcall _Lazy_glGetSeparableFilterEXT(GLenum target, GLenum format, GLenum type, GLvoid * row, GLvoid * column, GLvoid * span)  {if (GLeeInit()) glGetSeparableFilterEXT(target, format, type, row, column, span);}
 void __stdcall _Lazy_glSeparableFilter2DEXT(GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid * row, const GLvoid * column)  {if (GLeeInit()) glSeparableFilter2DEXT(target, internalformat, width, height, format, type, row, column);}
@@ -1846,11 +1846,11 @@ PFNGLSEPARABLEFILTER2DEXTPROC pglSeparableFilter2DEXT=_Lazy_glSeparableFilter2DE
 
 #ifdef __GLEE_GL_SGI_color_table
 void __stdcall _Lazy_glColorTableSGI(GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, const GLvoid * table)  {if (GLeeInit()) glColorTableSGI(target, internalformat, width, format, type, table);}
-void __stdcall _Lazy_glColorTableParameterfvSGI(GLenum target, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glColorTableParameterfvSGI(target, pname, params);}
+void __stdcall _Lazy_glColorTableParameterfvSGI(GLenum target, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glColorTableParameterfvSGI(target, pname, params);}
 void __stdcall _Lazy_glColorTableParameterivSGI(GLenum target, GLenum pname, const GLint * params)  {if (GLeeInit()) glColorTableParameterivSGI(target, pname, params);}
 void __stdcall _Lazy_glCopyColorTableSGI(GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width)  {if (GLeeInit()) glCopyColorTableSGI(target, internalformat, x, y, width);}
 void __stdcall _Lazy_glGetColorTableSGI(GLenum target, GLenum format, GLenum type, GLvoid * table)  {if (GLeeInit()) glGetColorTableSGI(target, format, type, table);}
-void __stdcall _Lazy_glGetColorTableParameterfvSGI(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetColorTableParameterfvSGI(target, pname, params);}
+void __stdcall _Lazy_glGetColorTableParameterfvSGI(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetColorTableParameterfvSGI(target, pname, params);}
 void __stdcall _Lazy_glGetColorTableParameterivSGI(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetColorTableParameterivSGI(target, pname, params);}
 PFNGLCOLORTABLESGIPROC pglColorTableSGI=_Lazy_glColorTableSGI;
 PFNGLCOLORTABLEPARAMETERFVSGIPROC pglColorTableParameterfvSGI=_Lazy_glColorTableParameterfvSGI;
@@ -1866,10 +1866,10 @@ PFNGLGETCOLORTABLEPARAMETERIVSGIPROC pglGetColorTableParameterivSGI=_Lazy_glGetC
 #ifdef __GLEE_GL_SGIS_pixel_texture
 void __stdcall _Lazy_glPixelTexGenParameteriSGIS(GLenum pname, GLint param)               {if (GLeeInit()) glPixelTexGenParameteriSGIS(pname, param);}
 void __stdcall _Lazy_glPixelTexGenParameterivSGIS(GLenum pname, const GLint * params)     {if (GLeeInit()) glPixelTexGenParameterivSGIS(pname, params);}
-void __stdcall _Lazy_glPixelTexGenParameterfSGIS(GLenum pname, GLfloat param)             {if (GLeeInit()) glPixelTexGenParameterfSGIS(pname, param);}
-void __stdcall _Lazy_glPixelTexGenParameterfvSGIS(GLenum pname, const GLfloat * params)   {if (GLeeInit()) glPixelTexGenParameterfvSGIS(pname, params);}
+void __stdcall _Lazy_glPixelTexGenParameterfSGIS(GLenum pname, GLdouble param)             {if (GLeeInit()) glPixelTexGenParameterfSGIS(pname, param);}
+void __stdcall _Lazy_glPixelTexGenParameterfvSGIS(GLenum pname, const GLdouble * params)   {if (GLeeInit()) glPixelTexGenParameterfvSGIS(pname, params);}
 void __stdcall _Lazy_glGetPixelTexGenParameterivSGIS(GLenum pname, GLint * params)        {if (GLeeInit()) glGetPixelTexGenParameterivSGIS(pname, params);}
-void __stdcall _Lazy_glGetPixelTexGenParameterfvSGIS(GLenum pname, GLfloat * params)      {if (GLeeInit()) glGetPixelTexGenParameterfvSGIS(pname, params);}
+void __stdcall _Lazy_glGetPixelTexGenParameterfvSGIS(GLenum pname, GLdouble * params)      {if (GLeeInit()) glGetPixelTexGenParameterfvSGIS(pname, params);}
 PFNGLPIXELTEXGENPARAMETERISGISPROC pglPixelTexGenParameteriSGIS=_Lazy_glPixelTexGenParameteriSGIS;
 PFNGLPIXELTEXGENPARAMETERIVSGISPROC pglPixelTexGenParameterivSGIS=_Lazy_glPixelTexGenParameterivSGIS;
 PFNGLPIXELTEXGENPARAMETERFSGISPROC pglPixelTexGenParameterfSGIS=_Lazy_glPixelTexGenParameterfSGIS;
@@ -1924,8 +1924,8 @@ PFNGLPRIORITIZETEXTURESEXTPROC pglPrioritizeTexturesEXT=_Lazy_glPrioritizeTextur
 //GL_SGIS_detail_texture
 
 #ifdef __GLEE_GL_SGIS_detail_texture
-void __stdcall _Lazy_glDetailTexFuncSGIS(GLenum target, GLsizei n, const GLfloat * points)  {if (GLeeInit()) glDetailTexFuncSGIS(target, n, points);}
-void __stdcall _Lazy_glGetDetailTexFuncSGIS(GLenum target, GLfloat * points)              {if (GLeeInit()) glGetDetailTexFuncSGIS(target, points);}
+void __stdcall _Lazy_glDetailTexFuncSGIS(GLenum target, GLsizei n, const GLdouble * points)  {if (GLeeInit()) glDetailTexFuncSGIS(target, n, points);}
+void __stdcall _Lazy_glGetDetailTexFuncSGIS(GLenum target, GLdouble * points)              {if (GLeeInit()) glGetDetailTexFuncSGIS(target, points);}
 PFNGLDETAILTEXFUNCSGISPROC pglDetailTexFuncSGIS=_Lazy_glDetailTexFuncSGIS;
 PFNGLGETDETAILTEXFUNCSGISPROC pglGetDetailTexFuncSGIS=_Lazy_glGetDetailTexFuncSGIS;
 #endif 
@@ -1933,8 +1933,8 @@ PFNGLGETDETAILTEXFUNCSGISPROC pglGetDetailTexFuncSGIS=_Lazy_glGetDetailTexFuncSG
 //GL_SGIS_sharpen_texture
 
 #ifdef __GLEE_GL_SGIS_sharpen_texture
-void __stdcall _Lazy_glSharpenTexFuncSGIS(GLenum target, GLsizei n, const GLfloat * points)  {if (GLeeInit()) glSharpenTexFuncSGIS(target, n, points);}
-void __stdcall _Lazy_glGetSharpenTexFuncSGIS(GLenum target, GLfloat * points)             {if (GLeeInit()) glGetSharpenTexFuncSGIS(target, points);}
+void __stdcall _Lazy_glSharpenTexFuncSGIS(GLenum target, GLsizei n, const GLdouble * points)  {if (GLeeInit()) glSharpenTexFuncSGIS(target, n, points);}
+void __stdcall _Lazy_glGetSharpenTexFuncSGIS(GLenum target, GLdouble * points)             {if (GLeeInit()) glGetSharpenTexFuncSGIS(target, points);}
 PFNGLSHARPENTEXFUNCSGISPROC pglSharpenTexFuncSGIS=_Lazy_glSharpenTexFuncSGIS;
 PFNGLGETSHARPENTEXFUNCSGISPROC pglGetSharpenTexFuncSGIS=_Lazy_glGetSharpenTexFuncSGIS;
 #endif 
@@ -2051,8 +2051,8 @@ PFNGLBLENDEQUATIONEXTPROC pglBlendEquationEXT=_Lazy_glBlendEquationEXT;
 //GL_SGIX_sprite
 
 #ifdef __GLEE_GL_SGIX_sprite
-void __stdcall _Lazy_glSpriteParameterfSGIX(GLenum pname, GLfloat param)                  {if (GLeeInit()) glSpriteParameterfSGIX(pname, param);}
-void __stdcall _Lazy_glSpriteParameterfvSGIX(GLenum pname, const GLfloat * params)        {if (GLeeInit()) glSpriteParameterfvSGIX(pname, params);}
+void __stdcall _Lazy_glSpriteParameterfSGIX(GLenum pname, GLdouble param)                  {if (GLeeInit()) glSpriteParameterfSGIX(pname, param);}
+void __stdcall _Lazy_glSpriteParameterfvSGIX(GLenum pname, const GLdouble * params)        {if (GLeeInit()) glSpriteParameterfvSGIX(pname, params);}
 void __stdcall _Lazy_glSpriteParameteriSGIX(GLenum pname, GLint param)                    {if (GLeeInit()) glSpriteParameteriSGIX(pname, param);}
 void __stdcall _Lazy_glSpriteParameterivSGIX(GLenum pname, const GLint * params)          {if (GLeeInit()) glSpriteParameterivSGIX(pname, params);}
 PFNGLSPRITEPARAMETERFSGIXPROC pglSpriteParameterfSGIX=_Lazy_glSpriteParameterfSGIX;
@@ -2069,8 +2069,8 @@ PFNGLSPRITEPARAMETERIVSGIXPROC pglSpriteParameterivSGIX=_Lazy_glSpriteParameteri
 //GL_EXT_point_parameters
 
 #ifdef __GLEE_GL_EXT_point_parameters
-void __stdcall _Lazy_glPointParameterfEXT(GLenum pname, GLfloat param)                    {if (GLeeInit()) glPointParameterfEXT(pname, param);}
-void __stdcall _Lazy_glPointParameterfvEXT(GLenum pname, const GLfloat * params)          {if (GLeeInit()) glPointParameterfvEXT(pname, params);}
+void __stdcall _Lazy_glPointParameterfEXT(GLenum pname, GLdouble param)                    {if (GLeeInit()) glPointParameterfEXT(pname, param);}
+void __stdcall _Lazy_glPointParameterfvEXT(GLenum pname, const GLdouble * params)          {if (GLeeInit()) glPointParameterfvEXT(pname, params);}
 PFNGLPOINTPARAMETERFEXTPROC pglPointParameterfEXT=_Lazy_glPointParameterfEXT;
 PFNGLPOINTPARAMETERFVEXTPROC pglPointParameterfvEXT=_Lazy_glPointParameterfvEXT;
 #endif 
@@ -2078,8 +2078,8 @@ PFNGLPOINTPARAMETERFVEXTPROC pglPointParameterfvEXT=_Lazy_glPointParameterfvEXT;
 //GL_SGIS_point_parameters
 
 #ifdef __GLEE_GL_SGIS_point_parameters
-void __stdcall _Lazy_glPointParameterfSGIS(GLenum pname, GLfloat param)                   {if (GLeeInit()) glPointParameterfSGIS(pname, param);}
-void __stdcall _Lazy_glPointParameterfvSGIS(GLenum pname, const GLfloat * params)         {if (GLeeInit()) glPointParameterfvSGIS(pname, params);}
+void __stdcall _Lazy_glPointParameterfSGIS(GLenum pname, GLdouble param)                   {if (GLeeInit()) glPointParameterfSGIS(pname, param);}
+void __stdcall _Lazy_glPointParameterfvSGIS(GLenum pname, const GLdouble * params)         {if (GLeeInit()) glPointParameterfvSGIS(pname, params);}
 PFNGLPOINTPARAMETERFSGISPROC pglPointParameterfSGIS=_Lazy_glPointParameterfSGIS;
 PFNGLPOINTPARAMETERFVSGISPROC pglPointParameterfvSGIS=_Lazy_glPointParameterfvSGIS;
 #endif 
@@ -2129,7 +2129,7 @@ PFNGLTAGSAMPLEBUFFERSGIXPROC pglTagSampleBufferSGIX=_Lazy_glTagSampleBufferSGIX;
 
 #ifdef __GLEE_GL_SGIX_polynomial_ffd
 void __stdcall _Lazy_glDeformationMap3dSGIX(GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble w1, GLdouble w2, GLint wstride, GLint worder, const GLdouble * points)  {if (GLeeInit()) glDeformationMap3dSGIX(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, w1, w2, wstride, worder, points);}
-void __stdcall _Lazy_glDeformationMap3fSGIX(GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, GLfloat w1, GLfloat w2, GLint wstride, GLint worder, const GLfloat * points)  {if (GLeeInit()) glDeformationMap3fSGIX(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, w1, w2, wstride, worder, points);}
+void __stdcall _Lazy_glDeformationMap3fSGIX(GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble w1, GLdouble w2, GLint wstride, GLint worder, const GLdouble * points)  {if (GLeeInit()) glDeformationMap3fSGIX(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, w1, w2, wstride, worder, points);}
 void __stdcall _Lazy_glDeformSGIX(GLbitfield mask)                                        {if (GLeeInit()) glDeformSGIX(mask);}
 void __stdcall _Lazy_glLoadIdentityDeformationMapSGIX(GLbitfield mask)                    {if (GLeeInit()) glLoadIdentityDeformationMapSGIX(mask);}
 PFNGLDEFORMATIONMAP3DSGIXPROC pglDeformationMap3dSGIX=_Lazy_glDeformationMap3dSGIX;
@@ -2160,8 +2160,8 @@ PFNGLFLUSHRASTERSGIXPROC pglFlushRasterSGIX=_Lazy_glFlushRasterSGIX;
 //GL_SGIS_fog_function
 
 #ifdef __GLEE_GL_SGIS_fog_function
-void __stdcall _Lazy_glFogFuncSGIS(GLsizei n, const GLfloat * points)                     {if (GLeeInit()) glFogFuncSGIS(n, points);}
-void __stdcall _Lazy_glGetFogFuncSGIS(GLfloat * points)                                   {if (GLeeInit()) glGetFogFuncSGIS(points);}
+void __stdcall _Lazy_glFogFuncSGIS(GLsizei n, const GLdouble * points)                     {if (GLeeInit()) glFogFuncSGIS(n, points);}
+void __stdcall _Lazy_glGetFogFuncSGIS(GLdouble * points)                                   {if (GLeeInit()) glGetFogFuncSGIS(points);}
 PFNGLFOGFUNCSGISPROC pglFogFuncSGIS=_Lazy_glFogFuncSGIS;
 PFNGLGETFOGFUNCSGISPROC pglGetFogFuncSGIS=_Lazy_glGetFogFuncSGIS;
 #endif 
@@ -2175,11 +2175,11 @@ PFNGLGETFOGFUNCSGISPROC pglGetFogFuncSGIS=_Lazy_glGetFogFuncSGIS;
 
 #ifdef __GLEE_GL_HP_image_transform
 void __stdcall _Lazy_glImageTransformParameteriHP(GLenum target, GLenum pname, GLint param)  {if (GLeeInit()) glImageTransformParameteriHP(target, pname, param);}
-void __stdcall _Lazy_glImageTransformParameterfHP(GLenum target, GLenum pname, GLfloat param)  {if (GLeeInit()) glImageTransformParameterfHP(target, pname, param);}
+void __stdcall _Lazy_glImageTransformParameterfHP(GLenum target, GLenum pname, GLdouble param)  {if (GLeeInit()) glImageTransformParameterfHP(target, pname, param);}
 void __stdcall _Lazy_glImageTransformParameterivHP(GLenum target, GLenum pname, const GLint * params)  {if (GLeeInit()) glImageTransformParameterivHP(target, pname, params);}
-void __stdcall _Lazy_glImageTransformParameterfvHP(GLenum target, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glImageTransformParameterfvHP(target, pname, params);}
+void __stdcall _Lazy_glImageTransformParameterfvHP(GLenum target, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glImageTransformParameterfvHP(target, pname, params);}
 void __stdcall _Lazy_glGetImageTransformParameterivHP(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetImageTransformParameterivHP(target, pname, params);}
-void __stdcall _Lazy_glGetImageTransformParameterfvHP(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetImageTransformParameterfvHP(target, pname, params);}
+void __stdcall _Lazy_glGetImageTransformParameterfvHP(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetImageTransformParameterfvHP(target, pname, params);}
 PFNGLIMAGETRANSFORMPARAMETERIHPPROC pglImageTransformParameteriHP=_Lazy_glImageTransformParameteriHP;
 PFNGLIMAGETRANSFORMPARAMETERFHPPROC pglImageTransformParameterfHP=_Lazy_glImageTransformParameterfHP;
 PFNGLIMAGETRANSFORMPARAMETERIVHPPROC pglImageTransformParameterivHP=_Lazy_glImageTransformParameterivHP;
@@ -2230,7 +2230,7 @@ PFNGLHINTPGIPROC pglHintPGI=_Lazy_glHintPGI;
 void __stdcall _Lazy_glColorTableEXT(GLenum target, GLenum internalFormat, GLsizei width, GLenum format, GLenum type, const GLvoid * table)  {if (GLeeInit()) glColorTableEXT(target, internalFormat, width, format, type, table);}
 void __stdcall _Lazy_glGetColorTableEXT(GLenum target, GLenum format, GLenum type, GLvoid * data)  {if (GLeeInit()) glGetColorTableEXT(target, format, type, data);}
 void __stdcall _Lazy_glGetColorTableParameterivEXT(GLenum target, GLenum pname, GLint * params)  {if (GLeeInit()) glGetColorTableParameterivEXT(target, pname, params);}
-void __stdcall _Lazy_glGetColorTableParameterfvEXT(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetColorTableParameterfvEXT(target, pname, params);}
+void __stdcall _Lazy_glGetColorTableParameterfvEXT(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetColorTableParameterfvEXT(target, pname, params);}
 PFNGLCOLORTABLEEXTPROC pglColorTableEXT=_Lazy_glColorTableEXT;
 PFNGLGETCOLORTABLEEXTPROC pglGetColorTableEXT=_Lazy_glGetColorTableEXT;
 PFNGLGETCOLORTABLEPARAMETERIVEXTPROC pglGetColorTableParameterivEXT=_Lazy_glGetColorTableParameterivEXT;
@@ -2245,10 +2245,10 @@ PFNGLGETCOLORTABLEPARAMETERFVEXTPROC pglGetColorTableParameterfvEXT=_Lazy_glGetC
 //GL_SGIX_list_priority
 
 #ifdef __GLEE_GL_SGIX_list_priority
-void __stdcall _Lazy_glGetListParameterfvSGIX(GLuint list, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetListParameterfvSGIX(list, pname, params);}
+void __stdcall _Lazy_glGetListParameterfvSGIX(GLuint list, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetListParameterfvSGIX(list, pname, params);}
 void __stdcall _Lazy_glGetListParameterivSGIX(GLuint list, GLenum pname, GLint * params)  {if (GLeeInit()) glGetListParameterivSGIX(list, pname, params);}
-void __stdcall _Lazy_glListParameterfSGIX(GLuint list, GLenum pname, GLfloat param)       {if (GLeeInit()) glListParameterfSGIX(list, pname, param);}
-void __stdcall _Lazy_glListParameterfvSGIX(GLuint list, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glListParameterfvSGIX(list, pname, params);}
+void __stdcall _Lazy_glListParameterfSGIX(GLuint list, GLenum pname, GLdouble param)       {if (GLeeInit()) glListParameterfSGIX(list, pname, param);}
+void __stdcall _Lazy_glListParameterfvSGIX(GLuint list, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glListParameterfvSGIX(list, pname, params);}
 void __stdcall _Lazy_glListParameteriSGIX(GLuint list, GLenum pname, GLint param)         {if (GLeeInit()) glListParameteriSGIX(list, pname, param);}
 void __stdcall _Lazy_glListParameterivSGIX(GLuint list, GLenum pname, const GLint * params)  {if (GLeeInit()) glListParameterivSGIX(list, pname, params);}
 PFNGLGETLISTPARAMETERFVSGIXPROC pglGetListParameterfvSGIX=_Lazy_glGetListParameterfvSGIX;
@@ -2316,7 +2316,7 @@ PFNGLUNLOCKARRAYSEXTPROC pglUnlockArraysEXT=_Lazy_glUnlockArraysEXT;
 
 #ifdef __GLEE_GL_EXT_cull_vertex
 void __stdcall _Lazy_glCullParameterdvEXT(GLenum pname, GLdouble * params)                {if (GLeeInit()) glCullParameterdvEXT(pname, params);}
-void __stdcall _Lazy_glCullParameterfvEXT(GLenum pname, GLfloat * params)                 {if (GLeeInit()) glCullParameterfvEXT(pname, params);}
+void __stdcall _Lazy_glCullParameterfvEXT(GLenum pname, GLdouble * params)                 {if (GLeeInit()) glCullParameterfvEXT(pname, params);}
 PFNGLCULLPARAMETERDVEXTPROC pglCullParameterdvEXT=_Lazy_glCullParameterdvEXT;
 PFNGLCULLPARAMETERFVEXTPROC pglCullParameterfvEXT=_Lazy_glCullParameterfvEXT;
 #endif 
@@ -2330,21 +2330,21 @@ PFNGLCULLPARAMETERFVEXTPROC pglCullParameterfvEXT=_Lazy_glCullParameterfvEXT;
 
 #ifdef __GLEE_GL_SGIX_fragment_lighting
 void __stdcall _Lazy_glFragmentColorMaterialSGIX(GLenum face, GLenum mode)                {if (GLeeInit()) glFragmentColorMaterialSGIX(face, mode);}
-void __stdcall _Lazy_glFragmentLightfSGIX(GLenum light, GLenum pname, GLfloat param)      {if (GLeeInit()) glFragmentLightfSGIX(light, pname, param);}
-void __stdcall _Lazy_glFragmentLightfvSGIX(GLenum light, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glFragmentLightfvSGIX(light, pname, params);}
+void __stdcall _Lazy_glFragmentLightfSGIX(GLenum light, GLenum pname, GLdouble param)      {if (GLeeInit()) glFragmentLightfSGIX(light, pname, param);}
+void __stdcall _Lazy_glFragmentLightfvSGIX(GLenum light, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glFragmentLightfvSGIX(light, pname, params);}
 void __stdcall _Lazy_glFragmentLightiSGIX(GLenum light, GLenum pname, GLint param)        {if (GLeeInit()) glFragmentLightiSGIX(light, pname, param);}
 void __stdcall _Lazy_glFragmentLightivSGIX(GLenum light, GLenum pname, const GLint * params)  {if (GLeeInit()) glFragmentLightivSGIX(light, pname, params);}
-void __stdcall _Lazy_glFragmentLightModelfSGIX(GLenum pname, GLfloat param)               {if (GLeeInit()) glFragmentLightModelfSGIX(pname, param);}
-void __stdcall _Lazy_glFragmentLightModelfvSGIX(GLenum pname, const GLfloat * params)     {if (GLeeInit()) glFragmentLightModelfvSGIX(pname, params);}
+void __stdcall _Lazy_glFragmentLightModelfSGIX(GLenum pname, GLdouble param)               {if (GLeeInit()) glFragmentLightModelfSGIX(pname, param);}
+void __stdcall _Lazy_glFragmentLightModelfvSGIX(GLenum pname, const GLdouble * params)     {if (GLeeInit()) glFragmentLightModelfvSGIX(pname, params);}
 void __stdcall _Lazy_glFragmentLightModeliSGIX(GLenum pname, GLint param)                 {if (GLeeInit()) glFragmentLightModeliSGIX(pname, param);}
 void __stdcall _Lazy_glFragmentLightModelivSGIX(GLenum pname, const GLint * params)       {if (GLeeInit()) glFragmentLightModelivSGIX(pname, params);}
-void __stdcall _Lazy_glFragmentMaterialfSGIX(GLenum face, GLenum pname, GLfloat param)    {if (GLeeInit()) glFragmentMaterialfSGIX(face, pname, param);}
-void __stdcall _Lazy_glFragmentMaterialfvSGIX(GLenum face, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glFragmentMaterialfvSGIX(face, pname, params);}
+void __stdcall _Lazy_glFragmentMaterialfSGIX(GLenum face, GLenum pname, GLdouble param)    {if (GLeeInit()) glFragmentMaterialfSGIX(face, pname, param);}
+void __stdcall _Lazy_glFragmentMaterialfvSGIX(GLenum face, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glFragmentMaterialfvSGIX(face, pname, params);}
 void __stdcall _Lazy_glFragmentMaterialiSGIX(GLenum face, GLenum pname, GLint param)      {if (GLeeInit()) glFragmentMaterialiSGIX(face, pname, param);}
 void __stdcall _Lazy_glFragmentMaterialivSGIX(GLenum face, GLenum pname, const GLint * params)  {if (GLeeInit()) glFragmentMaterialivSGIX(face, pname, params);}
-void __stdcall _Lazy_glGetFragmentLightfvSGIX(GLenum light, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetFragmentLightfvSGIX(light, pname, params);}
+void __stdcall _Lazy_glGetFragmentLightfvSGIX(GLenum light, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetFragmentLightfvSGIX(light, pname, params);}
 void __stdcall _Lazy_glGetFragmentLightivSGIX(GLenum light, GLenum pname, GLint * params)  {if (GLeeInit()) glGetFragmentLightivSGIX(light, pname, params);}
-void __stdcall _Lazy_glGetFragmentMaterialfvSGIX(GLenum face, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetFragmentMaterialfvSGIX(face, pname, params);}
+void __stdcall _Lazy_glGetFragmentMaterialfvSGIX(GLenum face, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetFragmentMaterialfvSGIX(face, pname, params);}
 void __stdcall _Lazy_glGetFragmentMaterialivSGIX(GLenum face, GLenum pname, GLint * params)  {if (GLeeInit()) glGetFragmentMaterialivSGIX(face, pname, params);}
 void __stdcall _Lazy_glLightEnviSGIX(GLenum pname, GLint param)                           {if (GLeeInit()) glLightEnviSGIX(pname, param);}
 PFNGLFRAGMENTCOLORMATERIALSGIXPROC pglFragmentColorMaterialSGIX=_Lazy_glFragmentColorMaterialSGIX;
@@ -2474,9 +2474,9 @@ PFNGLTEXCOORDPOINTERVINTELPROC pglTexCoordPointervINTEL=_Lazy_glTexCoordPointerv
 
 #ifdef __GLEE_GL_EXT_pixel_transform
 void __stdcall _Lazy_glPixelTransformParameteriEXT(GLenum target, GLenum pname, GLint param)  {if (GLeeInit()) glPixelTransformParameteriEXT(target, pname, param);}
-void __stdcall _Lazy_glPixelTransformParameterfEXT(GLenum target, GLenum pname, GLfloat param)  {if (GLeeInit()) glPixelTransformParameterfEXT(target, pname, param);}
+void __stdcall _Lazy_glPixelTransformParameterfEXT(GLenum target, GLenum pname, GLdouble param)  {if (GLeeInit()) glPixelTransformParameterfEXT(target, pname, param);}
 void __stdcall _Lazy_glPixelTransformParameterivEXT(GLenum target, GLenum pname, const GLint * params)  {if (GLeeInit()) glPixelTransformParameterivEXT(target, pname, params);}
-void __stdcall _Lazy_glPixelTransformParameterfvEXT(GLenum target, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glPixelTransformParameterfvEXT(target, pname, params);}
+void __stdcall _Lazy_glPixelTransformParameterfvEXT(GLenum target, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glPixelTransformParameterfvEXT(target, pname, params);}
 PFNGLPIXELTRANSFORMPARAMETERIEXTPROC pglPixelTransformParameteriEXT=_Lazy_glPixelTransformParameteriEXT;
 PFNGLPIXELTRANSFORMPARAMETERFEXTPROC pglPixelTransformParameterfEXT=_Lazy_glPixelTransformParameterfEXT;
 PFNGLPIXELTRANSFORMPARAMETERIVEXTPROC pglPixelTransformParameterivEXT=_Lazy_glPixelTransformParameterivEXT;
@@ -2505,8 +2505,8 @@ void __stdcall _Lazy_glSecondaryColor3bEXT(GLbyte red, GLbyte green, GLbyte blue
 void __stdcall _Lazy_glSecondaryColor3bvEXT(const GLbyte * v)                             {if (GLeeInit()) glSecondaryColor3bvEXT(v);}
 void __stdcall _Lazy_glSecondaryColor3dEXT(GLdouble red, GLdouble green, GLdouble blue)   {if (GLeeInit()) glSecondaryColor3dEXT(red, green, blue);}
 void __stdcall _Lazy_glSecondaryColor3dvEXT(const GLdouble * v)                           {if (GLeeInit()) glSecondaryColor3dvEXT(v);}
-void __stdcall _Lazy_glSecondaryColor3fEXT(GLfloat red, GLfloat green, GLfloat blue)      {if (GLeeInit()) glSecondaryColor3fEXT(red, green, blue);}
-void __stdcall _Lazy_glSecondaryColor3fvEXT(const GLfloat * v)                            {if (GLeeInit()) glSecondaryColor3fvEXT(v);}
+void __stdcall _Lazy_glSecondaryColor3fEXT(GLdouble red, GLdouble green, GLdouble blue)      {if (GLeeInit()) glSecondaryColor3fEXT(red, green, blue);}
+void __stdcall _Lazy_glSecondaryColor3fvEXT(const GLdouble * v)                            {if (GLeeInit()) glSecondaryColor3fvEXT(v);}
 void __stdcall _Lazy_glSecondaryColor3iEXT(GLint red, GLint green, GLint blue)            {if (GLeeInit()) glSecondaryColor3iEXT(red, green, blue);}
 void __stdcall _Lazy_glSecondaryColor3ivEXT(const GLint * v)                              {if (GLeeInit()) glSecondaryColor3ivEXT(v);}
 void __stdcall _Lazy_glSecondaryColor3sEXT(GLshort red, GLshort green, GLshort blue)      {if (GLeeInit()) glSecondaryColor3sEXT(red, green, blue);}
@@ -2556,8 +2556,8 @@ PFNGLMULTIDRAWELEMENTSEXTPROC pglMultiDrawElementsEXT=_Lazy_glMultiDrawElementsE
 //GL_EXT_fog_coord
 
 #ifdef __GLEE_GL_EXT_fog_coord
-void __stdcall _Lazy_glFogCoordfEXT(GLfloat coord)                                        {if (GLeeInit()) glFogCoordfEXT(coord);}
-void __stdcall _Lazy_glFogCoordfvEXT(const GLfloat * coord)                               {if (GLeeInit()) glFogCoordfvEXT(coord);}
+void __stdcall _Lazy_glFogCoordfEXT(GLdouble coord)                                        {if (GLeeInit()) glFogCoordfEXT(coord);}
+void __stdcall _Lazy_glFogCoordfvEXT(const GLdouble * coord)                               {if (GLeeInit()) glFogCoordfvEXT(coord);}
 void __stdcall _Lazy_glFogCoorddEXT(GLdouble coord)                                       {if (GLeeInit()) glFogCoorddEXT(coord);}
 void __stdcall _Lazy_glFogCoorddvEXT(const GLdouble * coord)                              {if (GLeeInit()) glFogCoorddvEXT(coord);}
 void __stdcall _Lazy_glFogCoordPointerEXT(GLenum type, GLsizei stride, const GLvoid * pointer)  {if (GLeeInit()) glFogCoordPointerEXT(type, stride, pointer);}
@@ -2580,8 +2580,8 @@ void __stdcall _Lazy_glTangent3bEXT(GLbyte tx, GLbyte ty, GLbyte tz)            
 void __stdcall _Lazy_glTangent3bvEXT(const GLbyte * v)                                    {if (GLeeInit()) glTangent3bvEXT(v);}
 void __stdcall _Lazy_glTangent3dEXT(GLdouble tx, GLdouble ty, GLdouble tz)                {if (GLeeInit()) glTangent3dEXT(tx, ty, tz);}
 void __stdcall _Lazy_glTangent3dvEXT(const GLdouble * v)                                  {if (GLeeInit()) glTangent3dvEXT(v);}
-void __stdcall _Lazy_glTangent3fEXT(GLfloat tx, GLfloat ty, GLfloat tz)                   {if (GLeeInit()) glTangent3fEXT(tx, ty, tz);}
-void __stdcall _Lazy_glTangent3fvEXT(const GLfloat * v)                                   {if (GLeeInit()) glTangent3fvEXT(v);}
+void __stdcall _Lazy_glTangent3fEXT(GLdouble tx, GLdouble ty, GLdouble tz)                   {if (GLeeInit()) glTangent3fEXT(tx, ty, tz);}
+void __stdcall _Lazy_glTangent3fvEXT(const GLdouble * v)                                   {if (GLeeInit()) glTangent3fvEXT(v);}
 void __stdcall _Lazy_glTangent3iEXT(GLint tx, GLint ty, GLint tz)                         {if (GLeeInit()) glTangent3iEXT(tx, ty, tz);}
 void __stdcall _Lazy_glTangent3ivEXT(const GLint * v)                                     {if (GLeeInit()) glTangent3ivEXT(v);}
 void __stdcall _Lazy_glTangent3sEXT(GLshort tx, GLshort ty, GLshort tz)                   {if (GLeeInit()) glTangent3sEXT(tx, ty, tz);}
@@ -2590,8 +2590,8 @@ void __stdcall _Lazy_glBinormal3bEXT(GLbyte bx, GLbyte by, GLbyte bz)           
 void __stdcall _Lazy_glBinormal3bvEXT(const GLbyte * v)                                   {if (GLeeInit()) glBinormal3bvEXT(v);}
 void __stdcall _Lazy_glBinormal3dEXT(GLdouble bx, GLdouble by, GLdouble bz)               {if (GLeeInit()) glBinormal3dEXT(bx, by, bz);}
 void __stdcall _Lazy_glBinormal3dvEXT(const GLdouble * v)                                 {if (GLeeInit()) glBinormal3dvEXT(v);}
-void __stdcall _Lazy_glBinormal3fEXT(GLfloat bx, GLfloat by, GLfloat bz)                  {if (GLeeInit()) glBinormal3fEXT(bx, by, bz);}
-void __stdcall _Lazy_glBinormal3fvEXT(const GLfloat * v)                                  {if (GLeeInit()) glBinormal3fvEXT(v);}
+void __stdcall _Lazy_glBinormal3fEXT(GLdouble bx, GLdouble by, GLdouble bz)                  {if (GLeeInit()) glBinormal3fEXT(bx, by, bz);}
+void __stdcall _Lazy_glBinormal3fvEXT(const GLdouble * v)                                  {if (GLeeInit()) glBinormal3fvEXT(v);}
 void __stdcall _Lazy_glBinormal3iEXT(GLint bx, GLint by, GLint bz)                        {if (GLeeInit()) glBinormal3iEXT(bx, by, bz);}
 void __stdcall _Lazy_glBinormal3ivEXT(const GLint * v)                                    {if (GLeeInit()) glBinormal3ivEXT(v);}
 void __stdcall _Lazy_glBinormal3sEXT(GLshort bx, GLshort by, GLshort bz)                  {if (GLeeInit()) glBinormal3sEXT(bx, by, bz);}
@@ -2655,7 +2655,7 @@ PFNGLFINISHTEXTURESUNXPROC pglFinishTextureSUNX=_Lazy_glFinishTextureSUNX;
 void __stdcall _Lazy_glGlobalAlphaFactorbSUN(GLbyte factor)                               {if (GLeeInit()) glGlobalAlphaFactorbSUN(factor);}
 void __stdcall _Lazy_glGlobalAlphaFactorsSUN(GLshort factor)                              {if (GLeeInit()) glGlobalAlphaFactorsSUN(factor);}
 void __stdcall _Lazy_glGlobalAlphaFactoriSUN(GLint factor)                                {if (GLeeInit()) glGlobalAlphaFactoriSUN(factor);}
-void __stdcall _Lazy_glGlobalAlphaFactorfSUN(GLfloat factor)                              {if (GLeeInit()) glGlobalAlphaFactorfSUN(factor);}
+void __stdcall _Lazy_glGlobalAlphaFactorfSUN(GLdouble factor)                              {if (GLeeInit()) glGlobalAlphaFactorfSUN(factor);}
 void __stdcall _Lazy_glGlobalAlphaFactordSUN(GLdouble factor)                             {if (GLeeInit()) glGlobalAlphaFactordSUN(factor);}
 void __stdcall _Lazy_glGlobalAlphaFactorubSUN(GLubyte factor)                             {if (GLeeInit()) glGlobalAlphaFactorubSUN(factor);}
 void __stdcall _Lazy_glGlobalAlphaFactorusSUN(GLushort factor)                            {if (GLeeInit()) glGlobalAlphaFactorusSUN(factor);}
@@ -2692,46 +2692,46 @@ PFNGLREPLACEMENTCODEPOINTERSUNPROC pglReplacementCodePointerSUN=_Lazy_glReplacem
 //GL_SUN_vertex
 
 #ifdef __GLEE_GL_SUN_vertex
-void __stdcall _Lazy_glColor4ubVertex2fSUN(GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y)  {if (GLeeInit()) glColor4ubVertex2fSUN(r, g, b, a, x, y);}
-void __stdcall _Lazy_glColor4ubVertex2fvSUN(const GLubyte * c, const GLfloat * v)         {if (GLeeInit()) glColor4ubVertex2fvSUN(c, v);}
-void __stdcall _Lazy_glColor4ubVertex3fSUN(GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glColor4ubVertex3fSUN(r, g, b, a, x, y, z);}
-void __stdcall _Lazy_glColor4ubVertex3fvSUN(const GLubyte * c, const GLfloat * v)         {if (GLeeInit()) glColor4ubVertex3fvSUN(c, v);}
-void __stdcall _Lazy_glColor3fVertex3fSUN(GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glColor3fVertex3fSUN(r, g, b, x, y, z);}
-void __stdcall _Lazy_glColor3fVertex3fvSUN(const GLfloat * c, const GLfloat * v)          {if (GLeeInit()) glColor3fVertex3fvSUN(c, v);}
-void __stdcall _Lazy_glNormal3fVertex3fSUN(GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glNormal3fVertex3fSUN(nx, ny, nz, x, y, z);}
-void __stdcall _Lazy_glNormal3fVertex3fvSUN(const GLfloat * n, const GLfloat * v)         {if (GLeeInit()) glNormal3fVertex3fvSUN(n, v);}
-void __stdcall _Lazy_glColor4fNormal3fVertex3fSUN(GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glColor4fNormal3fVertex3fSUN(r, g, b, a, nx, ny, nz, x, y, z);}
-void __stdcall _Lazy_glColor4fNormal3fVertex3fvSUN(const GLfloat * c, const GLfloat * n, const GLfloat * v)  {if (GLeeInit()) glColor4fNormal3fVertex3fvSUN(c, n, v);}
-void __stdcall _Lazy_glTexCoord2fVertex3fSUN(GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glTexCoord2fVertex3fSUN(s, t, x, y, z);}
-void __stdcall _Lazy_glTexCoord2fVertex3fvSUN(const GLfloat * tc, const GLfloat * v)      {if (GLeeInit()) glTexCoord2fVertex3fvSUN(tc, v);}
-void __stdcall _Lazy_glTexCoord4fVertex4fSUN(GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glTexCoord4fVertex4fSUN(s, t, p, q, x, y, z, w);}
-void __stdcall _Lazy_glTexCoord4fVertex4fvSUN(const GLfloat * tc, const GLfloat * v)      {if (GLeeInit()) glTexCoord4fVertex4fvSUN(tc, v);}
-void __stdcall _Lazy_glTexCoord2fColor4ubVertex3fSUN(GLfloat s, GLfloat t, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glTexCoord2fColor4ubVertex3fSUN(s, t, r, g, b, a, x, y, z);}
-void __stdcall _Lazy_glTexCoord2fColor4ubVertex3fvSUN(const GLfloat * tc, const GLubyte * c, const GLfloat * v)  {if (GLeeInit()) glTexCoord2fColor4ubVertex3fvSUN(tc, c, v);}
-void __stdcall _Lazy_glTexCoord2fColor3fVertex3fSUN(GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glTexCoord2fColor3fVertex3fSUN(s, t, r, g, b, x, y, z);}
-void __stdcall _Lazy_glTexCoord2fColor3fVertex3fvSUN(const GLfloat * tc, const GLfloat * c, const GLfloat * v)  {if (GLeeInit()) glTexCoord2fColor3fVertex3fvSUN(tc, c, v);}
-void __stdcall _Lazy_glTexCoord2fNormal3fVertex3fSUN(GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glTexCoord2fNormal3fVertex3fSUN(s, t, nx, ny, nz, x, y, z);}
-void __stdcall _Lazy_glTexCoord2fNormal3fVertex3fvSUN(const GLfloat * tc, const GLfloat * n, const GLfloat * v)  {if (GLeeInit()) glTexCoord2fNormal3fVertex3fvSUN(tc, n, v);}
-void __stdcall _Lazy_glTexCoord2fColor4fNormal3fVertex3fSUN(GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glTexCoord2fColor4fNormal3fVertex3fSUN(s, t, r, g, b, a, nx, ny, nz, x, y, z);}
-void __stdcall _Lazy_glTexCoord2fColor4fNormal3fVertex3fvSUN(const GLfloat * tc, const GLfloat * c, const GLfloat * n, const GLfloat * v)  {if (GLeeInit()) glTexCoord2fColor4fNormal3fVertex3fvSUN(tc, c, n, v);}
-void __stdcall _Lazy_glTexCoord4fColor4fNormal3fVertex4fSUN(GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glTexCoord4fColor4fNormal3fVertex4fSUN(s, t, p, q, r, g, b, a, nx, ny, nz, x, y, z, w);}
-void __stdcall _Lazy_glTexCoord4fColor4fNormal3fVertex4fvSUN(const GLfloat * tc, const GLfloat * c, const GLfloat * n, const GLfloat * v)  {if (GLeeInit()) glTexCoord4fColor4fNormal3fVertex4fvSUN(tc, c, n, v);}
-void __stdcall _Lazy_glReplacementCodeuiVertex3fSUN(GLuint rc, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glReplacementCodeuiVertex3fSUN(rc, x, y, z);}
-void __stdcall _Lazy_glReplacementCodeuiVertex3fvSUN(const GLuint * rc, const GLfloat * v)  {if (GLeeInit()) glReplacementCodeuiVertex3fvSUN(rc, v);}
-void __stdcall _Lazy_glReplacementCodeuiColor4ubVertex3fSUN(GLuint rc, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glReplacementCodeuiColor4ubVertex3fSUN(rc, r, g, b, a, x, y, z);}
-void __stdcall _Lazy_glReplacementCodeuiColor4ubVertex3fvSUN(const GLuint * rc, const GLubyte * c, const GLfloat * v)  {if (GLeeInit()) glReplacementCodeuiColor4ubVertex3fvSUN(rc, c, v);}
-void __stdcall _Lazy_glReplacementCodeuiColor3fVertex3fSUN(GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glReplacementCodeuiColor3fVertex3fSUN(rc, r, g, b, x, y, z);}
-void __stdcall _Lazy_glReplacementCodeuiColor3fVertex3fvSUN(const GLuint * rc, const GLfloat * c, const GLfloat * v)  {if (GLeeInit()) glReplacementCodeuiColor3fVertex3fvSUN(rc, c, v);}
-void __stdcall _Lazy_glReplacementCodeuiNormal3fVertex3fSUN(GLuint rc, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glReplacementCodeuiNormal3fVertex3fSUN(rc, nx, ny, nz, x, y, z);}
-void __stdcall _Lazy_glReplacementCodeuiNormal3fVertex3fvSUN(const GLuint * rc, const GLfloat * n, const GLfloat * v)  {if (GLeeInit()) glReplacementCodeuiNormal3fVertex3fvSUN(rc, n, v);}
-void __stdcall _Lazy_glReplacementCodeuiColor4fNormal3fVertex3fSUN(GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glReplacementCodeuiColor4fNormal3fVertex3fSUN(rc, r, g, b, a, nx, ny, nz, x, y, z);}
-void __stdcall _Lazy_glReplacementCodeuiColor4fNormal3fVertex3fvSUN(const GLuint * rc, const GLfloat * c, const GLfloat * n, const GLfloat * v)  {if (GLeeInit()) glReplacementCodeuiColor4fNormal3fVertex3fvSUN(rc, c, n, v);}
-void __stdcall _Lazy_glReplacementCodeuiTexCoord2fVertex3fSUN(GLuint rc, GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fVertex3fSUN(rc, s, t, x, y, z);}
-void __stdcall _Lazy_glReplacementCodeuiTexCoord2fVertex3fvSUN(const GLuint * rc, const GLfloat * tc, const GLfloat * v)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fVertex3fvSUN(rc, tc, v);}
-void __stdcall _Lazy_glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN(GLuint rc, GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN(rc, s, t, nx, ny, nz, x, y, z);}
-void __stdcall _Lazy_glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN(const GLuint * rc, const GLfloat * tc, const GLfloat * n, const GLfloat * v)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN(rc, tc, n, v);}
-void __stdcall _Lazy_glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN(GLuint rc, GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN(rc, s, t, r, g, b, a, nx, ny, nz, x, y, z);}
-void __stdcall _Lazy_glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN(const GLuint * rc, const GLfloat * tc, const GLfloat * c, const GLfloat * n, const GLfloat * v)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN(rc, tc, c, n, v);}
+void __stdcall _Lazy_glColor4ubVertex2fSUN(GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLdouble x, GLdouble y)  {if (GLeeInit()) glColor4ubVertex2fSUN(r, g, b, a, x, y);}
+void __stdcall _Lazy_glColor4ubVertex2fvSUN(const GLubyte * c, const GLdouble * v)         {if (GLeeInit()) glColor4ubVertex2fvSUN(c, v);}
+void __stdcall _Lazy_glColor4ubVertex3fSUN(GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glColor4ubVertex3fSUN(r, g, b, a, x, y, z);}
+void __stdcall _Lazy_glColor4ubVertex3fvSUN(const GLubyte * c, const GLdouble * v)         {if (GLeeInit()) glColor4ubVertex3fvSUN(c, v);}
+void __stdcall _Lazy_glColor3fVertex3fSUN(GLdouble r, GLdouble g, GLdouble b, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glColor3fVertex3fSUN(r, g, b, x, y, z);}
+void __stdcall _Lazy_glColor3fVertex3fvSUN(const GLdouble * c, const GLdouble * v)          {if (GLeeInit()) glColor3fVertex3fvSUN(c, v);}
+void __stdcall _Lazy_glNormal3fVertex3fSUN(GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glNormal3fVertex3fSUN(nx, ny, nz, x, y, z);}
+void __stdcall _Lazy_glNormal3fVertex3fvSUN(const GLdouble * n, const GLdouble * v)         {if (GLeeInit()) glNormal3fVertex3fvSUN(n, v);}
+void __stdcall _Lazy_glColor4fNormal3fVertex3fSUN(GLdouble r, GLdouble g, GLdouble b, GLdouble a, GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glColor4fNormal3fVertex3fSUN(r, g, b, a, nx, ny, nz, x, y, z);}
+void __stdcall _Lazy_glColor4fNormal3fVertex3fvSUN(const GLdouble * c, const GLdouble * n, const GLdouble * v)  {if (GLeeInit()) glColor4fNormal3fVertex3fvSUN(c, n, v);}
+void __stdcall _Lazy_glTexCoord2fVertex3fSUN(GLdouble s, GLdouble t, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glTexCoord2fVertex3fSUN(s, t, x, y, z);}
+void __stdcall _Lazy_glTexCoord2fVertex3fvSUN(const GLdouble * tc, const GLdouble * v)      {if (GLeeInit()) glTexCoord2fVertex3fvSUN(tc, v);}
+void __stdcall _Lazy_glTexCoord4fVertex4fSUN(GLdouble s, GLdouble t, GLdouble p, GLdouble q, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glTexCoord4fVertex4fSUN(s, t, p, q, x, y, z, w);}
+void __stdcall _Lazy_glTexCoord4fVertex4fvSUN(const GLdouble * tc, const GLdouble * v)      {if (GLeeInit()) glTexCoord4fVertex4fvSUN(tc, v);}
+void __stdcall _Lazy_glTexCoord2fColor4ubVertex3fSUN(GLdouble s, GLdouble t, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glTexCoord2fColor4ubVertex3fSUN(s, t, r, g, b, a, x, y, z);}
+void __stdcall _Lazy_glTexCoord2fColor4ubVertex3fvSUN(const GLdouble * tc, const GLubyte * c, const GLdouble * v)  {if (GLeeInit()) glTexCoord2fColor4ubVertex3fvSUN(tc, c, v);}
+void __stdcall _Lazy_glTexCoord2fColor3fVertex3fSUN(GLdouble s, GLdouble t, GLdouble r, GLdouble g, GLdouble b, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glTexCoord2fColor3fVertex3fSUN(s, t, r, g, b, x, y, z);}
+void __stdcall _Lazy_glTexCoord2fColor3fVertex3fvSUN(const GLdouble * tc, const GLdouble * c, const GLdouble * v)  {if (GLeeInit()) glTexCoord2fColor3fVertex3fvSUN(tc, c, v);}
+void __stdcall _Lazy_glTexCoord2fNormal3fVertex3fSUN(GLdouble s, GLdouble t, GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glTexCoord2fNormal3fVertex3fSUN(s, t, nx, ny, nz, x, y, z);}
+void __stdcall _Lazy_glTexCoord2fNormal3fVertex3fvSUN(const GLdouble * tc, const GLdouble * n, const GLdouble * v)  {if (GLeeInit()) glTexCoord2fNormal3fVertex3fvSUN(tc, n, v);}
+void __stdcall _Lazy_glTexCoord2fColor4fNormal3fVertex3fSUN(GLdouble s, GLdouble t, GLdouble r, GLdouble g, GLdouble b, GLdouble a, GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glTexCoord2fColor4fNormal3fVertex3fSUN(s, t, r, g, b, a, nx, ny, nz, x, y, z);}
+void __stdcall _Lazy_glTexCoord2fColor4fNormal3fVertex3fvSUN(const GLdouble * tc, const GLdouble * c, const GLdouble * n, const GLdouble * v)  {if (GLeeInit()) glTexCoord2fColor4fNormal3fVertex3fvSUN(tc, c, n, v);}
+void __stdcall _Lazy_glTexCoord4fColor4fNormal3fVertex4fSUN(GLdouble s, GLdouble t, GLdouble p, GLdouble q, GLdouble r, GLdouble g, GLdouble b, GLdouble a, GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glTexCoord4fColor4fNormal3fVertex4fSUN(s, t, p, q, r, g, b, a, nx, ny, nz, x, y, z, w);}
+void __stdcall _Lazy_glTexCoord4fColor4fNormal3fVertex4fvSUN(const GLdouble * tc, const GLdouble * c, const GLdouble * n, const GLdouble * v)  {if (GLeeInit()) glTexCoord4fColor4fNormal3fVertex4fvSUN(tc, c, n, v);}
+void __stdcall _Lazy_glReplacementCodeuiVertex3fSUN(GLuint rc, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glReplacementCodeuiVertex3fSUN(rc, x, y, z);}
+void __stdcall _Lazy_glReplacementCodeuiVertex3fvSUN(const GLuint * rc, const GLdouble * v)  {if (GLeeInit()) glReplacementCodeuiVertex3fvSUN(rc, v);}
+void __stdcall _Lazy_glReplacementCodeuiColor4ubVertex3fSUN(GLuint rc, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glReplacementCodeuiColor4ubVertex3fSUN(rc, r, g, b, a, x, y, z);}
+void __stdcall _Lazy_glReplacementCodeuiColor4ubVertex3fvSUN(const GLuint * rc, const GLubyte * c, const GLdouble * v)  {if (GLeeInit()) glReplacementCodeuiColor4ubVertex3fvSUN(rc, c, v);}
+void __stdcall _Lazy_glReplacementCodeuiColor3fVertex3fSUN(GLuint rc, GLdouble r, GLdouble g, GLdouble b, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glReplacementCodeuiColor3fVertex3fSUN(rc, r, g, b, x, y, z);}
+void __stdcall _Lazy_glReplacementCodeuiColor3fVertex3fvSUN(const GLuint * rc, const GLdouble * c, const GLdouble * v)  {if (GLeeInit()) glReplacementCodeuiColor3fVertex3fvSUN(rc, c, v);}
+void __stdcall _Lazy_glReplacementCodeuiNormal3fVertex3fSUN(GLuint rc, GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glReplacementCodeuiNormal3fVertex3fSUN(rc, nx, ny, nz, x, y, z);}
+void __stdcall _Lazy_glReplacementCodeuiNormal3fVertex3fvSUN(const GLuint * rc, const GLdouble * n, const GLdouble * v)  {if (GLeeInit()) glReplacementCodeuiNormal3fVertex3fvSUN(rc, n, v);}
+void __stdcall _Lazy_glReplacementCodeuiColor4fNormal3fVertex3fSUN(GLuint rc, GLdouble r, GLdouble g, GLdouble b, GLdouble a, GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glReplacementCodeuiColor4fNormal3fVertex3fSUN(rc, r, g, b, a, nx, ny, nz, x, y, z);}
+void __stdcall _Lazy_glReplacementCodeuiColor4fNormal3fVertex3fvSUN(const GLuint * rc, const GLdouble * c, const GLdouble * n, const GLdouble * v)  {if (GLeeInit()) glReplacementCodeuiColor4fNormal3fVertex3fvSUN(rc, c, n, v);}
+void __stdcall _Lazy_glReplacementCodeuiTexCoord2fVertex3fSUN(GLuint rc, GLdouble s, GLdouble t, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fVertex3fSUN(rc, s, t, x, y, z);}
+void __stdcall _Lazy_glReplacementCodeuiTexCoord2fVertex3fvSUN(const GLuint * rc, const GLdouble * tc, const GLdouble * v)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fVertex3fvSUN(rc, tc, v);}
+void __stdcall _Lazy_glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN(GLuint rc, GLdouble s, GLdouble t, GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN(rc, s, t, nx, ny, nz, x, y, z);}
+void __stdcall _Lazy_glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN(const GLuint * rc, const GLdouble * tc, const GLdouble * n, const GLdouble * v)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN(rc, tc, n, v);}
+void __stdcall _Lazy_glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN(GLuint rc, GLdouble s, GLdouble t, GLdouble r, GLdouble g, GLdouble b, GLdouble a, GLdouble nx, GLdouble ny, GLdouble nz, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN(rc, s, t, r, g, b, a, nx, ny, nz, x, y, z);}
+void __stdcall _Lazy_glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN(const GLuint * rc, const GLdouble * tc, const GLdouble * c, const GLdouble * n, const GLdouble * v)  {if (GLeeInit()) glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN(rc, tc, c, n, v);}
 PFNGLCOLOR4UBVERTEX2FSUNPROC pglColor4ubVertex2fSUN=_Lazy_glColor4ubVertex2fSUN;
 PFNGLCOLOR4UBVERTEX2FVSUNPROC pglColor4ubVertex2fvSUN=_Lazy_glColor4ubVertex2fvSUN;
 PFNGLCOLOR4UBVERTEX3FSUNPROC pglColor4ubVertex3fSUN=_Lazy_glColor4ubVertex3fSUN;
@@ -2834,8 +2834,8 @@ PFNGLBLENDFUNCSEPARATEEXTPROC pglBlendFuncSeparateEXT=_Lazy_glBlendFuncSeparateE
 //GL_EXT_vertex_weighting
 
 #ifdef __GLEE_GL_EXT_vertex_weighting
-void __stdcall _Lazy_glVertexWeightfEXT(GLfloat weight)                                   {if (GLeeInit()) glVertexWeightfEXT(weight);}
-void __stdcall _Lazy_glVertexWeightfvEXT(const GLfloat * weight)                          {if (GLeeInit()) glVertexWeightfvEXT(weight);}
+void __stdcall _Lazy_glVertexWeightfEXT(GLdouble weight)                                   {if (GLeeInit()) glVertexWeightfEXT(weight);}
+void __stdcall _Lazy_glVertexWeightfvEXT(const GLdouble * weight)                          {if (GLeeInit()) glVertexWeightfvEXT(weight);}
 void __stdcall _Lazy_glVertexWeightPointerEXT(GLsizei size, GLenum type, GLsizei stride, const GLvoid * pointer)  {if (GLeeInit()) glVertexWeightPointerEXT(size, type, stride, pointer);}
 PFNGLVERTEXWEIGHTFEXTPROC pglVertexWeightfEXT=_Lazy_glVertexWeightfEXT;
 PFNGLVERTEXWEIGHTFVEXTPROC pglVertexWeightfvEXT=_Lazy_glVertexWeightfvEXT;
@@ -2859,18 +2859,18 @@ PFNGLVERTEXARRAYRANGENVPROC pglVertexArrayRangeNV=_Lazy_glVertexArrayRangeNV;
 //GL_NV_register_combiners
 
 #ifdef __GLEE_GL_NV_register_combiners
-void __stdcall _Lazy_glCombinerParameterfvNV(GLenum pname, const GLfloat * params)        {if (GLeeInit()) glCombinerParameterfvNV(pname, params);}
-void __stdcall _Lazy_glCombinerParameterfNV(GLenum pname, GLfloat param)                  {if (GLeeInit()) glCombinerParameterfNV(pname, param);}
+void __stdcall _Lazy_glCombinerParameterfvNV(GLenum pname, const GLdouble * params)        {if (GLeeInit()) glCombinerParameterfvNV(pname, params);}
+void __stdcall _Lazy_glCombinerParameterfNV(GLenum pname, GLdouble param)                  {if (GLeeInit()) glCombinerParameterfNV(pname, param);}
 void __stdcall _Lazy_glCombinerParameterivNV(GLenum pname, const GLint * params)          {if (GLeeInit()) glCombinerParameterivNV(pname, params);}
 void __stdcall _Lazy_glCombinerParameteriNV(GLenum pname, GLint param)                    {if (GLeeInit()) glCombinerParameteriNV(pname, param);}
 void __stdcall _Lazy_glCombinerInputNV(GLenum stage, GLenum portion, GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage)  {if (GLeeInit()) glCombinerInputNV(stage, portion, variable, input, mapping, componentUsage);}
 void __stdcall _Lazy_glCombinerOutputNV(GLenum stage, GLenum portion, GLenum abOutput, GLenum cdOutput, GLenum sumOutput, GLenum scale, GLenum bias, GLbool abDotProduct, GLbool cdDotProduct, GLbool muxSum)  {if (GLeeInit()) glCombinerOutputNV(stage, portion, abOutput, cdOutput, sumOutput, scale, bias, abDotProduct, cdDotProduct, muxSum);}
 void __stdcall _Lazy_glFinalCombinerInputNV(GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage)  {if (GLeeInit()) glFinalCombinerInputNV(variable, input, mapping, componentUsage);}
-void __stdcall _Lazy_glGetCombinerInputParameterfvNV(GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetCombinerInputParameterfvNV(stage, portion, variable, pname, params);}
+void __stdcall _Lazy_glGetCombinerInputParameterfvNV(GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetCombinerInputParameterfvNV(stage, portion, variable, pname, params);}
 void __stdcall _Lazy_glGetCombinerInputParameterivNV(GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLint * params)  {if (GLeeInit()) glGetCombinerInputParameterivNV(stage, portion, variable, pname, params);}
-void __stdcall _Lazy_glGetCombinerOutputParameterfvNV(GLenum stage, GLenum portion, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetCombinerOutputParameterfvNV(stage, portion, pname, params);}
+void __stdcall _Lazy_glGetCombinerOutputParameterfvNV(GLenum stage, GLenum portion, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetCombinerOutputParameterfvNV(stage, portion, pname, params);}
 void __stdcall _Lazy_glGetCombinerOutputParameterivNV(GLenum stage, GLenum portion, GLenum pname, GLint * params)  {if (GLeeInit()) glGetCombinerOutputParameterivNV(stage, portion, pname, params);}
-void __stdcall _Lazy_glGetFinalCombinerInputParameterfvNV(GLenum variable, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetFinalCombinerInputParameterfvNV(variable, pname, params);}
+void __stdcall _Lazy_glGetFinalCombinerInputParameterfvNV(GLenum variable, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetFinalCombinerInputParameterfvNV(variable, pname, params);}
 void __stdcall _Lazy_glGetFinalCombinerInputParameterivNV(GLenum variable, GLenum pname, GLint * params)  {if (GLeeInit()) glGetFinalCombinerInputParameterivNV(variable, pname, params);}
 PFNGLCOMBINERPARAMETERFVNVPROC pglCombinerParameterfvNV=_Lazy_glCombinerParameterfvNV;
 PFNGLCOMBINERPARAMETERFNVPROC pglCombinerParameterfNV=_Lazy_glCombinerParameterfNV;
@@ -2919,24 +2919,24 @@ PFNGLRESIZEBUFFERSMESAPROC pglResizeBuffersMESA=_Lazy_glResizeBuffersMESA;
 #ifdef __GLEE_GL_MESA_window_pos
 void __stdcall _Lazy_glWindowPos2dMESA(GLdouble x, GLdouble y)                            {if (GLeeInit()) glWindowPos2dMESA(x, y);}
 void __stdcall _Lazy_glWindowPos2dvMESA(const GLdouble * v)                               {if (GLeeInit()) glWindowPos2dvMESA(v);}
-void __stdcall _Lazy_glWindowPos2fMESA(GLfloat x, GLfloat y)                              {if (GLeeInit()) glWindowPos2fMESA(x, y);}
-void __stdcall _Lazy_glWindowPos2fvMESA(const GLfloat * v)                                {if (GLeeInit()) glWindowPos2fvMESA(v);}
+void __stdcall _Lazy_glWindowPos2fMESA(GLdouble x, GLdouble y)                              {if (GLeeInit()) glWindowPos2fMESA(x, y);}
+void __stdcall _Lazy_glWindowPos2fvMESA(const GLdouble * v)                                {if (GLeeInit()) glWindowPos2fvMESA(v);}
 void __stdcall _Lazy_glWindowPos2iMESA(GLint x, GLint y)                                  {if (GLeeInit()) glWindowPos2iMESA(x, y);}
 void __stdcall _Lazy_glWindowPos2ivMESA(const GLint * v)                                  {if (GLeeInit()) glWindowPos2ivMESA(v);}
 void __stdcall _Lazy_glWindowPos2sMESA(GLshort x, GLshort y)                              {if (GLeeInit()) glWindowPos2sMESA(x, y);}
 void __stdcall _Lazy_glWindowPos2svMESA(const GLshort * v)                                {if (GLeeInit()) glWindowPos2svMESA(v);}
 void __stdcall _Lazy_glWindowPos3dMESA(GLdouble x, GLdouble y, GLdouble z)                {if (GLeeInit()) glWindowPos3dMESA(x, y, z);}
 void __stdcall _Lazy_glWindowPos3dvMESA(const GLdouble * v)                               {if (GLeeInit()) glWindowPos3dvMESA(v);}
-void __stdcall _Lazy_glWindowPos3fMESA(GLfloat x, GLfloat y, GLfloat z)                   {if (GLeeInit()) glWindowPos3fMESA(x, y, z);}
-void __stdcall _Lazy_glWindowPos3fvMESA(const GLfloat * v)                                {if (GLeeInit()) glWindowPos3fvMESA(v);}
+void __stdcall _Lazy_glWindowPos3fMESA(GLdouble x, GLdouble y, GLdouble z)                   {if (GLeeInit()) glWindowPos3fMESA(x, y, z);}
+void __stdcall _Lazy_glWindowPos3fvMESA(const GLdouble * v)                                {if (GLeeInit()) glWindowPos3fvMESA(v);}
 void __stdcall _Lazy_glWindowPos3iMESA(GLint x, GLint y, GLint z)                         {if (GLeeInit()) glWindowPos3iMESA(x, y, z);}
 void __stdcall _Lazy_glWindowPos3ivMESA(const GLint * v)                                  {if (GLeeInit()) glWindowPos3ivMESA(v);}
 void __stdcall _Lazy_glWindowPos3sMESA(GLshort x, GLshort y, GLshort z)                   {if (GLeeInit()) glWindowPos3sMESA(x, y, z);}
 void __stdcall _Lazy_glWindowPos3svMESA(const GLshort * v)                                {if (GLeeInit()) glWindowPos3svMESA(v);}
 void __stdcall _Lazy_glWindowPos4dMESA(GLdouble x, GLdouble y, GLdouble z, GLdouble w)    {if (GLeeInit()) glWindowPos4dMESA(x, y, z, w);}
 void __stdcall _Lazy_glWindowPos4dvMESA(const GLdouble * v)                               {if (GLeeInit()) glWindowPos4dvMESA(v);}
-void __stdcall _Lazy_glWindowPos4fMESA(GLfloat x, GLfloat y, GLfloat z, GLfloat w)        {if (GLeeInit()) glWindowPos4fMESA(x, y, z, w);}
-void __stdcall _Lazy_glWindowPos4fvMESA(const GLfloat * v)                                {if (GLeeInit()) glWindowPos4fvMESA(v);}
+void __stdcall _Lazy_glWindowPos4fMESA(GLdouble x, GLdouble y, GLdouble z, GLdouble w)        {if (GLeeInit()) glWindowPos4fMESA(x, y, z, w);}
+void __stdcall _Lazy_glWindowPos4fvMESA(const GLdouble * v)                                {if (GLeeInit()) glWindowPos4fvMESA(v);}
 void __stdcall _Lazy_glWindowPos4iMESA(GLint x, GLint y, GLint z, GLint w)                {if (GLeeInit()) glWindowPos4iMESA(x, y, z, w);}
 void __stdcall _Lazy_glWindowPos4ivMESA(const GLint * v)                                  {if (GLeeInit()) glWindowPos4ivMESA(v);}
 void __stdcall _Lazy_glWindowPos4sMESA(GLshort x, GLshort y, GLshort z, GLshort w)        {if (GLeeInit()) glWindowPos4sMESA(x, y, z, w);}
@@ -3119,12 +3119,12 @@ PFNGLSETFENCENVPROC pglSetFenceNV=_Lazy_glSetFenceNV;
 #ifdef __GLEE_GL_NV_evaluators
 void __stdcall _Lazy_glMapControlPointsNV(GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLint uorder, GLint vorder, GLbool packed, const GLvoid * points)  {if (GLeeInit()) glMapControlPointsNV(target, index, type, ustride, vstride, uorder, vorder, packed, points);}
 void __stdcall _Lazy_glMapParameterivNV(GLenum target, GLenum pname, const GLint * params)  {if (GLeeInit()) glMapParameterivNV(target, pname, params);}
-void __stdcall _Lazy_glMapParameterfvNV(GLenum target, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glMapParameterfvNV(target, pname, params);}
+void __stdcall _Lazy_glMapParameterfvNV(GLenum target, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glMapParameterfvNV(target, pname, params);}
 void __stdcall _Lazy_glGetMapControlPointsNV(GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLbool packed, GLvoid * points)  {if (GLeeInit()) glGetMapControlPointsNV(target, index, type, ustride, vstride, packed, points);}
 void __stdcall _Lazy_glGetMapParameterivNV(GLenum target, GLenum pname, GLint * params)   {if (GLeeInit()) glGetMapParameterivNV(target, pname, params);}
-void __stdcall _Lazy_glGetMapParameterfvNV(GLenum target, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetMapParameterfvNV(target, pname, params);}
+void __stdcall _Lazy_glGetMapParameterfvNV(GLenum target, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetMapParameterfvNV(target, pname, params);}
 void __stdcall _Lazy_glGetMapAttribParameterivNV(GLenum target, GLuint index, GLenum pname, GLint * params)  {if (GLeeInit()) glGetMapAttribParameterivNV(target, index, pname, params);}
-void __stdcall _Lazy_glGetMapAttribParameterfvNV(GLenum target, GLuint index, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetMapAttribParameterfvNV(target, index, pname, params);}
+void __stdcall _Lazy_glGetMapAttribParameterfvNV(GLenum target, GLuint index, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetMapAttribParameterfvNV(target, index, pname, params);}
 void __stdcall _Lazy_glEvalMapsNV(GLenum target, GLenum mode)                             {if (GLeeInit()) glEvalMapsNV(target, mode);}
 PFNGLMAPCONTROLPOINTSNVPROC pglMapControlPointsNV=_Lazy_glMapControlPointsNV;
 PFNGLMAPPARAMETERIVNVPROC pglMapParameterivNV=_Lazy_glMapParameterivNV;
@@ -3145,8 +3145,8 @@ PFNGLEVALMAPSNVPROC pglEvalMapsNV=_Lazy_glEvalMapsNV;
 //GL_NV_register_combiners2
 
 #ifdef __GLEE_GL_NV_register_combiners2
-void __stdcall _Lazy_glCombinerStageParameterfvNV(GLenum stage, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glCombinerStageParameterfvNV(stage, pname, params);}
-void __stdcall _Lazy_glGetCombinerStageParameterfvNV(GLenum stage, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetCombinerStageParameterfvNV(stage, pname, params);}
+void __stdcall _Lazy_glCombinerStageParameterfvNV(GLenum stage, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glCombinerStageParameterfvNV(stage, pname, params);}
+void __stdcall _Lazy_glGetCombinerStageParameterfvNV(GLenum stage, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetCombinerStageParameterfvNV(stage, pname, params);}
 PFNGLCOMBINERSTAGEPARAMETERFVNVPROC pglCombinerStageParameterfvNV=_Lazy_glCombinerStageParameterfvNV;
 PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC pglGetCombinerStageParameterfvNV=_Lazy_glGetCombinerStageParameterfvNV;
 #endif 
@@ -3182,65 +3182,65 @@ PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC pglGetCombinerStageParameterfvNV=_Lazy_gl
 GLbool __stdcall _Lazy_glAreProgramsResidentNV(GLsizei n, const GLuint * programs, GLbool * residences)  {if (GLeeInit()) return glAreProgramsResidentNV(n, programs, residences); return (GLboolean)0;}
 void __stdcall _Lazy_glBindProgramNV(GLenum target, GLuint id)                            {if (GLeeInit()) glBindProgramNV(target, id);}
 void __stdcall _Lazy_glDeleteProgramsNV(GLsizei n, const GLuint * programs)               {if (GLeeInit()) glDeleteProgramsNV(n, programs);}
-void __stdcall _Lazy_glExecuteProgramNV(GLenum target, GLuint id, const GLfloat * params)  {if (GLeeInit()) glExecuteProgramNV(target, id, params);}
+void __stdcall _Lazy_glExecuteProgramNV(GLenum target, GLuint id, const GLdouble * params)  {if (GLeeInit()) glExecuteProgramNV(target, id, params);}
 void __stdcall _Lazy_glGenProgramsNV(GLsizei n, GLuint * programs)                        {if (GLeeInit()) glGenProgramsNV(n, programs);}
 void __stdcall _Lazy_glGetProgramParameterdvNV(GLenum target, GLuint index, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetProgramParameterdvNV(target, index, pname, params);}
-void __stdcall _Lazy_glGetProgramParameterfvNV(GLenum target, GLuint index, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetProgramParameterfvNV(target, index, pname, params);}
+void __stdcall _Lazy_glGetProgramParameterfvNV(GLenum target, GLuint index, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetProgramParameterfvNV(target, index, pname, params);}
 void __stdcall _Lazy_glGetProgramivNV(GLuint id, GLenum pname, GLint * params)            {if (GLeeInit()) glGetProgramivNV(id, pname, params);}
 void __stdcall _Lazy_glGetProgramStringNV(GLuint id, GLenum pname, GLubyte * program)     {if (GLeeInit()) glGetProgramStringNV(id, pname, program);}
 void __stdcall _Lazy_glGetTrackMatrixivNV(GLenum target, GLuint address, GLenum pname, GLint * params)  {if (GLeeInit()) glGetTrackMatrixivNV(target, address, pname, params);}
 void __stdcall _Lazy_glGetVertexAttribdvNV(GLuint index, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetVertexAttribdvNV(index, pname, params);}
-void __stdcall _Lazy_glGetVertexAttribfvNV(GLuint index, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetVertexAttribfvNV(index, pname, params);}
+void __stdcall _Lazy_glGetVertexAttribfvNV(GLuint index, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetVertexAttribfvNV(index, pname, params);}
 void __stdcall _Lazy_glGetVertexAttribivNV(GLuint index, GLenum pname, GLint * params)    {if (GLeeInit()) glGetVertexAttribivNV(index, pname, params);}
 void __stdcall _Lazy_glGetVertexAttribPointervNV(GLuint index, GLenum pname, GLvoid* * pointer)  {if (GLeeInit()) glGetVertexAttribPointervNV(index, pname, pointer);}
 GLbool __stdcall _Lazy_glIsProgramNV(GLuint id)                                        {if (GLeeInit()) return glIsProgramNV(id); return (GLboolean)0;}
 void __stdcall _Lazy_glLoadProgramNV(GLenum target, GLuint id, GLsizei len, const GLubyte * program)  {if (GLeeInit()) glLoadProgramNV(target, id, len, program);}
 void __stdcall _Lazy_glProgramParameter4dNV(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glProgramParameter4dNV(target, index, x, y, z, w);}
 void __stdcall _Lazy_glProgramParameter4dvNV(GLenum target, GLuint index, const GLdouble * v)  {if (GLeeInit()) glProgramParameter4dvNV(target, index, v);}
-void __stdcall _Lazy_glProgramParameter4fNV(GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glProgramParameter4fNV(target, index, x, y, z, w);}
-void __stdcall _Lazy_glProgramParameter4fvNV(GLenum target, GLuint index, const GLfloat * v)  {if (GLeeInit()) glProgramParameter4fvNV(target, index, v);}
+void __stdcall _Lazy_glProgramParameter4fNV(GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glProgramParameter4fNV(target, index, x, y, z, w);}
+void __stdcall _Lazy_glProgramParameter4fvNV(GLenum target, GLuint index, const GLdouble * v)  {if (GLeeInit()) glProgramParameter4fvNV(target, index, v);}
 void __stdcall _Lazy_glProgramParameters4dvNV(GLenum target, GLuint index, GLuint count, const GLdouble * v)  {if (GLeeInit()) glProgramParameters4dvNV(target, index, count, v);}
-void __stdcall _Lazy_glProgramParameters4fvNV(GLenum target, GLuint index, GLuint count, const GLfloat * v)  {if (GLeeInit()) glProgramParameters4fvNV(target, index, count, v);}
+void __stdcall _Lazy_glProgramParameters4fvNV(GLenum target, GLuint index, GLuint count, const GLdouble * v)  {if (GLeeInit()) glProgramParameters4fvNV(target, index, count, v);}
 void __stdcall _Lazy_glRequestResidentProgramsNV(GLsizei n, const GLuint * programs)      {if (GLeeInit()) glRequestResidentProgramsNV(n, programs);}
 void __stdcall _Lazy_glTrackMatrixNV(GLenum target, GLuint address, GLenum matrix, GLenum transform)  {if (GLeeInit()) glTrackMatrixNV(target, address, matrix, transform);}
 void __stdcall _Lazy_glVertexAttribPointerNV(GLuint index, GLint fsize, GLenum type, GLsizei stride, const GLvoid * pointer)  {if (GLeeInit()) glVertexAttribPointerNV(index, fsize, type, stride, pointer);}
 void __stdcall _Lazy_glVertexAttrib1dNV(GLuint index, GLdouble x)                         {if (GLeeInit()) glVertexAttrib1dNV(index, x);}
 void __stdcall _Lazy_glVertexAttrib1dvNV(GLuint index, const GLdouble * v)                {if (GLeeInit()) glVertexAttrib1dvNV(index, v);}
-void __stdcall _Lazy_glVertexAttrib1fNV(GLuint index, GLfloat x)                          {if (GLeeInit()) glVertexAttrib1fNV(index, x);}
-void __stdcall _Lazy_glVertexAttrib1fvNV(GLuint index, const GLfloat * v)                 {if (GLeeInit()) glVertexAttrib1fvNV(index, v);}
+void __stdcall _Lazy_glVertexAttrib1fNV(GLuint index, GLdouble x)                          {if (GLeeInit()) glVertexAttrib1fNV(index, x);}
+void __stdcall _Lazy_glVertexAttrib1fvNV(GLuint index, const GLdouble * v)                 {if (GLeeInit()) glVertexAttrib1fvNV(index, v);}
 void __stdcall _Lazy_glVertexAttrib1sNV(GLuint index, GLshort x)                          {if (GLeeInit()) glVertexAttrib1sNV(index, x);}
 void __stdcall _Lazy_glVertexAttrib1svNV(GLuint index, const GLshort * v)                 {if (GLeeInit()) glVertexAttrib1svNV(index, v);}
 void __stdcall _Lazy_glVertexAttrib2dNV(GLuint index, GLdouble x, GLdouble y)             {if (GLeeInit()) glVertexAttrib2dNV(index, x, y);}
 void __stdcall _Lazy_glVertexAttrib2dvNV(GLuint index, const GLdouble * v)                {if (GLeeInit()) glVertexAttrib2dvNV(index, v);}
-void __stdcall _Lazy_glVertexAttrib2fNV(GLuint index, GLfloat x, GLfloat y)               {if (GLeeInit()) glVertexAttrib2fNV(index, x, y);}
-void __stdcall _Lazy_glVertexAttrib2fvNV(GLuint index, const GLfloat * v)                 {if (GLeeInit()) glVertexAttrib2fvNV(index, v);}
+void __stdcall _Lazy_glVertexAttrib2fNV(GLuint index, GLdouble x, GLdouble y)               {if (GLeeInit()) glVertexAttrib2fNV(index, x, y);}
+void __stdcall _Lazy_glVertexAttrib2fvNV(GLuint index, const GLdouble * v)                 {if (GLeeInit()) glVertexAttrib2fvNV(index, v);}
 void __stdcall _Lazy_glVertexAttrib2sNV(GLuint index, GLshort x, GLshort y)               {if (GLeeInit()) glVertexAttrib2sNV(index, x, y);}
 void __stdcall _Lazy_glVertexAttrib2svNV(GLuint index, const GLshort * v)                 {if (GLeeInit()) glVertexAttrib2svNV(index, v);}
 void __stdcall _Lazy_glVertexAttrib3dNV(GLuint index, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glVertexAttrib3dNV(index, x, y, z);}
 void __stdcall _Lazy_glVertexAttrib3dvNV(GLuint index, const GLdouble * v)                {if (GLeeInit()) glVertexAttrib3dvNV(index, v);}
-void __stdcall _Lazy_glVertexAttrib3fNV(GLuint index, GLfloat x, GLfloat y, GLfloat z)    {if (GLeeInit()) glVertexAttrib3fNV(index, x, y, z);}
-void __stdcall _Lazy_glVertexAttrib3fvNV(GLuint index, const GLfloat * v)                 {if (GLeeInit()) glVertexAttrib3fvNV(index, v);}
+void __stdcall _Lazy_glVertexAttrib3fNV(GLuint index, GLdouble x, GLdouble y, GLdouble z)    {if (GLeeInit()) glVertexAttrib3fNV(index, x, y, z);}
+void __stdcall _Lazy_glVertexAttrib3fvNV(GLuint index, const GLdouble * v)                 {if (GLeeInit()) glVertexAttrib3fvNV(index, v);}
 void __stdcall _Lazy_glVertexAttrib3sNV(GLuint index, GLshort x, GLshort y, GLshort z)    {if (GLeeInit()) glVertexAttrib3sNV(index, x, y, z);}
 void __stdcall _Lazy_glVertexAttrib3svNV(GLuint index, const GLshort * v)                 {if (GLeeInit()) glVertexAttrib3svNV(index, v);}
 void __stdcall _Lazy_glVertexAttrib4dNV(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glVertexAttrib4dNV(index, x, y, z, w);}
 void __stdcall _Lazy_glVertexAttrib4dvNV(GLuint index, const GLdouble * v)                {if (GLeeInit()) glVertexAttrib4dvNV(index, v);}
-void __stdcall _Lazy_glVertexAttrib4fNV(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glVertexAttrib4fNV(index, x, y, z, w);}
-void __stdcall _Lazy_glVertexAttrib4fvNV(GLuint index, const GLfloat * v)                 {if (GLeeInit()) glVertexAttrib4fvNV(index, v);}
+void __stdcall _Lazy_glVertexAttrib4fNV(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glVertexAttrib4fNV(index, x, y, z, w);}
+void __stdcall _Lazy_glVertexAttrib4fvNV(GLuint index, const GLdouble * v)                 {if (GLeeInit()) glVertexAttrib4fvNV(index, v);}
 void __stdcall _Lazy_glVertexAttrib4sNV(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w)  {if (GLeeInit()) glVertexAttrib4sNV(index, x, y, z, w);}
 void __stdcall _Lazy_glVertexAttrib4svNV(GLuint index, const GLshort * v)                 {if (GLeeInit()) glVertexAttrib4svNV(index, v);}
 void __stdcall _Lazy_glVertexAttrib4ubNV(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w)  {if (GLeeInit()) glVertexAttrib4ubNV(index, x, y, z, w);}
 void __stdcall _Lazy_glVertexAttrib4ubvNV(GLuint index, const GLubyte * v)                {if (GLeeInit()) glVertexAttrib4ubvNV(index, v);}
 void __stdcall _Lazy_glVertexAttribs1dvNV(GLuint index, GLsizei count, const GLdouble * v)  {if (GLeeInit()) glVertexAttribs1dvNV(index, count, v);}
-void __stdcall _Lazy_glVertexAttribs1fvNV(GLuint index, GLsizei count, const GLfloat * v)  {if (GLeeInit()) glVertexAttribs1fvNV(index, count, v);}
+void __stdcall _Lazy_glVertexAttribs1fvNV(GLuint index, GLsizei count, const GLdouble * v)  {if (GLeeInit()) glVertexAttribs1fvNV(index, count, v);}
 void __stdcall _Lazy_glVertexAttribs1svNV(GLuint index, GLsizei count, const GLshort * v)  {if (GLeeInit()) glVertexAttribs1svNV(index, count, v);}
 void __stdcall _Lazy_glVertexAttribs2dvNV(GLuint index, GLsizei count, const GLdouble * v)  {if (GLeeInit()) glVertexAttribs2dvNV(index, count, v);}
-void __stdcall _Lazy_glVertexAttribs2fvNV(GLuint index, GLsizei count, const GLfloat * v)  {if (GLeeInit()) glVertexAttribs2fvNV(index, count, v);}
+void __stdcall _Lazy_glVertexAttribs2fvNV(GLuint index, GLsizei count, const GLdouble * v)  {if (GLeeInit()) glVertexAttribs2fvNV(index, count, v);}
 void __stdcall _Lazy_glVertexAttribs2svNV(GLuint index, GLsizei count, const GLshort * v)  {if (GLeeInit()) glVertexAttribs2svNV(index, count, v);}
 void __stdcall _Lazy_glVertexAttribs3dvNV(GLuint index, GLsizei count, const GLdouble * v)  {if (GLeeInit()) glVertexAttribs3dvNV(index, count, v);}
-void __stdcall _Lazy_glVertexAttribs3fvNV(GLuint index, GLsizei count, const GLfloat * v)  {if (GLeeInit()) glVertexAttribs3fvNV(index, count, v);}
+void __stdcall _Lazy_glVertexAttribs3fvNV(GLuint index, GLsizei count, const GLdouble * v)  {if (GLeeInit()) glVertexAttribs3fvNV(index, count, v);}
 void __stdcall _Lazy_glVertexAttribs3svNV(GLuint index, GLsizei count, const GLshort * v)  {if (GLeeInit()) glVertexAttribs3svNV(index, count, v);}
 void __stdcall _Lazy_glVertexAttribs4dvNV(GLuint index, GLsizei count, const GLdouble * v)  {if (GLeeInit()) glVertexAttribs4dvNV(index, count, v);}
-void __stdcall _Lazy_glVertexAttribs4fvNV(GLuint index, GLsizei count, const GLfloat * v)  {if (GLeeInit()) glVertexAttribs4fvNV(index, count, v);}
+void __stdcall _Lazy_glVertexAttribs4fvNV(GLuint index, GLsizei count, const GLdouble * v)  {if (GLeeInit()) glVertexAttribs4fvNV(index, count, v);}
 void __stdcall _Lazy_glVertexAttribs4svNV(GLuint index, GLsizei count, const GLshort * v)  {if (GLeeInit()) glVertexAttribs4svNV(index, count, v);}
 void __stdcall _Lazy_glVertexAttribs4ubvNV(GLuint index, GLsizei count, const GLubyte * v)  {if (GLeeInit()) glVertexAttribs4ubvNV(index, count, v);}
 PFNGLAREPROGRAMSRESIDENTNVPROC pglAreProgramsResidentNV=_Lazy_glAreProgramsResidentNV;
@@ -3343,9 +3343,9 @@ PFNGLVERTEXATTRIBS4UBVNVPROC pglVertexAttribs4ubvNV=_Lazy_glVertexAttribs4ubvNV;
 
 #ifdef __GLEE_GL_ATI_envmap_bumpmap
 void __stdcall _Lazy_glTexBumpParameterivATI(GLenum pname, const GLint * param)           {if (GLeeInit()) glTexBumpParameterivATI(pname, param);}
-void __stdcall _Lazy_glTexBumpParameterfvATI(GLenum pname, const GLfloat * param)         {if (GLeeInit()) glTexBumpParameterfvATI(pname, param);}
+void __stdcall _Lazy_glTexBumpParameterfvATI(GLenum pname, const GLdouble * param)         {if (GLeeInit()) glTexBumpParameterfvATI(pname, param);}
 void __stdcall _Lazy_glGetTexBumpParameterivATI(GLenum pname, GLint * param)              {if (GLeeInit()) glGetTexBumpParameterivATI(pname, param);}
-void __stdcall _Lazy_glGetTexBumpParameterfvATI(GLenum pname, GLfloat * param)            {if (GLeeInit()) glGetTexBumpParameterfvATI(pname, param);}
+void __stdcall _Lazy_glGetTexBumpParameterfvATI(GLenum pname, GLdouble * param)            {if (GLeeInit()) glGetTexBumpParameterfvATI(pname, param);}
 PFNGLTEXBUMPPARAMETERIVATIPROC pglTexBumpParameterivATI=_Lazy_glTexBumpParameterivATI;
 PFNGLTEXBUMPPARAMETERFVATIPROC pglTexBumpParameterfvATI=_Lazy_glTexBumpParameterfvATI;
 PFNGLGETTEXBUMPPARAMETERIVATIPROC pglGetTexBumpParameterivATI=_Lazy_glGetTexBumpParameterivATI;
@@ -3368,7 +3368,7 @@ void __stdcall _Lazy_glColorFragmentOp3ATI(GLenum op, GLuint dst, GLuint dstMask
 void __stdcall _Lazy_glAlphaFragmentOp1ATI(GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod)  {if (GLeeInit()) glAlphaFragmentOp1ATI(op, dst, dstMod, arg1, arg1Rep, arg1Mod);}
 void __stdcall _Lazy_glAlphaFragmentOp2ATI(GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod)  {if (GLeeInit()) glAlphaFragmentOp2ATI(op, dst, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod);}
 void __stdcall _Lazy_glAlphaFragmentOp3ATI(GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod)  {if (GLeeInit()) glAlphaFragmentOp3ATI(op, dst, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod, arg3, arg3Rep, arg3Mod);}
-void __stdcall _Lazy_glSetFragmentShaderConstantATI(GLuint dst, const GLfloat * value)    {if (GLeeInit()) glSetFragmentShaderConstantATI(dst, value);}
+void __stdcall _Lazy_glSetFragmentShaderConstantATI(GLuint dst, const GLdouble * value)    {if (GLeeInit()) glSetFragmentShaderConstantATI(dst, value);}
 PFNGLGENFRAGMENTSHADERSATIPROC pglGenFragmentShadersATI=_Lazy_glGenFragmentShadersATI;
 PFNGLBINDFRAGMENTSHADERATIPROC pglBindFragmentShaderATI=_Lazy_glBindFragmentShaderATI;
 PFNGLDELETEFRAGMENTSHADERATIPROC pglDeleteFragmentShaderATI=_Lazy_glDeleteFragmentShaderATI;
@@ -3389,7 +3389,7 @@ PFNGLSETFRAGMENTSHADERCONSTANTATIPROC pglSetFragmentShaderConstantATI=_Lazy_glSe
 
 #ifdef __GLEE_GL_ATI_pn_triangles
 void __stdcall _Lazy_glPNTrianglesiATI(GLenum pname, GLint param)                         {if (GLeeInit()) glPNTrianglesiATI(pname, param);}
-void __stdcall _Lazy_glPNTrianglesfATI(GLenum pname, GLfloat param)                       {if (GLeeInit()) glPNTrianglesfATI(pname, param);}
+void __stdcall _Lazy_glPNTrianglesfATI(GLenum pname, GLdouble param)                       {if (GLeeInit()) glPNTrianglesfATI(pname, param);}
 PFNGLPNTRIANGLESIATIPROC pglPNTrianglesiATI=_Lazy_glPNTrianglesiATI;
 PFNGLPNTRIANGLESFATIPROC pglPNTrianglesfATI=_Lazy_glPNTrianglesfATI;
 #endif 
@@ -3400,14 +3400,14 @@ PFNGLPNTRIANGLESFATIPROC pglPNTrianglesfATI=_Lazy_glPNTrianglesfATI;
 GLuint __stdcall _Lazy_glNewObjectBufferATI(GLsizei size, const GLvoid * pointer, GLenum usage)  {if (GLeeInit()) return glNewObjectBufferATI(size, pointer, usage); return (GLuint)0;}
 GLbool __stdcall _Lazy_glIsObjectBufferATI(GLuint buffer)                              {if (GLeeInit()) return glIsObjectBufferATI(buffer); return (GLboolean)0;}
 void __stdcall _Lazy_glUpdateObjectBufferATI(GLuint buffer, GLuint offset, GLsizei size, const GLvoid * pointer, GLenum preserve)  {if (GLeeInit()) glUpdateObjectBufferATI(buffer, offset, size, pointer, preserve);}
-void __stdcall _Lazy_glGetObjectBufferfvATI(GLuint buffer, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetObjectBufferfvATI(buffer, pname, params);}
+void __stdcall _Lazy_glGetObjectBufferfvATI(GLuint buffer, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetObjectBufferfvATI(buffer, pname, params);}
 void __stdcall _Lazy_glGetObjectBufferivATI(GLuint buffer, GLenum pname, GLint * params)  {if (GLeeInit()) glGetObjectBufferivATI(buffer, pname, params);}
 void __stdcall _Lazy_glFreeObjectBufferATI(GLuint buffer)                                 {if (GLeeInit()) glFreeObjectBufferATI(buffer);}
 void __stdcall _Lazy_glArrayObjectATI(GLenum array, GLint size, GLenum type, GLsizei stride, GLuint buffer, GLuint offset)  {if (GLeeInit()) glArrayObjectATI(array, size, type, stride, buffer, offset);}
-void __stdcall _Lazy_glGetArrayObjectfvATI(GLenum array, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetArrayObjectfvATI(array, pname, params);}
+void __stdcall _Lazy_glGetArrayObjectfvATI(GLenum array, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetArrayObjectfvATI(array, pname, params);}
 void __stdcall _Lazy_glGetArrayObjectivATI(GLenum array, GLenum pname, GLint * params)    {if (GLeeInit()) glGetArrayObjectivATI(array, pname, params);}
 void __stdcall _Lazy_glVariantArrayObjectATI(GLuint id, GLenum type, GLsizei stride, GLuint buffer, GLuint offset)  {if (GLeeInit()) glVariantArrayObjectATI(id, type, stride, buffer, offset);}
-void __stdcall _Lazy_glGetVariantArrayObjectfvATI(GLuint id, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetVariantArrayObjectfvATI(id, pname, params);}
+void __stdcall _Lazy_glGetVariantArrayObjectfvATI(GLuint id, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetVariantArrayObjectfvATI(id, pname, params);}
 void __stdcall _Lazy_glGetVariantArrayObjectivATI(GLuint id, GLenum pname, GLint * params)  {if (GLeeInit()) glGetVariantArrayObjectivATI(id, pname, params);}
 PFNGLNEWOBJECTBUFFERATIPROC pglNewObjectBufferATI=_Lazy_glNewObjectBufferATI;
 PFNGLISOBJECTBUFFERATIPROC pglIsObjectBufferATI=_Lazy_glIsObjectBufferATI;
@@ -3444,7 +3444,7 @@ void __stdcall _Lazy_glSetLocalConstantEXT(GLuint id, GLenum type, const GLvoid 
 void __stdcall _Lazy_glVariantbvEXT(GLuint id, const GLbyte * addr)                       {if (GLeeInit()) glVariantbvEXT(id, addr);}
 void __stdcall _Lazy_glVariantsvEXT(GLuint id, const GLshort * addr)                      {if (GLeeInit()) glVariantsvEXT(id, addr);}
 void __stdcall _Lazy_glVariantivEXT(GLuint id, const GLint * addr)                        {if (GLeeInit()) glVariantivEXT(id, addr);}
-void __stdcall _Lazy_glVariantfvEXT(GLuint id, const GLfloat * addr)                      {if (GLeeInit()) glVariantfvEXT(id, addr);}
+void __stdcall _Lazy_glVariantfvEXT(GLuint id, const GLdouble * addr)                      {if (GLeeInit()) glVariantfvEXT(id, addr);}
 void __stdcall _Lazy_glVariantdvEXT(GLuint id, const GLdouble * addr)                     {if (GLeeInit()) glVariantdvEXT(id, addr);}
 void __stdcall _Lazy_glVariantubvEXT(GLuint id, const GLubyte * addr)                     {if (GLeeInit()) glVariantubvEXT(id, addr);}
 void __stdcall _Lazy_glVariantusvEXT(GLuint id, const GLushort * addr)                    {if (GLeeInit()) glVariantusvEXT(id, addr);}
@@ -3460,14 +3460,14 @@ GLuint __stdcall _Lazy_glBindParameterEXT(GLenum value)                         
 GLbool __stdcall _Lazy_glIsVariantEnabledEXT(GLuint id, GLenum cap)                    {if (GLeeInit()) return glIsVariantEnabledEXT(id, cap); return (GLboolean)0;}
 void __stdcall _Lazy_glGetVariantBooleanvEXT(GLuint id, GLenum value, GLbool * data)   {if (GLeeInit()) glGetVariantBooleanvEXT(id, value, data);}
 void __stdcall _Lazy_glGetVariantIntegervEXT(GLuint id, GLenum value, GLint * data)       {if (GLeeInit()) glGetVariantIntegervEXT(id, value, data);}
-void __stdcall _Lazy_glGetVariantFloatvEXT(GLuint id, GLenum value, GLfloat * data)       {if (GLeeInit()) glGetVariantFloatvEXT(id, value, data);}
+void __stdcall _Lazy_glGetVariantFloatvEXT(GLuint id, GLenum value, GLdouble * data)       {if (GLeeInit()) glGetVariantFloatvEXT(id, value, data);}
 void __stdcall _Lazy_glGetVariantPointervEXT(GLuint id, GLenum value, GLvoid* * data)     {if (GLeeInit()) glGetVariantPointervEXT(id, value, data);}
 void __stdcall _Lazy_glGetInvariantBooleanvEXT(GLuint id, GLenum value, GLbool * data)  {if (GLeeInit()) glGetInvariantBooleanvEXT(id, value, data);}
 void __stdcall _Lazy_glGetInvariantIntegervEXT(GLuint id, GLenum value, GLint * data)     {if (GLeeInit()) glGetInvariantIntegervEXT(id, value, data);}
-void __stdcall _Lazy_glGetInvariantFloatvEXT(GLuint id, GLenum value, GLfloat * data)     {if (GLeeInit()) glGetInvariantFloatvEXT(id, value, data);}
+void __stdcall _Lazy_glGetInvariantFloatvEXT(GLuint id, GLenum value, GLdouble * data)     {if (GLeeInit()) glGetInvariantFloatvEXT(id, value, data);}
 void __stdcall _Lazy_glGetLocalConstantBooleanvEXT(GLuint id, GLenum value, GLbool * data)  {if (GLeeInit()) glGetLocalConstantBooleanvEXT(id, value, data);}
 void __stdcall _Lazy_glGetLocalConstantIntegervEXT(GLuint id, GLenum value, GLint * data)  {if (GLeeInit()) glGetLocalConstantIntegervEXT(id, value, data);}
-void __stdcall _Lazy_glGetLocalConstantFloatvEXT(GLuint id, GLenum value, GLfloat * data)  {if (GLeeInit()) glGetLocalConstantFloatvEXT(id, value, data);}
+void __stdcall _Lazy_glGetLocalConstantFloatvEXT(GLuint id, GLenum value, GLdouble * data)  {if (GLeeInit()) glGetLocalConstantFloatvEXT(id, value, data);}
 PFNGLBEGINVERTEXSHADEREXTPROC pglBeginVertexShaderEXT=_Lazy_glBeginVertexShaderEXT;
 PFNGLENDVERTEXSHADEREXTPROC pglEndVertexShaderEXT=_Lazy_glEndVertexShaderEXT;
 PFNGLBINDVERTEXSHADEREXTPROC pglBindVertexShaderEXT=_Lazy_glBindVertexShaderEXT;
@@ -3519,32 +3519,32 @@ void __stdcall _Lazy_glVertexStream1sATI(GLenum stream, GLshort x)              
 void __stdcall _Lazy_glVertexStream1svATI(GLenum stream, const GLshort * coords)          {if (GLeeInit()) glVertexStream1svATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream1iATI(GLenum stream, GLint x)                          {if (GLeeInit()) glVertexStream1iATI(stream, x);}
 void __stdcall _Lazy_glVertexStream1ivATI(GLenum stream, const GLint * coords)            {if (GLeeInit()) glVertexStream1ivATI(stream, coords);}
-void __stdcall _Lazy_glVertexStream1fATI(GLenum stream, GLfloat x)                        {if (GLeeInit()) glVertexStream1fATI(stream, x);}
-void __stdcall _Lazy_glVertexStream1fvATI(GLenum stream, const GLfloat * coords)          {if (GLeeInit()) glVertexStream1fvATI(stream, coords);}
+void __stdcall _Lazy_glVertexStream1fATI(GLenum stream, GLdouble x)                        {if (GLeeInit()) glVertexStream1fATI(stream, x);}
+void __stdcall _Lazy_glVertexStream1fvATI(GLenum stream, const GLdouble * coords)          {if (GLeeInit()) glVertexStream1fvATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream1dATI(GLenum stream, GLdouble x)                       {if (GLeeInit()) glVertexStream1dATI(stream, x);}
 void __stdcall _Lazy_glVertexStream1dvATI(GLenum stream, const GLdouble * coords)         {if (GLeeInit()) glVertexStream1dvATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream2sATI(GLenum stream, GLshort x, GLshort y)             {if (GLeeInit()) glVertexStream2sATI(stream, x, y);}
 void __stdcall _Lazy_glVertexStream2svATI(GLenum stream, const GLshort * coords)          {if (GLeeInit()) glVertexStream2svATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream2iATI(GLenum stream, GLint x, GLint y)                 {if (GLeeInit()) glVertexStream2iATI(stream, x, y);}
 void __stdcall _Lazy_glVertexStream2ivATI(GLenum stream, const GLint * coords)            {if (GLeeInit()) glVertexStream2ivATI(stream, coords);}
-void __stdcall _Lazy_glVertexStream2fATI(GLenum stream, GLfloat x, GLfloat y)             {if (GLeeInit()) glVertexStream2fATI(stream, x, y);}
-void __stdcall _Lazy_glVertexStream2fvATI(GLenum stream, const GLfloat * coords)          {if (GLeeInit()) glVertexStream2fvATI(stream, coords);}
+void __stdcall _Lazy_glVertexStream2fATI(GLenum stream, GLdouble x, GLdouble y)             {if (GLeeInit()) glVertexStream2fATI(stream, x, y);}
+void __stdcall _Lazy_glVertexStream2fvATI(GLenum stream, const GLdouble * coords)          {if (GLeeInit()) glVertexStream2fvATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream2dATI(GLenum stream, GLdouble x, GLdouble y)           {if (GLeeInit()) glVertexStream2dATI(stream, x, y);}
 void __stdcall _Lazy_glVertexStream2dvATI(GLenum stream, const GLdouble * coords)         {if (GLeeInit()) glVertexStream2dvATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream3sATI(GLenum stream, GLshort x, GLshort y, GLshort z)  {if (GLeeInit()) glVertexStream3sATI(stream, x, y, z);}
 void __stdcall _Lazy_glVertexStream3svATI(GLenum stream, const GLshort * coords)          {if (GLeeInit()) glVertexStream3svATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream3iATI(GLenum stream, GLint x, GLint y, GLint z)        {if (GLeeInit()) glVertexStream3iATI(stream, x, y, z);}
 void __stdcall _Lazy_glVertexStream3ivATI(GLenum stream, const GLint * coords)            {if (GLeeInit()) glVertexStream3ivATI(stream, coords);}
-void __stdcall _Lazy_glVertexStream3fATI(GLenum stream, GLfloat x, GLfloat y, GLfloat z)  {if (GLeeInit()) glVertexStream3fATI(stream, x, y, z);}
-void __stdcall _Lazy_glVertexStream3fvATI(GLenum stream, const GLfloat * coords)          {if (GLeeInit()) glVertexStream3fvATI(stream, coords);}
+void __stdcall _Lazy_glVertexStream3fATI(GLenum stream, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glVertexStream3fATI(stream, x, y, z);}
+void __stdcall _Lazy_glVertexStream3fvATI(GLenum stream, const GLdouble * coords)          {if (GLeeInit()) glVertexStream3fvATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream3dATI(GLenum stream, GLdouble x, GLdouble y, GLdouble z)  {if (GLeeInit()) glVertexStream3dATI(stream, x, y, z);}
 void __stdcall _Lazy_glVertexStream3dvATI(GLenum stream, const GLdouble * coords)         {if (GLeeInit()) glVertexStream3dvATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream4sATI(GLenum stream, GLshort x, GLshort y, GLshort z, GLshort w)  {if (GLeeInit()) glVertexStream4sATI(stream, x, y, z, w);}
 void __stdcall _Lazy_glVertexStream4svATI(GLenum stream, const GLshort * coords)          {if (GLeeInit()) glVertexStream4svATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream4iATI(GLenum stream, GLint x, GLint y, GLint z, GLint w)  {if (GLeeInit()) glVertexStream4iATI(stream, x, y, z, w);}
 void __stdcall _Lazy_glVertexStream4ivATI(GLenum stream, const GLint * coords)            {if (GLeeInit()) glVertexStream4ivATI(stream, coords);}
-void __stdcall _Lazy_glVertexStream4fATI(GLenum stream, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glVertexStream4fATI(stream, x, y, z, w);}
-void __stdcall _Lazy_glVertexStream4fvATI(GLenum stream, const GLfloat * coords)          {if (GLeeInit()) glVertexStream4fvATI(stream, coords);}
+void __stdcall _Lazy_glVertexStream4fATI(GLenum stream, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glVertexStream4fATI(stream, x, y, z, w);}
+void __stdcall _Lazy_glVertexStream4fvATI(GLenum stream, const GLdouble * coords)          {if (GLeeInit()) glVertexStream4fvATI(stream, coords);}
 void __stdcall _Lazy_glVertexStream4dATI(GLenum stream, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glVertexStream4dATI(stream, x, y, z, w);}
 void __stdcall _Lazy_glVertexStream4dvATI(GLenum stream, const GLdouble * coords)         {if (GLeeInit()) glVertexStream4dvATI(stream, coords);}
 void __stdcall _Lazy_glNormalStream3bATI(GLenum stream, GLbyte nx, GLbyte ny, GLbyte nz)  {if (GLeeInit()) glNormalStream3bATI(stream, nx, ny, nz);}
@@ -3553,13 +3553,13 @@ void __stdcall _Lazy_glNormalStream3sATI(GLenum stream, GLshort nx, GLshort ny, 
 void __stdcall _Lazy_glNormalStream3svATI(GLenum stream, const GLshort * coords)          {if (GLeeInit()) glNormalStream3svATI(stream, coords);}
 void __stdcall _Lazy_glNormalStream3iATI(GLenum stream, GLint nx, GLint ny, GLint nz)     {if (GLeeInit()) glNormalStream3iATI(stream, nx, ny, nz);}
 void __stdcall _Lazy_glNormalStream3ivATI(GLenum stream, const GLint * coords)            {if (GLeeInit()) glNormalStream3ivATI(stream, coords);}
-void __stdcall _Lazy_glNormalStream3fATI(GLenum stream, GLfloat nx, GLfloat ny, GLfloat nz)  {if (GLeeInit()) glNormalStream3fATI(stream, nx, ny, nz);}
-void __stdcall _Lazy_glNormalStream3fvATI(GLenum stream, const GLfloat * coords)          {if (GLeeInit()) glNormalStream3fvATI(stream, coords);}
+void __stdcall _Lazy_glNormalStream3fATI(GLenum stream, GLdouble nx, GLdouble ny, GLdouble nz)  {if (GLeeInit()) glNormalStream3fATI(stream, nx, ny, nz);}
+void __stdcall _Lazy_glNormalStream3fvATI(GLenum stream, const GLdouble * coords)          {if (GLeeInit()) glNormalStream3fvATI(stream, coords);}
 void __stdcall _Lazy_glNormalStream3dATI(GLenum stream, GLdouble nx, GLdouble ny, GLdouble nz)  {if (GLeeInit()) glNormalStream3dATI(stream, nx, ny, nz);}
 void __stdcall _Lazy_glNormalStream3dvATI(GLenum stream, const GLdouble * coords)         {if (GLeeInit()) glNormalStream3dvATI(stream, coords);}
 void __stdcall _Lazy_glClientActiveVertexStreamATI(GLenum stream)                         {if (GLeeInit()) glClientActiveVertexStreamATI(stream);}
 void __stdcall _Lazy_glVertexBlendEnviATI(GLenum pname, GLint param)                      {if (GLeeInit()) glVertexBlendEnviATI(pname, param);}
-void __stdcall _Lazy_glVertexBlendEnvfATI(GLenum pname, GLfloat param)                    {if (GLeeInit()) glVertexBlendEnvfATI(pname, param);}
+void __stdcall _Lazy_glVertexBlendEnvfATI(GLenum pname, GLdouble param)                    {if (GLeeInit()) glVertexBlendEnvfATI(pname, param);}
 PFNGLVERTEXSTREAM1SATIPROC pglVertexStream1sATI=_Lazy_glVertexStream1sATI;
 PFNGLVERTEXSTREAM1SVATIPROC pglVertexStream1svATI=_Lazy_glVertexStream1svATI;
 PFNGLVERTEXSTREAM1IATIPROC pglVertexStream1iATI=_Lazy_glVertexStream1iATI;
@@ -3800,11 +3800,11 @@ PFNGLDRAWBUFFERSATIPROC pglDrawBuffersATI=_Lazy_glDrawBuffersATI;
 //GL_NV_fragment_program
 
 #ifdef __GLEE_GL_NV_fragment_program
-void __stdcall _Lazy_glProgramNamedParameter4fNV(GLuint id, GLsizei len, const GLubyte * name, GLfloat x, GLfloat y, GLfloat z, GLfloat w)  {if (GLeeInit()) glProgramNamedParameter4fNV(id, len, name, x, y, z, w);}
+void __stdcall _Lazy_glProgramNamedParameter4fNV(GLuint id, GLsizei len, const GLubyte * name, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glProgramNamedParameter4fNV(id, len, name, x, y, z, w);}
 void __stdcall _Lazy_glProgramNamedParameter4dNV(GLuint id, GLsizei len, const GLubyte * name, GLdouble x, GLdouble y, GLdouble z, GLdouble w)  {if (GLeeInit()) glProgramNamedParameter4dNV(id, len, name, x, y, z, w);}
-void __stdcall _Lazy_glProgramNamedParameter4fvNV(GLuint id, GLsizei len, const GLubyte * name, const GLfloat * v)  {if (GLeeInit()) glProgramNamedParameter4fvNV(id, len, name, v);}
+void __stdcall _Lazy_glProgramNamedParameter4fvNV(GLuint id, GLsizei len, const GLubyte * name, const GLdouble * v)  {if (GLeeInit()) glProgramNamedParameter4fvNV(id, len, name, v);}
 void __stdcall _Lazy_glProgramNamedParameter4dvNV(GLuint id, GLsizei len, const GLubyte * name, const GLdouble * v)  {if (GLeeInit()) glProgramNamedParameter4dvNV(id, len, name, v);}
-void __stdcall _Lazy_glGetProgramNamedParameterfvNV(GLuint id, GLsizei len, const GLubyte * name, GLfloat * params)  {if (GLeeInit()) glGetProgramNamedParameterfvNV(id, len, name, params);}
+void __stdcall _Lazy_glGetProgramNamedParameterfvNV(GLuint id, GLsizei len, const GLubyte * name, GLdouble * params)  {if (GLeeInit()) glGetProgramNamedParameterfvNV(id, len, name, params);}
 void __stdcall _Lazy_glGetProgramNamedParameterdvNV(GLuint id, GLsizei len, const GLubyte * name, GLdouble * params)  {if (GLeeInit()) glGetProgramNamedParameterdvNV(id, len, name, params);}
 PFNGLPROGRAMNAMEDPARAMETER4FNVPROC pglProgramNamedParameter4fNV=_Lazy_glProgramNamedParameter4fNV;
 PFNGLPROGRAMNAMEDPARAMETER4DNVPROC pglProgramNamedParameter4dNV=_Lazy_glProgramNamedParameter4dNV;
@@ -3961,7 +3961,7 @@ PFNGLSTENCILFUNCSEPARATEATIPROC pglStencilFuncSeparateATI=_Lazy_glStencilFuncSep
 
 #ifdef __GLEE_GL_ATI_vertex_attrib_array_object
 void __stdcall _Lazy_glVertexAttribArrayObjectATI(GLuint index, GLint size, GLenum type, GLbool normalized, GLsizei stride, GLuint buffer, GLuint offset)  {if (GLeeInit()) glVertexAttribArrayObjectATI(index, size, type, normalized, stride, buffer, offset);}
-void __stdcall _Lazy_glGetVertexAttribArrayObjectfvATI(GLuint index, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetVertexAttribArrayObjectfvATI(index, pname, params);}
+void __stdcall _Lazy_glGetVertexAttribArrayObjectfvATI(GLuint index, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetVertexAttribArrayObjectfvATI(index, pname, params);}
 void __stdcall _Lazy_glGetVertexAttribArrayObjectivATI(GLuint index, GLenum pname, GLint * params)  {if (GLeeInit()) glGetVertexAttribArrayObjectivATI(index, pname, params);}
 PFNGLVERTEXATTRIBARRAYOBJECTATIPROC pglVertexAttribArrayObjectATI=_Lazy_glVertexAttribArrayObjectATI;
 PFNGLGETVERTEXATTRIBARRAYOBJECTFVATIPROC pglGetVertexAttribArrayObjectfvATI=_Lazy_glGetVertexAttribArrayObjectfvATI;
@@ -4106,21 +4106,21 @@ PFNGLIGLOOINTERFACESGIXPROC pglIglooInterfaceSGIX=_Lazy_glIglooInterfaceSGIX;
 
 #ifdef __GLEE_GL_EXT_fragment_lighting
 GLvoid __stdcall _Lazy_glFragmentLightModeliEXT(GLenum pname, GLint param)                {if (GLeeInit()) glFragmentLightModeliEXT(pname, param);}
-GLvoid __stdcall _Lazy_glFragmentLightModelfEXT(GLenum pname, GLfloat param)              {if (GLeeInit()) glFragmentLightModelfEXT(pname, param);}
+GLvoid __stdcall _Lazy_glFragmentLightModelfEXT(GLenum pname, GLdouble param)              {if (GLeeInit()) glFragmentLightModelfEXT(pname, param);}
 GLvoid __stdcall _Lazy_glFragmentLightModelivEXT(GLenum pname, GLint * params)            {if (GLeeInit()) glFragmentLightModelivEXT(pname, params);}
-GLvoid __stdcall _Lazy_glFragmentLightModelfvEXT(GLenum pname, GLfloat * params)          {if (GLeeInit()) glFragmentLightModelfvEXT(pname, params);}
+GLvoid __stdcall _Lazy_glFragmentLightModelfvEXT(GLenum pname, GLdouble * params)          {if (GLeeInit()) glFragmentLightModelfvEXT(pname, params);}
 GLvoid __stdcall _Lazy_glFragmentLightiEXT(GLenum light, GLenum pname, GLint param)       {if (GLeeInit()) glFragmentLightiEXT(light, pname, param);}
-GLvoid __stdcall _Lazy_glFragmentLightfEXT(GLenum light, GLenum pname, GLfloat param)     {if (GLeeInit()) glFragmentLightfEXT(light, pname, param);}
+GLvoid __stdcall _Lazy_glFragmentLightfEXT(GLenum light, GLenum pname, GLdouble param)     {if (GLeeInit()) glFragmentLightfEXT(light, pname, param);}
 GLvoid __stdcall _Lazy_glFragmentLightivEXT(GLenum light, GLenum pname, GLint * params)   {if (GLeeInit()) glFragmentLightivEXT(light, pname, params);}
-GLvoid __stdcall _Lazy_glFragmentLightfvEXT(GLenum light, GLenum pname, GLfloat * params)  {if (GLeeInit()) glFragmentLightfvEXT(light, pname, params);}
+GLvoid __stdcall _Lazy_glFragmentLightfvEXT(GLenum light, GLenum pname, GLdouble * params)  {if (GLeeInit()) glFragmentLightfvEXT(light, pname, params);}
 GLvoid __stdcall _Lazy_glGetFragmentLightivEXT(GLenum light, GLenum pname, GLint * params)  {if (GLeeInit()) glGetFragmentLightivEXT(light, pname, params);}
-GLvoid __stdcall _Lazy_glGetFragmentLightfvEXT(GLenum light, GLenum pname, GLfloat * params)  {if (GLeeInit()) glGetFragmentLightfvEXT(light, pname, params);}
-GLvoid __stdcall _Lazy_glFragmentMaterialfEXT(GLenum face, GLenum pname, const GLfloat param)  {if (GLeeInit()) glFragmentMaterialfEXT(face, pname, param);}
+GLvoid __stdcall _Lazy_glGetFragmentLightfvEXT(GLenum light, GLenum pname, GLdouble * params)  {if (GLeeInit()) glGetFragmentLightfvEXT(light, pname, params);}
+GLvoid __stdcall _Lazy_glFragmentMaterialfEXT(GLenum face, GLenum pname, const GLdouble param)  {if (GLeeInit()) glFragmentMaterialfEXT(face, pname, param);}
 GLvoid __stdcall _Lazy_glFragmentMaterialiEXT(GLenum face, GLenum pname, const GLint param)  {if (GLeeInit()) glFragmentMaterialiEXT(face, pname, param);}
-GLvoid __stdcall _Lazy_glFragmentMaterialfvEXT(GLenum face, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glFragmentMaterialfvEXT(face, pname, params);}
+GLvoid __stdcall _Lazy_glFragmentMaterialfvEXT(GLenum face, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glFragmentMaterialfvEXT(face, pname, params);}
 GLvoid __stdcall _Lazy_glFragmentMaterialivEXT(GLenum face, GLenum pname, const GLint * params)  {if (GLeeInit()) glFragmentMaterialivEXT(face, pname, params);}
 GLvoid __stdcall _Lazy_glFragmentColorMaterialEXT(GLenum face, GLenum mode)               {if (GLeeInit()) glFragmentColorMaterialEXT(face, mode);}
-GLvoid __stdcall _Lazy_glGetFragmentMaterialfvEXT(GLenum face, GLenum pname, const GLfloat * params)  {if (GLeeInit()) glGetFragmentMaterialfvEXT(face, pname, params);}
+GLvoid __stdcall _Lazy_glGetFragmentMaterialfvEXT(GLenum face, GLenum pname, const GLdouble * params)  {if (GLeeInit()) glGetFragmentMaterialfvEXT(face, pname, params);}
 GLvoid __stdcall _Lazy_glGetFragmentMaterialivEXT(GLenum face, GLenum pname, const GLint * params)  {if (GLeeInit()) glGetFragmentMaterialivEXT(face, pname, params);}
 GLvoid __stdcall _Lazy_glLightEnviEXT(GLenum pname, GLint param)                          {if (GLeeInit()) glLightEnviEXT(pname, param);}
 PFNGLFRAGMENTLIGHTMODELIEXTPROC pglFragmentLightModeliEXT=_Lazy_glFragmentLightModeliEXT;
@@ -4186,8 +4186,8 @@ PFNGLENDSCENEEXTPROC pglEndSceneEXT=_Lazy_glEndSceneEXT;
 
 #ifdef __GLEE_GL_OES_single_precision
 GLvoid __stdcall _Lazy_glDepthRangefOES(GLclampf n, GLclampf f)                           {if (GLeeInit()) glDepthRangefOES(n, f);}
-GLvoid __stdcall _Lazy_glFrustumfOES(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLfloat f)  {if (GLeeInit()) glFrustumfOES(l, r, b, t, n, f);}
-GLvoid __stdcall _Lazy_glOrthofOES(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLfloat f)  {if (GLeeInit()) glOrthofOES(l, r, b, t, n, f);}
+GLvoid __stdcall _Lazy_glFrustumfOES(GLdouble l, GLdouble r, GLdouble b, GLdouble t, GLdouble n, GLdouble f)  {if (GLeeInit()) glFrustumfOES(l, r, b, t, n, f);}
+GLvoid __stdcall _Lazy_glOrthofOES(GLdouble l, GLdouble r, GLdouble b, GLdouble t, GLdouble n, GLdouble f)  {if (GLeeInit()) glOrthofOES(l, r, b, t, n, f);}
 GLvoid __stdcall _Lazy_glClipPlanefOES(GLenum plane, const GLfloat* equation)             {if (GLeeInit()) glClipPlanefOES(plane, equation);}
 GLvoid __stdcall _Lazy_glGetClipPlanefOES(GLenum plane, GLfloat* equation)                {if (GLeeInit()) glGetClipPlanefOES(plane, equation);}
 GLvoid __stdcall _Lazy_glClearDepthfOES(GLclampd depth)                                   {if (GLeeInit()) glClearDepthfOES(depth);}
@@ -4221,11 +4221,11 @@ GLbool _GLEE_WGL_ARB_pixel_format = GL_FALSE;
 GLbool _GLEE_WGL_ARB_make_current_read = GL_FALSE;
 GLbool _GLEE_WGL_ARB_pbuffer = GL_FALSE;
 GLbool _GLEE_WGL_ARB_render_texture = GL_FALSE;
-GLbool _GLEE_WGL_ARB_pixel_format_float = GL_FALSE;
+GLbool _GLEE_WGL_ARB_pixel_format_double = GL_FALSE;
 GLbool _GLEE_WGL_EXT_make_current_read = GL_FALSE;
 GLbool _GLEE_WGL_EXT_pixel_format = GL_FALSE;
 GLbool _GLEE_WGL_EXT_pbuffer = GL_FALSE;
-GLbool _GLEE_WGL_EXT_depth_float = GL_FALSE;
+GLbool _GLEE_WGL_EXT_depth_double = GL_FALSE;
 GLbool _GLEE_WGL_3DFX_multisample = GL_FALSE;
 GLbool _GLEE_WGL_EXT_multisample = GL_FALSE;
 GLbool _GLEE_WGL_I3D_digital_video_control = GL_FALSE;
@@ -4235,7 +4235,7 @@ GLbool _GLEE_WGL_I3D_image_buffer = GL_FALSE;
 GLbool _GLEE_WGL_I3D_swap_frame_lock = GL_FALSE;
 GLbool _GLEE_WGL_NV_render_depth_texture = GL_FALSE;
 GLbool _GLEE_WGL_NV_render_texture_rectangle = GL_FALSE;
-GLbool _GLEE_WGL_ATI_pixel_format_float = GL_FALSE;
+GLbool _GLEE_WGL_ATI_pixel_format_double = GL_FALSE;
 GLbool _GLEE_WGL_NV_float_buffer = GL_FALSE;
 GLbool _GLEE_WGL_EXT_display_color_table = GL_FALSE;
 GLbool _GLEE_WGL_EXT_extensions_string = GL_FALSE;
@@ -4534,7 +4534,7 @@ PFNWGLGETSWAPINTERVALEXTPROC pwglGetSwapIntervalEXT=_Lazy_wglGetSwapIntervalEXT;
 //WGL_NV_vertex_array_range
 
 #ifdef __GLEE_WGL_NV_vertex_array_range
-void* __stdcall _Lazy_wglAllocateMemoryNV(GLsizei size, GLfloat readfreq, GLfloat writefreq, GLfloat priority)  {if (GLeeInit()) return wglAllocateMemoryNV(size, readfreq, writefreq, priority); return (void*)0;}
+void* __stdcall _Lazy_wglAllocateMemoryNV(GLsizei size, GLdouble readfreq, GLdouble writefreq, GLdouble priority)  {if (GLeeInit()) return wglAllocateMemoryNV(size, readfreq, writefreq, priority); return (void*)0;}
 void __stdcall _Lazy_wglFreeMemoryNV(void * pointer)                                      {if (GLeeInit()) wglFreeMemoryNV(pointer);}
 PFNWGLALLOCATEMEMORYNVPROC pwglAllocateMemoryNV=_Lazy_wglAllocateMemoryNV;
 PFNWGLFREEMEMORYNVPROC pwglFreeMemoryNV=_Lazy_wglFreeMemoryNV;
@@ -4560,10 +4560,10 @@ PFNWGLWAITFORSBCOMLPROC pwglWaitForSbcOML=_Lazy_wglWaitForSbcOML;
 //WGL_I3D_swap_frame_usage
 
 #ifdef __GLEE_WGL_I3D_swap_frame_usage
-BOOL __stdcall _Lazy_wglGetFrameUsageI3D(float * pUsage)                                  {if (GLeeInit()) return wglGetFrameUsageI3D(pUsage); return (BOOL)0;}
+BOOL __stdcall _Lazy_wglGetFrameUsageI3D(double * pUsage)                                  {if (GLeeInit()) return wglGetFrameUsageI3D(pUsage); return (BOOL)0;}
 BOOL __stdcall _Lazy_wglBeginFrameTrackingI3D(void)                                       {if (GLeeInit()) return wglBeginFrameTrackingI3D(); return (BOOL)0;}
 BOOL __stdcall _Lazy_wglEndFrameTrackingI3D(void)                                         {if (GLeeInit()) return wglEndFrameTrackingI3D(); return (BOOL)0;}
-BOOL __stdcall _Lazy_wglQueryFrameTrackingI3D(DWORD * pFrameCount, DWORD * pMissedFrames, float * pLastMissedUsage)  {if (GLeeInit()) return wglQueryFrameTrackingI3D(pFrameCount, pMissedFrames, pLastMissedUsage); return (BOOL)0;}
+BOOL __stdcall _Lazy_wglQueryFrameTrackingI3D(DWORD * pFrameCount, DWORD * pMissedFrames, double * pLastMissedUsage)  {if (GLeeInit()) return wglQueryFrameTrackingI3D(pFrameCount, pMissedFrames, pLastMissedUsage); return (BOOL)0;}
 PFNWGLGETFRAMEUSAGEI3DPROC pwglGetFrameUsageI3D=_Lazy_wglGetFrameUsageI3D;
 PFNWGLBEGINFRAMETRACKINGI3DPROC pwglBeginFrameTrackingI3D=_Lazy_wglBeginFrameTrackingI3D;
 PFNWGLENDFRAMETRACKINGI3DPROC pwglEndFrameTrackingI3D=_Lazy_wglEndFrameTrackingI3D;
@@ -4575,7 +4575,7 @@ PFNWGLQUERYFRAMETRACKINGI3DPROC pwglQueryFrameTrackingI3D=_Lazy_wglQueryFrameTra
 GLbool _GLEE_GLX_VERSION_1_3 = GL_FALSE;
 GLbool _GLEE_GLX_VERSION_1_4 = GL_FALSE;
 GLbool _GLEE_GLX_ARB_multisample = GL_FALSE;
-GLbool _GLEE_GLX_ARB_fbconfig_float = GL_FALSE;
+GLbool _GLEE_GLX_ARB_fbconfig_double = GL_FALSE;
 GLbool _GLEE_GLX_SGIS_multisample = GL_FALSE;
 GLbool _GLEE_GLX_EXT_visual_info = GL_FALSE;
 GLbool _GLEE_GLX_SGI_swap_control = GL_FALSE;
@@ -4791,7 +4791,7 @@ PFNGLXGETSELECTEDEVENTSGIXPROC pglXGetSelectedEventSGIX=_Lazy_glXGetSelectedEven
 //GLX_SGI_cushion
 
 #ifdef __GLEE_GLX_SGI_cushion
-void __stdcall _Lazy_glXCushionSGI(Display * dpy, Window window, float cushion)           {if (GLeeInit()) glXCushionSGI(dpy, window, cushion);}
+void __stdcall _Lazy_glXCushionSGI(Display * dpy, Window window, double cushion)           {if (GLeeInit()) glXCushionSGI(dpy, window, cushion);}
 PFNGLXCUSHIONSGIPROC pglXCushionSGI=_Lazy_glXCushionSGI;
 #endif 
 
@@ -8969,7 +8969,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("GL_ARB_color_buffer_float", &extensionNames) )
     {
-        _GLEE_ARB_color_buffer_float = GL_TRUE;
+        _GLEE_ARB_color_buffer_double = GL_TRUE;
         __GLeeLink_GL_ARB_color_buffer_float();
     }
     if (__GLeeCheckExtension("GL_ARB_half_float_pixel", &extensionNames) )
@@ -8979,7 +8979,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("GL_ARB_texture_float", &extensionNames) )
     {
-        _GLEE_ARB_texture_float = GL_TRUE;
+        _GLEE_ARB_texture_double = GL_TRUE;
         __GLeeLink_GL_ARB_texture_float();
     }
     if (__GLeeCheckExtension("GL_ARB_pixel_buffer_object", &extensionNames) )
@@ -9939,7 +9939,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("GL_ATI_pixel_format_float", &extensionNames) )
     {
-        _GLEE_ATI_pixel_format_float = GL_TRUE;
+        _GLEE_ATI_pixel_format_double = GL_TRUE;
         __GLeeLink_GL_ATI_pixel_format_float();
     }
     if (__GLeeCheckExtension("GL_ATI_texture_env_combine3", &extensionNames) )
@@ -9949,7 +9949,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("GL_ATI_texture_float", &extensionNames) )
     {
-        _GLEE_ATI_texture_float = GL_TRUE;
+        _GLEE_ATI_texture_double = GL_TRUE;
         __GLeeLink_GL_ATI_texture_float();
     }
     if (__GLeeCheckExtension("GL_NV_float_buffer", &extensionNames) )
@@ -9964,7 +9964,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("GL_NV_half_float", &extensionNames) )
     {
-        _GLEE_NV_half_float = GL_TRUE;
+        _GLEE_NV_half_double = GL_TRUE;
         __GLeeLink_GL_NV_half_float();
     }
     if (__GLeeCheckExtension("GL_NV_pixel_data_range", &extensionNames) )
@@ -10185,7 +10185,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("WGL_ARB_pixel_format_float", &extensionNames) )
     {
-        _GLEE_WGL_ARB_pixel_format_float = GL_TRUE;
+        _GLEE_WGL_ARB_pixel_format_double = GL_TRUE;
         __GLeeLink_WGL_ARB_pixel_format_float();
     }
     if (__GLeeCheckExtension("WGL_EXT_make_current_read", &extensionNames) )
@@ -10205,7 +10205,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("WGL_EXT_depth_float", &extensionNames) )
     {
-        _GLEE_WGL_EXT_depth_float = GL_TRUE;
+        _GLEE_WGL_EXT_depth_double = GL_TRUE;
         __GLeeLink_WGL_EXT_depth_float();
     }
     if (__GLeeCheckExtension("WGL_3DFX_multisample", &extensionNames) )
@@ -10255,7 +10255,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("WGL_ATI_pixel_format_float", &extensionNames) )
     {
-        _GLEE_WGL_ATI_pixel_format_float = GL_TRUE;
+        _GLEE_WGL_ATI_pixel_format_double = GL_TRUE;
         __GLeeLink_WGL_ATI_pixel_format_float();
     }
     if (__GLeeCheckExtension("WGL_NV_float_buffer", &extensionNames) )
@@ -10311,7 +10311,7 @@ GLEE_EXTERN GLbool GLeeInit()
     }
     if (__GLeeCheckExtension("GLX_ARB_fbconfig_float", &extensionNames) )
     {
-        _GLEE_GLX_ARB_fbconfig_float = GL_TRUE;
+        _GLEE_GLX_ARB_fbconfig_double = GL_TRUE;
         __GLeeLink_GLX_ARB_fbconfig_float();
     }
     if (__GLeeCheckExtension("GLX_SGIS_multisample", &extensionNames) )

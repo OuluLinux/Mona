@@ -308,11 +308,11 @@ void MazeMouseApplication::CreateMona(int random_seed) {
 	// Set need and goal for cheese.
 	mona.SetNeed(0, CHEESE_NEED);
 	sensors    = new float[5];
-	sensors[0] = 0.0f;
-	sensors[1] = 0.0f;
-	sensors[2] = 0.0f;
+	sensors[0] = 0.0;
+	sensors[1] = 0.0;
+	sensors[2] = 0.0;
 	sensors[3] = (float)GOAL_ROOM;
-	sensors[4] = 1.0f;
+	sensors[4] = 1.0;
 	mona.AddGoal(0, sensors, 0, CHEESE_GOAL);
 }
 
@@ -394,19 +394,19 @@ void MazeMouseApplication::Step() {
 	// Initiate sensory/response cycle.
 	for (i = 0; i < maze[mouseX][mouseY].doors.length; i++) {
 		if (maze[mouseX][mouseY].doors[i] != null)
-			sensors[i] = 1.0f;
+			sensors[i] = 1.0;
 		else if (see_all_maze_doors && (mouseX > 1) && (mouseX < 5)) {
 			// Maze room door is visible although possibly blocked.
-			sensors[i] = 1.0f;
+			sensors[i] = 1.0;
 		}
 		else
-			sensors[i] = 0.0f;
+			sensors[i] = 0.0;
 	}
 
 	sensors[3] = (float)maze[mouseX][mouseY].type;
 
 	if (maze[mouseX][mouseY].has_cheese) {
-		sensors[4] = 1.0f;
+		sensors[4] = 1.0;
 		// Eat the cheese!
 		maze[mouseX][mouseY].has_cheese = false;
 
@@ -414,7 +414,7 @@ void MazeMouseApplication::Step() {
 			squeakSound.play();
 	}
 	else
-		sensors[4] = 0.0f;
+		sensors[4] = 0.0;
 
 	// Move mouse based on response.
 	r = mona.Cycle(sensors);

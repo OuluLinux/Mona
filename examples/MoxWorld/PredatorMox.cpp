@@ -13,7 +13,7 @@ public class PredatorMox extends Mox
    public static final int   PREDATOR_COLOR_VALUE = 10;
 
    // Maximum sensor range (-1 == infinite).
-   public static float MAX_SENSOR_RANGE = -1.0f;
+   public static double MAX_SENSOR_RANGE = -1.0;
 
    // Need types.
    public enum NEED_TYPE
@@ -139,10 +139,10 @@ public class PredatorMox extends Mox
          needNames[NEED_TYPE.MOX_FOOD.GetValue()] = MOX_FOOD_NEED_NAME;
          mona.SetNeed(NEED_TYPE.MOX_FOOD.GetValue(), MOX_FOOD_NEED_VALUE);
          Vector<double> sensors = new float[SENSOR_CONFIG.NUM_SENSORS.GetValue()];
-         sensors[SENSOR_CONFIG.RANGE_SENSOR_INDEX.GetValue()]     = 0.0f;
+         sensors[SENSOR_CONFIG.RANGE_SENSOR_INDEX.GetValue()]     = 0.0;
          sensors[SENSOR_CONFIG.COLOR_HUE_SENSOR_INDEX.GetValue()] =
             (float)ForagerMox.FORAGER_COLOR_VALUE;
-         sensors[SENSOR_CONFIG.COLOR_INTENSITY_SENSOR_INDEX.GetValue()] = 1.0f;
+         sensors[SENSOR_CONFIG.COLOR_INTENSITY_SENSOR_INDEX.GetValue()] = 1.0;
          mona.AddGoal(NEED_TYPE.MOX_FOOD.GetValue(), sensors,
                       SENSOR_CONFIG.BASIC_SENSOR_MODE.GetValue(),
                       RESPONSE_TYPE.NULL_RESPONSE.GetValue(),

@@ -181,25 +181,25 @@ char *getPath(char *dir, char *file)
 }
 
 
-FILE *myfopenRead(char *filename)
+FILE *myfopenRead(String filename)
 {
    return (fopen(filename, "rb"));
 }
 
 
-FILE *myfopenWrite(char *filename)
+FILE *myfopenWrite(String filename)
 {
    return (fopen(filename, "wb"));
 }
 
 
-int myfclose(FILE *fp)
+int myfclose(Stream& fp)
 {
    return (fclose(fp));
 }
 
 
-int myfreadInt(int *i, FILE *fp)
+int myfreadInt(int *i, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(i, sizeof(int), 1, fp));
@@ -210,7 +210,7 @@ int myfreadInt(int *i, FILE *fp)
 }
 
 
-int myfwriteInt(int *i, FILE *fp)
+int myfwriteInt(int *i, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(i, sizeof(int), 1, fp));
@@ -221,7 +221,7 @@ int myfwriteInt(int *i, FILE *fp)
 }
 
 
-int myfreadShort(short *s, FILE *fp)
+int myfreadShort(short *s, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(s, sizeof(short), 1, fp));
@@ -235,7 +235,7 @@ int myfreadShort(short *s, FILE *fp)
 }
 
 
-int myfwriteShort(short *s, FILE *fp)
+int myfwriteShort(short *s, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(s, sizeof(short), 1, fp));
@@ -248,7 +248,7 @@ int myfwriteShort(short *s, FILE *fp)
 }
 
 
-int myfreadLong(unsigned long *l, FILE *fp)
+int myfreadLong(unsigned long *l, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(l, sizeof(unsigned long), 1, fp));
@@ -259,7 +259,7 @@ int myfreadLong(unsigned long *l, FILE *fp)
 }
 
 
-int myfwriteLong(unsigned long *l, FILE *fp)
+int myfwriteLong(unsigned long *l, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(l, sizeof(unsigned long), 1, fp));
@@ -270,7 +270,7 @@ int myfwriteLong(unsigned long *l, FILE *fp)
 }
 
 
-int myfreadLongLong(unsigned long long *l, FILE *fp)
+int myfreadLongLong(unsigned long long *l, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(l, sizeof(unsigned long long), 1, fp));
@@ -281,7 +281,7 @@ int myfreadLongLong(unsigned long long *l, FILE *fp)
 }
 
 
-int myfwriteLongLong(unsigned long long *l, FILE *fp)
+int myfwriteLongLong(unsigned long long *l, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(l, sizeof(unsigned long long), 1, fp));
@@ -292,7 +292,7 @@ int myfwriteLongLong(unsigned long long *l, FILE *fp)
 }
 
 
-int myfreadFloat(float *f, FILE *fp)
+int myfreadFloat(double *f, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(f, sizeof(float), 1, fp));
@@ -306,7 +306,7 @@ int myfreadFloat(float *f, FILE *fp)
 }
 
 
-int myfwriteFloat(float *f, FILE *fp)
+int myfwriteFloat(double *f, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(f, sizeof(float), 1, fp));
@@ -317,7 +317,7 @@ int myfwriteFloat(float *f, FILE *fp)
 }
 
 
-int myfreadDouble(double *d, FILE *fp)
+int myfreadDouble(double *d, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(d, sizeof(double), 1, fp));
@@ -331,7 +331,7 @@ int myfreadDouble(double *d, FILE *fp)
 }
 
 
-int myfwriteDouble(double *d, FILE *fp)
+int myfwriteDouble(double *d, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(d, sizeof(double), 1, fp));
@@ -342,7 +342,7 @@ int myfwriteDouble(double *d, FILE *fp)
 }
 
 
-int myfreadBool(bool *b, FILE *fp)
+int myfreadBool(bool *b, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(b, sizeof(bool), 1, fp));
@@ -363,7 +363,7 @@ int myfreadBool(bool *b, FILE *fp)
 }
 
 
-int myfwriteBool(bool *b, FILE *fp)
+int myfwriteBool(bool *b, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(b, sizeof(bool), 1, fp));
@@ -381,7 +381,7 @@ int myfwriteBool(bool *b, FILE *fp)
 }
 
 
-int myfreadChar(unsigned char *c, FILE *fp)
+int myfreadChar(unsigned char *c, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(c, sizeof(unsigned char), 1, fp));
@@ -395,7 +395,7 @@ int myfreadChar(unsigned char *c, FILE *fp)
 }
 
 
-int myfwriteChar(unsigned char *c, FILE *fp)
+int myfwriteChar(unsigned char *c, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(c, sizeof(unsigned char), 1, fp));
@@ -406,7 +406,7 @@ int myfwriteChar(unsigned char *c, FILE *fp)
 }
 
 
-int myfreadBytes(unsigned char *bytes, int size, FILE *fp)
+int myfreadBytes(unsigned char *bytes, int size, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(bytes, size, 1, fp));
@@ -445,7 +445,7 @@ int myfreadBytes(unsigned char *bytes, int size, FILE *fp)
 }
 
 
-int myfwriteBytes(unsigned char *bytes, int size, FILE *fp)
+int myfwriteBytes(unsigned char *bytes, int size, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(bytes, size, 1, fp));
@@ -466,7 +466,7 @@ int myfwriteBytes(unsigned char *bytes, int size, FILE *fp)
 }
 
 
-int myfreadString(char *str, int size, FILE *fp)
+int myfreadString(char *str, int size, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fread(str, size, 1, fp));
@@ -510,7 +510,7 @@ int myfreadString(char *str, int size, FILE *fp)
 }
 
 
-int myfwriteString(char *str, int size, FILE *fp)
+int myfwriteString(char *str, int size, Stream& fp)
 {
 #ifdef BINARY_FILE_FORMAT
    return ((int)fwrite(str, size, 1, fp));

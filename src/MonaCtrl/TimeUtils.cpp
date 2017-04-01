@@ -46,7 +46,7 @@ __int64 Timer::getPrecision(){
 #endif
 }
 
-float Timer::getElapsedTimeSeconds(__int64 lastTime){
+double Timer::getElapsedTimeSeconds(__int64 lastTime){
 #ifdef WIN32
   return float(getCurrentTime() - lastTime)/frequency.QuadPart;
 #else
@@ -62,17 +62,17 @@ float Timer::getElapsedTimeSeconds(__int64 lastTime){
 FPSCounter::FPSCounter()
 {
   Timer::intialize();
-  frameInterval = 0.0f;
-  internalFPS   = 0.0f;
-  tickCounter   = 0.0f;
-  elapsedTime   = 0.0f;
+  frameInterval = 0.0;
+  internalFPS   = 0.0;
+  tickCounter   = 0.0;
+  elapsedTime   = 0.0;
   frameStart    =    0;
-  fps           = 0.0f;
+  fps           = 0.0;
 }
 
-const float FPSCounter::getFrameInterval() const { return frameInterval; }
-const float FPSCounter::getElapsedTime()   const { return elapsedTime;   }
-const float FPSCounter::getFPS()           const { return fps;           }
+const double FPSCounter::getFrameInterval() const { return frameInterval; }
+const double FPSCounter::getElapsedTime()   const { return elapsedTime;   }
+const double FPSCounter::getFPS()           const { return fps;           }
 
 void FPSCounter::markFrameStart()
 {
@@ -91,8 +91,8 @@ void FPSCounter::markFrameEnd()
     if(tickCounter >= 1.0f)
     {
       fps          = internalFPS/tickCounter;
-      internalFPS  = 0.0f;
-      tickCounter  = 0.0f;
+      internalFPS  = 0.0;
+      tickCounter  = 0.0;
     }
   }
 }
@@ -105,16 +105,16 @@ void FPSCounter::markFrameEnd()
 Benchmark::Benchmark(const String &logFilePath) : FPSCounter() , IOXMLObject("Benchmark")
 {
   setLogFilePath(logFilePath);
-  framesCounter  =   0.0f;
-  elapsedTime    =   0.0f;
-  averageFPS     =   0.0f;
-  duration       =  10.0f;
+  framesCounter  =   0.0;
+  elapsedTime    =   0.0;
+  averageFPS     =   0.0;
+  duration       =  10.0;
   enabled        =   true;
   minFPS         = 10.0e5;
-  maxFPS         =   0.0f;
+  maxFPS         =   0.0;
 }
 
-bool   Benchmark::loadXMLSettings(const TiXmlElement *element)
+bool   Benchmark::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "Benchmark"))
     return  Logger::writeErrorLog("NULL Benchmark node");
@@ -171,12 +171,12 @@ void Benchmark::markFrameEnd()
     if(tickCounter >= 1.0f)
     {
       fps          = internalFPS/tickCounter;
-      internalFPS  = 0.0f;
-      tickCounter  = 0.0f;
+      internalFPS  = 0.0;
+      tickCounter  = 0.0;
     }
   }
 
-  framesCounter += 1.0f;
+  framesCounter += 1.0;
 
   if(elapsedTime >= duration || !enabled)
     return;
@@ -204,14 +204,14 @@ bool Benchmark::isRunning()   const
   return (elapsedTime < duration);
 }
 
-void Benchmark::setDuration(float dur)
+void Benchmark::setDuration(double dur)
 { 
   duration = clamp(dur, 1.0f, 3600.0f);
 }
 
-float  Benchmark::getTotalDuration() const { return elapsedTime;       }
-float  Benchmark::getAverageFrames() const { return averageFPS;        }
-float  Benchmark::getTotalFrames()   const { return framesCounter;     }
-float  Benchmark::getDuration()      const { return duration;          }
-float  Benchmark::getMinFPS()        const { return minFPS;            }
-float  Benchmark::getMaxFPS()        const { return maxFPS;            }
+double  Benchmark::getTotalDuration() const { return elapsedTime;       }
+double  Benchmark::getAverageFrames() const { return averageFPS;        }
+double  Benchmark::getTotalFrames()   const { return framesCounter;     }
+double  Benchmark::getDuration()      const { return duration;          }
+double  Benchmark::getMinFPS()        const { return minFPS;            }
+double  Benchmark::getMaxFPS()        const { return maxFPS;            }

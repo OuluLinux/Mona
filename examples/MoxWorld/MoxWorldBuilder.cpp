@@ -47,7 +47,7 @@ public class MoxWorldBuilder
 
 
    // Build.
-   public bool build(int steps, float live_cell_prob, int random_seed,
+   public bool Build(int steps, double live_cell_prob, int random_seed,
                         int blue_cell_count, int max_blue_cell_count,
                         int min_green_cell_count, int max_green_cell_count,
                         int max_build_attempts)
@@ -70,12 +70,12 @@ public class MoxWorldBuilder
             return true;
          }
       }
-      return (false);
+      return false;
    }
 
 
    // Initialize.
-   public void Init(float live_cell_prob)
+   public void Init(double live_cell_prob)
    {
       int x, y;
       int width  = game_of_life.GetWidth();
@@ -159,7 +159,7 @@ public class MoxWorldBuilder
       }
       else
       {
-         return (false);
+         return false;
       }
    }
 
@@ -193,11 +193,11 @@ public class MoxWorldBuilder
       if (dashboard != null)
       {
          dashboard.setMessage(message);
-         dashboard.update(step, steps);
+         dashboard.Update(step, steps);
          if (dashboard.quit)
          {
             dashboard = null;
-            return (false);
+            return false;
          }
          else
          {
@@ -206,7 +206,7 @@ public class MoxWorldBuilder
       }
       else
       {
-         return (false);
+         return false;
       }
    }
 
@@ -225,7 +225,7 @@ public class MoxWorldBuilder
          if (dashboard.quit)
          {
             dashboard = null;
-            return (false);
+            return false;
          }
          else
          {
@@ -234,7 +234,7 @@ public class MoxWorldBuilder
       }
       else
       {
-         return (false);
+         return false;
       }
    }
 
@@ -246,7 +246,7 @@ public class MoxWorldBuilder
       int     steps            = -1;
       int     width            = -1;
       int     height           = -1;
-      float   live_cell_prob     = -1.0f;
+      double   live_cell_prob     = -1.0;
       int     random_seed       = DEFAULT_RANDOM_SEED;
       int     blue_cell_count     = 0;
       int     max_blue_cell_count     = -1;
@@ -580,7 +580,7 @@ public class MoxWorldBuilder
       }
 
       // Build mox world.
-      if (!mox_world_builder.build(steps, live_cell_prob, random_seed,
+      if (!mox_world_builder.Build(steps, live_cell_prob, random_seed,
                                  blue_cell_count, max_blue_cell_count,
                                  min_green_cell_count, max_green_cell_count,
                                  max_build_attempts))

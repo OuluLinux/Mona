@@ -56,10 +56,10 @@ int TestingRandomSeed = 3605;
 
 // Game properties.
 int   GridSizes = 5;
-float CellSize       = 1.0f / (float)GridSizes;
+double CellSize       = 1.0f / (float)GridSizes;
 int   StartX         = GridSizes / 2;
 int   StartY         = GridSizes / 2;
-float BallSpeed      = 0.0f;
+double BallSpeed      = 0.0;
 
 // Files.
 char           *TrainingPlaybackFile = NULL;
@@ -99,18 +99,18 @@ enum MONA_SENSORS
 };
 
 // Ball sensor values.
-const float BALL_ABSENT       = 0.0f;
-const float BALL_PRESENT      = 0.1f;
-const float BALL_MOVING_LEFT  = 0.2f;
-const float BALL_MOVING_RIGHT = 0.3f;
-const float BALL_MOVING_UP    = 0.4f;
-const float BALL_MOVING_DOWN  = 0.5f;
-const float BALL_NULL         = 1.0f;
+const double BALL_ABSENT       = 0.0;
+const double BALL_PRESENT      = 0.1f;
+const double BALL_MOVING_LEFT  = 0.2f;
+const double BALL_MOVING_RIGHT = 0.3f;
+const double BALL_MOVING_UP    = 0.4f;
+const double BALL_MOVING_DOWN  = 0.5f;
+const double BALL_NULL         = 1.0;
 
 // Paddle sensor values.
-const float PADDLE_ABSENT     = 0.0f;
-const float PADDLE_PRESENT    = 0.5f;
-const float PADDLE_NULL       = 1.0f;
+const double PADDLE_ABSENT     = 0.0;
+const double PADDLE_PRESENT    = 0.5f;
+const double PADDLE_NULL       = 1.0;
 
 // Cycle.
 int Cycle(bool overrideResponse = false);
@@ -947,7 +947,7 @@ main(int argc, char *argv[])
 // Reset game.
 void reset(RESET_TYPE type)
 {
-   float  x, y, v;
+   double  x, y, v;
    Random *randomizer;
 
    x = ((float)StartX * CellSize) + (CellSize * 0.5f);
@@ -1274,7 +1274,7 @@ int Cycle(bool overrideResponse)
    {
       static int   lastMonaX = -1;
       static int   lastMonaY = -1;
-      static float lastSensors[2];
+      static double lastSensors[2];
       if ((MonaX != lastMonaX) || (MonaY != lastMonaY) ||
           (lastSensors[0] != sensors[0]) || (lastSensors[1] != sensors[1]))
       {

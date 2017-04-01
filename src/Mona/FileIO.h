@@ -52,9 +52,9 @@ char *getPath(char *dir, char *file);
 #define FWRITE_BYTES        myfwriteBytes
 #define FREAD_STRING        myfreadString
 #define FWRITE_STRING       myfwriteString
-FILE *myfopenRead(char *filename);
-FILE *myfopenWrite(char *filename);
-int myfclose(FILE *fp);
+FILE *myfopenRead(String filename);
+FILE *myfopenWrite(String filename);
+int myfclose(Stream& fp);
 int myfreadInt(int *, FILE *);
 int myfwriteInt(int *, FILE *);
 int myfreadShort(short *, FILE *);
@@ -63,8 +63,8 @@ int myfreadLong(unsigned long *, FILE *);
 int myfwriteLong(unsigned long *, FILE *);
 int myfreadLongLong(unsigned long long *, FILE *);
 int myfwriteLongLong(unsigned long long *, FILE *);
-int myfreadFloat(float *, FILE *);
-int myfwriteFloat(float *, FILE *);
+int myfreadFloat(double *, FILE *);
+int myfwriteFloat(double *, FILE *);
 int myfreadDouble(double *, FILE *);
 int myfwriteDouble(double *, FILE *);
 int myfreadBool(bool *, FILE *);

@@ -145,7 +145,7 @@ void Pool::Draw() {
 
 // Load pool.
 void Pool::Load(String filename) {
-	FILE* fp;
+	Stream& fp;
 
 	if ((fp = FOPEN_READ(filename)) == NULL) {
 		fprintf(stderr, "Cannot load pool from file %s\n", filename);
@@ -157,14 +157,14 @@ void Pool::Load(String filename) {
 }
 
 
-void Pool::Load(FILE* fp) {
-	((BaseObject*)this)->Load(fp);
+void Pool::Serialize(Stream& fp) {
+	BaseObject::Serialize(fp);
 }
 
 
 // Save pool.
 void Pool::Store(String filename) {
-	FILE* fp;
+	Stream& fp;
 
 	if ((fp = FOPEN_WRITE(filename)) == NULL) {
 		fprintf(stderr, "Cannot save pool to file %s\n", filename);
@@ -176,6 +176,6 @@ void Pool::Store(String filename) {
 }
 
 
-void Pool::Store(FILE* fp) {
+void Pool::Store(Stream& fp) {
 	((BaseObject*)this)->Store(fp);
 }

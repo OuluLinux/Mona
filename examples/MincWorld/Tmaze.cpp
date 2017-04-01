@@ -20,18 +20,18 @@ bool Tmaze::IsDuplicate(Tmaze *maze)
 {
    if ((int)path.GetCount() != (int)maze->path.GetCount())
    {
-      return (false);
+      return false;
    }
    for (int i = 0; i < (int)path.GetCount(); i++)
    {
       if (path[i].mark != maze->path[i].mark)
       {
-         return (false);
+         return false;
       }
 
       if (path[i].direction != maze->path[i].direction)
       {
-         return (false);
+         return false;
       }
    }
    return true;

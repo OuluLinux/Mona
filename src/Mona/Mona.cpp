@@ -1,5 +1,3 @@
-// For conditions of distribution and use, see copyright notice in mona.h
-
 #include "Mona.h"
 
 // Version.
@@ -14,11 +12,11 @@ Mona::printVersion(FILE *out)
 
 
 // Null id.
-const Mona::ID Mona::NULL_ID = Homeostat::NULL_ID;
+const ID Mona::NULL_ID = Homeostat::NULL_ID;
 
 // Behavior cycle.
-Mona::RESPONSE
-Mona::Cycle(Vector<Mona::SENSOR>& sensors)
+RESPONSE
+Mona::Cycle(Vector<SENSOR>& sensors)
 {
    // Input sensors.
    ASSERT((int)sensors.GetCount() == sensor_count);
@@ -53,7 +51,7 @@ Mona::Mona()
 
 // Construct network.
 Mona::Mona(int sensor_count, int response_count, int need_count,
-           RANDOM random_seed)
+           int random_seed)
 {
    ClearVars();
    InitParms();
@@ -80,7 +78,7 @@ void Mona::InitParms()
    MAX_MEDIATOR_LEVEL = 3;
    MAX_RESPONSE_EQUIPPED_MEDIATOR_LEVEL   = 3;
    MIN_RESPONSE_UNEQUIPPED_MEDIATOR_LEVEL = 3;
-   SENSOR_RESOLUTION = 0.0f;
+   SENSOR_RESOLUTION = 0.0;
    LEARN_MEDIATOR_GOAL_VALUE_MIN_LEVEL = 2;
    LEARN_RECEPTOR_GOAL_VALUE           = false;
 
@@ -194,40 +192,40 @@ bool Mona::AuditDefaultEffectEventIntervals()
 
    if (DEFAULT_NUM_EFFECT_EVENT_INTERVALS <= 0)
    {
-      return (false);
+      return false;
    }
 
    if (DEFAULT_MAX_LEARNING_EFFECT_EVENT_INTERVAL <= 0)
    {
-      return (false);
+      return false;
    }
 
    if (effect_event_intervals.GetCount() != (MAX_MEDIATOR_LEVEL + 1))
    {
-      return (false);
+      return false;
    }
 
    if (effect_event_intervals.GetCount() != effect_event_interval_weights.GetCount())
    {
-      return (false);
+      return false;
    }
 
    if (max_learning_effect_event_intervals.GetCount() != (MAX_MEDIATOR_LEVEL + 1))
    {
-      return (false);
+      return false;
    }
 
    for (i = 0; i <= MAX_MEDIATOR_LEVEL; i++)
    {
       if ((int)effect_event_intervals[i].GetCount() != DEFAULT_NUM_EFFECT_EVENT_INTERVALS)
       {
-         return (false);
+         return false;
       }
       for (j = 0; j < (int)effect_event_intervals[i].GetCount(); j++)
       {
          if (effect_event_intervals[i][j] < (int)(pow(2.0, i)))
          {
-            return (false);
+            return false;
          }
       }
    }
@@ -237,7 +235,7 @@ bool Mona::AuditDefaultEffectEventIntervals()
       if ((int)effect_event_interval_weights[i].GetCount() !=
           DEFAULT_NUM_EFFECT_EVENT_INTERVALS)
       {
-         return (false);
+         return false;
       }
       sum = 0.0;
       for (j = 0; j < (int)effect_event_interval_weights[i].GetCount(); j++)
@@ -246,7 +244,7 @@ bool Mona::AuditDefaultEffectEventIntervals()
       }
       if (fabs(sum - 1.0) > NEARLY_ZERO)
       {
-         return (false);
+         return false;
       }
    }
 
@@ -254,7 +252,7 @@ bool Mona::AuditDefaultEffectEventIntervals()
    {
       if (max_learning_effect_event_intervals[i] < 0)
       {
-         return (false);
+         return false;
       }
    }
 
@@ -264,7 +262,7 @@ bool Mona::AuditDefaultEffectEventIntervals()
 
 // Mona initializer.
 void Mona::InitNet(int sensor_count, int response_count, int need_count,
-                   RANDOM random_seed)
+                   int random_seed)
 {
    int i;
 
@@ -287,7 +285,7 @@ void Mona::InitNet(int sensor_count, int response_count, int need_count,
    this->random_seed   = random_seed;
 
    // Set random seed.
-   random.SRAND(random_seed);
+   //random.SRAND(random_seed);
 
    // Initialize sensors.
    sensors.Clear();
@@ -318,7 +316,7 @@ void Mona::InitNet(int sensor_count, int response_count, int need_count,
    max_motive = (MOTIVE)need_count;
 
    // Learning initialization.
-   event_clock = 0;
+   event_clock.Set(0);
    learning_events.SetCount(MAX_MEDIATOR_LEVEL + 1);
 
 #ifdef MONA_TRACE
@@ -353,7 +351,7 @@ Mona::~Mona()
 
 
 // Get need.
-Mona::NEED
+NEED
 Mona::GetNeed(int index)
 {
    return (homeostats[index]->GetNeed());
@@ -375,19 +373,19 @@ void
 Mona::InflateNeed(int index)
 {
    int                 i;
-   NEED                currentNeed, deltaNeed, need;
+   NEED                current_need, delta_need, need;
    Mediator            *mediator;
    Enabling            *enabling;
    LearningEvent       *learning_event;
-   GeneralizationEvent *generalizationEvent;
+   GeneralizationEvent *generalization_event;
 
    Vector<Mediator *>::Iterator      mediator_iter;
-   Vector<Enabling *>::Iterator      enabling_iter;
-   Vector<LearningEvent *>::Iterator learning_eventItr;
+   Array<Enabling>::Iterator      enabling_iter;
+   Vector<LearningEvent *>::Iterator learning_event_iter;
 
-   currentNeed = homeostats[index]->GetNeed();
-   deltaNeed   = 1.0 - currentNeed;
-   homeostats[index]->SetNeed(currentNeed + deltaNeed);
+   current_need = homeostats[index]->GetNeed();
+   delta_need   = 1.0 - current_need;
+   homeostats[index]->SetNeed(current_need + delta_need);
    for (mediator_iter = mediators.Begin();
         mediator_iter != mediators.End(); mediator_iter++)
    {
@@ -395,26 +393,25 @@ Mona::InflateNeed(int index)
       for (enabling_iter = mediator->response_enablings.enablings.Begin();
            enabling_iter != mediator->response_enablings.enablings.End(); enabling_iter++)
       {
-         enabling = *enabling_iter;
-         need     = enabling->needs.Get(index) + deltaNeed;
-         enabling->needs.set(index, need);
+         need     = enabling_iter->needs.Get(index) + delta_need;
+         enabling_iter->needs.Set(index, need);
       }
    }
    for (i = 0; i < (int)learning_events.GetCount(); i++)
    {
-      for (learning_eventItr = learning_events[i].Begin();
-           learning_eventItr != learning_events[i].End(); learning_eventItr++)
+      for (learning_event_iter = learning_events[i].Begin();
+           learning_event_iter != learning_events[i].End(); learning_event_iter++)
       {
-         learning_event = *learning_eventItr;
-         need          = learning_event->needs.Get(index) + deltaNeed;
-         learning_event->needs.set(index, need);
+         learning_event = *learning_event_iter;
+         need          = learning_event->needs.Get(index) + delta_need;
+         learning_event->needs.Set(index, need);
       }
    }
    for (i = 0; i < (int)generalization_events.GetCount(); i++)
    {
-      generalizationEvent = generalization_events[i];
-      need = generalizationEvent->needs.Get(index) + deltaNeed;
-      generalizationEvent->needs.set(index, need);
+      generalization_event = generalization_events[i];
+      need = generalization_event->needs.Get(index) + delta_need;
+      generalization_event->needs.Set(index, need);
    }
 }
 
@@ -437,12 +434,12 @@ Mona::ClearPeriodicNeed(int index)
 
 
 // Print need.
-void
+/*void
 Mona::PrintNeed(int index)
 {
    homeostats[index]->Print();
 }
-
+*/
 
 // Add a goal for a need.
 int Mona::AddGoal(int need_index, Vector<SENSOR>& sensors,
@@ -534,7 +531,7 @@ bool Mona::RemoveGoal(int need_index, int goal_index)
 
 // Initialize neuron.
 void
-Mona::Neuron::Init(Mona *mona)
+Neuron::Init(Mona *mona)
 {
    Clear();
    this->mona = mona;
@@ -544,7 +541,7 @@ Mona::Neuron::Init(Mona *mona)
 
 // Clear neuron.
 void
-Mona::Neuron::Clear()
+Neuron::Clear()
 {
    id             = NULL_ID;
    creation_time   = INVALID_TIME;
@@ -571,7 +568,7 @@ Mona::Neuron::Clear()
 
 // Does neuron have an instinct parent?
 bool
-Mona::Neuron::HasInnerInstinct()
+Neuron::HasInnerInstinct()
 {
    Mediator *mediator;
 
@@ -584,13 +581,17 @@ Mona::Neuron::HasInnerInstinct()
          return true;
       }
    }
-   return (false);
+   return false;
 }
 
 
 // Load neuron.
-void Mona::Neuron::Load(FILE *fp)
+void Neuron::Serialize(Stream& fp)
 {
+	fp % id % type % creation_time % firing_strength;
+	goals.Serialize(fp);
+	fp % motive % instinct % notify_list;
+	
    int           i, j;
    struct Notify *notify;
 
@@ -614,7 +615,7 @@ void Mona::Neuron::Load(FILE *fp)
       ASSERT(notify->mediator != NULL);
       FREAD_LONG_LONG((ID *)notify->mediator, fp);
       FREAD_INT(&j, fp);
-      notify->eventType = (EVENT_TYPE)j;
+      notify->event_type = (EVENT_TYPE)j;
       notify_list[i]     = notify;
    }
 }
@@ -622,7 +623,7 @@ void Mona::Neuron::Load(FILE *fp)
 
 // Save neuron.
 // When changing format increment FORMAT in mona.h
-void Mona::Neuron::Store(FILE *fp)
+void Neuron::Store(Stream& fp)
 {
    int           i, j;
    struct Notify *notify;
@@ -641,14 +642,14 @@ void Mona::Neuron::Store(FILE *fp)
    {
       notify = notify_list[i];
       FWRITE_LONG_LONG(&notify->mediator->id, fp);
-      j = (int)notify->eventType;
+      j = (int)notify->event_type;
       FWRITE_INT(&j, fp);
    }
 }
 
 
 // Create receptor and add to network.
-Mona::Receptor *
+Receptor *
 Mona::NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode)
 {
    Receptor *r = new Receptor(centroid, sensor_mode, this);
@@ -670,7 +671,7 @@ Mona::NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode)
 
 
 // Receptor constructor.
-Mona::Receptor::Receptor(Vector<SENSOR>& centroid,
+Receptor::Receptor(Vector<SENSOR>& centroid,
                          SENSOR_MODE sensor_mode, Mona *mona)
 {
    ASSERT((int)centroid.GetCount() == mona->sensor_count);
@@ -687,7 +688,7 @@ Mona::Receptor::Receptor(Vector<SENSOR>& centroid,
 
 
 // Receptor destructor.
-Mona::Receptor::~Receptor()
+Receptor::~Receptor()
 {
    sub_sensor_modes.Clear();
    super_sensor_modes.Clear();
@@ -696,11 +697,11 @@ Mona::Receptor::~Receptor()
 
 
 // Is given receptor a duplicate of this?
-bool Mona::Receptor::IsDuplicate(Receptor *receptor)
+bool Receptor::IsDuplicate(Receptor *receptor)
 {
    if (sensor_mode != receptor->sensor_mode)
    {
-      return (false);
+      return false;
    }
    if (GetCentroidDistance(receptor->centroid) == 0.0)
    {
@@ -708,16 +709,16 @@ bool Mona::Receptor::IsDuplicate(Receptor *receptor)
    }
    else
    {
-      return (false);
+      return false;
    }
 }
 
 
 // Load receptor.
-void Mona::Receptor::Load(FILE *fp)
+void Receptor::Serialize(Stream& fp)
 {
    int      i, j;
-   float    s;
+   double    s;
    Receptor *receptor;
 
    Clear();
@@ -752,10 +753,10 @@ void Mona::Receptor::Load(FILE *fp)
 
 // Save receptor.
 // When changing format increment FORMAT in mona.h
-void Mona::Receptor::Store(FILE *fp)
+void Receptor::Store(Stream& fp)
 {
    int   i, j;
-   float s;
+   double s;
    ID    id;
 
    ((Neuron *)this)->Store(fp);
@@ -781,18 +782,18 @@ void Mona::Receptor::Store(FILE *fp)
    }
 }
 
-
+/*
 // Print receptor.
 #ifdef MONA_TRACKING
-void Mona::Receptor::Print(FILE *out)
+void Receptor::Print(FILE *out)
 {
    Print((TRACKING_FLAGS)0, out);
 }
 
 
-void Mona::Receptor::Print(TRACKING_FLAGS tracking, FILE *out)
+void Receptor::Print(TRACKING_FLAGS tracking, FILE *out)
 #else
-void Mona::Receptor::Print(FILE *out)
+void Receptor::Print(FILE *out)
 #endif
 {
    fprintf(out, "<receptor><id>%llu</id>", id);
@@ -830,10 +831,10 @@ void Mona::Receptor::Print(FILE *out)
 #endif
    fprintf(out, "</receptor>");
 }
-
+*/
 
 // Create motor and add to network.
-Mona::Motor *
+Motor *
 Mona::NewMotor(RESPONSE response)
 {
    Motor *m;
@@ -849,7 +850,7 @@ Mona::NewMotor(RESPONSE response)
 
 
 // Motor constructor.
-Mona::Motor::Motor(RESPONSE response, Mona *mona)
+Motor::Motor(RESPONSE response, Mona *mona)
 {
    Init(mona);
    type           = MOTOR;
@@ -858,14 +859,14 @@ Mona::Motor::Motor(RESPONSE response, Mona *mona)
 
 
 // Motor destructor.
-Mona::Motor::~Motor()
+Motor::~Motor()
 {
    Clear();
 }
 
 
 // Is given motor a duplicate of this?
-bool Mona::Motor::IsDuplicate(Motor *motor)
+bool Motor::IsDuplicate(Motor *motor)
 {
    if (response == motor->response)
    {
@@ -873,13 +874,13 @@ bool Mona::Motor::IsDuplicate(Motor *motor)
    }
    else
    {
-      return (false);
+      return false;
    }
 }
 
 
 // Load motor.
-void Mona::Motor::Load(FILE *fp)
+void Motor::Serialize(Stream& fp)
 {
    Clear();
    ((Neuron *)this)->Load(fp);
@@ -889,24 +890,24 @@ void Mona::Motor::Load(FILE *fp)
 
 // Save motor.
 // When changing format increment FORMAT in mona.h
-void Mona::Motor::Store(FILE *fp)
+void Motor::Store(Stream& fp)
 {
    ((Neuron *)this)->Store(fp);
    FWRITE_INT(&response, fp);
 }
 
-
+/*
 // Print motor.
 #ifdef MONA_TRACKING
-void Mona::Motor::Print(FILE *out)
+void Motor::Print(FILE *out)
 {
    Print((TRACKING_FLAGS)0, out);
 }
 
 
-void Mona::Motor::Print(TRACKING_FLAGS tracking, FILE *out)
+void Motor::Print(TRACKING_FLAGS tracking, FILE *out)
 #else
-void Mona::Motor::Print(FILE *out)
+void Motor::Print(FILE *out)
 #endif
 {
    fprintf(out, "<motor><id>%llu</id><response>%d</response>",
@@ -930,10 +931,10 @@ void Mona::Motor::Print(FILE *out)
 #endif
    fprintf(out, "</motor>");
 }
-
+*/
 
 // Create mediator and add to network.
-Mona::Mediator *
+Mediator *
 Mona::NewMediator(ENABLEMENT enablement)
 {
    Mediator *m;
@@ -949,7 +950,7 @@ Mona::NewMediator(ENABLEMENT enablement)
 
 
 // Mediator constructor.
-Mona::Mediator::Mediator(ENABLEMENT enablement, Mona *mona)
+Mediator::Mediator(ENABLEMENT enablement, Mona *mona)
 {
    Init(mona);
    type                     = MEDIATOR;
@@ -966,7 +967,7 @@ Mona::Mediator::Mediator(ENABLEMENT enablement, Mona *mona)
 
 
 // Mediator destructor.
-Mona::Mediator::~Mediator()
+Mediator::~Mediator()
 {
    struct Notify *notify;
 
@@ -980,7 +981,7 @@ Mona::Mediator::~Mediator()
          notify = *notifyItr;
          if (notify->mediator == this)
          {
-            cause->notify_list.erase(notifyItr);
+            cause->notify_list.Remove(notifyItr);
             delete notify;
             break;
          }
@@ -995,7 +996,7 @@ Mona::Mediator::~Mediator()
          notify = *notifyItr;
          if (notify->mediator == this)
          {
-            response->notify_list.erase(notifyItr);
+            response->notify_list.Remove(notifyItr);
             delete notify;
             break;
          }
@@ -1010,7 +1011,7 @@ Mona::Mediator::~Mediator()
          notify = *notifyItr;
          if (notify->mediator == this)
          {
-            effect->notify_list.erase(notifyItr);
+            effect->notify_list.Remove(notifyItr);
             delete notify;
             break;
          }
@@ -1026,7 +1027,7 @@ Mona::Mediator::~Mediator()
 // Update mediator utility using its enablement
 // and an asymptotic increment based on use.
 void
-Mona::Mediator::UpdateUtility(WEIGHT updateWeight)
+Mediator::UpdateUtility(WEIGHT updateWeight)
 {
    WEIGHT w;
 
@@ -1045,8 +1046,8 @@ Mona::Mediator::UpdateUtility(WEIGHT updateWeight)
 
 // Get mediator effective utility,
 // which is the greatest utility of itself and its parents.
-Mona::UTILITY
-Mona::Mediator::GetEffectiveUtility()
+UTILITY
+Mediator::GetEffectiveUtility()
 {
    Mediator *mediator;
    UTILITY  bestUtility, utilityWork;
@@ -1067,7 +1068,7 @@ Mona::Mediator::GetEffectiveUtility()
 
 // Add mediator event.
 void
-Mona::Mediator::AddEvent(EVENT_TYPE type, Neuron *neuron)
+Mediator::AddEvent(EVENT_TYPE type, Neuron *neuron)
 {
    int           i, j, k;
    struct Notify *notify;
@@ -1103,7 +1104,7 @@ Mona::Mediator::AddEvent(EVENT_TYPE type, Neuron *neuron)
    notify = new struct Notify;
    ASSERT(notify != NULL);
    notify->mediator  = this;
-   notify->eventType = type;
+   notify->event_type = type;
    neuron->notify_list.Add(notify);
 
    // Sort by type: effect, response, cause.
@@ -1111,10 +1112,10 @@ Mona::Mediator::AddEvent(EVENT_TYPE type, Neuron *neuron)
    {
       for (k = i + 1; k < j; k++)
       {
-         switch (neuron->notify_list[k]->eventType)
+         switch (neuron->notify_list[k]->event_type)
          {
          case EFFECT_EVENT:
-            switch (neuron->notify_list[i]->eventType)
+            switch (neuron->notify_list[i]->event_type)
             {
             case EFFECT_EVENT:
                break;
@@ -1129,7 +1130,7 @@ Mona::Mediator::AddEvent(EVENT_TYPE type, Neuron *neuron)
             break;
 
          case RESPONSE_EVENT:
-            switch (neuron->notify_list[i]->eventType)
+            switch (neuron->notify_list[i]->event_type)
             {
             case EFFECT_EVENT:
                break;
@@ -1154,26 +1155,26 @@ Mona::Mediator::AddEvent(EVENT_TYPE type, Neuron *neuron)
 
 
 // Is given mediator a duplicate of this?
-bool Mona::Mediator::IsDuplicate(Mediator *mediator)
+bool Mediator::IsDuplicate(Mediator *mediator)
 {
    if (cause != mediator->cause)
    {
-      return (false);
+      return false;
    }
    if (response != mediator->response)
    {
-      return (false);
+      return false;
    }
    if (effect != mediator->effect)
    {
-      return (false);
+      return false;
    }
    return true;
 }
 
 
 // Load mediator.
-void Mona::Mediator::Load(FILE *fp)
+void Mediator::Serialize(Stream& fp)
 {
    int i;
 
@@ -1208,7 +1209,7 @@ void Mona::Mediator::Load(FILE *fp)
 
 // Save mediator.
 // When changing format increment FORMAT in mona.h
-void Mona::Mediator::Store(FILE *fp)
+void Mediator::Store(Stream& fp)
 {
    int i;
 
@@ -1235,23 +1236,23 @@ void Mona::Mediator::Store(FILE *fp)
    FWRITE_LONG_LONG(&cause_begin, fp);
 }
 
-
+/*
 // Print mediator.
 #ifdef MONA_TRACKING
-void Mona::Mediator::Print(FILE *out)
+void Mediator::Print(FILE *out)
 {
    Print((TRACKING_FLAGS)0, out);
 }
 
 
-void Mona::Mediator::Print(TRACKING_FLAGS tracking, FILE *out)
+void Mediator::Print(TRACKING_FLAGS tracking, FILE *out)
 {
    Print(tracking, false, 0, out);
 }
 
 
 #else
-void Mona::Mediator::Print(FILE *out)
+void Mediator::Print(FILE *out)
 {
    Print(false, 0, out);
 }
@@ -1260,20 +1261,20 @@ void Mona::Mediator::Print(FILE *out)
 #endif
 
 #ifdef MONA_TRACKING
-void Mona::Mediator::PrintBrief(FILE *out)
+void Mediator::PrintBrief(FILE *out)
 {
    Print((TRACKING_FLAGS)0, true, 0, out);
 }
 
 
-void Mona::Mediator::PrintBrief(TRACKING_FLAGS tracking, FILE *out)
+void Mediator::PrintBrief(TRACKING_FLAGS tracking, FILE *out)
 {
    Print(tracking, true, 0, out);
 }
 
 
 #else
-void Mona::Mediator::PrintBrief(FILE *out)
+void Mediator::PrintBrief(FILE *out)
 {
    Print(true, 0, out);
 }
@@ -1282,10 +1283,10 @@ void Mona::Mediator::PrintBrief(FILE *out)
 #endif
 
 #ifdef MONA_TRACKING
-void Mona::Mediator::Print(TRACKING_FLAGS tracking, bool brief,
+void Mediator::Print(TRACKING_FLAGS tracking, bool brief,
                            int level, FILE *out)
 #else
-void Mona::Mediator::Print(bool brief, int level, FILE *out)
+void Mediator::Print(bool brief, int level, FILE *out)
 #endif
 {
    int i;
@@ -1526,7 +1527,7 @@ void Mona::Mediator::Print(bool brief, int level, FILE *out)
    }
    fprintf(out, "</mediator>\n");
 }
-
+*/
 
 // Remove neuron from network.
 void
@@ -1536,7 +1537,7 @@ Mona::DeleteNeuron(Neuron *neuron)
    struct Notify *notify;
    LearningEvent *learning_event;
 
-   Vector<LearningEvent *>::Iterator learning_eventItr;
+   Vector<LearningEvent *>::Iterator learning_event_iter;
    Receptor *receptor, *refReceptor;
 
    // Delete parents.
@@ -1557,19 +1558,19 @@ Mona::DeleteNeuron(Neuron *neuron)
    }
    if (i < (int)learning_events.GetCount())
    {
-      for (learning_eventItr = learning_events[i].Begin();
-           learning_eventItr != learning_events[i].End(); )
+      for (learning_event_iter = learning_events[i].Begin();
+           learning_event_iter != learning_events[i].End(); )
       {
-         learning_event = *learning_eventItr;
+         learning_event = *learning_event_iter;
          if (learning_event->neuron == neuron)
          {
-            learning_eventItr =
-               learning_events[i].erase(learning_eventItr);
+            learning_event_iter =
+               learning_events[i].Remove(learning_event_iter);
             delete learning_event;
          }
          else
          {
-            learning_eventItr++;
+            learning_event_iter++;
          }
       }
    }
@@ -1583,7 +1584,7 @@ Mona::DeleteNeuron(Neuron *neuron)
       {
          if (receptors[i] == receptor)
          {
-            receptors.erase(receptors.Begin() + i);
+            receptors.Remove(receptors.Begin() + i);
             break;
          }
       }
@@ -1594,7 +1595,7 @@ Mona::DeleteNeuron(Neuron *neuron)
          {
             if (refReceptor->super_sensor_modes[j] == receptor)
             {
-               refReceptor->super_sensor_modes.erase(refReceptor->super_sensor_modes.Begin() + j);
+               refReceptor->super_sensor_modes.Remove(refReceptor->super_sensor_modes.Begin() + j);
                break;
             }
          }
@@ -1606,7 +1607,7 @@ Mona::DeleteNeuron(Neuron *neuron)
          {
             if (refReceptor->sub_sensor_modes[j] == receptor)
             {
-               refReceptor->sub_sensor_modes.erase(refReceptor->sub_sensor_modes.Begin() + j);
+               refReceptor->sub_sensor_modes.Remove(refReceptor->sub_sensor_modes.Begin() + j);
                break;
             }
          }
@@ -1627,7 +1628,7 @@ Mona::DeleteNeuron(Neuron *neuron)
       {
          if (motors[i] == (Motor *)neuron)
          {
-            motors.erase(motors.Begin() + i);
+            motors.Remove(motors.Begin() + i);
             break;
          }
       }
@@ -1648,13 +1649,13 @@ Mona::DeleteNeuron(Neuron *neuron)
 
 // Get mediator with worst utility.
 // Skip instinct mediators and those with instinct parents.
-Mona::Mediator *
+Mediator *
 Mona::GetWorstMediator(int min_level)
 {
    Mediator *mediator;
 
    Vector<Mediator *>::Iterator mediator_iter;
-   Vector<Mediator *>         worstMediators;
+   Vector<Mediator *>         worst_mediators;
    UTILITY utility, worst_utility;
 
    worst_utility = 0.0;
@@ -1671,37 +1672,37 @@ Mona::GetWorstMediator(int min_level)
          continue;
       }
       utility = mediator->GetEffectiveUtility();
-      if ((worstMediators.GetCount() == 0) || (utility < worst_utility))
+      if ((worst_mediators.GetCount() == 0) || (utility < worst_utility))
       {
-         worstMediators.Clear();
-         worstMediators.Add(mediator);
+         worst_mediators.Clear();
+         worst_mediators.Add(mediator);
          worst_utility = utility;
       }
       else if ((utility - worst_utility) <= NEARLY_ZERO)
       {
-         worstMediators.Add(mediator);
+         worst_mediators.Add(mediator);
       }
    }
-   if (worstMediators.GetCount() == 0)
+   if (worst_mediators.GetCount() == 0)
    {
       return (NULL);
    }
    else
    {
       // Return a random choice of worst.
-      return (worstMediators[random.RAND_CHOICE((int)worstMediators.GetCount())]);
+      return (worst_mediators[Random((int)worst_mediators.GetCount())]);
    }
 }
 
 
 // Get mediator with best utility.
-Mona::Mediator *
+Mediator *
 Mona::GetBestMediator(int min_level)
 {
    Mediator *mediator;
 
    Vector<Mediator *>::Iterator mediator_iter;
-   Vector<Mediator *>         bestMediators;
+   Vector<Mediator *>         best_mediators;
    UTILITY utility, bestUtility;
 
    bestUtility = 0.0;
@@ -1714,56 +1715,48 @@ Mona::GetBestMediator(int min_level)
          continue;
       }
       utility = mediator->GetEffectiveUtility();
-      if ((bestMediators.GetCount() == 0) || (utility > bestUtility))
+      if ((best_mediators.GetCount() == 0) || (utility > bestUtility))
       {
-         bestMediators.Clear();
-         bestMediators.Add(mediator);
+         best_mediators.Clear();
+         best_mediators.Add(mediator);
          bestUtility = utility;
       }
       else if ((bestUtility - utility) <= NEARLY_ZERO)
       {
-         bestMediators.Add(mediator);
+         best_mediators.Add(mediator);
       }
    }
-   if (bestMediators.GetCount() == 0)
+   if (best_mediators.GetCount() == 0)
    {
       return (NULL);
    }
    else
    {
       // Return a random choice.
-      return (bestMediators[random.RAND_CHOICE((int)bestMediators.GetCount())]);
+      return (best_mediators[Random((int)best_mediators.GetCount())]);
    }
 }
 
 
 // Load network from a file.
-bool
-Mona::Load(char *filename)
+void
+Mona::Load(String filename)
 {
-   FILE *fp;
-
-   if ((fp = FOPEN_READ(filename)) == NULL)
-   {
-      return (false);
-   }
-   bool ret = Load(fp);
-   FCLOSE(fp);
-   return (ret);
+   LoadFromFile(*this, filename);
 }
 
 
-bool
-Mona::Load(FILE *fp)
+void
+Mona::Serialize(Stream& fp)
 {
    int           i, j, k, format;
-   TIME          t;
+   Time          t;
    double        d;
    SensorMode    *sensor_mode;
    RDTree        *rdTree;
    LearningEvent *learning_event;
 
-   Vector<LearningEvent *>::Iterator learning_eventItr;
+   Vector<LearningEvent *>::Iterator learning_event_iter;
    Receptor *receptor;
    Motor    *motor;
    Mediator *mediator;
@@ -1776,7 +1769,7 @@ Mona::Load(FILE *fp)
    if (format != FORMAT)
    {
       fprintf(stderr, "File format %d is incompatible with expected format %d\n", format, FORMAT);
-      return (false);
+      return false;
    }
    char buf[40];
    FREAD_STRING(buf, 40, fp);
@@ -1962,10 +1955,10 @@ Mona::Load(FILE *fp)
    }
    for (i = 0, j = (int)learning_events.GetCount(); i < j; i++)
    {
-      for (learning_eventItr = learning_events[i].Begin();
-           learning_eventItr != learning_events[i].End(); learning_eventItr++)
+      for (learning_event_iter = learning_events[i].Begin();
+           learning_event_iter != learning_events[i].End(); learning_event_iter++)
       {
-         learning_event         = *learning_eventItr;
+         learning_event         = *learning_event_iter;
          id                    = (ID *)(learning_event->neuron);
          learning_event->neuron = FindByID(*id);
          ASSERT(learning_event->neuron != NULL);
@@ -1980,11 +1973,11 @@ Mona::Load(FILE *fp)
    FREAD_INT(&j, fp);
    for (i = 0; i < j; i++)
    {
-      rdTree = new RDTree(Mona::Receptor::patternDistance,
-                          Mona::Receptor::deletePattern);
+      rdTree = new RDTree(Receptor::PatternDistance,
+                          Receptor::DeletePattern);
       ASSERT(rdTree != NULL);
-      rdTree->Load(fp, this, Mona::Receptor::load_patternern,
-                   Mona::Receptor::load_client);
+      rdTree->Load(fp, this, Receptor::load_patternern,
+                   Receptor::load_client);
       sensor_centroids.Add(rdTree);
    }
    return true;
@@ -2033,13 +2026,13 @@ Mona::FindByID(ID id)
 
 // Save network to file.
 bool
-Mona::Store(char *filename)
+Mona::Store(String filename)
 {
-   FILE *fp;
+   Stream& fp;
 
    if ((fp = FOPEN_WRITE(filename)) == NULL)
    {
-      return (false);
+      return false;
    }
    bool ret = Store(fp);
    FCLOSE(fp);
@@ -2049,15 +2042,15 @@ Mona::Store(char *filename)
 
 // When changing format increment FORMAT in mona.h
 bool
-Mona::Store(FILE *fp)
+Mona::Store(Stream& fp)
 {
    int           i, j, k;
-   TIME          t;
+   Time          t;
    double        d;
    int           format;
    LearningEvent *learning_event;
 
-   Vector<LearningEvent *>::Iterator learning_eventItr;
+   Vector<LearningEvent *>::Iterator learning_event_iter;
    Receptor *receptor;
    Motor    *motor;
    Mediator *mediator;
@@ -2131,10 +2124,10 @@ Mona::Store(FILE *fp)
    {
       j = (int)learning_events[i].GetCount();
       FWRITE_INT(&j, fp);
-      for (learning_eventItr = learning_events[i].Begin();
-           learning_eventItr != learning_events[i].End(); learning_eventItr++)
+      for (learning_event_iter = learning_events[i].Begin();
+           learning_event_iter != learning_events[i].End(); learning_event_iter++)
       {
-         learning_event = *learning_eventItr;
+         learning_event = *learning_event_iter;
          learning_event->Store(fp);
       }
    }
@@ -2166,8 +2159,8 @@ Mona::Store(FILE *fp)
    FWRITE_INT(&j, fp);
    for (i = 0; i < j; i++)
    {
-      sensor_centroids[i]->Store(fp, Mona::Receptor::savePattern,
-                               Mona::Receptor::saveClient);
+      sensor_centroids[i]->Store(fp, Receptor::store_patternern,
+                               Receptor::store_client);
    }
    return true;
 }
@@ -2183,7 +2176,7 @@ Mona::Clear()
 
    Vector<Mediator *>::Iterator      mediator_iter;
    LearningEvent                   *learning_event;
-   Vector<LearningEvent *>::Iterator learning_eventItr;
+   Vector<LearningEvent *>::Iterator learning_event_iter;
 
    random.RAND_CLEAR();
    sensors.Clear();
@@ -2217,10 +2210,10 @@ Mona::Clear()
    homeostats.Clear();
    for (i = 0; i < (int)learning_events.GetCount(); i++)
    {
-      for (learning_eventItr = learning_events[i].Begin();
-           learning_eventItr != learning_events[i].End(); learning_eventItr++)
+      for (learning_event_iter = learning_events[i].Begin();
+           learning_event_iter != learning_events[i].End(); learning_event_iter++)
       {
-         learning_event = *learning_eventItr;
+         learning_event = *learning_event_iter;
          delete learning_event;
       }
       learning_events[i].Clear();
@@ -2229,10 +2222,10 @@ Mona::Clear()
    ClearVars();
 }
 
-
+/*
 // Print network.
 bool
-Mona::Print(char *filename)
+Mona::Print(String filename)
 {
    if (filename == NULL)
    {
@@ -2240,10 +2233,10 @@ Mona::Print(char *filename)
    }
    else
    {
-      FILE *fp = fopen(filename, "w");
+      Stream& fp = fopen(filename, "w");
       if (fp == NULL)
       {
-         return (false);
+         return false;
       }
       Print(fp);
       fclose(fp);
@@ -2539,7 +2532,7 @@ Mona::PrintParms(FILE *out)
    fprintf(out, "</parameters>\n");
    fflush(out);
 }
-
+*/
 
 #ifdef MONA_TRACKING
 // Clear tracking activity.

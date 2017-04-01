@@ -47,7 +47,7 @@ void  GUITabbedPanel::setFontScales(const Tuple2f &scales)
   setFontScales(scales.x, scales.y);
 }
 
-void  GUITabbedPanel::setFontScales(float wScale, float hScale)
+void  GUITabbedPanel::setFontScales(double wScale, double hScale)
 {
   fontScales.x = clamp(hScale, 0.01f, 20.0f);
   fontScales.y = clamp(wScale, 0.01f, 20.0f);
@@ -58,7 +58,7 @@ const Tuple2f  &GUITabbedPanel::getFontScales()
   return fontScales;
 }
 
-bool GUITabbedPanel::loadXMLSettings(const TiXmlElement *element)
+bool GUITabbedPanel::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "TabbedPanel"))
     return Logger::writeErrorLog("Need a TabbedPanel node in the xml file");
@@ -82,7 +82,7 @@ bool GUITabbedPanel::loadXMLSettings(const TiXmlElement *element)
     if(!strcmp(value, "Panel"))
     {
       GUIPanel *panel = new GUIPanel();
-      if(!panel->loadXMLSettings(outer) || !addPanel(panel))
+      if(!panel->LoadXMLSettings(outer) || !addPanel(panel))
         deleteObject(panel);
       continue;
     }
@@ -108,7 +108,7 @@ bool GUITabbedPanel::loadXMLSettings(const TiXmlElement *element)
 
   setFontScales(fontScales);
 
-  return GUIRectangle::loadXMLSettings(element) && lowerPanel->getWidgets().GetCount();
+  return GUIRectangle::LoadXMLSettings(element) && lowerPanel->getWidgets().GetCount();
 }
 
 bool GUITabbedPanel::addPanel(GUIPanel *panel)
@@ -205,7 +205,7 @@ GUIButton *GUITabbedPanel::getTabButton(int index)
   return NULL;
 }
 
-void GUITabbedPanel::render(float clockTick)
+void GUITabbedPanel::render(double clockTick)
 {
   if(!parent || !visible)
     return;
@@ -227,7 +227,7 @@ const void GUITabbedPanel::computeWindowBounds()
     windowBounds = mainPanel->getWindowBounds();
 
     const Widgets & widgets     = lowerPanel->getWidgets();
-    float           height      = 0;
+    double           height      = 0;
     int             widgetCount = (int)widgets.GetCount();
 
     for(int i = 0; i < widgetCount; i++)
@@ -242,15 +242,15 @@ void  GUITabbedPanel::setTabButtonsColor(const Tuple3f& color)
   setTabButtonsColor(color.x, color.y, color.z);
 }
 
-void  GUITabbedPanel::setTabButtonsColor(float r, float g, float b)
+void  GUITabbedPanel::setTabButtonsColor(double r, double g, double b)
 {
-  tabButtonsColor.set(clamp(r, 0.0f, 255.0f),
+  tabButtonsColor.Set(clamp(r, 0.0f, 255.0f),
                         clamp(g, 0.0f, 255.0f),
                         clamp(b, 0.0f, 255.0f));
 
-  tabButtonsColor.x /= (tabButtonsColor.x > 1.0) ? 255.0f : 1.0f;
-  tabButtonsColor.y /= (tabButtonsColor.y > 1.0) ? 255.0f : 1.0f;
-  tabButtonsColor.z /= (tabButtonsColor.z > 1.0) ? 255.0f : 1.0f;
+  tabButtonsColor.x /= (tabButtonsColor.x > 1.0) ? 255.0f : 1.0;
+  tabButtonsColor.y /= (tabButtonsColor.y > 1.0) ? 255.0f : 1.0;
+  tabButtonsColor.z /= (tabButtonsColor.z > 1.0) ? 255.0f : 1.0;
 }
 
 const Tuple3f &GUITabbedPanel::getTabButtonsColor() const 
@@ -263,14 +263,14 @@ void  GUITabbedPanel::setTabButtonsBordersColor(const Tuple3f& color)
   setTabButtonsBordersColor(color.x, color.y, color.z);
 }
 
-void  GUITabbedPanel::setTabButtonsBordersColor(float r, float g, float b)
+void  GUITabbedPanel::setTabButtonsBordersColor(double r, double g, double b)
 {
-  tabButtonsBordersColor.set(clamp(r, 0.0f, 255.0f),
+  tabButtonsBordersColor.Set(clamp(r, 0.0f, 255.0f),
                              clamp(g, 0.0f, 255.0f),
                              clamp(b, 0.0f, 255.0f));
-  tabButtonsBordersColor.x /= (tabButtonsBordersColor.x > 1.0) ? 255.0f : 1.0f;
-  tabButtonsBordersColor.y /= (tabButtonsBordersColor.y > 1.0) ? 255.0f : 1.0f;
-  tabButtonsBordersColor.z /= (tabButtonsBordersColor.z > 1.0) ? 255.0f : 1.0f;
+  tabButtonsBordersColor.x /= (tabButtonsBordersColor.x > 1.0) ? 255.0f : 1.0;
+  tabButtonsBordersColor.y /= (tabButtonsBordersColor.y > 1.0) ? 255.0f : 1.0;
+  tabButtonsBordersColor.z /= (tabButtonsBordersColor.z > 1.0) ? 255.0f : 1.0;
 }
 
 GUIPanel*  GUITabbedPanel::getLowerPanel()

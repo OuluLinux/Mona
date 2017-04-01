@@ -25,7 +25,7 @@ public class Gene
    VALUE_TYPE type;
    String     name;
    int        ivalue, imin, imax, idelta;
-   float      fvalue, fmin, fmax, fdelta;
+   double      fvalue, fmin, fmax, fdelta;
    double     dvalue, dmin, dmax, ddelta;
 
    // Constructors.
@@ -34,7 +34,7 @@ public class Gene
       type                    = VALUE_TYPE.DOUBLE_VALUE;
       name                    = null;
       ivalue                  = imin = imax = idelta = 0;
-      fvalue                  = fmin = fmax = fdelta = 0.0f;
+      fvalue                  = fmin = fmax = fdelta = 0.0;
       dvalue                  = dmin = dmax = ddelta = 0.0;
       this.mutation_rate       = mutation_rate;
       this.random_mutation_rate = random_mutation_rate;
@@ -49,7 +49,7 @@ public class Gene
       type                    = VALUE_TYPE.INTEGER_VALUE;
       this.name               = new String(name);
       ivalue                  = imin = imax = idelta = 0;
-      fvalue                  = fmin = fmax = fdelta = 0.0f;
+      fvalue                  = fmin = fmax = fdelta = 0.0;
       dvalue                  = dmin = dmax = ddelta = 0.0;
       ivalue                  = value;
       imin                    = min;
@@ -62,13 +62,13 @@ public class Gene
    }
 
 
-   Gene(String name, float value, float min, float max, float delta,
+   Gene(String name, double value, double min, double max, double delta,
         double mutation_rate, double random_mutation_rate, int random_seed)
    {
       type                    = VALUE_TYPE.FLOAT_VALUE;
       this.name               = new String(name);
       ivalue                  = imin = imax = idelta = 0;
-      fvalue                  = fmin = fmax = fdelta = 0.0f;
+      fvalue                  = fmin = fmax = fdelta = 0.0;
       dvalue                  = dmin = dmax = ddelta = 0.0;
       fvalue                  = value;
       fmin                    = min;
@@ -87,7 +87,7 @@ public class Gene
       type                    = VALUE_TYPE.DOUBLE_VALUE;
       this.name               = new String(name);
       ivalue                  = imin = imax = idelta = 0;
-      fvalue                  = fmin = fmax = fdelta = 0.0f;
+      fvalue                  = fmin = fmax = fdelta = 0.0;
       dvalue                  = dmin = dmax = ddelta = 0.0;
       dvalue                  = value;
       dmin                    = min;
@@ -104,7 +104,7 @@ public class Gene
    void Mutate()
    {
       int    i;
-      float  f;
+      double  f;
       double d;
 
       if (randomizer.nextDouble() > mutation_rate)

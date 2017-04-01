@@ -58,11 +58,11 @@ public:
    char        *lensNet;
 
    // Mona neural network.
-   static Mona::RESPONSE_POTENTIAL MIN_RESPONSE_POTENTIAL;
+   static RESPONSE_POTENTIAL MIN_RESPONSE_POTENTIAL;
    Mona *mona;
 
    // Constructors.
-   Minc(int numMarks, int intervals, RANDOM random_seed);
+   Minc(int numMarks, int intervals, int random_seed);
    Minc();
 
    // Destructor.
@@ -90,15 +90,15 @@ public:
    Tmaze       *maze;
 
    // Load minc.
-   void Load(char *filename);
+   void Load(String filename);
    void Load(FILE *);
 
    // Save minc.
-   void Store(char *filename);
+   void Store(String filename);
    void Store(FILE *);
 
    // Random numbers.
-   RANDOM random_seed;
+   int random_seed;
    Random *randomizer;
 
    // Identifier dispenser.

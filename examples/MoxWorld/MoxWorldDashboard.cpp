@@ -128,7 +128,7 @@ public class MoxWorldDashboard extends JFrame
 
 
    // Update dashboard.
-   public void update(int step, int steps)
+   public void Update(int step, int steps)
    {
       controls.updateStepCounter(step, steps);
       Update();
@@ -252,8 +252,8 @@ public class MoxWorldDashboard extends JFrame
          int   y;
          int   x2;
          int   y2;
-         float cellWidth;
-         float cellHeight;
+         double cellWidth;
+         double cellHeight;
 
          if (quit)
          {

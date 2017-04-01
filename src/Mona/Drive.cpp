@@ -1,5 +1,3 @@
-// For conditions of distribution and use, see copyright notice in mona.h
-
 #include "Mona.h"
 #include <math.h>
 
@@ -14,7 +12,7 @@ Mona::Drive()
    Mediator *mediator;
 
    Vector<Mediator *>::Iterator mediator_iter;
-   MotiveAccum                motiveAccum;
+   MotiveAccum                motive_accum;
    VALUE_SET needs;
 
 #ifdef MONA_TRACE
@@ -28,7 +26,7 @@ Mona::Drive()
    needs.Reserve(need_count);
    for (i = 0; i < need_count; i++)
    {
-      needs.set(i, homeostats[i]->GetNeed());
+      needs.Set(i, homeostats[i]->GetNeed());
    }
 
 #ifdef MONA_TRACE
@@ -63,16 +61,16 @@ Mona::Drive()
       receptor = receptors[i];
       if (receptor->goals.GetValue() != 0.0)
       {
-         motiveAccum.Init(needs);
-         motiveAccum.AccumulateGoals(receptor->goals);
-         if (motiveAccum.GetValue() != 0.0)
+         motive_accum.Init(needs);
+         motive_accum.AccumulateGoals(receptor->goals);
+         if (motive_accum.GetValue() != 0.0)
          {
-            motiveAccum.Init(needs);
+            motive_accum.Init(needs);
             ClearMotiveWork();
 #ifdef MONA_TRACKING
-            motiveAccum.drivers.Clear();
+            motive_accum.drivers.Clear();
 #endif
-            receptor->Drive(motiveAccum);
+            receptor->Drive(motive_accum);
             SetMotives();
          }
       }
@@ -83,17 +81,17 @@ Mona::Drive()
       motor = motors[i];
       if (motor->goals.GetValue() != 0.0)
       {
-         motiveAccum.Init(needs);
-         motiveAccum.AccumulateGoals(motor->goals);
-         if (motiveAccum.GetValue() != 0.0)
+         motive_accum.Init(needs);
+         motive_accum.AccumulateGoals(motor->goals);
+         if (motive_accum.GetValue() != 0.0)
          {
-            motiveAccum.Init(needs);
-            motiveAccum.Init(needs);
+            motive_accum.Init(needs);
+            motive_accum.Init(needs);
             ClearMotiveWork();
 #ifdef MONA_TRACKING
-            motiveAccum.drivers.Clear();
+            motive_accum.drivers.Clear();
 #endif
-            motor->Drive(motiveAccum);
+            motor->Drive(motive_accum);
             SetMotives();
          }
       }
@@ -108,16 +106,16 @@ Mona::Drive()
       {
          if (!mediator->IsGoalValueSubsumed())
          {
-            motiveAccum.Init(needs);
-            motiveAccum.AccumulateGoals(mediator->goals);
-            if (motiveAccum.GetValue() != 0.0)
+            motive_accum.Init(needs);
+            motive_accum.AccumulateGoals(mediator->goals);
+            if (motive_accum.GetValue() != 0.0)
             {
-               motiveAccum.Init(needs);
+               motive_accum.Init(needs);
                ClearMotiveWork();
 #ifdef MONA_TRACKING
-               motiveAccum.drivers.Clear();
+               motive_accum.drivers.Clear();
 #endif
-               mediator->Drive(motiveAccum);
+               mediator->Drive(motive_accum);
                SetMotives();
             }
          }
@@ -132,7 +130,7 @@ Mona::Drive()
 
 // Is goal value subsumed by component?
 bool
-Mona::Mediator::IsGoalValueSubsumed()
+Mediator::IsGoalValueSubsumed()
 {
    int    i;
    NEED   goal_value;
@@ -207,7 +205,7 @@ Mona::Mediator::IsGoalValueSubsumed()
 
 // Initialize neuron drive.
 void
-Mona::Neuron::InitDrive(VALUE_SET& needs)
+Neuron::InitDrive(VALUE_SET& needs)
 {
    int           i;
    ENABLEMENT    up, down, e, ce, re, ee;
@@ -278,7 +276,7 @@ Mona::Neuron::InitDrive(VALUE_SET& needs)
    {
       notify   = notify_list[i];
       mediator = notify->mediator;
-      if (notify->eventType == EFFECT_EVENT)
+      if (notify->event_type == EFFECT_EVENT)
       {
          drive_weights[mediator] = up *
                                   (1.0 - mediator->effective_enabling_weight);
@@ -321,7 +319,7 @@ Mona::ClearMotiveWork()
 
 // Clear motive working accumulators.
 void
-Mona::Neuron::ClearMotiveWork()
+Neuron::ClearMotiveWork()
 {
    motive_work.reset();
    motive_work_valid = false;
@@ -361,7 +359,7 @@ Mona::SetMotives()
 
 // Set neuron motive.
 void
-Mona::Neuron::SetMotive()
+Neuron::SetMotive()
 {
    MOTIVE m;
 
@@ -382,7 +380,7 @@ Mona::Neuron::SetMotive()
 #ifdef MONA_TRACKING
 // Accumulate motive tracking.
 void
-Mona::Neuron::AccumMotiveTracking()
+Neuron::AccumMotiveTracking()
 {
    int i, j, k;
 
@@ -449,7 +447,7 @@ Mona::FinalizeMotives()
 
 // Finalize neuron motive.
 void
-Mona::Neuron::FinalizeMotive()
+Neuron::FinalizeMotive()
 {
    motive = motive / mona->max_motive;
    if (motive > 1.0)
@@ -465,7 +463,7 @@ Mona::Neuron::FinalizeMotive()
 
 // Neuron drive.
 void
-Mona::Neuron::Drive(MotiveAccum motiveAccum)
+Neuron::Drive(MotiveAccum motive_accum)
 {
    int         i;
    Mediator    *mediator;
@@ -475,7 +473,7 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
    MotiveAccum accumWork;
 
    // Prevent looping.
-   if (!motiveAccum.AddPath(this))
+   if (!motive_accum.AddPath(this))
    {
       return;
    }
@@ -483,17 +481,17 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
    // Accumulate need change due to goal value.
    if ((type != MEDIATOR) || !((Mediator *)this)->IsGoalValueSubsumed())
    {
-      motiveAccum.AccumulateGoals(goals);
+      motive_accum.AccumulateGoals(goals);
    }
 
    // Accumulate motive.
    // Store greater motive except for attenuated "pain".
-   m = motiveAccum.GetValue();
+   m = motive_accum.GetValue();
    if (!motive_work_valid ||
        ((m >= NEARLY_ZERO) && ((m - motive_work.GetValue()) > NEARLY_ZERO)))
    {
       motive_work_valid = true;
-      motive_work.LoadNeeds(motiveAccum);
+      motive_work.LoadNeeds(motive_accum);
    }
 #ifndef MONA_TRACKING
    else
@@ -502,7 +500,7 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
    }
 #else
    // Track motive.
-   if (!TrackMotive(motiveAccum, accumWork))
+   if (!TrackMotive(motive_accum, accumWork))
    {
       return;
    }
@@ -524,7 +522,7 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
       // Drive motive to cause event.
       if ((w = mediator->drive_weights[mediator->cause]) > NEARLY_ZERO)
       {
-         accumWork.Configure(motiveAccum, w * (1.0 - mona->DRIVE_ATTENUATION));
+         accumWork.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
          mediator->cause->Drive(accumWork);
       }
 
@@ -533,7 +531,7 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
       {
          if ((w = mediator->drive_weights[mediator->response]) > NEARLY_ZERO)
          {
-            accumWork.Configure(motiveAccum, w * (1.0 - mona->DRIVE_ATTENUATION));
+            accumWork.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
             mediator->response->Drive(accumWork);
          }
       }
@@ -541,7 +539,7 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
       // Drive motive to effect event.
       if ((w = mediator->drive_weights[mediator->effect]) > NEARLY_ZERO)
       {
-         accumWork.Configure(motiveAccum, w * (1.0 - mona->DRIVE_ATTENUATION));
+         accumWork.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
          mediator->effect->Drive(accumWork);
       }
       break;
@@ -551,7 +549,7 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
       receptor = (Receptor *)this;
       for (i = 0; i < (int)receptor->sub_sensor_modes.GetCount(); i++)
       {
-         accumWork.Configure(motiveAccum, 1.0);
+         accumWork.Configure(motive_accum, 1.0);
          receptor->sub_sensor_modes[i]->Drive(accumWork);
       }
       break;
@@ -568,7 +566,7 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
       if ((w = drive_weights[mediator]) > NEARLY_ZERO)
       {
          w *= (1.0 - mona->DRIVE_ATTENUATION);
-         accumWork.Configure(motiveAccum, w);
+         accumWork.Configure(motive_accum, w);
          mediator->DriveCause(accumWork);
       }
    }
@@ -577,7 +575,7 @@ Mona::Neuron::Drive(MotiveAccum motiveAccum)
 
 // Drive mediator cause.
 void
-Mona::Mediator::DriveCause(MotiveAccum motiveAccum)
+Mediator::DriveCause(MotiveAccum motive_accum)
 {
    int         i;
    Mediator    *mediator;
@@ -587,12 +585,12 @@ Mona::Mediator::DriveCause(MotiveAccum motiveAccum)
 
    // Accumulate motive.
    // Store greater motive except for attenuated "pain".
-   m = motiveAccum.GetValue();
+   m = motive_accum.GetValue();
    if (!motive_work_valid ||
        ((m >= NEARLY_ZERO) && ((m - motive_work.GetValue()) > NEARLY_ZERO)))
    {
       motive_work_valid = true;
-      motive_work.LoadNeeds(motiveAccum);
+      motive_work.LoadNeeds(motive_accum);
    }
 #ifndef MONA_TRACKING
    else
@@ -601,7 +599,7 @@ Mona::Mediator::DriveCause(MotiveAccum motiveAccum)
    }
 #else
    // Track motive.
-   if (!TrackMotive(motiveAccum, accumWork))
+   if (!TrackMotive(motive_accum, accumWork))
    {
       return;
    }
@@ -617,7 +615,7 @@ Mona::Mediator::DriveCause(MotiveAccum motiveAccum)
    // Drive motive to cause event.
    if ((w = drive_weights[cause]) > NEARLY_ZERO)
    {
-      accumWork.Configure(motiveAccum, w * (1.0 - mona->DRIVE_ATTENUATION));
+      accumWork.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
       cause->Drive(accumWork);
    }
 
@@ -626,7 +624,7 @@ Mona::Mediator::DriveCause(MotiveAccum motiveAccum)
    {
       if ((w = drive_weights[response]) > NEARLY_ZERO)
       {
-         accumWork.Configure(motiveAccum, w * (1.0 - mona->DRIVE_ATTENUATION));
+         accumWork.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
          response->Drive(accumWork);
       }
    }
@@ -637,7 +635,7 @@ Mona::Mediator::DriveCause(MotiveAccum motiveAccum)
       mediator = notify_list[i]->mediator;
       if ((w = drive_weights[mediator]) > NEARLY_ZERO)
       {
-         accumWork.Configure(motiveAccum, w * (1.0 - mona->DRIVE_ATTENUATION));
+         accumWork.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
          mediator->DriveCause(accumWork);
       }
    }
@@ -648,7 +646,7 @@ Mona::Mediator::DriveCause(MotiveAccum motiveAccum)
 // Track motive.
 // Returns true if tracking continues.
 bool
-Mona::Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out)
+Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out)
 {
    int i, j;
    struct MotiveAccum::DriveElem e;
@@ -667,7 +665,7 @@ Mona::Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out)
    needs.Reserve(mona->need_count);
    for (i = 0; i < mona->need_count; i++)
    {
-      needs.set(i, mona->homeostats[i]->GetNeed());
+      needs.Set(i, mona->homeostats[i]->GetNeed());
    }
    d.motive_work.Init(needs);
    needs.Clear();

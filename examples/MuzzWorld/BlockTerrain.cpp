@@ -840,10 +840,10 @@ void BlockTerrain::Build() {
 
 	// Get the terrain bounds and create the heightmap.
 	vmin.x = -(block_size * 0.1f);
-	vmin.y = 0.0f;
+	vmin.y = 0.0;
 	vmin.z = -(block_size * 0.1f);
 	vmax.x = block_size * width * 1.1f;
-	vmax.y = 0.0f;
+	vmax.y = 0.0;
 	vmax.z = block_size * height * 1.1f;
 	bounds = Bounds(vmin, vmax);
 
@@ -868,12 +868,12 @@ void BlockTerrain::Build() {
 						vertex.z = (double)j * block_size;
 						vertices.Add(vertex);
 						vertex.y -= block_size;
-						vertex.z += block_size * 2.0f;
+						vertex.z += block_size * 2.0;
 						vertices.Add(vertex);
 						vertex.x += block_size;
 						vertices.Add(vertex);
 						vertex.y += block_size;
-						vertex.z -= block_size * 2.0f;
+						vertex.z -= block_size * 2.0;
 						vertices.Add(vertex);
 						break;
 
@@ -883,12 +883,12 @@ void BlockTerrain::Build() {
 						vertex.z = ((double)j * block_size) + block_size;
 						vertices.Add(vertex);
 						vertex.y -= block_size;
-						vertex.z -= block_size * 2.0f;
+						vertex.z -= block_size * 2.0;
 						vertices.Add(vertex);
 						vertex.x -= block_size;
 						vertices.Add(vertex);
 						vertex.y += block_size;
-						vertex.z += block_size * 2.0f;
+						vertex.z += block_size * 2.0;
 						vertices.Add(vertex);
 						break;
 
@@ -898,12 +898,12 @@ void BlockTerrain::Build() {
 						vertex.z = (double)j * block_size;
 						vertices.Add(vertex);
 						vertex.y -= block_size;
-						vertex.x -= block_size * 2.0f;
+						vertex.x -= block_size * 2.0;
 						vertices.Add(vertex);
 						vertex.z += block_size;
 						vertices.Add(vertex);
 						vertex.y += block_size;
-						vertex.x += block_size * 2.0f;
+						vertex.x += block_size * 2.0;
 						vertices.Add(vertex);
 						break;
 
@@ -913,12 +913,12 @@ void BlockTerrain::Build() {
 						vertex.z = ((double)j * block_size) + block_size;
 						vertices.Add(vertex);
 						vertex.y -= block_size;
-						vertex.x += block_size * 2.0f;
+						vertex.x += block_size * 2.0;
 						vertices.Add(vertex);
 						vertex.z -= block_size;
 						vertices.Add(vertex);
 						vertex.y += block_size;
-						vertex.x -= block_size * 2.0f;
+						vertex.x -= block_size * 2.0;
 						vertices.Add(vertex);
 						break;
 					}
@@ -1348,10 +1348,10 @@ void BlockTerrain::GetGeometry(double x, double z, double& y, Vector& normal) {
 	heightmap->Search(x, z, polygons);
 
 	if (polygons.GetCount() == 0) {
-		y        = 0.0f;
-		normal.x = 0.0f;
-		normal.y = 1.0f;
-		normal.z = 0.0f;
+		y        = 0.0;
+		normal.x = 0.0;
+		normal.y = 1.0;
+		normal.z = 0.0;
 		return;
 	}
 
@@ -1363,7 +1363,7 @@ void BlockTerrain::GetGeometry(double x, double z, double& y, Vector& normal) {
 		y = (-(normal.x * x) - (normal.z * z) - polygons[0]->plane.d) / normal.y;
 	}
 	else
-		y = 0.0f;
+		y = 0.0;
 }
 
 
@@ -1378,7 +1378,7 @@ void BlockTerrain::DrawRampSurface() {
 	int     i;
 	double d, h, s, w, x, y, z;
 	// Draw a chevron pattern on the ramp surface.
-	h = block_size / 2.0f;
+	h = block_size / 2.0;
 	w = (block_size * 2.236f * 0.25f) / (double)NUM_RAMP_STRIPES;
 	d = ((block_size * 2.236f) - w) / ((double)NUM_RAMP_STRIPES + 1.0f);
 	s = (d * 2.0f) / h;
@@ -1389,7 +1389,7 @@ void BlockTerrain::DrawRampSurface() {
 		glBegin(GL_QUADS);
 		// Left half of chevron.
 		glNormal3f(0.0f, 0.894f, 0.447f);
-		x = 0.0f;
+		x = 0.0;
 		y = d * (double)i * 0.447f;
 		z = d * (double)i * 0.894f;
 		z = (block_size * 2.0f) - z;
@@ -1404,7 +1404,7 @@ void BlockTerrain::DrawRampSurface() {
 		z -= w * 0.894f;
 		glVertex3f(x, y, z);
 		glNormal3f(0.0f, 0.894f, 0.447f);
-		x = 0.0f;
+		x = 0.0;
 		y = ((d * (double)i) + w) * 0.447f;
 		z = ((d * (double)i) + w) * 0.894f;
 		z = (block_size * 2.0f) - z;
@@ -1440,7 +1440,7 @@ void BlockTerrain::DrawRampSurface() {
 			// Draw bottom white triangle.
 			glBegin(GL_TRIANGLES);
 			glNormal3f(0.0f, 0.894f, 0.447f);
-			x = 0.0f;
+			x = 0.0;
 			y = d * (double)i * 0.447f;
 			z = d * (double)i * 0.894f;
 			z = (block_size * 2.0f) - z;
@@ -1460,13 +1460,13 @@ void BlockTerrain::DrawRampSurface() {
 			glBegin(GL_QUADS);
 			// Left half of chevron.
 			glNormal3f(0.0f, 0.894f, 0.447f);
-			x = 0.0f;
+			x = 0.0;
 			y = d * (double)i * 0.447f;
 			z = d * (double)i * 0.894f;
 			z = (block_size * 2.0f) - z;
 			glVertex3f(x, y, z);
 			glNormal3f(0.0f, 0.894f, 0.447f);
-			x = 0.0f;
+			x = 0.0;
 			y = ((d * (double)(i - 1)) + w) * 0.447f;
 			z = (d * (double)(i - 1) + w) * 0.894f;
 			z = (block_size * 2.0f) - z;
@@ -1519,7 +1519,7 @@ void BlockTerrain::DrawRampSurface() {
 			// Draw top triangles.
 			glBegin(GL_TRIANGLES);
 			glNormal3f(0.0f, 0.894f, 0.447f);
-			x = 0.0f;
+			x = 0.0;
 			y = ((d * (double)i) + w) * 0.447f;
 			z = ((d * (double)i) + w) * 0.894f;
 			z = (block_size * 2.0f) - z;
@@ -1530,7 +1530,7 @@ void BlockTerrain::DrawRampSurface() {
 			z -= s * x * 0.894f;
 			glVertex3f(x, y, z);
 			glNormal3f(0.0f, 0.894f, 0.447f);
-			x = 0.0f;
+			x = 0.0;
 			glVertex3f(x, y, z);
 			glNormal3f(0.0f, 0.894f, 0.447f);
 			x  = h;

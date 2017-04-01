@@ -32,12 +32,12 @@ inline T clamp(T x, T min, T max)
   return (x < min) ? min : (x > max) ? max : x;
 }
 
-inline int roundToInt(float f)
+inline int roundToInt(double f)
 {
   return int(f + 0.5f);
 }
 
-inline float getNextRandom(){
+inline double getNextRandom(){
   return (float)((double)rand()/ ((double)RAND_MAX + (double)1));
 }
 
@@ -66,7 +66,7 @@ inline int getClosestPowerOfTwo(int digit)
   return (frac < 0.5) ? (int)pow(2.0, flog2) : (int)pow(2.0, flog2 + 1.0);
 }
 #ifdef WIN32
-inline float fastSquareRoot(float x)
+inline double fastSquareRoot(double x)
 {
   __asm{
     fld x;
@@ -77,7 +77,7 @@ inline float fastSquareRoot(float x)
 }
 
 
-inline float fastCos(float x)
+inline double fastCos(double x)
 {
   __asm{
     fld x;
@@ -87,7 +87,7 @@ inline float fastCos(float x)
   return x;
 }
 
-inline float fastSin(float x)
+inline double fastSin(double x)
 {
   __asm{
     fld x;
@@ -98,16 +98,16 @@ inline float fastSin(float x)
 }
 
 #else
-inline float fastSin(float x)
+inline double fastSin(double x)
 { return sin(x);}
-inline float fastCos(float x)
+inline double fastCos(double x)
 { return cos(x);}
-inline float fastSquareRoot(float x)
+inline double fastSquareRoot(double x)
 { return sqrt(x);}
 #endif
 
 
-/*inline float fastSquareRootSSE(float f)	{
+/*inline double fastSquareRootSSE(double f)	{
   __asm    {
    MOVSS xmm2,f
    SQRTSS xmm1, xmm2
@@ -227,7 +227,7 @@ class Tuple2
 };
 
 typedef Tuple2<int   > Tuple2i;
-typedef Tuple2<float > Tuple2f;
+typedef Tuple2<double > Tuple2f;
 typedef Tuple2<double> Tuple2d;
 
 template <class T>
@@ -523,7 +523,7 @@ class Tuple4
       x = source.x;
       y = source.y;
       z = source.z;
-      w = 1.0f;
+      w = 1.0;
       return *this;
     }
 
@@ -650,7 +650,7 @@ class Tuple4
 };
 
 typedef Tuple4<int   > Tuple4i;
-typedef Tuple4<float > Tuple4f;
+typedef Tuple4<double > Tuple4f;
 typedef Tuple4<double> Tuple4d;
 
 #endif

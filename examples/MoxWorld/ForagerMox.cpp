@@ -13,7 +13,7 @@ public class ForagerMox extends Mox
    public static final int   FORAGER_COLOR_VALUE = 9;
 
    // Maximum sensor range (-1 == infinite).
-   public static float MAX_SENSOR_RANGE = -1.0f;
+   public static double MAX_SENSOR_RANGE = -1.0;
 
    // Need types.
    public enum NEED_TYPE
@@ -142,7 +142,7 @@ public class ForagerMox extends Mox
          sensors[SENSOR_CONFIG.RANGE_SENSOR_INDEX.GetValue()]     = 0;
          sensors[SENSOR_CONFIG.COLOR_HUE_SENSOR_INDEX.GetValue()] =
             GameOfLife.BLUE_CELL_COLOR_VALUE;
-         sensors[SENSOR_CONFIG.COLOR_INTENSITY_SENSOR_INDEX.GetValue()] = 1.0f;
+         sensors[SENSOR_CONFIG.COLOR_INTENSITY_SENSOR_INDEX.GetValue()] = 1.0;
          mona.AddGoal(NEED_TYPE.BLUE_FOOD.GetValue(), sensors,
                       SENSOR_CONFIG.BASIC_SENSOR_MODE.GetValue(),
                       RESPONSE_TYPE.NULL_RESPONSE.GetValue(),

@@ -96,10 +96,10 @@ bool CFont::Load(const char* fontPath)
   {
     for(x = 0; x < 16; x++, i++)
     {
-      float s = (float)x / 16.0f + (float)spacey[i] / (float)size;
-      float t = (float)y / 16.0f;
-      float ds = (float)spaces[i] / (float)size;
-      float dt = 1.0f/ 16.0;
+      double s = (float)x / 16.0f + (float)spacey[i] / (float)size;
+      double t = (float)y / 16.0;
+      double ds = (float)spaces[i] / (float)size;
+      double dt = 1.0f/ 16.0;
   
       glNewList(fontBaseRange + i,GL_COMPILE);
       glBegin(GL_TRIANGLE_STRIP);
@@ -158,9 +158,9 @@ int  CFont::getMaxFittingLength(const String &string, int bounds)
 }
 
 
-void CFont::printProportional(float widthRatio, float heightRatio,
-                             float width,      float height,
-                             float r, float g, float b,
+void CFont::printProportional(double widthRatio, double heightRatio,
+                             double width,      double height,
+                             double r, double g, double b,
                              const String &string)
 {
   Tuple4i viewport;
@@ -172,15 +172,15 @@ void CFont::printProportional(float widthRatio, float heightRatio,
 
   Tuple2i dimensions = getStringSizes(string);
 
-  float xPosition = (viewport.z - dimensions.x*width)*widthRatio,
+  double xPosition = (viewport.z - dimensions.x*width)*widthRatio,
         yPosition = (viewport.w - dimensions.y*height)*heightRatio;
 
   Print(xPosition, yPosition, width, height, r, g, b, string);
 }
 
-void CFont::Print(float xPosition,  float yPosition,
-                 float width,      float height,
-                 float r, float g, float b,
+void CFont::Print(double xPosition,  double yPosition,
+                 double width,      double height,
+                 double r, double g, double b,
                  const String &string)
 {
   GLint stringLength =  GLint(string.GetCount());
@@ -211,9 +211,9 @@ int  CFont::GetHeight()
   return fontHeight;
 }
 
-void CFont::printSubString(float xPosition,  float yPosition,
-                          float width,      float height,
-                          float r, float g, float b,
+void CFont::printSubString(double xPosition,  double yPosition,
+                          double width,      double height,
+                          double r, double g, double b,
                           int   start, int end,
                           const String &string)
 {

@@ -52,7 +52,7 @@ void  GUIComboBox::setFontScales(const Tuple2f &scales)
   setFontScales(scales.x, scales.y);
 }
 
-void  GUIComboBox::setFontScales(float wScale, float hScale)
+void  GUIComboBox::setFontScales(double wScale, double hScale)
 {
   fontScales.x = clamp(hScale, 0.01f, 20.0f);
   fontScales.y = clamp(wScale, 0.01f, 20.0f);
@@ -63,7 +63,7 @@ const Tuple2f  &GUIComboBox::getFontScales()
   return fontScales;
 }
 
-bool GUIComboBox::loadXMLSettings(const TiXmlElement *element)
+bool GUIComboBox::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "ComboBox"))
     return Logger::writeErrorLog("Need a ComboBox node in the xml file");
@@ -71,12 +71,12 @@ bool GUIComboBox::loadXMLSettings(const TiXmlElement *element)
   const   TiXmlElement *outer  = NULL;
   Tuple3f bordersColor         = upperPanel->getBordersColor();
   Tuple4f bgColor              = upperPanel->getBGColor();
-  float   lowerPanelColorScale = 1.0f;
+  double   lowerPanelColorScale = 1.0;
 
   if(outer = XMLArbiter::getChildElementByName(element, "Button"))
   {
     dropMenuButton->loadXMLClippedRectangleInfo(outer);
-    dropMenuButton->loadXMLSettings(outer);
+    dropMenuButton->LoadXMLSettings(outer);
     dropMenuButton->setCallbackString("cbddb");
     dropMenuButton->setLabelString("");
     dropMenuButton->setActive(true);
@@ -121,7 +121,7 @@ bool GUIComboBox::loadXMLSettings(const TiXmlElement *element)
 
   setFontScales(fontScales);
 
-  return GUIRectangle::loadXMLSettings(element) && (items.GetCount() != 0);
+  return GUIRectangle::LoadXMLSettings(element) && (items.GetCount() != 0);
 }
 
 void GUIComboBox::checkMouseEvents(MouseEvent &evt, int extraInfo, bool rBits)
@@ -174,7 +174,7 @@ void GUIComboBox::actionPerformed(GUIEvent &evt)
   }
 }
 
-void GUIComboBox::render(float clockTick)
+void GUIComboBox::render(double clockTick)
 {
   if(!parent || !visible)
     return;
@@ -218,12 +218,12 @@ void GUIComboBox::finalizeSize()
 
   GUIFont *font             = GUIFontManager::getFont(fontIndex);
   const    int    *spaces   = font ? font->getFontObject()->getCharHorizontalGlyphs() : NULL;
-  float            maxWidth = 0,
+  double            maxWidth = 0,
                    height   = 0;
   int              cbsIndex = 1;
   if(spaces)
   {
-    float  width    = 0;
+    double  width    = 0;
     size_t length   = 0;
 
     height   =  float(font->getFontObject()->GetHeight());
@@ -231,7 +231,7 @@ void GUIComboBox::finalizeSize()
     for(size_t l = 0; l < items.GetCount(); l++)
     {
       length = items[l].GetCount();
-      width  = 0.0f;
+      width  = 0.0;
 
       for(size_t t = 0; t < length; t++)
         width += spaces[items[l][t]];
@@ -340,17 +340,17 @@ bool GUIComboBox::setSelectedItemIndex(size_t index)
   return true;
 }
 
-void    GUIComboBox::setScrollingColor(float r, float g, float b, float a)
+void    GUIComboBox::setScrollingColor(double r, double g, double b, double a)
 {
-  scrollingColor.set(clamp(r, 0.0f, 255.0f),
+  scrollingColor.Set(clamp(r, 0.0f, 255.0f),
                      clamp(g, 0.0f, 255.0f),
                      clamp(b, 0.0f, 255.0f),
                      clamp(a, 0.0f, 255.0f));
 
-  scrollingColor.x /= (scrollingColor.x > 1.0) ? 255.0f : 1.0f;
-  scrollingColor.y /= (scrollingColor.y > 1.0) ? 255.0f : 1.0f;
-  scrollingColor.z /= (scrollingColor.z > 1.0) ? 255.0f : 1.0f;
-  scrollingColor.w /= (scrollingColor.w > 1.0) ? 255.0f : 1.0f;
+  scrollingColor.x /= (scrollingColor.x > 1.0) ? 255.0f : 1.0;
+  scrollingColor.y /= (scrollingColor.y > 1.0) ? 255.0f : 1.0;
+  scrollingColor.z /= (scrollingColor.z > 1.0) ? 255.0f : 1.0;
+  scrollingColor.w /= (scrollingColor.w > 1.0) ? 255.0f : 1.0;
 }
 
 void    GUIComboBox::setScrollingColor(const Tuple4f &rgba)

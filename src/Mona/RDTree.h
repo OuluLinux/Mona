@@ -1,14 +1,15 @@
 #ifndef __PATTREE__
 #define __PATTREE__
 
+#include "Common.h"
 
 // Mona: sensory/response, neural network, and needs.
 class RDTree {
 public:
 
    // Tree configuration parameter.
-   static const float DEFAULT_RADIUS;
-   float              RADIUS;
+   static const double DEFAULT_RADIUS;
+   double              RADIUS;
 
    // Tree node.
    class RDNode
@@ -21,7 +22,7 @@ private:
       RDNode *outer_last;      /* last outer */
       RDNode *equal_next;      /* next sibling */
       RDNode *equal_prev;      /* previous sibling */
-      float  distance;         /* distance from outer to parent */
+      double  distance;         /* distance from outer to parent */
 public:
       RDNode(void *pattern, void *client);
       RDNode();
@@ -33,10 +34,10 @@ public:
    {
 public:
       RDNode   *node;           /* node */
-      float    distance;        /* comparison distance */
+      double    distance;        /* comparison distance */
       RDSearch *search_next;       /* next on search return list */
 private:
-      float    workdist;        /* work distance */
+      double    workdist;        /* work distance */
       int      state;           /* search state */
       RDSearch *outer_list;      /* outerren */
       RDSearch *equal_next;        /* next sibling */
@@ -47,8 +48,8 @@ public:
    };
 
    // Constructors.
-   RDTree(float (*dist_func)(void *, void *), void (*del_func)(void *) = NULL);
-   RDTree(float radius, float (*dist_func)(void *, void *), void (*del_func)(void *) = NULL);
+   RDTree(double (*dist_func)(void *, void *), void (*del_func)(void *) = NULL);
+   RDTree(double radius, double (*dist_func)(void *, void *), void (*del_func)(void *) = NULL);
 
    // Destructor.
    ~RDTree();
@@ -60,24 +61,24 @@ public:
    RDSearch *Search(void *pattern, int max_find = 1, int max_search = (-1));
 
    // Load and save tree.
-   bool Load(char *filename, void *(*load_pattern)(Stream& s),
+   bool Load(String filename, void *(*load_pattern)(Stream& s),
              void *(*load_client)(Stream& s) = NULL);
    void Load(Stream& s, void *(*load_pattern)(Stream& s),
              void *(*load_client)(Stream& s) = NULL);
-   bool Load(char *filename, void *helper,
+   bool Load(String filename, void *helper,
              void *(*load_pattern)(void *helper, Stream& s),
              void *(*load_client)(void *helper, Stream& s) = NULL);
    void Load(Stream& s, void *helper,
              void *(*load_pattern)(void *helper, Stream& s),
              void *(*load_client)(void *helper, Stream& s) = NULL);
-   bool Store(char *filename, void (*savePatt)(void *pattern, FILE *fp),
-             void (*saveClient)(void *client, FILE *fp) = NULL);
-   void Store(Stream& s, void (*savePatt)(void *pattern, FILE *fp),
-             void (*saveClient)(void *client, FILE *fp) = NULL);
+   bool Store(String filename, void (*store_pattern)(void *pattern, Stream& fp),
+             void (*store_client)(void *client, Stream& fp) = NULL);
+   void Store(Stream& s, void (*store_pattern)(void *pattern, Stream& fp),
+             void (*store_client)(void *client, Stream& fp) = NULL);
 
    // Print.
-   bool Print(char *filename, void (*print_pattern)(void *pattern, FILE *fp));
-   void Print(void (*print_pattern)(void *pattern, FILE *fp), Stream& s = stdout);
+   //bool Print(String filename, void (*print_pattern)(void *pattern, Stream& fp));
+   //void Print(void (*print_pattern)(void *pattern, Stream& fp), Stream& s);
 
 private:
 
@@ -85,7 +86,7 @@ private:
    RDNode *root;
 
    // Pattern distance function.
-   float (*dist_func)(void *pattern0, void *pattern1);
+   double (*dist_func)(void *pattern0, void *pattern1);
 
    // Pattern delete function.
    void (*del_func)(void *pattern);
@@ -143,9 +144,9 @@ private:
                      void *(*load_pattern)(void *helper, Stream& s),
                      void *(*load_client)(void *helper, Stream& s));
    void StoreOuter(Stream& s, RDNode * parent,
-                     void (*savePatt)(void *pattern, FILE *fp),
-                     void (*saveClient)(void *client, FILE *fp));
+                     void (*store_pattern)(void *pattern, Stream& fp),
+                     void (*store_client)(void *client, Stream& fp));
    void PrintNode(Stream& s, RDNode * node, int level,
-                  void (*print_pattern)(void *pattern, FILE *fp));
+                  void (*print_pattern)(void *pattern, Stream& fp));
 };
 #endif

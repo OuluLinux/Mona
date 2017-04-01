@@ -35,11 +35,11 @@
 typedef struct _GLMmaterial
 {
    char    *name;                                 /* name of material */
-   GLfloat diffuse[4];                            /* diffuse component */
-   GLfloat ambient[4];                            /* ambient component */
-   GLfloat specular[4];                           /* specular component */
-   GLfloat emmissive[4];                          /* emmissive component */
-   GLfloat shininess;                             /* specular exponent */
+   GLdouble diffuse[4];                            /* diffuse component */
+   GLdouble ambient[4];                            /* ambient component */
+   GLdouble specular[4];                           /* specular component */
+   GLdouble emmissive[4];                          /* emmissive component */
+   GLdouble shininess;                             /* specular exponent */
 } GLMmaterial;
 
 /* GLMtriangle: Structure that defines a triangle in a model.
@@ -71,16 +71,16 @@ typedef struct _GLMmodel
    char        *mtllibname;                       /* name of the material library */
 
    GLuint      numvertices;                       /* number of vertices in model */
-   GLfloat     *vertices;                         /* array of vertices  */
+   GLdouble     *vertices;                         /* array of vertices  */
 
    GLuint      numnormals;                        /* number of normals in model */
-   GLfloat     *normals;                          /* array of normals */
+   GLdouble     *normals;                          /* array of normals */
 
    GLuint      numtexcoords;                      /* number of texcoords in model */
-   GLfloat     *texcoords;                        /* array of texture coordinates */
+   GLdouble     *texcoords;                        /* array of texture coordinates */
 
    GLuint      numfacetnorms;                     /* number of facetnorms in model */
-   GLfloat     *facetnorms;                       /* array of facetnorms */
+   GLdouble     *facetnorms;                       /* array of facetnorms */
 
    GLuint      numtriangles;                      /* number of triangles in model */
    GLMtriangle *triangles;                        /* array of triangles */
@@ -91,7 +91,7 @@ typedef struct _GLMmodel
    GLuint      numgroups;                         /* number of groups in model */
    GLMgroup    *groups;                           /* linked list of groups */
 
-   GLfloat     position[3];                       /* position of the model */
+   GLdouble     position[3];                       /* position of the model */
 } GLMmodel;
 
 /* glmUnitize: "unitize" a model by translating it to the origin and
@@ -107,20 +107,20 @@ glmUnitize(GLMmodel *model);
  * a model.
  *
  * model      - initialized GLMmodel structure
- * XYZ minimums - array of 3 GLfloats (GLfloat mins[3])
- * XYZ maximums - array of 3 GLfloats (GLfloat maxs[3])
+ * XYZ minimums - array of 3 GLfloats (GLdouble mins[3])
+ * XYZ maximums - array of 3 GLfloats (GLdouble maxs[3])
  */
 GLvoid
-glmBounds(GLMmodel *model, GLfloat *mins, GLfloat *maxs);
+glmBounds(GLMmodel *model, GLdouble *mins, GLdouble *maxs);
 
 /* glmSizes: Calculates the dimensions (width, height, depth) of
  * a model.
  *
  * model      - initialized GLMmodel structure
- * dimensions - array of 3 GLfloats (GLfloat dimensions[3])
+ * dimensions - array of 3 GLfloats (GLdouble dimensions[3])
  */
 GLvoid
-glmSizes(GLMmodel *model, GLfloat *dimensions);
+glmSizes(GLMmodel *model, GLdouble *dimensions);
 
 /* glmHeightmap: Calculates a facet heightmap for a model.
  * Height is defined as the Y dimension on the XZ plane.
@@ -136,11 +136,11 @@ glmHeightmap(GLMmodel *model);
 /* glmScale: Scales a model by a given amount.
  *
  * model - properly initialized GLMmodel structure
- * scale - array of XYZ GLfloats (GLfloat scale[3])
+ * scale - array of XYZ GLfloats (GLdouble scale[3])
  *         scalefactor (0.5 = half as large, 2.0 = twice as large)
  */
 GLvoid
-glmScale(GLMmodel *model, GLfloat *scale);
+glmScale(GLMmodel *model, GLdouble *scale);
 
 /* glmReverseWinding: Reverse the polygon winding for all polygons in
  * this model.  Default winding is counter-clockwise.  Also changes
@@ -177,7 +177,7 @@ glmFacetNormals(GLMmodel *model);
  * angle - maximum angle (in degrees) to smooth across
  */
 GLvoid
-glmVertexNormals(GLMmodel *model, GLfloat angle);
+glmVertexNormals(GLMmodel *model, GLdouble angle);
 
 /* glmLinearTexture: Generates texture coordinates according to a
  * linear projection of the texture map.  It generates these by
@@ -216,7 +216,7 @@ glmDelete(GLMmodel *model);
  * filename - name of the file containing the Wavefront .OBJ format data.
  */
 GLMmodel *
-glmReadOBJ(char *filename);
+glmReadOBJ(String filename);
 
 /* glmWriteOBJ: Writes a model description in Wavefront .OBJ format to
  * a file.
@@ -270,7 +270,7 @@ glmList(GLMmodel *model, GLuint mode);
  *
  */
 GLvoid
-glmWeld(GLMmodel *model, GLfloat epsilon);
+glmWeld(GLMmodel *model, GLdouble epsilon);
 
 /* glmReadPPM: read a PPM raw (type P6) file.  The PPM file has a header
  * that should look something like:
@@ -301,5 +301,5 @@ glmWeld(GLMmodel *model, GLfloat epsilon);
  *
  */
 GLubyte *
-glmReadPPM(char *filename, int *width, int *height);
+glmReadPPM(String filename, int *width, int *height);
 #endif

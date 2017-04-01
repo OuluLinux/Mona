@@ -84,7 +84,7 @@ void Log::logInformation()
 // Append temporary log.
 void Log::appendTempLog()
 {
-   FILE *fp;
+   Stream& fp;
    char buf[500];
 
    if ((fp = fopen(TEMP_LOG_FILE_NAME, "r")) == NULL)

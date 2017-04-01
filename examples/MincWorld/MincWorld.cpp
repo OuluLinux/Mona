@@ -15,7 +15,7 @@ const char *MincWorldVersion = MINC_WORLD_VERSION;
 // Parameters.
 int    NumMazeMarks;
 int    NumMazes;
-RANDOM RandomSeed;
+int RandomSeed;
 int    GeneralizationRuns;
 int    DiscriminationRuns;
 int    ResultRuns;

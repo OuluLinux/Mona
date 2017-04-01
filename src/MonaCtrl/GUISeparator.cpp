@@ -7,7 +7,7 @@ GUISeparator::GUISeparator(int orientation_) : GUIRectangle()
   widgetType = WT_SEPARATOR;
 }
 
-bool GUISeparator::loadXMLSettings(const TiXmlElement *element)
+bool GUISeparator::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!element || !element->Value() || strcmp(element->Value(),  "Separator"))
     return Logger::writeErrorLog("Need a <Separator> tag");
@@ -16,12 +16,12 @@ bool GUISeparator::loadXMLSettings(const TiXmlElement *element)
   return true;
 }
 
-void  GUISeparator::setRatio(float ratio_)
+void  GUISeparator::setRatio(double ratio_)
 {
   ratio = clamp(ratio_, 0.1f, 1.0f);
 } 
 
-float GUISeparator::getRatio()
+double GUISeparator::getRatio()
 {
   return ratio;
 }
@@ -36,7 +36,7 @@ int  GUISeparator::getOrientation()
   return orientation;
 }
 
-void GUISeparator::render(float tick)
+void GUISeparator::render(double tick)
 {
   if(!parent || !((GUIPanel*)parent)->isBGColorOn())
     return;
@@ -55,21 +55,21 @@ void const GUISeparator::computeWindowBounds()
   const Tuple4i &parentBounds = parent->getWindowBounds();
   if(orientation == OR_HORIZONTAL)
   {
-    float offset = (float(parent->GetWidth()) - float(ratio*parent->GetWidth()))/2.0f;
-    windowBounds.set(int(parentBounds.x + offset), int(parentBounds.y + position.y),
+    double offset = (float(parent->GetWidth()) - float(ratio*parent->GetWidth()))/2.0;
+    windowBounds.Set(int(parentBounds.x + offset), int(parentBounds.y + position.y),
                      int(parentBounds.z - offset), int(parentBounds.y + position.y));
   }
   else
   {
-    float offset = (float(parent->GetHeight()) - float(parent->GetHeight())*ratio)/2.0f;
-    windowBounds.set(int(parentBounds.x + position.x), int(parentBounds.y + offset),
+    double offset = (float(parent->GetHeight()) - float(parent->GetHeight())*ratio)/2.0;
+    windowBounds.Set(int(parentBounds.x + position.x), int(parentBounds.y + offset),
                      int(parentBounds.x + position.x), int(parentBounds.w - offset));
   }
 }
 
 const Tuple4i &GUISeparator::getWindowBounds()
 {
-  windowBounds.set(0,0,0,1);
+  windowBounds.Set(0,0,0,1);
   return windowBounds;
 }
 

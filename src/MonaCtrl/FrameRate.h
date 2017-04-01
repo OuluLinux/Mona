@@ -20,14 +20,14 @@ public:
    // Frame rate recalculation frequency (secs).
    enum { FRAME_RECALC_FREQUENCY=2 };
 
-   float        targetFPS;                        // Target frames per second (FPS).
-   float        FPS;                              // Current FPS.
-   float        speedFactor;                      // Frame rate independence speed factor.
-   static float initialSpeedFactor;
-   static float maxSpeedFactor;
+   double        targetFPS;                        // Target frames per second (FPS).
+   double        FPS;                              // Current FPS.
+   double        speedFactor;                      // Frame rate independence speed factor.
+   static double initialSpeedFactor;
+   static double maxSpeedFactor;
 
    // Constructor.
-   FrameRate(float targetFPS);
+   FrameRate(double targetFPS);
 
    // Update: call per frame.
    void Update();
@@ -38,6 +38,6 @@ public:
 private:
 
    int  m_frameCount;
-   TIME m_lastTime;
+   Time m_lastTime;
 };
 #endif

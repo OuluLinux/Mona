@@ -1428,8 +1428,8 @@ class IOXMLObject
   public:
     IOXMLObject(const String &ionameArg = "Unknown IOXMLObject");
 
-    virtual bool loadXMLSettings(const String  &path  );
-    virtual bool loadXMLSettings(const TiXmlElement *element) = 0;
+    virtual bool LoadXMLSettings(const String  &path  );
+    virtual bool LoadXMLSettings(const TiXmlElement *element) = 0;
 
     virtual bool exportXMLSettings(std::ofstream &xmlFile  ) = 0;
     virtual bool exportXMLSettings(const String &xmlPath);
@@ -1466,9 +1466,9 @@ class XMLArbiter
                                     const char         *attribute,
                                     double              initialValue);
 
-    static float   fillComponents1f(const TiXmlElement *element,
+    static double   fillComponents1f(const TiXmlElement *element,
                                     const char         *attribute,
-                                    float               initialValue);
+                                    double               initialValue);
 
     static int     fillComponents1i(const TiXmlElement *element,
                                     const char         *attribute,

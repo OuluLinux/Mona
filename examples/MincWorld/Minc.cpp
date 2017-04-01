@@ -14,13 +14,13 @@ bool Minc:: result        = false;
 bool Minc:: printCallback = false;
 
 // Minimum response potential for mona response override.
-Mona::RESPONSE_POTENTIAL Minc::MIN_RESPONSE_POTENTIAL = 0.01;
+RESPONSE_POTENTIAL Minc::MIN_RESPONSE_POTENTIAL = 0.01;
 
 // Identifier dispenser.
 int Minc::id_dispenser = 0;
 
 // Constructors.
-Minc::Minc(int numMarks, int intervals, RANDOM random_seed)
+Minc::Minc(int numMarks, int intervals, int random_seed)
 {
    char buf[100];
 
@@ -158,7 +158,7 @@ void Minc::lensCallback()
 {
    int i, lensDirection, direction;
 
-   Vector<Mona::SENSOR> sensors;
+   Vector<SENSOR> sensors;
    Mona                 *mona;
    Tmaze                *maze;
    Random               *randomizer;
@@ -245,7 +245,7 @@ void Minc::lensCallback()
 
       // Cycle mona with LENS direction as conditional response override.
       mona->OverrideResponseConditional(lensDirection, MIN_RESPONSE_POTENTIAL);
-      sensors.Add((Mona::SENSOR)(maze->path[exampleTick].mark));
+      sensors.Add((SENSOR)(maze->path[exampleTick].mark));
       direction = (int)mona->Cycle(sensors);
       if (printCallback)
       {
@@ -258,12 +258,12 @@ void Minc::lensCallback()
       // Reward mona if direction is correct.
       if (direction == maze->path[exampleTick].direction)
       {
-         mona->SetNeed(0, mona->GetNeed(0) - (1.0 / (Mona::NEED)activeMinc->intervals));
+         mona->SetNeed(0, mona->GetNeed(0) - (1.0 / (NEED)activeMinc->intervals));
       }
       else
       {
          // Otherwise expire wrong reponses and clear memory.
-         mona->ExpireResponseEnablings((Mona::RESPONSE)direction);
+         mona->ExpireResponseEnablings((RESPONSE)direction);
          mona->ClearWorkingMemory();
       }
 
@@ -303,9 +303,9 @@ void Minc::lensCallback()
 
 
 // Load minc.
-void Minc::Load(char *filename)
+void Minc::Load(String filename)
 {
-   FILE *fp;
+   Stream& fp;
 
    if ((fp = FOPEN_READ(filename)) == NULL)
    {
@@ -317,7 +317,7 @@ void Minc::Load(char *filename)
 }
 
 
-void Minc::Load(FILE *fp)
+void Minc::Serialize(Stream& fp)
 {
    int  i;
    bool b;
@@ -374,9 +374,9 @@ void Minc::Load(FILE *fp)
 
 
 // Save minc.
-void Minc::Store(char *filename)
+void Minc::Store(String filename)
 {
-   FILE *fp;
+   Stream& fp;
 
    if ((fp = FOPEN_WRITE(filename)) == NULL)
    {
@@ -388,7 +388,7 @@ void Minc::Store(char *filename)
 }
 
 
-void Minc::Store(FILE *fp)
+void Minc::Store(Stream& fp)
 {
    int  i;
    bool b;

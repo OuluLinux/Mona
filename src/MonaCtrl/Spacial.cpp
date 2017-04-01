@@ -12,9 +12,9 @@
 #include "Spacial.h"
 
 // Initialize.
-void cSpacial::initialize(GLfloat pitch, GLfloat yaw, GLfloat roll,
-                          GLfloat pitchRate, GLfloat yawRate, GLfloat rollRate,
-                          GLfloat x, GLfloat y, GLfloat z, GLfloat scale, GLfloat speed)
+void cSpacial::initialize(GLdouble pitch, GLdouble yaw, GLdouble roll,
+                          GLdouble pitchRate, GLdouble yawRate, GLdouble rollRate,
+                          GLdouble x, GLdouble y, GLdouble z, GLdouble scale, GLdouble speed)
 {
    m_pitchRate = pitchRate;
    m_yawRate   = yawRate;
@@ -33,41 +33,41 @@ void cSpacial::initialize(GLfloat pitch, GLfloat yaw, GLfloat roll,
 
 
 // Get and set Euler angles.
-GLfloat cSpacial::getPitch()
+GLdouble cSpacial::getPitch()
 {
-   GLfloat p, y, r;
+   GLdouble p, y, r;
 
    GetEulerAngles(p, y, r);
    return (p);
 }
 
 
-GLfloat cSpacial::getYaw()
+GLdouble cSpacial::getYaw()
 {
-   GLfloat p, y, r;
+   GLdouble p, y, r;
 
    GetEulerAngles(p, y, r);
    return (y);
 }
 
 
-GLfloat cSpacial::getRoll()
+GLdouble cSpacial::getRoll()
 {
-   GLfloat p, y, r;
+   GLdouble p, y, r;
 
    GetEulerAngles(p, y, r);
    return (r);
 }
 
 
-void cSpacial::setPitch(GLfloat pitch)
+void cSpacial::setPitch(GLdouble pitch)
 {
-   GLfloat p, y, r, pr, s;
+   GLdouble p, y, r, pr, s;
 
    GetEulerAngles(p, y, r);
    pr          = m_pitchRate;
    s           = m_speed;
-   m_speed     = 0.0f;
+   m_speed     = 0.0;
    m_pitchRate = (pitch - p);
    Update();
    m_pitchRate = pr;
@@ -75,14 +75,14 @@ void cSpacial::setPitch(GLfloat pitch)
 }
 
 
-void cSpacial::setYaw(GLfloat yaw)
+void cSpacial::setYaw(GLdouble yaw)
 {
-   GLfloat p, y, r, yr, s;
+   GLdouble p, y, r, yr, s;
 
    GetEulerAngles(p, y, r);
    yr        = m_yawRate;
    s         = m_speed;
-   m_speed   = 0.0f;
+   m_speed   = 0.0;
    m_yawRate = (yaw - y);
    Update();
    m_yawRate = yr;
@@ -90,14 +90,14 @@ void cSpacial::setYaw(GLfloat yaw)
 }
 
 
-void cSpacial::setRoll(GLfloat roll)
+void cSpacial::setRoll(GLdouble roll)
 {
-   GLfloat p, y, r, rr, s;
+   GLdouble p, y, r, rr, s;
 
    GetEulerAngles(p, y, r);
    rr         = m_rollRate;
    s          = m_speed;
-   m_speed    = 0.0f;
+   m_speed    = 0.0;
    m_rollRate = (roll - r);
    Update();
    m_rollRate = rr;
@@ -106,7 +106,7 @@ void cSpacial::setRoll(GLfloat roll)
 
 
 // Get direction vectors.
-void cSpacial::getRight(GLfloat *v)
+void cSpacial::getRight(GLdouble *v)
 {
    v[0] = m_rotmatrix[0][0];
    v[1] = m_rotmatrix[0][1];
@@ -114,7 +114,7 @@ void cSpacial::getRight(GLfloat *v)
 }
 
 
-void cSpacial::getUp(GLfloat *v)
+void cSpacial::getUp(GLdouble *v)
 {
    v[0] = m_rotmatrix[1][0];
    v[1] = m_rotmatrix[1][1];
@@ -122,7 +122,7 @@ void cSpacial::getUp(GLfloat *v)
 }
 
 
-void cSpacial::getForward(GLfloat *v)
+void cSpacial::getForward(GLdouble *v)
 {
    v[0] = m_rotmatrix[2][0];
    v[1] = m_rotmatrix[2][1];
@@ -134,20 +134,20 @@ void cSpacial::getForward(GLfloat *v)
 void cSpacial::Update()
 {
    CQuaternion xq, yq, zq, q1, q2;
-   GLfloat     v[3];
+   GLdouble     v[3];
 
-   v[0] = 1.0f;
-   v[1] = 0.0f;
-   v[2] = 0.0f;
+   v[0] = 1.0;
+   v[1] = 0.0;
+   v[2] = 0.0;
    xq.LoadRotation(DegreesToRadians(m_pitchRate), v);
-   v[0] = 0.0f;
-   v[1] = 1.0f;
-   v[2] = 0.0f;
+   v[0] = 0.0;
+   v[1] = 1.0;
+   v[2] = 0.0;
    yq.LoadRotation(DegreesToRadians(m_yawRate), v);
    m_qcalc->MulQuats(xq, yq, q1);
-   v[0] = 0.0f;
-   v[1] = 0.0f;
-   v[2] = 1.0f;
+   v[0] = 0.0;
+   v[1] = 0.0;
+   v[2] = 1.0;
    zq.LoadRotation(DegreesToRadians(m_rollRate), v);
    m_qcalc->MulQuats(q1, zq, q2);
    q1.m_quat[0] = m_qcalc->m_quat[0];
@@ -169,9 +169,9 @@ void cSpacial::Update()
 // Get billboard (face toward) rotation to target point given in local coordinates.
 // Return axis and angle for rotation to accomplish billboard.
 // rotation[0-2]=axis, rotation[3]=angle
-void cSpacial::getBillboard(GLfloat *target, GLfloat *rotation)
+void cSpacial::getBillboard(GLdouble *target, GLdouble *rotation)
 {
-   GLfloat forward[3];
+   GLdouble forward[3];
 
    // Check for coincidence.
    for (int i = 0; i < 4; i++)
@@ -192,10 +192,10 @@ void cSpacial::getBillboard(GLfloat *target, GLfloat *rotation)
 // Get billboard rotation from source vector to target vector.
 // Return axis and angle for rotation to accomplish billboard.
 // rotation[0-2]=axis, rotation[3]=angle
-void cSpacial::getBillboard(GLfloat *target, GLfloat *source, GLfloat *rotation)
+void cSpacial::getBillboard(GLdouble *target, GLdouble *source, GLdouble *rotation)
 {
    Vector3f  v1, v2, v3;
-   GLfloat d;
+   GLdouble d;
 
    // Check for invalid condition.
    for (int i = 0; i < 4; i++)
@@ -241,7 +241,7 @@ void cSpacial::getBillboard(GLfloat *target, GLfloat *source, GLfloat *rotation)
 
 
 // Get model transformation matrix.
-void cSpacial::getModelTransform(GLfloat *matrix)
+void cSpacial::getModelTransform(GLdouble *matrix)
 {
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
@@ -255,10 +255,10 @@ void cSpacial::getModelTransform(GLfloat *matrix)
 
 
 // Get world coordinates from local.
-void cSpacial::localToWorld(GLfloat *local, GLfloat *world)
+void cSpacial::localToWorld(GLdouble *local, GLdouble *world)
 {
    int     i, j;
-   GLfloat m[16];
+   GLdouble m[16];
    Matrix  x(4, 4), p(4, 1), t(4, 1);
 
    getModelTransform(m);
@@ -281,10 +281,10 @@ void cSpacial::localToWorld(GLfloat *local, GLfloat *world)
 
 
 // Inverse transform local point.
-void cSpacial::inverseTransformPoint(GLfloat *point)
+void cSpacial::inverseTransformPoint(GLdouble *point)
 {
    int     i, j;
-   GLfloat m[16];
+   GLdouble m[16];
    Matrix  x(4, 4), y(4, 4), p(4, 1), t(4, 1);
 
    glMatrixMode(GL_MODELVIEW);
@@ -312,15 +312,15 @@ void cSpacial::inverseTransformPoint(GLfloat *point)
 
 
 // Point-to-point distance.
-GLfloat cSpacial::pointDistance(GLfloat *p1, GLfloat *p2)
+GLdouble cSpacial::pointDistance(GLdouble *p1, GLdouble *p2)
 {
-   GLfloat dx = p1[0] - p2[0];
+   GLdouble dx = p1[0] - p2[0];
 
    dx *= dx;
 
-   GLfloat dy = p1[1] - p2[1];
+   GLdouble dy = p1[1] - p2[1];
    dy *= dy;
-   GLfloat dz = p1[2] - p2[2];
+   GLdouble dz = p1[2] - p2[2];
    dz *= dz;
    return (sqrt(dx + dy + dz));
 }
@@ -358,7 +358,7 @@ cSpacial *cSpacial::Clone()
 
 
 // Load.
-void cSpacial::Load(FILE *fp)
+void cSpacial::Serialize(Stream& fp)
 {
    FREAD_FLOAT(&m_pitchRate, fp);
    FREAD_FLOAT(&m_yawRate, fp);
@@ -373,7 +373,7 @@ void cSpacial::Load(FILE *fp)
 
 
 // Save object.
-void cSpacial::Store(FILE *fp)
+void cSpacial::Store(Stream& fp)
 {
    FWRITE_FLOAT(&m_pitchRate, fp);
    FWRITE_FLOAT(&m_yawRate, fp);

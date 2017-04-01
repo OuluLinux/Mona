@@ -9,20 +9,20 @@
 int Muzz::id_dispenser = 0;
 
 // Muzz needs.
-Mona::NEED Muzz::      INIT_HUNGER      = 1.0;
-Mona::NEED Muzz::      INIT_THIRST      = 1.0;
-const Mona::NEED Muzz::EAT_GOAL_VALUE   = 1.0;
-const Mona::NEED Muzz::DRINK_GOAL_VALUE = 1.0;
+NEED Muzz::      INIT_HUNGER      = 1.0;
+NEED Muzz::      INIT_THIRST      = 1.0;
+const NEED Muzz::EAT_GOAL_VALUE   = 1.0;
+const NEED Muzz::DRINK_GOAL_VALUE = 1.0;
 
 // Base size.
 const double Muzz::base_size = 0.025f;
 
 // Hover height.
-const double Muzz::HOVER_height = 0.0f;
+const double Muzz::HOVER_height = 0.0;
 
 // Movement constraint parameters.
 const double Muzz::max_height_change    = 0.75f;
-const double Muzz::max_angle_adjustment = 30.0f;
+const double Muzz::max_angle_adjustment = 30.0;
 
 // Constructor.
 Muzz::Muzz(const Color& color, BlockTerrain* terrain, int placement_seed) : BaseObject() {
@@ -177,12 +177,12 @@ Muzz::Muzz(BlockTerrai& terrain) : BaseObject() {
 	id_dispenser++;
 
 	for (i = 0; i < 3; i++)
-		m_color[i] = 0.0f;
+		m_color[i] = 0.0;
 
 	for (i = 0; i < 3; i++)
-		m_place_position[i] = 0.0f;
+		m_place_position[i] = 0.0;
 
-	m_place_direction = 0.0f;
+	m_place_direction = 0.0;
 	m_terrain        = &terrain;
 	m_randomizer     = NULL;
 	display          = (GLuint)(-1);
@@ -231,7 +231,7 @@ void Muzz::InitBrain(Mona* brain) {
 	int i;
 	Vector<bool>         sensorMask;
 	Vector<bool>         bits;
-	Vector<Mona::SENSOR> goalSensors;
+	Vector<SENSOR> goal_sensors;
 	// Initialize network.
 	brain->InitNet(NUM_BRAIN_SENSORS, NUM_RESPONSES, NUM_NEEDS,
 				   brain->random_seed);
@@ -262,7 +262,7 @@ void Muzz::InitBrain(Mona* brain) {
 
 	brain->AddSensorMode(sensorMask);
 	// Add sensory goals.
-	goalSensors.SetCount(NUM_BRAIN_SENSORS);
+	goal_sensors.SetCount(NUM_BRAIN_SENSORS);
 
 	for (i = 0; i < NUM_BRAIN_SENSORS; i++)
 		bits.Add(false);
@@ -273,24 +273,24 @@ void Muzz::InitBrain(Mona* brain) {
 
 	for (i = 0; i < NUM_BRAIN_SENSORS; i++) {
 		if (bits[i])
-			goalSensors[i] = 1.0f;
+			goal_sensors[i] = 1.0;
 		else
-			goalSensors[i] = 0.0f;
+			goal_sensors[i] = 0.0;
 	}
 
-	brain->homeostats[FOOD]->AddGoal(goalSensors, SENSOR_MODE_2,
+	brain->homeostats[FOOD]->AddGoal(goal_sensors, SENSOR_MODE_2,
 									 EAT, EAT_GOAL_VALUE);
 	SetBoolBits(bits, OBJECT_SENSOR_0, 5, POOL +
 				(MAX_OTHER - MIN_OTHER));
 
 	for (i = 0; i < NUM_BRAIN_SENSORS; i++) {
 		if (bits[i])
-			goalSensors[i] = 1.0f;
+			goal_sensors[i] = 1.0;
 		else
-			goalSensors[i] = 0.0f;
+			goal_sensors[i] = 0.0;
 	}
 
-	brain->homeostats[WATER]->AddGoal(goalSensors, SENSOR_MODE_2,
+	brain->homeostats[WATER]->AddGoal(goal_sensors, SENSOR_MODE_2,
 									  DRINK, DRINK_GOAL_VALUE);
 }
 
@@ -446,19 +446,19 @@ bool Muzz::MoveOverTerrain(int type, double amount) {
 	// Make sure maximum height change is not exceeded for all 4 corners.
 	r     = base_size * 0.5f;
 	c0[0] = -r;
-	c0[1] = 0.0f;
+	c0[1] = 0.0;
 	c0[2] = r;
 	localToWorld(c0, c0);
 	c1[0] = r;
-	c1[1] = 0.0f;
+	c1[1] = 0.0;
 	c1[2] = r;
 	localToWorld(c1, c1);
 	c2[0] = r;
-	c2[1] = 0.0f;
+	c2[1] = 0.0;
 	c2[2] = -r;
 	localToWorld(c2, c2);
 	c3[0] = -r;
-	c3[1] = 0.0f;
+	c3[1] = 0.0;
 	c3[2] = -r;
 	localToWorld(c3, c3);
 
@@ -486,7 +486,7 @@ bool Muzz::MoveOverTerrain(int type, double amount) {
 		ok = true;
 		double max = max_height_change * m_terrain->block_size;
 		nc0[0] = -r;
-		nc0[1] = 0.0f;
+		nc0[1] = 0.0;
 		nc0[2] = r;
 		localToWorld(nc0, nc0);
 		m_terrain->GetGeometry(c0[0], c0[2], c0[1], n);
@@ -498,7 +498,7 @@ bool Muzz::MoveOverTerrain(int type, double amount) {
 		}
 
 		nc1[0] = r;
-		nc1[1] = 0.0f;
+		nc1[1] = 0.0;
 		nc1[2] = r;
 		localToWorld(nc1, nc1);
 		m_terrain->GetGeometry(c1[0], c1[2], c1[1], n);
@@ -510,7 +510,7 @@ bool Muzz::MoveOverTerrain(int type, double amount) {
 		}
 
 		nc2[0] = r;
-		nc2[1] = 0.0f;
+		nc2[1] = 0.0;
 		nc2[2] = -r;
 		localToWorld(nc2, nc2);
 		m_terrain->GetGeometry(c2[0], c2[2], c2[1], n);
@@ -522,7 +522,7 @@ bool Muzz::MoveOverTerrain(int type, double amount) {
 		}
 
 		nc3[0] = -r;
-		nc3[1] = 0.0f;
+		nc3[1] = 0.0;
 		nc3[2] = -r;
 		localToWorld(nc3, nc3);
 		m_terrain->GetGeometry(c3[0], c3[2], c3[1], n);
@@ -552,7 +552,7 @@ bool Muzz::MoveOverTerrain(int type, double amount) {
 
 	// Set height to average height of corners.
 	GetPosition(pos);
-	pos[1] = (nc0[1] + nc1[1] + nc2[1] + nc3[1]) / 4.0f;
+	pos[1] = (nc0[1] + nc1[1] + nc2[1] + nc3[1]) / 4.0;
 	SetPosition(pos);
 	// Save original heading for later.
 	getForward(oldfwd);
@@ -706,9 +706,9 @@ int Muzz::Cycle(int* sensors, int cycleNum) {
 
 	for (i = 0; i < NUM_BRAIN_SENSORS; i++) {
 		if (bits[i])
-			brain_sensors[i] = 1.0f;
+			brain_sensors[i] = 1.0;
 		else
-			brain_sensors[i] = 0.0f;
+			brain_sensors[i] = 0.0;
 	}
 
 	// Get response.
@@ -782,65 +782,22 @@ void Muzz::printResponsePotentials(FILE* out) {
 
 // Load muzz.
 void Muzz::Load(String filename) {
-	FILE* fp;
-
-	if ((fp = FOPEN_READ(filename)) == NULL) {
-		fprintf(stderr, "Cannot load muzz from file %s\n", filename);
-		exit(1);
-	}
-
-	Load(fp);
-	FCLOSE(fp);
+	LoadFromFile(*this, filename);
 }
 
 
-void Muzz::Load(FILE* fp) {
+void Muzz::Serialize(Stream& fp) {
 	ASSERT(brain != NULL);
-	((BaseObject*)this)->Load(fp);
-	FREAD_INT(&id, fp);
-	FREAD_BOOL(&has_food, fp);
-	FREAD_BOOL(&has_water, fp);
-	FREAD_INT(&has_foodCycle, fp);
-	FREAD_INT(&has_waterCycle, fp);
-	brain->Load(fp);
-	FREAD_FLOAT(&m_color[0], fp);
-	FREAD_FLOAT(&m_color[1], fp);
-	FREAD_FLOAT(&m_color[2], fp);
-	FREAD_FLOAT(&m_place_position[0], fp);
-	FREAD_FLOAT(&m_place_position[1], fp);
-	FREAD_FLOAT(&m_place_position[2], fp);
-	FREAD_FLOAT(&m_place_direction, fp);
+	BaseObject::Serialize(fp);
+	fp % id % has_food % has_water % has_foodCycle % has_waterCycle;
+	brain->Serialize(fp);
+	fp % m_color % m_place_position[0] % m_place_position[1] % m_place_position[2] % m_place_direction;
 }
 
 
 // Save muzz.
 void Muzz::Store(String filename) {
-	FILE* fp;
-
-	if ((fp = FOPEN_WRITE(filename)) == NULL) {
-		fprintf(stderr, "Cannot save muzz to file %s\n", filename);
-		exit(1);
-	}
-
-	Store(fp);
-	FCLOSE(fp);
+	StoreToFile(*this, filename);
 }
 
 
-void Muzz::Store(FILE* fp) {
-	ASSERT(brain != NULL);
-	((BaseObject*)this)->Store(fp);
-	FWRITE_INT(&id, fp);
-	FWRITE_BOOL(&has_food, fp);
-	FWRITE_BOOL(&has_water, fp);
-	FWRITE_INT(&has_foodCycle, fp);
-	FWRITE_INT(&has_waterCycle, fp);
-	brain->Store(fp);
-	FWRITE_FLOAT(&m_color[0], fp);
-	FWRITE_FLOAT(&m_color[1], fp);
-	FWRITE_FLOAT(&m_color[2], fp);
-	FWRITE_FLOAT(&m_place_position[0], fp);
-	FWRITE_FLOAT(&m_place_position[1], fp);
-	FWRITE_FLOAT(&m_place_position[2], fp);
-	FWRITE_FLOAT(&m_place_direction, fp);
-}

@@ -14,20 +14,20 @@ GUIButton::GUIButton(const String &callback) :  GUIAlphaElement(callback), GUICl
   bounce         = true;
 }
 
-bool GUIButton::loadXMLSettings(const TiXmlElement *element)
+bool GUIButton::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "Button"))
     return Logger::writeErrorLog("Need a Button node in the xml file");
 
   enableBounce(XMLArbiter::analyzeBooleanAttr(element, "bounce", true));
-  return GUIAlphaElement::loadXMLSettings(element) &&
+  return GUIAlphaElement::LoadXMLSettings(element) &&
          GUIClippedRectangle::loadXMLClippedRectangleInfo(element);
 }
 
 void GUIButton::enableBounce(bool bounce_){ bounce = bounce_; }
 bool GUIButton::bounceEnabled()           { return bounce;    }
 
-void GUIButton::render(float clockTick)
+void GUIButton::render(double clockTick)
 {
   if(!parent || !visible)
     return;
@@ -36,7 +36,7 @@ void GUIButton::render(float clockTick)
   bgColor = color;
 
   Tuple3f tempColor    = label.getColor();
-  float   displacement = 2.0f*(pressed || clicked)*bounce;
+  double   displacement = 2.0f*(pressed || clicked)*bounce;
   int     xCenter      = (windowBounds.x + windowBounds.z)/2,
           yCenter      = (windowBounds.y + windowBounds.w)/2;
 

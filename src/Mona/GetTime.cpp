@@ -6,20 +6,20 @@
 #include "GetTime.h"
 #include <assert.h>
 
-TIME gettime()
+Time gettime()
 {
-   TIME t;
+   Time t;
 
 #ifdef WIN32
-   static TIME base_time = 0;
+   static Time base_time = 0;
    if (base_time == 0)
    {
-      base_time = (TIME)GetTickCount64();
+      base_time = (Time)GetTickCount64();
       return (0);
    }
    else
    {
-      t = (TIME)GetTickCount64();
+      t = (Time)GetTickCount64();
       ASSERT(t >= base_time);
       return (t - base_time);
    }
@@ -36,7 +36,7 @@ TIME gettime()
    }
    else
    {
-      t = (TIME)(((tv.tv_sec - base_sec) * 1000) + ((tv.tv_usec - base_usec) / 1000));
+      t = (Time)(((tv.tv_sec - base_sec) * 1000) + ((tv.tv_usec - base_usec) / 1000));
       return (t);
    }
 #endif

@@ -1,11 +1,7 @@
-// Value set definitions
-
-// Store and manage a set of floating point values.
-
 #ifndef __VALUESET__
 #define __VALUESET__
 
-#include "FileIO.h"
+#include "Common.h"
 
 class ValueSet
 {
@@ -195,42 +191,20 @@ public:
 
 
    // Load.
-   inline void Load(FILE *fp)
-   {
-      int i;
-
-      values.Clear();
-      FREAD_INT(&i, fp);
-      values.SetCount(i);
-      for (i = 0; i < (int)values.GetCount(); i++)
-      {
-         FREAD_DOUBLE(&values[i], fp);
-      }
-   }
-
-
-   // Save.
-   inline void Store(FILE *fp)
-   {
-      int i = (int)values.GetCount();
-
-      FWRITE_INT(&i, fp);
-      for (i = 0; i < (int)values.GetCount(); i++)
-      {
-         FWRITE_DOUBLE(&values[i], fp);
-      }
+   inline void Serialize(Stream& fp) {
+       fp % values;
    }
 
 
    // Print.
-   inline void Print(FILE *out = stdout)
+   /*inline void Print(FILE *out = stdout)
    {
       for (int i = 0; i < (int)values.GetCount(); i++)
       {
          fprintf(out, "%f ", values[i]);
       }
       fprintf(out, "\n");
-   }
+   }*/
 
 
    Vector<double> values;                         // Value set

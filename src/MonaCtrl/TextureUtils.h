@@ -298,7 +298,7 @@ class Texture : public IOXMLObject
     Texture &operator = (const Texture &);
    ~Texture();
 
-    virtual bool loadXMLSettings(const TiXmlElement *element);
+    virtual bool LoadXMLSettings(const TiXmlElement *element);
     virtual bool exportXMLSettings(std::ofstream &xmlFile  );
 
     bool load2D(const char* infoEndOrPath,

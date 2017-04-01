@@ -12,8 +12,8 @@
 #include "Camera.h"
 
 // Set viewing frustum.
-void Camera::setFrustum(GLfloat angle, GLfloat aspect,
-                        GLfloat znear, GLfloat zfar)
+void Camera::setFrustum(GLdouble angle, GLdouble aspect,
+                        GLdouble znear, GLdouble zfar)
 {
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
@@ -24,10 +24,10 @@ void Camera::setFrustum(GLfloat angle, GLfloat aspect,
 
 
 // Set camera view.
-void Camera::setView(GLfloat *eye, GLfloat *lookat, GLfloat *up)
+void Camera::setView(GLdouble *eye, GLdouble *lookat, GLdouble *up)
 {
    int     i;
-   GLfloat t[3], r[4];
+   GLdouble t[3], r[4];
 
    // Set view and initialize orientation history.
    glMatrixMode(GL_MODELVIEW);
@@ -72,10 +72,10 @@ void Camera::setView(GLfloat *eye, GLfloat *lookat, GLfloat *up)
 
 
 // Update camera view.
-void Camera::updateView(GLfloat *eye, GLfloat *lookat, GLfloat *up)
+void Camera::updateView(GLdouble *eye, GLdouble *lookat, GLdouble *up)
 {
    int     i, j;
-   GLfloat e[3], f[3], u[3], t[3], r[4];
+   GLdouble e[3], f[3], u[3], t[3], r[4];
 
    // Camera orientation is average of new and old orientations.
    glMatrixMode(GL_MODELVIEW);
@@ -153,7 +153,7 @@ void Camera::updateView(GLfloat *eye, GLfloat *lookat, GLfloat *up)
 // Place camera using spacial state.
 void Camera::place()
 {
-   GLfloat eye[3], forward[3], up[3];
+   GLdouble eye[3], forward[3], up[3];
 
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
@@ -174,7 +174,7 @@ void Camera::place()
 void Camera::setCameraSpringiness(int size)
 {
    int     i;
-   GLfloat e[3], f[3], u[3];
+   GLdouble e[3], f[3], u[3];
 
    if (size <= 0)
    {
@@ -209,12 +209,12 @@ void Camera::setCameraSpringiness(int size)
 
 
 // Is local point in frustum?
-bool Camera::pointInFrustum(GLfloat *localPoint)
+bool Camera::pointInFrustum(GLdouble *localPoint)
 {
    int     i, j;
-   GLfloat m[16];
+   GLdouble m[16];
    Matrix  x(4, 4), p(4, 1), t(4, 1);
-   GLfloat worldPoint[3];
+   GLdouble worldPoint[3];
 
    // Convert to world point.
    glGetFloatv(GL_MODELVIEW_MATRIX, m);
@@ -242,7 +242,7 @@ bool Camera::pointInFrustum(GLfloat *localPoint)
           frustum[i][2] * worldPoint[2] +
           frustum[i][3] <= 0)
       {
-         return (false);
+         return false;
       }
    }
    return true;
@@ -254,10 +254,10 @@ bool Camera::pointInFrustum(GLfloat *localPoint)
 void
 Camera::extractFrustum()
 {
-   float proj[16];
-   float modl[16];
-   float clip[16];
-   float t;
+   double proj[16];
+   double modl[16];
+   double clip[16];
+   double t;
 
    /* Get the current PROJECTION matrix from OpenGL */
    glGetFloatv(GL_PROJECTION_MATRIX, proj);

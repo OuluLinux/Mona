@@ -1,5 +1,3 @@
-// For conditions of distribution and use, see copyright notice in mona.h
-
 #include "Mona.h"
 
 // Sense environment.
@@ -47,7 +45,7 @@ Mona::Sense()
       Vector<bool> mask;
       for (i = 0; i < sensor_count; i++)
       {
-         mask.Addtrue;
+         mask.Add(true);
       }
       AddSensorMode(mask);
    }
@@ -172,7 +170,7 @@ void Mona::ApplySensorMode(Vector<SENSOR>& sensorsIn,
       Vector<bool> mask;
       for (i = 0; i < sensor_count; i++)
       {
-         mask.Addtrue;
+         mask.Add(true);
       }
       AddSensorMode(mask);
    }
@@ -206,7 +204,7 @@ void Mona::ApplySensorMode(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode)
 // Find the receptor containing the centroid closest to
 // the sensor vector for the current sensor mode.
 // Also return the centroid-vector distance.
-Mona::Receptor *
+Receptor *
 Mona::GetCentroidReceptor(Vector<SENSOR>& sensors,
                           SENSOR_MODE sensor_mode, SENSOR& distance)
 {
@@ -221,14 +219,14 @@ Mona::GetCentroidReceptor(Vector<SENSOR>& sensors,
    }
    else
    {
-      distance = 0.0f;
+      distance = 0.0;
       return (NULL);
    }
 }
 
 
 // Get distance from centroid to given sensor vector.
-Mona::SENSOR Mona::Receptor::GetCentroidDistance(Vector<SENSOR>& sensors)
+SENSOR Receptor::GetCentroidDistance(Vector<SENSOR>& sensors)
 {
    return (GetSensorDistance(&centroid, &sensors));
 }
@@ -236,11 +234,11 @@ Mona::SENSOR Mona::Receptor::GetCentroidDistance(Vector<SENSOR>& sensors)
 
 // Get distance between sensor vectors.
 // Distance metric is Euclidean distance squared.
-Mona::SENSOR Mona::Receptor::GetSensorDistance(Vector<SENSOR> *sensorsA,
+SENSOR Receptor::GetSensorDistance(Vector<SENSOR> *sensorsA,
                                             Vector<SENSOR> *sensorsB)
 {
    SENSOR d;
-   SENSOR dist = 0.0f;
+   SENSOR dist = 0.0;
 
    for (int i = 0; i < (int)sensorsA->GetCount(); i++)
    {
@@ -252,13 +250,13 @@ Mona::SENSOR Mona::Receptor::GetSensorDistance(Vector<SENSOR> *sensorsA,
 
 
 // RDTree sensor vector search.
-Mona::SENSOR Mona::Receptor::patternDistance(void *sensorsA, void *sensorsB)
+SENSOR Receptor::PatternDistance(void *sensorsA, void *sensorsB)
 {
    return (GetSensorDistance((Vector<SENSOR> *)sensorsA, (Vector<SENSOR> *)sensorsB));
 }
 
 
-void *Mona::Receptor::LoadPattern(void *mona, FILE *fp)
+void *Receptor::LoadPattern(void *mona, Stream& fp)
 {
    SENSOR s;
 
@@ -273,7 +271,7 @@ void *Mona::Receptor::LoadPattern(void *mona, FILE *fp)
 }
 
 
-void Mona::Receptor::StorePattern(void *sensorsIn, FILE *fp)
+void Receptor::StorePattern(void *sensorsIn, Stream& fp)
 {
    SENSOR s;
 
@@ -286,7 +284,7 @@ void Mona::Receptor::StorePattern(void *sensorsIn, FILE *fp)
 }
 
 
-void *Mona::Receptor::LoadClient(void *mona, FILE *fp)
+void *Receptor::LoadClient(void *mona, Stream& fp)
 {
    ID id;
 
@@ -295,13 +293,13 @@ void *Mona::Receptor::LoadClient(void *mona, FILE *fp)
 }
 
 
-void Mona::Receptor::StoreClient(void *receptor, FILE *fp)
+void Receptor::StoreClient(void *receptor, Stream& fp)
 {
    FWRITE_LONG_LONG(&((Receptor *)receptor)->id, fp);
 }
 
 
-void Mona::Receptor::DeletePattern(void *pattern)
+void Receptor::DeletePattern(void *pattern)
 {
    delete (Vector<SENSOR> *)pattern;
 }
@@ -317,7 +315,7 @@ bool Mona::SetSensorResolution(SENSOR sensorResolution)
    }
    else
    {
-      return (false);
+      return false;
    }
 }
 
@@ -358,8 +356,8 @@ int Mona::AddSensorMode(Vector<bool>& sensorMask, SENSOR sensorResolution)
    s->Init(sensorMask, sensorResolution, &sensor_modes);
 
    // Create associated centroid search tree.
-   RDTree *t = new RDTree(Mona::Receptor::patternDistance,
-                          Mona::Receptor::deletePattern);
+   RDTree *t = new RDTree(Receptor::PatternDistance,
+                          Receptor::DeletePattern);
    ASSERT(t != NULL);
    sensor_centroids.Add(t);
 
@@ -374,7 +372,7 @@ int Mona::AddSensorMode(Vector<bool>& sensorMask)
 
 
 // Update goal value.
-void Mona::Receptor::UpdateGoalValue()
+void Receptor::UpdateGoalValue()
 {
    VALUE_SET needs, need_deltas;
 
@@ -386,8 +384,8 @@ void Mona::Receptor::UpdateGoalValue()
    need_deltas.Reserve(mona->need_count);
    for (int i = 0; i < mona->need_count; i++)
    {
-      needs.set(i, mona->homeostats[i]->GetNeed());
-      need_deltas.set(i, mona->homeostats[i]->GetAndClearNeedDelta());
+      needs.Set(i, mona->homeostats[i]->GetNeed());
+      need_deltas.Set(i, mona->homeostats[i]->GetAndClearNeedDelta());
    }
-   goals.update(needs, need_deltas);
+   goals.Update(needs, need_deltas);
 }

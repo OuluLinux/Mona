@@ -1,6 +1,6 @@
 #include "EasyGL.h"
 
-bool GUIFont::build()
+bool GUIFont::Build()
 {
   if(!GetName().GetCount())
     return Logger::writeErrorLog("Null font path");
@@ -8,7 +8,7 @@ bool GUIFont::build()
   return font.Load(GetName().c_str());
 }
 
-bool GUIFont::loadXMLSettings(const TiXmlElement *element)
+bool GUIFont::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "Font"))
     return Logger::writeErrorLog("Need a Font node in the xml file");

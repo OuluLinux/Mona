@@ -11,9 +11,9 @@
 #include "BaseObject.h"
 
 // Set spacial state.
-void BaseObject::setSpacial(GLfloat pitch, GLfloat yaw, GLfloat roll,
-                            GLfloat pitchRate, GLfloat yawRate, GLfloat rollRate,
-                            GLfloat x, GLfloat y, GLfloat z, GLfloat scale, GLfloat speed)
+void BaseObject::setSpacial(GLdouble pitch, GLdouble yaw, GLdouble roll,
+                            GLdouble pitchRate, GLdouble yawRate, GLdouble rollRate,
+                            GLdouble x, GLdouble y, GLdouble z, GLdouble scale, GLdouble speed)
 {
    m_spacial->initialize(pitch, yaw, roll,
                          pitchRate, yawRate, rollRate,
@@ -31,10 +31,10 @@ void BaseObject::setSpacial(cSpacial *spacial)
 
 
 // Draw object axes.
-void BaseObject::drawAxes(GLfloat span)
+void BaseObject::drawAxes(GLdouble span)
 {
    int     numhash;
-   GLfloat d, f, o;
+   GLdouble d, f, o;
 
    // Set drawing options.
    glDisable(GL_BLEND);
@@ -113,7 +113,7 @@ void BaseObject::drawAxes(GLfloat span)
 
 
 // Set block vertices.
-void BaseObject::setBlockVertices(Vector3f *vertices, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax)
+void BaseObject::setBlockVertices(Vector3f *vertices, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
 {
    vertices[0].x = xmax;
    vertices[0].y = ymax;
@@ -150,9 +150,9 @@ void BaseObject::setBlockVertices(Vector3f *vertices, float xmin, float xmax, fl
 
 
 // Draw a block.
-void BaseObject::drawBlock(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax)
+void BaseObject::drawBlock(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
 {
-   GLfloat x, y, z;
+   GLdouble x, y, z;
    Vector3f  vertices[8];
 
    // Set the vertices.
@@ -323,9 +323,9 @@ void BaseObject::drawBlock(float xmin, float xmax, float ymin, float ymax, float
 
 
 // Draw block edges.
-void BaseObject::drawBlockEdges(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax)
+void BaseObject::drawBlockEdges(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
 {
-   GLfloat x, y, z;
+   GLdouble x, y, z;
    Vector3f  vertices[8];
 
    // Set the vertices.
@@ -496,9 +496,9 @@ void BaseObject::drawBlockEdges(float xmin, float xmax, float ymin, float ymax, 
 
 
 // Load object.
-void BaseObject::Load(char *filename)
+void BaseObject::Load(String filename)
 {
-   FILE *fp;
+   Stream& fp;
 
    if ((fp = fopen(filename, "r")) == NULL)
    {
@@ -509,16 +509,16 @@ void BaseObject::Load(char *filename)
 }
 
 
-void BaseObject::Load(FILE *fp)
+void BaseObject::Serialize(Stream& fp)
 {
    m_spacial->Load(fp);
 }
 
 
 // Save object.
-void BaseObject::Store(char *filename)
+void BaseObject::Store(String filename)
 {
-   FILE *fp;
+   Stream& fp;
 
    if ((fp = fopen(filename, "w")) == NULL)
    {
@@ -529,7 +529,7 @@ void BaseObject::Store(char *filename)
 }
 
 
-void BaseObject::Store(FILE *fp)
+void BaseObject::Store(Stream& fp)
 {
    m_spacial->Store(fp);
 }

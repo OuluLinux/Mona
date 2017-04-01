@@ -144,7 +144,7 @@ const GLuint Texture::GetWidth()  const { return width;   }
 const GLuint Texture::getDepth()  const { return depth;   }
 const GLuint Texture::getID()     const { return id;      }
 
-bool Texture::loadXMLSettings(const TiXmlElement *element)
+bool Texture::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!isSuitable(element))
     return false;
@@ -160,7 +160,7 @@ bool Texture::loadXMLSettings(const TiXmlElement *element)
 
   const char *description = element->Attribute("description");
   if(description)
-    return  IOXMLObject::loadXMLSettings(description);
+    return  IOXMLObject::LoadXMLSettings(description);
 
   mipmap = XMLArbiter::analyzeBooleanAttr(element, "mipmap", true);
   target = getTypei(element->Attribute("type"));
@@ -531,7 +531,7 @@ bool Texture::createNoise3D(const char* name, GLuint size)
   {
     Perlin::setNoiseFrequency(frequency);
   	ptr = noise3DBuffer;
-   	ni.set(0.0, 0.0, 0.0);
+   	ni.Set(0.0, 0.0, 0.0);
 
 		inci = 1.0 / (size / frequency);
 	  for (i = 0; i < size; ++i, ni[0] += inci)
@@ -728,7 +728,7 @@ bool Texture::createNormalizingCube(const char* name,
 
   for(int currentLevel = 0; currentLevel < levels; currentLevel++)
   {
-    float fX    = 0.0,
+    double fX    = 0.0,
           fY    = 0.0,
 			    fZ    = 0.0,
           oolen = 1.0;
@@ -1291,7 +1291,7 @@ typedef struct
   HuffTable *huffAC, *huffDC;
   qTable *qTab;
   int dcPrev,smpx, smpy;
-  float t[256];
+  double t[256];
 }ComponentTable;
 
 ComponentTable component[4];
@@ -1305,7 +1305,7 @@ unsigned int xblock, yblock, blockx, blocky,
 unsigned char *data, *bpos  , *dend,
               eof  , ssStart, ssEnd,
               sbits, prec   , ncomp;
-float dctt[64];
+double dctt[64];
 
 int zigzag[64]=
 {
@@ -1536,7 +1536,7 @@ void decodeHuffTable(int len)
 
 void fidct(void)
 {
-  float a = 0.353553385f,
+  double a = 0.353553385f,
         b = 0.490392625f,
         c = 0.415734798f,
         d = 0.277785122f,
@@ -1728,7 +1728,7 @@ int Image::decodeScanJPG()
                y1, u1, v1, y2, u2, v2, u3, v3,
                dux, duy, dvx, dvy;
   unsigned char sc, ts;
-  float cy, cu, cv;
+  double cy, cu, cv;
   components = GLuint(getByte());
 
   setFormat(GL_BGR);
@@ -1817,8 +1817,8 @@ int Image::decodeScanJPG()
             for(j=xmin;j<xmax;j++){
               int cr, cg, cb;
               cy=component[0].t[y2++];
-              cu=component[1].t[u3+(u2>>1)]-128.0f;
-              cv=component[2].t[v3+(v2>>1)]-128.0f;
+              cu=component[1].t[u3+(u2>>1)]-128.0;
+              cv=component[2].t[v3+(v2>>1)]-128.0;
 
               cr=(int)(cy+1.402f*cv);
               cg=(int)(cy-0.34414f*cu-0.71414f*cv);

@@ -14,7 +14,7 @@ Poly::Poly(Vector<Vector3f>& vertices)
 {
    int    i;
    Vector3f v1, v2, normal;
-   float  d;
+   double  d;
 
    // Store vertices.
    ASSERT(vertices.GetCount() > 2);
@@ -59,7 +59,7 @@ Poly::Poly(Vector<Vector3f>& vertices)
 
 // Is point inside polygon?
 // Adapted from Rourke's Computational Geometry FAQ.
-bool Poly::contains(float x, float z)
+bool Poly::contains(double x, double z)
 {
    int  i, j, size;
    bool ret = false;
@@ -121,7 +121,7 @@ bool QuadTree::Insert(Poly *polygon)
 {
    if (!bounds.contains(polygon->bounds))
    {
-      return (false);
+      return false;
    }
 
    // Insert into tree.
@@ -140,7 +140,7 @@ bool QuadTree::Insert(Poly *polygon)
 
 
 // Search for polygons containing coordinate.
-void QuadTree::Search(float x, float z, Vector<Poly *>& found)
+void QuadTree::Search(double x, double z, Vector<Poly *>& found)
 {
    if (root != NULL)
    {
@@ -190,7 +190,7 @@ void QuadNode::Insert(Poly *polygon)
 {
    int    i, j;
    Bounds outerBounds;
-   float  rx, rz;
+   double  rx, rz;
 
    // OK at this depth?
    if ((depth >= QuadTree::MAX_DEPTH) ||
@@ -203,8 +203,8 @@ void QuadNode::Insert(Poly *polygon)
    // Create outerren?
    if (outerren[0] == NULL)
    {
-      rx = (bounds.max.x - bounds.min.x) / 2.0f;
-      rz = (bounds.max.z - bounds.min.z) / 2.0f;
+      rx = (bounds.max.x - bounds.min.x) / 2.0;
+      rz = (bounds.max.z - bounds.min.z) / 2.0;
       outerBounds.min.x = bounds.min.x;
       outerBounds.max.x = bounds.max.x - rx;
       outerBounds.min.z = bounds.min.z;
@@ -248,7 +248,7 @@ void QuadNode::Insert(Poly *polygon)
 
 
 // Search for polygons containing coordinate.
-void QuadNode::Search(float x, float z, Vector<Poly *>& found)
+void QuadNode::Search(double x, double z, Vector<Poly *>& found)
 {
    int i;
 
@@ -298,23 +298,23 @@ void QuadNode::Print()
 
 
 // Given point contained in this?
-bool Bounds::contains(float x, float z)
+bool Bounds::contains(double x, double z)
 {
    if (x < min.x)
    {
-      return (false);
+      return false;
    }
    if (x > max.x)
    {
-      return (false);
+      return false;
    }
    if (z < min.z)
    {
-      return (false);
+      return false;
    }
    if (z > max.z)
    {
-      return (false);
+      return false;
    }
    return true;
 }
@@ -325,19 +325,19 @@ bool Bounds::contains(Bounds& bounds)
 {
    if (!contains(bounds.min.x, bounds.min.z))
    {
-      return (false);
+      return false;
    }
    if (!contains(bounds.max.x, bounds.min.z))
    {
-      return (false);
+      return false;
    }
    if (!contains(bounds.min.x, bounds.max.z))
    {
-      return (false);
+      return false;
    }
    if (!contains(bounds.max.x, bounds.max.z))
    {
-      return (false);
+      return false;
    }
    return true;
 }
@@ -368,5 +368,5 @@ bool Bounds::intersects(Bounds& bounds)
    {
       return true;
    }
-   return (false);
+   return false;
 }

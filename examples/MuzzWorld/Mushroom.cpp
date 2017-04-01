@@ -151,7 +151,7 @@ void Mushroom::Draw() {
 
 // Load mushroom.
 void Mushroom::Load(String filename) {
-	FILE* fp;
+	Stream& fp;
 
 	if ((fp = FOPEN_READ(filename)) == NULL) {
 		fprintf(stderr, "Cannot load mushroom from file %s\n", filename);
@@ -163,15 +163,15 @@ void Mushroom::Load(String filename) {
 }
 
 
-void Mushroom::Load(FILE* fp) {
-	FREAD_BOOL(&m_alive, fp);
-	((BaseObject*)this)->Load(fp);
+void Mushroom::Serialize(Stream& fp) {
+	fp % m_alive;
+	BaseObject::Serialize(fp);
 }
 
 
 // Save mushroom.
 void Mushroom::Store(String filename) {
-	FILE* fp;
+	Stream& fp;
 
 	if ((fp = FOPEN_WRITE(filename)) == NULL) {
 		fprintf(stderr, "Cannot save mushroom to file %s\n", filename);
@@ -183,7 +183,7 @@ void Mushroom::Store(String filename) {
 }
 
 
-void Mushroom::Store(FILE* fp) {
+void Mushroom::Store(Stream& fp) {
 	FWRITE_BOOL(&m_alive, fp);
 	((BaseObject*)this)->Store(fp);
 }

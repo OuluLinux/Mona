@@ -40,11 +40,11 @@ public abstract class Utility
 
    // Load float.
    @SuppressWarnings({ "deprecation" })
-   public static float loadFloat(DataInputStream in) throws IOException
+   public static double loadFloat(DataInputStream in) throws IOException
    {
       String          s;
       StringTokenizer t;
-      float           value;
+      double           value;
 
       if ((s = in.readLine()) == null)
       {
@@ -55,7 +55,7 @@ public abstract class Utility
 
       if (!t.hasMoreTokens())
       {
-         throw (new IOException("Missing float value"));
+         throw (new IOException("Missing double value"));
       }
 
       try
@@ -64,7 +64,7 @@ public abstract class Utility
          value = Float.parseFloat(s);
       }
       catch (NumberFormatException e) {
-         throw (new IOException("Invalid float value " + s));
+         throw (new IOException("Invalid double value " + s));
       }
 
       return (value);
@@ -113,7 +113,7 @@ public abstract class Utility
 
 
    // Save float.
-   public static void saveFloat(PrintWriter writer, float value) throws IOException
+   public static void saveFloat(PrintWriter writer, double value) throws IOException
    {
       writer.println(value + "");
       writer.flush();

@@ -17,7 +17,7 @@
 #include <sys/time.h>
 #endif
 
-typedef unsigned long long   TIME;
+typedef unsigned long long   Time;
 #define INVALID_TIME    ((unsigned long long)(-1))
-TIME gettime();
+Time gettime();
 #endif

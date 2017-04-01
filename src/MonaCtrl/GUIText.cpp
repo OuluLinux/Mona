@@ -5,8 +5,8 @@ GUIText::GUIText(const String &text)
   fontIndex =    -1;
   update    = true;
 
-  color.set(1.0,1.0,1.0);
-  scales.set(1.0f, 1.0f);
+  color.Set(1.0,1.0,1.0);
+  scales.Set(1.0f, 1.0f);
   setString(text);
 }
 
@@ -35,7 +35,7 @@ GUIText &GUIText::operator =(const String & str)
   return *this;
 }
 
-bool GUIText::loadXMLSettings(const TiXmlElement *element)
+bool GUIText::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!element || !element->Value() || strcmp(element->Value(),  "Text"))
     return Logger::writeErrorLog("Need a Text node in the xml file");
@@ -92,7 +92,7 @@ void GUIText::Clear()
   text.Clear();
 #endif
   update = false;
-  size.set(0,0);
+  size.Set(0,0);
 }
 
 int GUIText::getFontIndex()
@@ -201,7 +201,7 @@ void GUIText::computeSizes()
 }
 
 void GUIText::setSize(const Tuple2i& sizeArg){ size = sizeArg; }
-void GUIText::setSize(int x, int y){ size.set(x, y); }
+void GUIText::setSize(int x, int y){ size.Set(x, y); }
 
 int  GUIText::GetHeight(){ return abs(size.y); }
 int  GUIText::GetWidth() { return abs(size.x); }
@@ -212,22 +212,22 @@ bool  GUIText::needUpdating(){ return update; }
 void  GUIText::forceUpdate(bool updateArg){ update = updateArg; }
 void  GUIText::setColor(const Tuple3f &color){ setColor(color.x, color.y, color.z); }
 
-void GUIText::setColor(float r, float g, float b)
+void GUIText::setColor(double r, double g, double b)
 {
-  color.set(clamp(r, 0.0f, 255.0f),
+  color.Set(clamp(r, 0.0f, 255.0f),
             clamp(g, 0.0f, 255.0f),
             clamp(b, 0.0f, 255.0f));
 
-  color.x /= (color.x > 1.0) ? 255.0f : 1.0f;
-  color.y /= (color.y > 1.0) ? 255.0f : 1.0f;
-  color.z /= (color.z > 1.0) ? 255.0f : 1.0f;
+  color.x /= (color.x > 1.0) ? 255.0f : 1.0;
+  color.y /= (color.y > 1.0) ? 255.0f : 1.0;
+  color.z /= (color.z > 1.0) ? 255.0f : 1.0;
 }
 
-void   GUIText::setHeightScale(float hs)
+void   GUIText::setHeightScale(double hs)
 {
   scales.y = clamp(hs, 0.1f, 20.0f);
 }
-void   GUIText::setWidthScale(float ws)
+void   GUIText::setWidthScale(double ws)
 {
   scales.x = clamp(ws, 0.1f, 20.0f);
 }
@@ -237,12 +237,12 @@ void   GUIText::setScales(Tuple2f scales)
   setWidthScale(scales.x);
 }
  
-float  GUIText::getHeightScale()
+double  GUIText::getHeightScale()
 {
   return scales.y;
 }
 
-float  GUIText::getWidthScale()
+double  GUIText::getWidthScale()
 {
   return scales.x;
 } 

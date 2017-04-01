@@ -16,7 +16,7 @@ GUICheckBox::GUICheckBox(const String &callback) :  GUIAlphaElement(callback)
   extra            = 0;
 }
 
-bool GUICheckBox::loadXMLSettings(const TiXmlElement *element)
+bool GUICheckBox::LoadXMLSettings(const TiXmlElement *element)
 {
   if(widgetType == WT_CHECK_BOX)
   if(!element || !element->Value() || strcmp(element->Value(),  "CheckBox"))
@@ -43,25 +43,25 @@ bool GUICheckBox::loadXMLSettings(const TiXmlElement *element)
 
   }
 
-  return GUIAlphaElement::loadXMLSettings(element);
+  return GUIAlphaElement::LoadXMLSettings(element);
 }
 
-void  GUICheckBox::setMinAlphaMark(float mark)
+void  GUICheckBox::setMinAlphaMark(double mark)
 {
   minAlphaMark = clamp(mark, 0.0f, 10.0f);
 }
 
-float  GUICheckBox::getMinAlphaMark()
+double  GUICheckBox::getMinAlphaMark()
 {
   return minAlphaMark;
 }
 
-void  GUICheckBox::setAlphaMark(float mark)
+void  GUICheckBox::setAlphaMark(double mark)
 {
   alphaMark = clamp(mark, minAlphaMark, 10.0f);
 }
 
-float  GUICheckBox::getAlphaMark()
+double  GUICheckBox::getAlphaMark()
 {
   return alphaMark;
 }
@@ -82,9 +82,9 @@ void  GUICheckBox::setBGColor(const Tuple3f& color)
   setBGColor(color.x, color.y, color.z);
 }
 
-void  GUICheckBox::setBGColor(float x, float y, float z)
+void  GUICheckBox::setBGColor(double x, double y, double z)
 {
-  bgColor.set(clamp(x, 0.0f, 1.0f),
+  bgColor.Set(clamp(x, 0.0f, 1.0f),
               clamp(y, 0.0f, 1.0f),
               clamp(z, 0.0f, 1.0f));
 }
@@ -94,7 +94,7 @@ const Tuple3f &GUICheckBox::getBGColor()
   return bgColor;
 }
 
-void GUICheckBox::render(float clockTick)
+void GUICheckBox::render(double clockTick)
 {
   if(!parent || !visible)
     return;
@@ -193,7 +193,7 @@ const Tuple4i &GUICheckBox::getWindowBounds()
   {
     label.computeSizes();
     extra = int(float(label.GetHeight())*1.25);
-    dimensions.set(float(label.GetWidth() + extra), float(extra));
+    dimensions.Set(float(label.GetWidth() + extra), float(extra));
     markOffset = extra - int(dimensions.y*markRatio);
     GUIRectangle::computeWindowBounds();
   }

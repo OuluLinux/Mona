@@ -11,13 +11,13 @@
 #include "FrameRate.h"
 
 // Initial speed factor.
-float FrameRate::initialSpeedFactor = 0.0f;
+double FrameRate::initialSpeedFactor = 0.0;
 
 // Maximum speed factor.
-float FrameRate::maxSpeedFactor = 5.0f;
+double FrameRate::maxSpeedFactor = 5.0;
 
 // Constructor.
-FrameRate::FrameRate(float targetFPS)
+FrameRate::FrameRate(double targetFPS)
 {
    this->targetFPS = targetFPS;
    FPS             = targetFPS;
@@ -30,7 +30,7 @@ FrameRate::FrameRate(float targetFPS)
 // Update: call per frame.
 void FrameRate::Update()
 {
-   TIME currentTime, delta;
+   Time currentTime, delta;
 
    // Count the frame.
    m_frameCount++;
@@ -50,7 +50,7 @@ void FrameRate::Update()
       }
       else
       {
-         speedFactor = 0.0f;
+         speedFactor = 0.0;
       }
       if (speedFactor > maxSpeedFactor)
       {

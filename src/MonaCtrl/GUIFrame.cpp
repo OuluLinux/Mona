@@ -6,7 +6,7 @@ GUIFrame::GUIFrame() : GUIPanel("GUI MAIN PANEL")
   update   = true;
 }
 
-bool GUIFrame::loadXMLSettings(const TiXmlElement *element) 
+bool GUIFrame::LoadXMLSettings(const TiXmlElement *element) 
 {
   if(!XMLArbiter::inspectElementInfo(element, "Panel"))
     return Logger::writeErrorLog("Need a Panel node in the xml file");
@@ -35,7 +35,7 @@ bool GUIFrame::loadXMLSettings(const TiXmlElement *element)
  
     if(elementName == "Texture")
     {
-      if(elementsTexture.loadXMLSettings(outer))
+      if(elementsTexture.LoadXMLSettings(outer))
       {
         GUITexCoordDescriptor::setTextureHeight(elementsTexture.GetHeight());
         GUITexCoordDescriptor::setTextureWidth(elementsTexture.GetWidth());
@@ -46,15 +46,15 @@ bool GUIFrame::loadXMLSettings(const TiXmlElement *element)
     if(elementName == "TexCoordsDesc")
     {
       GUITexCoordDescriptor descriptor;
-      descriptor.loadXMLSettings(outer);
+      descriptor.LoadXMLSettings(outer);
       addOrReplaceTexCoordsInfo(descriptor);
       continue;
     }
   }
-  return   GUIPanel::loadXMLSettings(element);
+  return   GUIPanel::LoadXMLSettings(element);
 }
 
-void  GUIFrame::render(float tick)
+void  GUIFrame::render(double tick)
 {
   if(!visible)
     return;
@@ -141,7 +141,7 @@ void GUIFrame::Clear()
 
 const Tuple4i &GUIFrame::getWindowBounds()
 {
-  windowBounds.set(0, 0, int(dimensions.x), int(dimensions.y));
+  windowBounds.Set(0, 0, int(dimensions.x), int(dimensions.y));
   return windowBounds;
 }
 

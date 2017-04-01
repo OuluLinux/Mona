@@ -57,17 +57,17 @@ public class Tmaze
    {
       if (path.GetCount() != maze.path.GetCount())
       {
-         return (false);
+         return false;
       }
       for (int i = 0; i < path.GetCount(); i++)
       {
          if (path.Get(i).mark != maze.path.Get(i).mark)
          {
-            return (false);
+            return false;
          }
          if (path.Get(i).direction != maze.path.Get(i).direction)
          {
-            return (false);
+            return false;
          }
       }
       return true;

@@ -182,7 +182,7 @@ void World::MouseMove(Point p, dword keyflags) {
 }
 
 void World::MouseWheel(Point p, int zdelta, dword keyflags) {
-	debugDraw.zoom += zdelta / 80.0f;
+	debugDraw.zoom += zdelta / 80.0;
 }
 
 void World::Add(Object& obj) {

@@ -7,7 +7,7 @@ GUIPanel::GUIPanel(const String &cbs) : GUIRectangle(cbs), GUIClippedRectangle()
   layout     = PL_FREE_LAYOUT;
 }
 
-bool GUIPanel::loadXMLSettings(const char *stackPath)
+bool GUIPanel::LoadXMLSettings(const char *stackPath)
 {
   String xmlFile = MediaPathManager::lookUpMediaPath(stackPath);
   bool        result = false;
@@ -20,12 +20,12 @@ bool GUIPanel::loadXMLSettings(const char *stackPath)
   if(!cfgStack.LoadFile())
     return  Logger::writeErrorLog("Invalid XML GUI description file");
 
-  result = loadXMLSettings(cfgStack.FirstChildElement());
+  result = LoadXMLSettings(cfgStack.FirstChildElement());
   forceUpdate(true);
   return result;
 }
 
-bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
+bool GUIPanel::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "Panel"))
     return Logger::writeErrorLog("Need a Panel node in the xml file");
@@ -34,7 +34,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
   String  type        = element->Attribute("layout") ? element->Attribute("layout") : "UNKNOWN";
 
   if(description)
-    return  loadXMLSettings(description);
+    return  LoadXMLSettings(description);
 
   layout = (type == "CEN_YAXIS") ? PL_YAXIS_CEN_LAYOUT :
            (type == "YAXIS"    ) ? PL_YAXIS_LAYOUT     :
@@ -53,7 +53,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "CheckBox")
     {
       GUICheckBox *newCheckBox = new GUICheckBox();
-      if(!newCheckBox->loadXMLSettings(outer) || !addWidget(newCheckBox))
+      if(!newCheckBox->LoadXMLSettings(outer) || !addWidget(newCheckBox))
         deleteObject(newCheckBox);
       continue;
     }
@@ -61,7 +61,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "TabbedPanel")
     {
       GUITabbedPanel *newTabbedPanel = new GUITabbedPanel();
-      if(!newTabbedPanel->loadXMLSettings(outer) || !addWidget(newTabbedPanel))
+      if(!newTabbedPanel->LoadXMLSettings(outer) || !addWidget(newTabbedPanel))
         deleteObject(newTabbedPanel);
       continue;
     }
@@ -69,7 +69,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "RadioButton")
     {
       GUIRadioButton *newRadioButton = new GUIRadioButton();
-      if(!newRadioButton->loadXMLSettings(outer) || !addWidget(newRadioButton))
+      if(!newRadioButton->LoadXMLSettings(outer) || !addWidget(newRadioButton))
       {
         deleteObject(newRadioButton);
       }
@@ -84,7 +84,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "ComboBox")
     {
       GUIComboBox *newComboBox = new GUIComboBox();
-      if(!newComboBox->loadXMLSettings(outer) || !addWidget(newComboBox))
+      if(!newComboBox->LoadXMLSettings(outer) || !addWidget(newComboBox))
         deleteObject(newComboBox);
       continue;
     }
@@ -92,7 +92,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "TextBox")
     {
       GUITextBox *newTextBox = new GUITextBox();
-      if(!newTextBox->loadXMLSettings(outer) || !addWidget(newTextBox))
+      if(!newTextBox->LoadXMLSettings(outer) || !addWidget(newTextBox))
         deleteObject(newTextBox);
       continue;
     }
@@ -100,7 +100,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "Slider")
     {
       GUISlider *newSlider = new GUISlider();
-      if(!newSlider->loadXMLSettings(outer) || !addWidget(newSlider))
+      if(!newSlider->LoadXMLSettings(outer) || !addWidget(newSlider))
         deleteObject(newSlider);
       continue;
     }
@@ -111,7 +111,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
       if((layout != PL_YAXIS_LAYOUT &&
           layout != PL_XAXIS_LAYOUT &&
           layout != PL_YAXIS_CEN_LAYOUT) ||
-         (!newSeparator->loadXMLSettings(outer)))
+         (!newSeparator->LoadXMLSettings(outer)))
       {
         deleteObject(newSeparator);
       }
@@ -127,7 +127,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "Button")
     {
       GUIButton *newButton = new GUIButton();
-      if(!newButton->loadXMLSettings(outer) || !addWidget(newButton))
+      if(!newButton->LoadXMLSettings(outer) || !addWidget(newButton))
         deleteObject(newButton);
       continue;
     }
@@ -135,7 +135,7 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "Label")
     {
       GUILabel *newLabel = new GUILabel();
-      if(!newLabel->loadXMLSettings(outer) || !addWidget(newLabel))
+      if(!newLabel->LoadXMLSettings(outer) || !addWidget(newLabel))
         deleteObject(newLabel);
       continue;
     }
@@ -147,13 +147,13 @@ bool GUIPanel::loadXMLSettings(const TiXmlElement *element)
     if(outerName == "Panel")
     {
       GUIPanel *panel = new GUIPanel();
-      if(!panel->loadXMLSettings(outer) || !addWidget(panel))
+      if(!panel->LoadXMLSettings(outer) || !addWidget(panel))
         deleteObject(panel);
       continue;
     }
   }
 
-  return  GUIRectangle::loadXMLSettings(element)  &&
+  return  GUIRectangle::LoadXMLSettings(element)  &&
           GUIClippedRectangle::loadXMLClippedRectangleInfo(element);
 }
 
@@ -209,7 +209,7 @@ void GUIPanel::checkKeyboardEvents(KeyEvent evt, int extraInfo)
   }
 }
 
-void  GUIPanel::render(float tick)
+void  GUIPanel::render(double tick)
 {
   if(!isAttached() || !parent)
     return;
@@ -319,7 +319,7 @@ void GUIPanel::packYAxisLayout()
     panelWidth    = outerrenWidths[t] > panelWidth ? outerrenWidths[t] : panelWidth;
   }
 
-  dimensions.set(float(panelWidth), float(height));
+  dimensions.Set(float(panelWidth), float(height));
   GUIRectangle::computeWindowBounds();
 
   windowBounds.z += interval.x*2;
@@ -348,7 +348,7 @@ void GUIPanel::packXAxisLayout()
 
   Vector<int> outerrenWidths,
               outerrenHeights;
-  float       offset      = 0;
+  double       offset      = 0;
   size_t      t           = 0;
   int         height      = 0,
               width       = 0,
@@ -365,7 +365,7 @@ void GUIPanel::packXAxisLayout()
     panelHeight  = height > panelHeight ? height : panelHeight;
   }
 
-  dimensions.set(float(width), float(panelHeight));
+  dimensions.Set(float(width), float(panelHeight));
   GUIRectangle::computeWindowBounds();
 
   windowBounds.z += interval.x;
@@ -536,7 +536,7 @@ void  GUIPanel::setInterval(const Tuple2i &dimensions)
 
 void  GUIPanel::setInterval(int width, int height)
 {
-  interval.set(clamp(width , 0, 2500),
+  interval.Set(clamp(width , 0, 2500),
                clamp(height, 0, 2500));
 }
 

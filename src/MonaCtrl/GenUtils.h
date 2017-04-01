@@ -95,12 +95,12 @@ class DistanceObject
   public:
     DistanceObject()
     {
-      distance = 0.0f;
+      distance = 0.0;
     }
 
     DistanceObject(const ODT &objectArg)
     {
-      distance = 0.0f;
+      distance = 0.0;
       object   = objectArg;
     }
 
@@ -144,12 +144,12 @@ class DistanceObject
        return (distance < copy.distance);
     }
 
-    void setDistance(float dist)
+    void setDistance(double dist)
     {
       distance = dist;
     }
 
-    float getDistance() const
+    double getDistance() const
     {
      return distance;
     }
@@ -164,7 +164,7 @@ class DistanceObject
       return object;
     }
    private:
-     float distance;
+     double distance;
      ODT     object;
 
 };

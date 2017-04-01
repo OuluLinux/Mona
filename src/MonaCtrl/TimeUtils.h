@@ -1,5 +1,5 @@
-#ifndef TIME_UTILS_H
-#define TIME_UTILS_H
+#ifndef Time_UTILS_H
+#define Time_UTILS_H
 
 #include "XMLUtils.h"
 
@@ -30,7 +30,7 @@ class Timer
    /*
     *Return the elapsed time in seconds
     **/
-    static float getElapsedTimeSeconds(__int64 lastTime);
+    static double getElapsedTimeSeconds(__int64 lastTime);
 };
 
 /*******************************************************************************************/
@@ -43,16 +43,16 @@ class FPSCounter
   public:
     FPSCounter();
 
-    const float getFrameInterval() const;
-    const float getElapsedTime()   const;
-    const float getFPS()           const;
+    const double getFrameInterval() const;
+    const double getElapsedTime()   const;
+    const double getFPS()           const;
 
     virtual void  markFrameStart();
     virtual void  markFrameEnd();
 
   protected:
     __int64  frameStart;       // Mark the beginning of a frame
-    float    frameInterval,    //The delay between two frames
+    double    frameInterval,    //The delay between two frames
              elapsedTime,
              internalFPS,      //An internal FPS counter
              tickCounter,      //This will count the clock ticks
@@ -69,7 +69,7 @@ class Benchmark : public FPSCounter, IOXMLObject
 {
   private:
     String  logFilePath;
-    float        framesCounter,
+    double        framesCounter,
                  elapsedTime,
                  averageFPS,
                  duration,
@@ -86,16 +86,16 @@ class Benchmark : public FPSCounter, IOXMLObject
     void    setDuration(float);
 
     virtual bool exportXMLSettings(const String &xmlPath);
-    virtual bool loadXMLSettings(const TiXmlElement *element);
+    virtual bool LoadXMLSettings(const TiXmlElement *element);
 
     virtual void  markFrameEnd();
 
-    float  getTotalDuration() const;
-    float  getAverageFrames() const;
-    float  getTotalFrames()   const;
-    float  getDuration()      const;
-    float  getMinFPS()        const;
-    float  getMaxFPS()        const;
+    double  getTotalDuration() const;
+    double  getAverageFrames() const;
+    double  getTotalFrames()   const;
+    double  getDuration()      const;
+    double  getMinFPS()        const;
+    double  getMaxFPS()        const;
 
     bool    exportResults();
     void    setEnabled(bool);

@@ -93,10 +93,10 @@ public:
 		NUM_NEEDS = 2
 	};
 	
-	static Mona::NEED       INIT_HUNGER;
-	static Mona::NEED       INIT_THIRST;
-	static const Mona::NEED EAT_GOAL_VALUE;
-	static const Mona::NEED DRINK_GOAL_VALUE;
+	static NEED       INIT_HUNGER;
+	static NEED       INIT_THIRST;
+	static const NEED EAT_GOAL_VALUE;
+	static const NEED DRINK_GOAL_VALUE;
 	static const double base_size;
 	static const double HOVER_height;
 	static const double max_height_change;
@@ -152,7 +152,7 @@ public:
 
 	Mona brain;
 
-	Vector<Mona::SENSOR> brain_sensors;
+	Vector<SENSOR> brain_sensors;
 
 	// Properties.
 	Color         m_color;

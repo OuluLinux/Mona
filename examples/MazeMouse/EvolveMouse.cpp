@@ -83,10 +83,10 @@ int maze_training_trial_count = DEFAULT_NUM_MAZE_TRAINING_TRIALS;
 bool see_all_maze_doors = true;
 
 // Mutation rate.
-PROBABILITY mutation_rate = DEFAULT_MUTATION_RATE;
+double mutation_rate = DEFAULT_MUTATION_RATE;
 
 // Random numbers.
-RANDOM RandomSeed  = INVALID_RANDOM;
+int RandomSeed  = INVALID_RANDOM;
 Random* randomizer = NULL;
 
 // Print mouse brain parameters.
@@ -262,7 +262,7 @@ void buildMaze() {
 
 // Initialize mouse brain.
 void InitBrain(Mona* mouse) {
-	Vector<Mona::SENSOR> goalSensors;
+	Vector<SENSOR> goal_sensors;
 	mouse->InitNet(5, HOP + 1, 1, randomizer->RAND());
 	// Set a long second effect interval
 	// for a higher level mediator.
@@ -274,12 +274,12 @@ void InitBrain(Mona* mouse) {
 	mouse->effect_event_interval_weights[1][1] = 0.5;
 	// Set need and goal for cheese.
 	mouse->SetNeed(0, CHEESE_NEED);
-	goalSensors.Add(0.0);
-	goalSensors.Add(0.0);
-	goalSensors.Add(0.0);
-	goalSensors.Add((double)GOAL_ROOM);
-	goalSensors.Add(1.0);
-	mouse->homeostats[0]->AddGoal(goalSensors, 0,
+	goal_sensors.Add(0.0);
+	goal_sensors.Add(0.0);
+	goal_sensors.Add(0.0);
+	goal_sensors.Add((double)GOAL_ROOM);
+	goal_sensors.Add(1.0);
+	mouse->homeostats[0]->AddGoal(goal_sensors, 0,
 								  Mona::NULL_RESPONSE, CHEESE_GOAL);
 }
 
@@ -289,7 +289,7 @@ class ParmMutator {
 public:
 
 	// Probability of random mutation.
-	static PROBABILITY RANDOM_MUTATION;
+	static double RANDOM_MUTATION;
 
 	typedef enum {
 		INTEGER_PARM, FLOAT_PARM, DOUBLE_PARM
@@ -308,7 +308,7 @@ public:
 		type    = DOUBLE_PARM;
 		name[0] = '\0';
 		parm    = NULL;
-		min     = max = delta = 0.0f;
+		min     = max = delta = 0.0;
 	}
 
 
@@ -326,7 +326,7 @@ public:
 	// Mutate parameter.
 	void Mutate() {
 		int    i;
-		float  f;
+		double  f;
 		double d;
 
 		if (!randomizer->RAND_CHANCE(mutation_rate))
@@ -425,7 +425,7 @@ public:
 		}
 	}
 };
-PROBABILITY ParmMutator::RANDOM_MUTATION = 0.1;
+double ParmMutator::RANDOM_MUTATION = 0.1;
 
 // Brain parameter mutator.
 class BrainParmMutator {
@@ -610,7 +610,7 @@ public:
 	// Run a trial.
 	bool RunTrial(int x, int y, Vector<int>& path, bool train) {
 		int i, j, cx, cy, response;
-		Vector<Mona::SENSOR> sensors;
+		Vector<SENSOR> sensors;
 		bool                 hopped;
 		// Set up sensors.
 		sensors.SetCount(5);
@@ -642,7 +642,7 @@ public:
 					sensors[j] = 0.0;
 			}
 
-			sensors[3] = (Mona::SENSOR)maze[mouseX][mouseY]->type;
+			sensors[3] = (SENSOR)maze[mouseX][mouseY]->type;
 
 			if (mouseX == end_maze_index + 1)
 				sensors[4] = 1.0;
@@ -668,7 +668,7 @@ public:
 
 			// Wrong response ends trial unsuccessfully.
 			if (response != path[i])
-				return (false);
+				return false;
 
 			// Move mouse.
 			if (response == HOP) {
@@ -683,7 +683,7 @@ public:
 			}
 		}
 
-		return (false);
+		return false;
 	}
 
 
@@ -706,24 +706,11 @@ public:
 							   member2->brain_parm_mutator);
 	}
 
-
-	// Load.
-	void Load(FILE* fp) {
-		FREAD_INT(&id, fp);
-		mouse->Load(fp);
-		FREAD_DOUBLE(&fitness, fp);
-		FREAD_INT(&generation, fp);
+	void Serialize(Stream& fp) {
+		fp % id;
+		mouse->Serialize(fp);
+		fp % fitness % generation;
 	}
-
-
-	// Save.
-	void Store(FILE* fp) {
-		FWRITE_INT(&id, fp);
-		mouse->Store(fp);
-		FWRITE_DOUBLE(&fitness, fp);
-		FWRITE_INT(&generation, fp);
-	}
-
 
 	// Print.
 	void Print(FILE* out = stdout) {
@@ -743,8 +730,8 @@ void LogParameters();
 void Print();
 void Load();
 void Store();
-void LoadPopulation(FILE* fp);
-void StorePopulation(FILE* fp);
+void LoadPopulation(Stream& fp);
+void StorePopulation(Stream& fp);
 
 // Create maze-learning task.
 void createTask();
@@ -1160,7 +1147,7 @@ void Print() {
 // Load evolve.
 void Load() {
 	int  i, j, k, n;
-	FILE* fp;
+	Stream& fp;
 	char buf[200];
 	ASSERT(input_file_name != NULL);
 
@@ -1199,7 +1186,7 @@ void Load() {
 // Save evolve.
 void Store() {
 	int  i, j, k, n;
-	FILE* fp;
+	Stream& fp;
 	char buf[200];
 	ASSERT(output_file_name != NULL);
 
@@ -1233,7 +1220,7 @@ void Store() {
 
 
 // Load evolution population.
-void LoadPopulation(FILE* fp) {
+void LoadPopulation(Stream& fp) {
 	for (int i = 0; i < POPULATION_SIZE; i++) {
 		population[i] = new Member();
 		ASSERT(population[i] != NULL);
@@ -1243,7 +1230,7 @@ void LoadPopulation(FILE* fp) {
 
 
 // Save evolution population.
-void StorePopulation(FILE* fp) {
+void StorePopulation(Stream& fp) {
 	for (int i = 0; i < POPULATION_SIZE; i++)
 		population[i]->Store(fp);
 }

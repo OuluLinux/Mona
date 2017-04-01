@@ -10,7 +10,7 @@ GUITextBox::GUITextBox(const String &callback, const String &text) : GUIAlphaEle
   label.setString(text);
 
   blinkerPosition = 2;
-  blinkerTimer    = 0.0f;
+  blinkerTimer    = 0.0;
   blinkerOn       = false;
 
   textStartIndex  = 0;
@@ -21,13 +21,13 @@ GUITextBox::GUITextBox(const String &callback, const String &text) : GUIAlphaEle
   widgetType      = WT_TEXT_BOX;
 }
 
-bool GUITextBox::loadXMLSettings(const TiXmlElement* element)
+bool GUITextBox::LoadXMLSettings(const TiXmlElement* element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "TextBox"))
     return Logger::writeErrorLog("Need a TextBox node in the xml file");
 
   setBordersColor(XMLArbiter::fillComponents3f(XMLArbiter::getChildElementByName(element, "BordersColor"),bordersColor));
-  return   GUIAlphaElement::loadXMLSettings(element);
+  return   GUIAlphaElement::LoadXMLSettings(element);
 return false;
 }
 
@@ -41,14 +41,14 @@ const Tuple3f &GUITextBox::getBordersColor() const
   return bordersColor;
 }
 
-void  GUITextBox::setBordersColor(float r, float g, float b)
+void  GUITextBox::setBordersColor(double r, double g, double b)
 {
-  bordersColor.set(clamp(r, 0.0f, 255.0f),
+  bordersColor.Set(clamp(r, 0.0f, 255.0f),
                    clamp(g, 0.0f, 255.0f),
                    clamp(b, 0.0f, 255.0f));
-  bordersColor.x /= (bordersColor.x > 1.0) ? 255.0f : 1.0f;
-  bordersColor.y /= (bordersColor.y > 1.0) ? 255.0f : 1.0f;
-  bordersColor.z /= (bordersColor.z > 1.0) ? 255.0f : 1.0f;
+  bordersColor.x /= (bordersColor.x > 1.0) ? 255.0f : 1.0;
+  bordersColor.y /= (bordersColor.y > 1.0) ? 255.0f : 1.0;
+  bordersColor.z /= (bordersColor.z > 1.0) ? 255.0f : 1.0;
 }
 
 void  GUITextBox::setPadding(const Tuple2i& p)
@@ -58,7 +58,7 @@ void  GUITextBox::setPadding(const Tuple2i& p)
 
 void  GUITextBox::setPadding(int x, int y)
 {
-  padding.set(clamp(x, 0, 25),
+  padding.Set(clamp(x, 0, 25),
               clamp(y, 0, 25));
 }
 
@@ -67,7 +67,7 @@ const Tuple2i &GUITextBox::getPadding() const
   return padding;
 }
 
-void GUITextBox::render(float clockTick)
+void GUITextBox::render(double clockTick)
 {
   if(!parent || !visible)
     return;
@@ -78,7 +78,7 @@ void GUITextBox::render(float clockTick)
   size_t realBlinkerPosition = clamp(blinkerPosition, size_t(windowBounds.x + padding.x),
                                                       size_t(windowBounds.z - padding.x));
   blinkerTimer += clockTick;
-  blinkerTimer -= blinkerTimer > 1.0f ? 1.0f : 0.0f;
+  blinkerTimer -= blinkerTimer > 1.0f ? 1.0f : 0.0;
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -19,8 +19,8 @@ public class EvolveCommon
    public static double       mutation_rate                 = DEFAULT_MUTATION_RATE;
    public static final double DEFAULT_RANDOM_MUTATION_RATE = 0.5;
    public static double       Randommutation_rate           = DEFAULT_RANDOM_MUTATION_RATE;
-   public static final float  DEFAULT_MAX_SENSOR_RANGE     = 10.0f;
-   public static float        MaxSensorRange               = DEFAULT_MAX_SENSOR_RANGE;
+   public static final double  DEFAULT_MAX_SENSOR_RANGE     = 10.0;
+   public static double        MaxSensorRange               = DEFAULT_MAX_SENSOR_RANGE;
    public static int          MAX_PREPARATION_TRIALS       = 5;
    public static final int    DEFAULT_RANDOM_SEED          = 4517;
    public static int          RandomSeed     = DEFAULT_RANDOM_SEED;
@@ -257,7 +257,7 @@ public class EvolveCommon
                switch (genes.Get(i).ivalue)
                {
                case 0:
-                  sensors[1] = 0.0f;
+                  sensors[1] = 0.0;
                   break;
 
                case 1:

@@ -44,8 +44,7 @@ public:
    CQuaternion *Clone(); // Clone.
 
    // Load and save.
-   void Load(FILE *fp);
-   void Store(FILE *fp);
+   void Serialize(Stream& fp);
 
 private:
 

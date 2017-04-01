@@ -5,7 +5,7 @@
 #include "FileIO.h"
 
 // Tree configuration parameter.
-const float RDTree::DEFAULT_RADIUS = 100.0f;
+const double RDTree::DEFAULT_RADIUS = 100.0;
 
 RDTree::RDSearch *RDTree::EMPTY = (RDSearch *)(-1);
 
@@ -16,7 +16,7 @@ RDTree::RDNode::RDNode(void *pattern, void *client)
    this->client  = client;
    outer_list     = outer_last = NULL;
    equal_next       = equal_prev = NULL;
-   distance      = 0.0f;
+   distance      = 0.0;
 }
 
 
@@ -26,7 +26,7 @@ RDTree::RDNode::RDNode()
    client    = NULL;
    outer_list = outer_last = NULL;
    equal_next   = equal_prev = NULL;
-   distance  = 0.0f;
+   distance  = 0.0;
 }
 
 
@@ -34,16 +34,16 @@ RDTree::RDNode::RDNode()
 RDTree::RDSearch::RDSearch()
 {
    node      = NULL;
-   distance  = 0.0f;
+   distance  = 0.0;
    search_next  = NULL;
-   workdist  = 0.0f;
+   workdist  = 0.0;
    state     = DISTPENDING;
    outer_list = equal_next = equal_prev = NULL;
 }
 
 
 // Constructors.
-RDTree::RDTree(float(*dist_func)(void *, void *), void(*del_func)(void *))
+RDTree::RDTree(double(*dist_func)(void *, void *), void(*del_func)(void *))
 {
    RADIUS         = DEFAULT_RADIUS;
    this->dist_func = dist_func;
@@ -53,7 +53,7 @@ RDTree::RDTree(float(*dist_func)(void *, void *), void(*del_func)(void *))
 }
 
 
-RDTree::RDTree(float radius, float(*dist_func)(void *, void *),
+RDTree::RDTree(double radius, double(*dist_func)(void *, void *),
                void(*del_func)(void *))
 {
    RADIUS         = radius;
@@ -123,14 +123,14 @@ void RDTree::Insert(void *pattern, void *client)
 void RDTree::Insert(RDNode *current, RDNode *node)
 {
    RDNode *p, *p2, *p3;
-   float  dcn, dnn;
+   double  dcn, dnn;
 
    /* clear node */
    node->outer_list = NULL;
    node->outer_last = NULL;
    node->equal_next   = NULL;
    node->equal_prev   = NULL;
-   node->distance  = 0.0f;
+   node->distance  = 0.0;
 
    /* new root? */
    if (current == NULL)
@@ -246,7 +246,7 @@ void RDTree::Insert(RDNode *current, RDNode *node)
 void RDTree::Remove(void *pattern)
 {
    RDNode *current, *node, *p, *p2, *p3;
-   float  d;
+   double  d;
 
    if ((current = node = root) == NULL)
    {
@@ -495,7 +495,7 @@ void RDTree::Search(struct SearchCtrl *search_ctrl, RDTree::RDNode *search_node)
                   if ((sw->workdist = sw->distance -
                                       (sw->node->distance * RADIUS)) < 0.0f)
                   {
-                     sw->workdist = 0.0f;
+                     sw->workdist = 0.0;
                   }
                   sw->state = DISTDONE;
 
@@ -662,27 +662,25 @@ RDTree::RDSearch *RDTree::GetSearchWork(struct SearchCtrl *search_ctrl)
 
 
 /* load tree */
-bool RDTree::Load(char *filename, void *(*load_pattern)(Stream& s),
+bool RDTree::Load(String filename, void *(*load_pattern)(Stream& s),
                   void *(*load_client)(Stream& s))
 {
-   FILE *fp = FOPEN_READ(filename);
+   FileIn fp(filename);
 
-   if (fp == NULL)
-   {
-      return (false);
-   }
+   if (!fp.IsOpen())
+      return false;
+   
    Load(fp, load_pattern, load_client);
-   FCLOSE(fp);
    return true;
 }
 
 
 /* load tree */
-void RDTree::Load(FILE *fp, void *(*load_pattern)(Stream& s),
+void RDTree::Load(Stream& fp, void *(*load_pattern)(Stream& s),
                   void *(*load_client)(Stream& s))
 {
    int   n;
-   float d;
+   double d;
 
    DeleteSubtree(root);
    root = NULL;
@@ -694,7 +692,7 @@ void RDTree::Load(FILE *fp, void *(*load_pattern)(Stream& s),
       root->pattern = load_pattern(fp);
       if (load_client != NULL)
       {
-         root->client = LoadClient(fp);
+         root->client = load_client(fp);
       }
       FREAD_FLOAT(&d, fp);
       root->distance = d;
@@ -704,12 +702,12 @@ void RDTree::Load(FILE *fp, void *(*load_pattern)(Stream& s),
 
 
 /* load outerren */
-void RDTree::LoadOuter(FILE *fp, RDNode *parent,
+void RDTree::LoadOuter(Stream& fp, RDNode *parent,
                           void *(*load_pattern)(Stream& s),
                           void *(*load_client)(Stream& s))
 {
    int    n;
-   float  d;
+   double  d;
    RDNode *p, *p2;
 
    FREAD_INT(&n, fp);
@@ -721,7 +719,7 @@ void RDTree::LoadOuter(FILE *fp, RDNode *parent,
       p->pattern = load_pattern(fp);
       if (load_client != NULL)
       {
-         p->client = LoadClient(fp);
+         p->client = load_client(fp);
       }
       FREAD_FLOAT(&d, fp);
       p->distance = d;
@@ -742,29 +740,29 @@ void RDTree::LoadOuter(FILE *fp, RDNode *parent,
 
 
 /* load tree with address resolver */
-bool RDTree::Load(char *filename, void *helper,
+bool RDTree::Load(String filename, void *helper,
                   void *(*load_pattern)(void *helper, Stream& s),
                   void *(*load_client)(void *helper, Stream& s))
 {
-   FILE *fp = FOPEN_READ(filename);
+   FileIn in(filename);
 
-   if (fp == NULL)
+   if (!in.IsOpen())
    {
-      return (false);
+      return false;
    }
-   Load(fp, helper, load_pattern, load_client);
-   FCLOSE(fp);
+   Load(in, helper, load_pattern, load_client);
+   
    return true;
 }
 
 
 /* load tree with address resolver */
-void RDTree::Load(FILE *fp, void *helper,
+void RDTree::Load(Stream& fp, void *helper,
                   void *(*load_pattern)(void *helper, Stream& s),
                   void *(*load_client)(void *helper, Stream& s))
 {
    int   n;
-   float d;
+   double d;
 
    root = NULL;
    FREAD_INT(&n, fp);
@@ -775,7 +773,7 @@ void RDTree::Load(FILE *fp, void *helper,
       root->pattern = load_pattern(helper, fp);
       if (load_client != NULL)
       {
-         root->client = LoadClient(helper, fp);
+         root->client = load_client(helper, fp);
       }
       FREAD_FLOAT(&d, fp);
       root->distance = d;
@@ -785,13 +783,13 @@ void RDTree::Load(FILE *fp, void *helper,
 
 
 /* load outerren with address resolver */
-void RDTree::LoadOuter(FILE *fp, void *helper,
+void RDTree::LoadOuter(Stream& fp, void *helper,
                           RDNode *parent,
                           void *(*load_pattern)(void *helper, Stream& s),
                           void *(*load_client)(void *helper, Stream& s))
 {
    int    n;
-   float  d;
+   double  d;
    RDNode *p, *p2;
 
    FREAD_INT(&n, fp);
@@ -803,7 +801,7 @@ void RDTree::LoadOuter(FILE *fp, void *helper,
       p->pattern = load_pattern(helper, fp);
       if (load_client != NULL)
       {
-         p->client = LoadClient(helper, fp);
+         p->client = load_client(helper, fp);
       }
       FREAD_FLOAT(&d, fp);
       p->distance = d;
@@ -824,27 +822,26 @@ void RDTree::LoadOuter(FILE *fp, void *helper,
 
 
 /* save tree */
-bool RDTree::Store(char *filename, void (*savePatt)(void *pattern, FILE *fp),
-                  void (*saveClient)(void *client, FILE *fp))
+bool RDTree::Store(String filename, void (*store_pattern)(void *pattern, Stream& fp),
+                  void (*store_client)(void *client, Stream& fp))
 {
-   FILE *fp = FOPEN_WRITE(filename);
+   FileOut fp(filename);
 
-   if (fp == NULL)
-   {
-      return (false);
+   if (!fp.IsOpen()) {
+      return false;
    }
-   Store(fp, savePatt, saveClient);
-   FCLOSE(fp);
+   Store(fp, store_pattern, store_client);
+   
    return true;
 }
 
 
 /* save tree */
-void RDTree::Store(FILE *fp, void (*savePatt)(void *pattern, FILE *fp),
-                  void (*saveClient)(void *client, FILE *fp))
+void RDTree::Store(Stream& fp, void (*store_pattern)(void *pattern, Stream& fp),
+                  void (*store_client)(void *client, Stream& fp))
 {
    int   n;
-   float d;
+   double d;
 
    if (root == NULL)
    {
@@ -855,25 +852,25 @@ void RDTree::Store(FILE *fp, void (*savePatt)(void *pattern, FILE *fp),
    {
       n = 1;
       FWRITE_INT(&n, fp);
-      StorePattern(root->pattern, fp);
-      if (saveClient != NULL)
+      store_pattern(root->pattern, fp);
+      if (store_client != NULL)
       {
-         StoreClient(root->client, fp);
+         store_client(root->client, fp);
       }
       d = root->distance;
       FWRITE_FLOAT(&d, fp);
-      StoreOuter(fp, root, savePatt, saveClient);
+      StoreOuter(fp, root, store_pattern, store_client);
    }
 }
 
 
 /* save outerren */
-void RDTree::StoreOuter(FILE *fp, RDNode *parent,
-                          void (*savePatt)(void *pattern, FILE *fp),
-                          void (*saveClient)(void *client, FILE *fp))
+void RDTree::StoreOuter(Stream& fp, RDNode *parent,
+                          void (*store_pattern)(void *pattern, Stream& fp),
+                          void (*store_client)(void *client, Stream& fp))
 {
    int    n;
-   float  d;
+   double  d;
    RDNode *p;
 
    for (p = parent->outer_list, n = 0; p != NULL; p = p->equal_next, n++)
@@ -882,40 +879,39 @@ void RDTree::StoreOuter(FILE *fp, RDNode *parent,
    FWRITE_INT(&n, fp);
    for (p = parent->outer_list; p != NULL; p = p->equal_next)
    {
-      StorePattern(p->pattern, fp);
-      if (saveClient != NULL)
+      store_pattern(p->pattern, fp);
+      if (store_client != NULL)
       {
-         StoreClient(p->client, fp);
+         store_client(p->client, fp);
       }
       d = p->distance;
       FWRITE_FLOAT(&d, fp);
-      StoreOuter(fp, p, savePatt, saveClient);
+      StoreOuter(fp, p, store_pattern, store_client);
    }
 }
 
 
 // Print tree.
-bool RDTree::Print(char *filename, void (*print_pattern)(void *pattern, FILE *fp))
+/*
+bool RDTree::Print(String filename, void (*print_pattern)(void *pattern, Stream& fp))
 {
-   if (filename == NULL)
+   if (filename.IsEmpty())
    {
-      Print(print_pattern);
+      //Print(print_pattern);
+      return;
    }
    else
    {
-      FILE *fp = fopen(filename, "w");
-      if (fp == NULL)
-      {
-         return (false);
-      }
+      FileOut fp(filename);
+      if (!fp.IsOpen())
+         return false;
       Print(print_pattern, fp);
-      fclose(fp);
    }
    return true;
 }
 
 
-void RDTree::Print(void (*print_pattern)(void *pattern, FILE *fp), FILE *fp)
+void RDTree::Print(void (*print_pattern)(void *pattern, Stream& fp), Stream& fp)
 {
    fprintf(fp, "<RDTree>\n");
    PrintNode(fp, root, 0, print_pattern);
@@ -923,9 +919,9 @@ void RDTree::Print(void (*print_pattern)(void *pattern, FILE *fp), FILE *fp)
 }
 
 
-/* print node */
-void RDTree::PrintNode(FILE *fp, RDNode *node, int level,
-                       void (*print_pattern)(void *pattern, FILE *fp))
+// print node
+void RDTree::PrintNode(Stream& fp, RDNode *node, int level,
+                       void (*print_pattern)(void *pattern, Stream& fp))
 {
    int    i;
    RDNode *p;
@@ -969,4 +965,4 @@ void RDTree::PrintNode(FILE *fp, RDNode *node, int level,
       }
       fprintf(fp, "</node>\n");
    }
-}
+}*/

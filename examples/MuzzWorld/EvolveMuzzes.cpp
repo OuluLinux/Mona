@@ -125,7 +125,7 @@ public:
 		type    = DOUBLE_PARM;
 		name[0] = '\0';
 		parm    = NULL;
-		min     = max = delta = 0.0f;
+		min     = max = delta = 0.0;
 	}
 
 
@@ -143,7 +143,7 @@ public:
 	// Mutate parameter.
 	void Mutate() {
 		int    i;
-		float  f;
+		double  f;
 		double d;
 
 		if (!randomizer->RAND_CHANCE(mutation_rate))
@@ -369,7 +369,7 @@ public:
 
 	// Constructors.
 	Member(int generation = 0) {
-		float color[3];
+		double color[3];
 
 		for (int i = 0; i < 3; i++)
 			color[i] = randomizer->RAND_INTERVAL(0.0, 1.0);
@@ -482,20 +482,12 @@ public:
 	}
 
 
-	// Load.
-	void Load(FILE* fp) {
-		muzz->Load(fp);
-		FREAD_DOUBLE(&fitness, fp);
-		FREAD_INT(&generation, fp);
+	
+	void Serialize(Stream& fp) {
+		muzz->Serialze(fp);
+		fp % fitness % generation;
 	}
 
-
-	// Save.
-	void Store(FILE* fp) {
-		muzz->Store(fp);
-		FWRITE_DOUBLE(&fitness, fp);
-		FWRITE_INT(&generation, fp);
-	}
 
 
 	// Print.
@@ -507,17 +499,17 @@ public:
 };
 
 // Muzz placement in world.
-double Member::MuzzX   = 0.0f;
-double Member::MuzzY   = 0.0f;
-double Member::MuzzDir = 0.0f;
+double Member::MuzzX   = 0.0;
+double Member::MuzzY   = 0.0;
+double Member::MuzzDir = 0.0;
 
 // Population.
 Member* population[POPULATION_SIZE];
 
 // Start/end functions.
 void LogParameters();
-void LoadPopulation(FILE* fp);
-void StorePopulation(FILE* fp);
+void LoadPopulation(Stream& fp);
+void StorePopulation(Stream& fp);
 
 // Evolve functions.
 void Evolve(), Evaluate(), Prune(), Mutate(), DoMating();
@@ -536,7 +528,7 @@ void Evolve(), Evaluate(), Prune(), Mutate(), DoMating();
 // Main.
 int main2(int argc, char* argv[]) {
 	int  i;
-	FILE* fp;
+	Stream& fp;
 	int  muzzID;
 	char buf[200];
 	#if (CHECK_MEMORY == 1)
@@ -1219,7 +1211,7 @@ void LogParameters() {
 
 
 // Load evolution population.
-void LoadPopulation(FILE* fp) {
+void LoadPopulation(Stream& fp) {
 	for (int i = 0; i < POPULATION_SIZE; i++) {
 		population[i] = new Member();
 		ASSERT(population[i] != NULL);
@@ -1229,7 +1221,7 @@ void LoadPopulation(FILE* fp) {
 
 
 // Save evolution population.
-void StorePopulation(FILE* fp) {
+void StorePopulation(Stream& fp) {
 	for (int i = 0; i < POPULATION_SIZE; i++)
 		population[i]->Store(fp);
 }

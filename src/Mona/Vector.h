@@ -7,19 +7,19 @@
 // Misc. Constants
 //------------------------------------------------------------------------//
 
-float const pi  = 3.14159265f;
-float const tol = 0.0000000001f;                  // float type tolerance
+double const pi  = 3.14159265f;
+double const tol = 0.0000000001f;                  // double type tolerance
 
 //------------------------------------------------------------------------//
 // Misc. Functions
 //------------------------------------------------------------------------//
-inline float DegreesToRadians(float deg)
+inline double DegreesToRadians(double deg)
 {
    return (deg * pi / 180.0f);
 }
 
 
-inline float RadiansToDegrees(float rad)
+inline double RadiansToDegrees(double rad)
 {
    return (rad * 180.0f / pi);
 }
@@ -31,26 +31,26 @@ inline float RadiansToDegrees(float rad)
 class Vector3f
 {
 public:
-   float x;
-   float y;
-   float z;
+   double x;
+   double y;
+   double z;
 
    Vector3f(void);
-   Vector3f(float xi, float yi, float zi);
+   Vector3f(double xi, double yi, double zi);
 
-   float Magnitude(void);
+   double Magnitude(void);
    void Normalize(void);
-   void Normalize(float);
+   void Normalize(double);
    void Reverse(void);
 
-   float Distance(Vector3f);
-   float SquareDistance(Vector3f);
+   double Distance(Vector3f);
+   double SquareDistance(Vector3f);
    void Zero(void);
 
    Vector3f& operator+=(Vector3f u);                  // vector addition
    Vector3f& operator-=(Vector3f u);                  // vector subtraction
-   Vector3f& operator*=(float s);                   // scalar multiply
-   Vector3f& operator/=(float s);                   // scalar divide
+   Vector3f& operator*=(double s);                   // scalar multiply
+   Vector3f& operator/=(double s);                   // scalar divide
 
    Vector3f operator-(void);
 };
@@ -58,11 +58,11 @@ public:
 inline Vector3f operator+(Vector3f u, Vector3f v);
 inline Vector3f operator-(Vector3f u, Vector3f v);
 inline Vector3f operator^(Vector3f u, Vector3f v);
-inline float operator *(Vector3f u, Vector3f v);
-inline Vector3f operator *(float s, Vector3f u);
-inline Vector3f operator *(Vector3f u, float s);
-inline Vector3f operator/(Vector3f u, float s);
-inline float TripleScalarProduct(Vector3f u, Vector3f v, Vector3f w);
+inline double operator *(Vector3f u, Vector3f v);
+inline Vector3f operator *(double s, Vector3f u);
+inline Vector3f operator *(Vector3f u, double s);
+inline Vector3f operator/(Vector3f u, double s);
+inline double TripleScalarProduct(Vector3f u, Vector3f v, Vector3f w);
 
 inline Vector3f::Vector3f(void)
 {
@@ -72,7 +72,7 @@ inline Vector3f::Vector3f(void)
 }
 
 
-inline Vector3f::Vector3f(float xi, float yi, float zi)
+inline Vector3f::Vector3f(double xi, double yi, double zi)
 {
    x = xi;
    y = yi;
@@ -80,7 +80,7 @@ inline Vector3f::Vector3f(float xi, float yi, float zi)
 }
 
 
-inline float Vector3f::Magnitude(void)
+inline double Vector3f::Magnitude(void)
 {
    return ((float)sqrt(x * x + y * y + z * z));
 }
@@ -88,7 +88,7 @@ inline float Vector3f::Magnitude(void)
 
 inline void Vector3f::Normalize(void)
 {
-   float m = (float)sqrt(x * x + y * y + z * z);
+   double m = (float)sqrt(x * x + y * y + z * z);
 
    if (m <= tol)
    {
@@ -100,22 +100,22 @@ inline void Vector3f::Normalize(void)
 
    if (fabs(x) < tol)
    {
-      x = 0.0f;
+      x = 0.0;
    }
    if (fabs(y) < tol)
    {
-      y = 0.0f;
+      y = 0.0;
    }
    if (fabs(z) < tol)
    {
-      z = 0.0f;
+      z = 0.0;
    }
 }
 
 
-inline void Vector3f::Normalize(float n)
+inline void Vector3f::Normalize(double n)
 {
-   float m = (float)sqrt(x * x + y * y + z * z);
+   double m = (float)sqrt(x * x + y * y + z * z);
 
    if (m <= tol)
    {
@@ -128,15 +128,15 @@ inline void Vector3f::Normalize(float n)
 
    if (fabs(x) < tol)
    {
-      x = 0.0f;
+      x = 0.0;
    }
    if (fabs(y) < tol)
    {
-      y = 0.0f;
+      y = 0.0;
    }
    if (fabs(z) < tol)
    {
-      z = 0.0f;
+      z = 0.0;
    }
 }
 
@@ -149,9 +149,9 @@ inline void Vector3f::Reverse(void)
 }
 
 
-inline float Vector3f::Distance(Vector3f v)
+inline double Vector3f::Distance(Vector3f v)
 {
-   float dx, dy, dz;
+   double dx, dy, dz;
 
    dx = x - v.x;
    dy = y - v.y;
@@ -160,9 +160,9 @@ inline float Vector3f::Distance(Vector3f v)
 }
 
 
-inline float Vector3f::SquareDistance(Vector3f v)
+inline double Vector3f::SquareDistance(Vector3f v)
 {
-   float dx, dy, dz;
+   double dx, dy, dz;
 
    dx = x - v.x;
    dy = y - v.y;
@@ -197,7 +197,7 @@ inline Vector3f& Vector3f::operator-=(Vector3f u)
 }
 
 
-inline Vector3f& Vector3f::operator*=(float s)
+inline Vector3f& Vector3f::operator*=(double s)
 {
    x *= s;
    y *= s;
@@ -206,7 +206,7 @@ inline Vector3f& Vector3f::operator*=(float s)
 }
 
 
-inline Vector3f& Vector3f::operator/=(float s)
+inline Vector3f& Vector3f::operator/=(double s)
 {
    x /= s;
    y /= s;
@@ -243,32 +243,32 @@ inline Vector3f operator^(Vector3f u, Vector3f v)
 
 
 // Vector3f dot product
-inline float operator *(Vector3f u, Vector3f v)
+inline double operator *(Vector3f u, Vector3f v)
 {
    return (u.x * v.x + u.y * v.y + u.z * v.z);
 }
 
 
-inline Vector3f operator *(float s, Vector3f u)
+inline Vector3f operator *(double s, Vector3f u)
 {
    return (Vector3f(u.x * s, u.y * s, u.z * s));
 }
 
 
-inline Vector3f operator *(Vector3f u, float s)
+inline Vector3f operator *(Vector3f u, double s)
 {
    return (Vector3f(u.x * s, u.y * s, u.z * s));
 }
 
 
-inline Vector3f operator/(Vector3f u, float s)
+inline Vector3f operator/(Vector3f u, double s)
 {
    return (Vector3f(u.x / s, u.y / s, u.z / s));
 }
 
 
 // triple scalar product (u dot (v cross w))
-inline float TripleScalarProduct(Vector3f u, Vector3f v, Vector3f w)
+inline double TripleScalarProduct(Vector3f u, Vector3f v, Vector3f w)
 {
    return (float((u.x * (v.y * w.z - v.z * w.y)) +
                 (u.y * (-v.x * w.z + v.z * w.x)) +

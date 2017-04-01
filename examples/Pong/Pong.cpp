@@ -2,8 +2,8 @@
 
 #include "Pong.h"
 
-const float Pong::Paddle::DEFAULT_WIDTH  = 0.05f;
-const float Pong::Paddle::DEFAULT_LENGTH = 0.2f;
+const double Pong::Paddle::DEFAULT_WIDTH  = 0.05f;
+const double Pong::Paddle::DEFAULT_LENGTH = 0.2f;
 
 // Paddle constructor.
 Pong::Paddle::Paddle()
@@ -15,43 +15,32 @@ Pong::Paddle::Paddle()
 
 
 // Set paddle width.
-void Pong::Paddle::setWidth(float w)
+void Pong::Paddle::setWidth(double w)
 {
    width = w;
 }
 
 
 // Set paddle length.
-void Pong::Paddle::setLength(float l)
+void Pong::Paddle::setLength(double l)
 {
    length = l;
 }
 
 
 // Set paddle position.
-void Pong::Paddle::setPosition(float y)
+void Pong::Paddle::setPosition(double y)
 {
    position = y;
 }
 
 
-void Pong::Paddle::Load(FILE *fp)
+void Pong::Paddle::Serialize(Stream& fp)
 {
-   FREAD_FLOAT(&width, fp);
-   FREAD_FLOAT(&length, fp);
-   FREAD_FLOAT(&position, fp);
+	fp % width % length % position;
 }
 
-
-void Pong::Paddle::Store(FILE *fp)
-{
-   FWRITE_FLOAT(&width, fp);
-   FWRITE_FLOAT(&length, fp);
-   FWRITE_FLOAT(&position, fp);
-}
-
-
-const float Pong::Ball::DEFAULT_RADIUS = 0.05f;
+const double Pong::Ball::DEFAULT_RADIUS = 0.05f;
 
 // Ball constructor.
 Pong::Ball::Ball()
@@ -63,28 +52,28 @@ Pong::Ball::Ball()
 
 
 // Set ball radius.
-void Pong::Ball::setRadius(float r)
+void Pong::Ball::setRadius(double r)
 {
    radius = r;
 }
 
 
 // Set ball position.
-void Pong::Ball::setPosition(float x, float y)
+void Pong::Ball::setPosition(double x, double y)
 {
    position = Vector(x, y, 0.0f);
 }
 
 
 // Set ball speed.
-void Pong::Ball::setSpeed(float speed)
+void Pong::Ball::setSpeed(double speed)
 {
    velocity.Normalize(speed);
 }
 
 
 // Set ball velocity.
-void Pong::Ball::setVelocity(float dx, float dy)
+void Pong::Ball::setVelocity(double dx, double dy)
 {
    velocity = Vector(dx, dy, 0.0f);
 }
@@ -111,7 +100,7 @@ Pong::STEP_OUTCOME Pong::Ball::Step(Paddle& paddle)
    {
       velocity.y = -velocity.y;
    }
-   float l2 = paddle.length / 2.0f;
+   double l2 = paddle.length / 2.0;
    if (((position.x + radius + velocity.x) >= (1.0f - paddle.width)) &&
        (position.y <= (paddle.position + l2)) && (position.y >= (paddle.position - l2)))
    {
@@ -124,28 +113,13 @@ Pong::STEP_OUTCOME Pong::Ball::Step(Paddle& paddle)
 }
 
 
-void Pong::Ball::Load(FILE *fp)
+void Pong::Ball::Serialize(Stream& fp)
 {
-   FREAD_FLOAT(&radius, fp);
-   FREAD_FLOAT(&position.x, fp);
-   FREAD_FLOAT(&position.y, fp);
-   FREAD_FLOAT(&velocity.x, fp);
-   FREAD_FLOAT(&velocity.y, fp);
+	fp % radius % position.x % position.y % velocity.x % velocity.y;
 }
-
-
-void Pong::Ball::Store(FILE *fp)
-{
-   FWRITE_FLOAT(&radius, fp);
-   FWRITE_FLOAT(&position.x, fp);
-   FWRITE_FLOAT(&position.y, fp);
-   FWRITE_FLOAT(&velocity.x, fp);
-   FWRITE_FLOAT(&velocity.y, fp);
-}
-
 
 // Pong constructor.
-Pong::Pong(float paddleLength, float ballRadius)
+Pong::Pong(double paddleLength, double ballRadius)
 {
    paddle.setLength(paddleLength);
    ball.setRadius(ballRadius);
@@ -153,28 +127,28 @@ Pong::Pong(float paddleLength, float ballRadius)
 
 
 // Set paddle position.
-void Pong::setPaddlePosition(float y)
+void Pong::setPaddlePosition(double y)
 {
    paddle.setPosition(y);
 }
 
 
 // Set ball position.
-void Pong::setBallPosition(float x, float y)
+void Pong::setBallPosition(double x, double y)
 {
    ball.setPosition(x, y);
 }
 
 
 // Set ball speed.
-void Pong::setBallSpeed(float speed)
+void Pong::setBallSpeed(double speed)
 {
    ball.setSpeed(speed);
 }
 
 
 // Set ball velocity.
-void Pong::setBallVelocity(float dx, float dy)
+void Pong::setBallVelocity(double dx, double dy)
 {
    ball.setVelocity(dx, dy);
 }
@@ -188,9 +162,9 @@ Pong::STEP_OUTCOME Pong::Step()
 
 
 // Load pong.
-void Pong::Load(char *filename)
+void Pong::Load(String filename)
 {
-   FILE *fp;
+   Stream& fp;
 
    if ((fp = FOPEN_READ(filename)) == NULL)
    {
@@ -202,7 +176,7 @@ void Pong::Load(char *filename)
 }
 
 
-void Pong::Load(FILE *fp)
+void Pong::Serialize(Stream& fp)
 {
    paddle.Load(fp);
    ball.Load(fp);
@@ -210,9 +184,9 @@ void Pong::Load(FILE *fp)
 
 
 // Save pong.
-void Pong::Store(char *filename)
+void Pong::Store(String filename)
 {
-   FILE *fp;
+   Stream& fp;
 
    if ((fp = FOPEN_WRITE(filename)) == NULL)
    {
@@ -224,7 +198,7 @@ void Pong::Store(char *filename)
 }
 
 
-void Pong::Store(FILE *fp)
+void Pong::Store(Stream& fp)
 {
    paddle.Store(fp);
    ball.Store(fp);

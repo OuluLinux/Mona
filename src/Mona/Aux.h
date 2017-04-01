@@ -7,10 +7,10 @@
 
 // Forward declarations.
 class Neuron;
-class Receptor;
-class Motor;
-class Mediator;
 class EnablingSet;
+class Mediator;
+/*class Receptor;
+class Motor;*/
 
 // Sensor mode.
 class SensorMode
@@ -26,14 +26,14 @@ public:
    SensorMode()
    {
       mode       = 0;
-      resolution = 0.0f;
+      resolution = 0.0;
    }
 
 
    // Initialize.
    // Return mode.
    int Init(Vector<bool>& mask, SENSOR resolution,
-            Vector<SensorMode *> *sensor_modes)
+            Vector<SensorMode*> *sensor_modes)
    {
       int        i, j;
       bool       sub, super;
@@ -116,7 +116,7 @@ public:
             return true;
          }
       }
-      return (false);
+      return false;
    }
 
 
@@ -136,77 +136,19 @@ public:
             return true;
          }
       }
-      return (false);
+      return false;
    }
 
 
-   // Load.
-   void Load(FILE *fp)
+   void Serialize(Stream& fp)
    {
-      int  i, j, size;
-      bool v;
-
-      FREAD_INT(&mode, fp);
-      mask.Clear();
-      subsets.Clear();
-      supersets.Clear();
-      FREAD_INT(&size, fp);
-      for (i = 0; i < size; i++)
-      {
-         FREAD_BOOL(&v, fp);
-         mask.Add(v);
-      }
-      FREAD_FLOAT(&resolution, fp);
-      FREAD_INT(&size, fp);
-      for (i = 0; i < size; i++)
-      {
-         FREAD_INT(&j, fp);
-         subsets.Add(j);
-      }
-      FREAD_INT(&size, fp);
-      for (i = 0; i < size; i++)
-      {
-         FREAD_INT(&j, fp);
-         supersets.Add(j);
-      }
+       fp % mode % mask % resolution % subsets % supersets;
    }
 
-
-   // Save.
-   // When changing format increment FORMAT in mona.h
-   void Store(FILE *fp)
-   {
-      int  i, j, size;
-      bool v;
-
-      FWRITE_INT(&mode, fp);
-      size = (int)mask.GetCount();
-      FWRITE_INT(&size, fp);
-      for (i = 0; i < size; i++)
-      {
-         v = mask[i];
-         FWRITE_BOOL(&v, fp);
-      }
-      FWRITE_FLOAT(&resolution, fp);
-      size = (int)subsets.GetCount();
-      FWRITE_INT(&size, fp);
-      for (i = 0; i < size; i++)
-      {
-         j = subsets[i];
-         FWRITE_INT(&j, fp);
-      }
-      size = (int)supersets.GetCount();
-      FWRITE_INT(&size, fp);
-      for (i = 0; i < size; i++)
-      {
-         j = supersets[i];
-         FWRITE_INT(&j, fp);
-      }
-   }
 
 
    // Print.
-   void Print(FILE *out = stdout)
+   /*void Print(FILE *out = stdout)
    {
       int i, j, size;
 
@@ -236,7 +178,7 @@ public:
          fprintf(out, "%d", j);
       }
       fprintf(out, "</supersets>");
-   }
+   }*/
 };
 
 // Goal value.
@@ -295,7 +237,7 @@ public:
    // Set specific goal value.
    inline void SetValue(int index, NEED value)
    {
-      values.set(index, value);
+      values.Set(index, value);
    }
 
 
@@ -314,43 +256,7 @@ public:
 
 
    // Update.
-   void update(VALUE_SET& needs, VALUE_SET& need_deltas)
-   {
-      int    i, j;
-      double v;
-
-      update_count++;
-      for (i = 0, j = needs.GetCount(); i < j; i++)
-      {
-         if (need_deltas.Get(i) > 0.0)
-         {
-            v = values.Get(i);
-            values.set(i, v - ((v / (double)update_count) *
-                               mona->LEARNING_DECREASE_VELOCITY));
-            continue;
-         }
-         if (need_deltas.Get(i) == 0.0)
-         {
-            if (needs.Get(i) > 0.0)
-            {
-               v = values.Get(i);
-               values.set(i, v - ((v / (double)update_count) *
-                                  mona->LEARNING_DECREASE_VELOCITY));
-            }
-            continue;
-         }
-         v = values.Get(i) + need_deltas.Get(i);
-         if (needs.Get(i) == 0.0)
-         {
-            if (v >= 0.0)
-            {
-               continue;
-            }
-         }
-         values.set(i, values.Get(i) + ((-v / (double)update_count) *
-                                        mona->LEARNING_INCREASE_VELOCITY));
-      }
-   }
+   void Update(VALUE_SET& needs, VALUE_SET& need_deltas);
 
 
    // Clear.
@@ -360,33 +266,23 @@ public:
       update_count = 0;
    }
 
-
-   // Load.
-   void Load(FILE *fp)
+   void Serialize(Stream& fp)
    {
-      Clear();
-      values.Load(fp);
-      FREAD_LONG_LONG(&update_count, fp);
+       values.Serialize(fp);
+       fp % update_count;
    }
 
-
-   // Save.
-   void Store(FILE *fp)
-   {
-      values.Store(fp);
-      FWRITE_LONG_LONG(&update_count, fp);
-   }
 
 
    // Print.
-   void Print(FILE *out = stdout)
+   /*void Print(FILE *out = stdout)
    {
       for (int i = 0; i < values.GetCount(); i++)
       {
          fprintf(out, "<value>%f</value>", values.Get(i));
       }
       fprintf(out, "<update_count>%llu</update_count>", update_count);
-   }
+   }*/
 };
 
 // Motive accumulator.
@@ -406,7 +302,11 @@ public:
    };
    Vector<struct DriveElem> drivers;
 #endif
-
+	
+	MotiveAccum(const MotiveAccum& src) {
+		Panic("TODO");
+	}
+	
    // Constructor.
    MotiveAccum()
    {
@@ -472,16 +372,16 @@ public:
 
 
    // Load need delta values.
-   void LoadNeeds(MotiveAccum& motiveAccum)
+   void LoadNeeds(MotiveAccum& motive_accum)
    {
-      delta.Load(motiveAccum.delta);
+      delta.Load(motive_accum.delta);
    }
 
 
    // Accumulate need delta values.
-   void AccumulateNeeds(MotiveAccum& motiveAccum)
+   void AccumulateNeeds(MotiveAccum& motive_accum)
    {
-      delta.Add(motiveAccum.delta);
+      delta.Add(motive_accum.delta);
    }
 
 
@@ -502,7 +402,7 @@ public:
    {
       for (int i = 0; i < (int)path.GetCount(); i++)
       {
-         if (path[i] == neuron) { return (false); }
+         if (path[i] == neuron) { return false; }
       }
       path.Add(neuron);
       return true;
@@ -533,29 +433,17 @@ public:
       path.Clear();
    }
 
-
-   // Load.
-   void Load(FILE *fp)
+   void Serialize(Stream& fp)
    {
-      Clear();
-      base.Load(fp);
-      delta.Load(fp);
-      FREAD_DOUBLE(&weight, fp);
+      base.Serialize(fp);
+      delta.Serialize(fp);
+      fp % weight;
    }
 
-
-   // Save.
-   // When changing format increment FORMAT in mona.h
-   void Store(FILE *fp)
-   {
-      base.Store(fp);
-      delta.Store(fp);
-      FWRITE_DOUBLE(&weight, fp);
-   }
 
 
    // Print.
-   void Print(FILE *out = stdout)
+   /*void Print(FILE *out = stdout)
    {
       int i;
 
@@ -571,7 +459,7 @@ public:
       }
       fprintf(out, "</delta><weight>%f</weight>", weight);
       fprintf(out, "<value>%f</value>", GetValue());
-   }
+   }*/
 };
 
 
@@ -580,16 +468,16 @@ class Enabling {
 public:
    ENABLEMENT  value;
    MOTIVE      motive;
-   TIME        age;
+   int64       age;
    int         timer_index;
    EnablingSet *set;
    bool        new_in_set;
-   TIME        cause_begin;
+   Time        cause_begin;
    VALUE_SET   needs;
 
    // Constructor.
-   Enabling(ENABLEMENT value, MOTIVE motive, TIME age,
-            int timer_index, TIME cause_begin)
+   Enabling(ENABLEMENT value, MOTIVE motive, int64 age,
+            int timer_index, Time cause_begin)
    {
       Clear();
       this->value      = value;
@@ -621,7 +509,7 @@ public:
       needs.Reserve(n);
       for (int i = 0; i < n; i++)
       {
-         needs.set(i, homeostats[i]->GetNeed());
+         needs.Set(i, homeostats[i]->GetNeed());
       }
    }
 
@@ -649,42 +537,20 @@ public:
       timer_index = -1;
       set        = NULL;
       new_in_set   = false;
-      cause_begin = 0;
+      cause_begin.Set(0);
       needs.Clear();
    }
 
-
-   // Load.
-   void Load(FILE *fp)
+   void Serialize(Stream& fp)
    {
-      Clear();
-      FREAD_DOUBLE(&value, fp);
-      FREAD_DOUBLE(&motive, fp);
-      FREAD_LONG_LONG(&age, fp);
-      FREAD_INT(&timer_index, fp);
-      set = NULL;
-      FREAD_BOOL(&new_in_set, fp);
-      FREAD_LONG_LONG(&cause_begin, fp);
-      needs.Load(fp);
-   }
-
-
-   // Save.
-   // When changing format increment FORMAT in mona.h
-   void Store(FILE *fp)
-   {
-      FWRITE_DOUBLE(&value, fp);
-      FWRITE_DOUBLE(&motive, fp);
-      FWRITE_LONG_LONG(&age, fp);
-      FWRITE_INT(&timer_index, fp);
-      FWRITE_BOOL(&new_in_set, fp);
-      FWRITE_LONG_LONG(&cause_begin, fp);
-      needs.Store(fp);
+       fp % value % motive % age % timer_index % new_in_set % cause_begin;
+       needs.Serialize(fp);
+       if (fp.IsLoading()) set = NULL;
    }
 
 
    // Print.
-   void Print(FILE *out = stdout)
+   /*void Print(FILE *out = stdout)
    {
       fprintf(out, "<value>%f</value>", value);
       fprintf(out, "<motive>%f</motive>", value);
@@ -700,14 +566,14 @@ public:
          fprintf(out, "<need>%f</need>", needs.Get(i));
       }
       fprintf(out, "/<needs>");
-   }
+   }*/
 };
 
 // Set of event enablings.
 class EnablingSet
 {
 public:
-   Vector<Enabling *> enablings;
+   Array<Enabling> enablings;
 
    // Constructor.
    EnablingSet()
@@ -731,35 +597,35 @@ public:
 
 
    // Insert an enabling.
-   inline void Insert(Enabling *enabling)
+   inline Enabling& Insert()
    {
-      enabling->set      = this;
-      enabling->new_in_set = true;
-      enablings.Add(enabling);
+       Panic("rename to Add");
+       Enabling& e = enablings.Add();
+      e.set      = this;
+      e.new_in_set = true;
+      return e;
    }
 
 
    // Remove an enabling.
-   inline void Remove(Enabling *enabling)
+   /*inline void Remove(Enabling *enabling)
    {
       enablings.Remove(enabling);
-   }
+   }*/
 
 
    // Get enabling value.
    inline ENABLEMENT GetValue()
    {
-      Enabling   *enabling;
       ENABLEMENT e;
 
-      Vector<Enabling *>::Iterator listItr;
+      Array<Enabling>::Iterator list_iter;
 
       e = 0.0;
-      for (listItr = enablings.Begin();
-           listItr != enablings.End(); listItr++)
+      for (list_iter = enablings.Begin();
+           list_iter != enablings.End(); list_iter++)
       {
-         enabling = *listItr;
-         e       += enabling->value;
+         e       += list_iter->value;
       }
       return (e);
    }
@@ -768,19 +634,17 @@ public:
    // Get value of new enablings.
    inline ENABLEMENT getNewValue()
    {
-      Enabling   *enabling;
       ENABLEMENT e;
 
-      Vector<Enabling *>::Iterator listItr;
+      Array<Enabling>::Iterator list_iter;
 
       e = 0.0;
-      for (listItr = enablings.Begin();
-           listItr != enablings.End(); listItr++)
+      for (list_iter = enablings.Begin();
+           list_iter != enablings.End(); list_iter++)
       {
-         enabling = *listItr;
-         if (enabling->new_in_set)
+         if (list_iter->new_in_set)
          {
-            e += enabling->value;
+            e += list_iter->value;
          }
       }
       return (e);
@@ -790,19 +654,17 @@ public:
    // Get value of old enablings.
    inline ENABLEMENT getOldValue()
    {
-      Enabling   *enabling;
       ENABLEMENT e;
 
-      Vector<Enabling *>::Iterator listItr;
+      Array<Enabling>::Iterator list_iter;
 
       e = 0.0;
-      for (listItr = enablings.Begin();
-           listItr != enablings.End(); listItr++)
+      for (list_iter = enablings.Begin();
+           list_iter != enablings.End(); list_iter++)
       {
-         enabling = *listItr;
-         if (!enabling->new_in_set)
+         if (!list_iter->new_in_set)
          {
-            e += enabling->value;
+            e += list_iter->value;
          }
       }
       return (e);
@@ -810,17 +672,14 @@ public:
 
 
    // Clear new flags.
-   inline void clearNewInSet()
+   inline void ClearNewInSet()
    {
-      Enabling *enabling;
+      Array<Enabling>::Iterator list_iter;
 
-      Vector<Enabling *>::Iterator listItr;
-
-      for (listItr = enablings.Begin();
-           listItr != enablings.End(); listItr++)
+      for (list_iter = enablings.Begin();
+           list_iter != enablings.End(); list_iter++)
       {
-         enabling           = *listItr;
-         enabling->new_in_set = false;
+         list_iter->new_in_set = false;
       }
    }
 
@@ -828,82 +687,44 @@ public:
    // Clear.
    inline void Clear()
    {
-      Enabling *enabling;
-
-      Vector<Enabling *>::Iterator listItr;
-
-      for (listItr = enablings.Begin();
-           listItr != enablings.End(); listItr++)
-      {
-         enabling = *listItr;
-         delete enabling;
-      }
       enablings.Clear();
    }
 
 
    // Load.
-   void Load(FILE *fp)
-   {
-      int      size;
-      Enabling *enabling;
-
-      Clear();
-      FREAD_INT(&size, fp);
-      for (int i = 0; i < size; i++)
-      {
-         enabling = new Enabling();
-         ASSERT(enabling != NULL);
-         enabling->Load(fp);
-         enabling->set = this;
-         enablings.Add(enabling);
-      }
-   }
-
-
-   // Save.
-   // When changing format increment FORMAT in mona.h
-   void Store(FILE *fp)
-   {
-      int      size;
-      Enabling *enabling;
-
-      Vector<Enabling *>::Iterator listItr;
-
-      size = (int)enablings.GetCount();
-      FWRITE_INT(&size, fp);
-      for (listItr = enablings.Begin();
-           listItr != enablings.End(); listItr++)
-      {
-         enabling = *listItr;
-         enabling->Store(fp);
-      }
+   void Serialize(Stream& fp) {
+       fp % enablings;
+       if (fp.IsLoading()) {
+           for(int i = 0; i < enablings.GetCount(); i++)
+               enablings[i].set = this;
+       }
    }
 
 
    // Print.
-   void Print(FILE *out = stdout)
+   /*void Print(FILE *out = stdout)
    {
-      Enabling *enabling;
-
-      Vector<Enabling *>::Iterator listItr;
+      Array<Enabling>::Iterator list_iter;
 
       fprintf(out, "<enablingSet>");
-      for (listItr = enablings.Begin();
-           listItr != enablings.End(); listItr++)
+      for (list_iter = enablings.Begin();
+           list_iter != enablings.End(); list_iter++)
       {
-         enabling = *listItr;
-         enabling->Print(out);
+         list_iter->Print(out);
       }
       fprintf(out, "</enablingSet>");
-   }
+   }*/
 };
 
 // Mediator event notifier.
 struct Notify
 {
    Mediator   *mediator;
-   EVENT_TYPE eventType;
+   EVENT_TYPE event_type;
+   
+   void Serialize(Stream& fp) {
+       
+   }
 };
 
 // Mediator firing notification.
@@ -911,7 +732,7 @@ struct FiringNotify
 {
    struct Notify *notify;
    WEIGHT        notify_strength;
-   TIME          cause_begin;
+   Time          cause_begin;
 };
 
 // Learning event.
@@ -920,81 +741,17 @@ class LearningEvent
 public:
    Neuron      *neuron;
    WEIGHT      firing_strength;
-   TIME        begin;
-   TIME        end;
-   PROBABILITY probability;
+   Time        begin;
+   Time        end;
+   double probability;
    VALUE_SET   needs;
 
-   LearningEvent(Neuron *neuron)
-   {
-      this->neuron   = neuron;
-      firing_strength = neuron->firing_strength;
-      if (neuron->type == MEDIATOR)
-      {
-         begin = ((Mediator *)neuron)->cause_begin;
-      }
-      else
-      {
-         begin = neuron->mona->event_clock;
-      }
-      end = neuron->mona->event_clock;
-      if (firing_strength > NEARLY_ZERO)
-      {
-         probability =
-            pow(firing_strength, neuron->mona->FIRING_STRENGTH_LEARNING_DAMPER);
-      }
-      else
-      {
-         probability = 0.0;
-      }
-      int n = neuron->mona->need_count;
-      needs.Reserve(n);
-      for (int i = 0; i < n; i++)
-      {
-         needs.set(i, neuron->mona->homeostats[i]->GetNeed());
-      }
-   }
-
-
-   LearningEvent()
-   {
-      neuron         = NULL;
-      firing_strength = 0.0;
-      begin          = end = 0;
-      probability    = 0.0;
-      needs.Clear();
-   }
-
-
-   // Load.
-   void Load(FILE *fp)
-   {
-      neuron = (Neuron *)new ID;
-      ASSERT(neuron != NULL);
-      FREAD_LONG_LONG((ID *)neuron, fp);
-      FREAD_DOUBLE(&firing_strength, fp);
-      FREAD_LONG_LONG(&begin, fp);
-      FREAD_LONG_LONG(&end, fp);
-      FREAD_DOUBLE(&probability, fp);
-      needs.Load(fp);
-   }
-
-
-   // Save.
-   // When changing format increment FORMAT in mona.h
-   void Store(FILE *fp)
-   {
-      FWRITE_LONG_LONG(&neuron->id, fp);
-      FWRITE_DOUBLE(&firing_strength, fp);
-      FWRITE_LONG_LONG(&begin, fp);
-      FWRITE_LONG_LONG(&end, fp);
-      FWRITE_DOUBLE(&probability, fp);
-      needs.Store(fp);
-   }
-
+   LearningEvent(Neuron *neuron);
+   LearningEvent();
+   void Serialize(Stream& fp);
 
    // Print.
-   void Print(FILE *out = stdout)
+   /*void Print(FILE *out = stdout)
    {
       if (neuron != NULL)
       {
@@ -1049,70 +806,37 @@ public:
          fprintf(out, "<need>%f</need>", needs.Get(i));
       }
       fprintf(out, "/<needs>");
-   }
+   }*/
 };
 
 // Generalization learning event.
 class GeneralizationEvent
 {
 public:
-   Mediator   *mediator;
+   Mediator*  mediator;
    ENABLEMENT enabling;
-   TIME       begin;
-   TIME       end;
+   Time       begin;
+   Time       end;
    VALUE_SET  needs;
 
-   GeneralizationEvent(Mediator *mediator, ENABLEMENT enabling)
+   GeneralizationEvent(Mediator *mediator, ENABLEMENT enabling);
+
+
+   GeneralizationEvent();
+
+
+   void Serialize(Stream& fp)
    {
-      this->mediator = mediator;
-      this->enabling = enabling;
-      begin          = mediator->cause_begin;
-      end            = mediator->mona->event_clock;
-      int n = mediator->mona->need_count;
-      needs.Reserve(n);
-      for (int i = 0; i < n; i++)
-      {
-         needs.set(i, mediator->mona->homeostats[i]->GetNeed());
-      }
+       fp % enabling % begin % end;
+       needs.Serialize(fp);
+       if (fp.IsLoading()) mediator = NULL;
    }
 
 
-   GeneralizationEvent()
-   {
-      mediator = NULL;
-      enabling = 0.0;
-      begin    = end = 0;
-      needs.Clear();
-   }
-
-
-   // Load.
-   void Load(FILE *fp)
-   {
-      mediator = (Mediator *)new ID;
-      ASSERT(mediator != NULL);
-      FREAD_LONG_LONG((ID *)mediator, fp);
-      FREAD_DOUBLE(&enabling, fp);
-      FREAD_LONG_LONG(&begin, fp);
-      FREAD_LONG_LONG(&end, fp);
-      needs.Load(fp);
-   }
-
-
-   // Save.
-   // When changing format increment FORMAT in mona.h
-   void Store(FILE *fp)
-   {
-      FWRITE_LONG_LONG(&mediator->id, fp);
-      FWRITE_DOUBLE(&enabling, fp);
-      FWRITE_LONG_LONG(&begin, fp);
-      FWRITE_LONG_LONG(&end, fp);
-      needs.Store(fp);
-   }
 
 
    // Print.
-   void Print(FILE *out = stdout)
+   /*void Print(FILE *out = stdout)
    {
       if (mediator != NULL)
       {
@@ -1137,6 +861,6 @@ public:
          fprintf(out, "<need>%f</need>", needs.Get(i));
       }
       fprintf(out, "/<needs>");
-   }
+   }*/
 };
 #endif

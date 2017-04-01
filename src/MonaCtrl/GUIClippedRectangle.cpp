@@ -42,7 +42,7 @@ bool GUIClippedRectangle::loadXMLClippedRectangleInfo(const TiXmlElement *elemen
   setClipSize(XMLArbiter::fillComponents1i(element,         "clipSize",       clipSize));
  
   if(absolutePriority)
-    texture.loadXMLSettings(absolutePriority);
+    texture.LoadXMLSettings(absolutePriority);
 
   for(const TiXmlElement *outer = element->FirstChildElement();	
       outer;
@@ -71,17 +71,17 @@ void  GUIClippedRectangle::setBGColor(const Tuple4f& color)
   setBGColor(color.x, color.y, color.z, color.w);
 }
 
-void  GUIClippedRectangle::setBGColor(float r, float g, float b, float a)
+void  GUIClippedRectangle::setBGColor(double r, double g, double b, double a)
 {
-  bgColor.set(clamp(r, 0.0f, 255.0f),
+  bgColor.Set(clamp(r, 0.0f, 255.0f),
               clamp(g, 0.0f, 255.0f),
               clamp(b, 0.0f, 255.0f),
               clamp(a, 0.0f, 255.0f));
 
-  bgColor.x /= (bgColor.x > 1.0) ? 255.0f : 1.0f;
-  bgColor.y /= (bgColor.y > 1.0) ? 255.0f : 1.0f;
-  bgColor.z /= (bgColor.z > 1.0) ? 255.0f : 1.0f;
-  bgColor.w /= (bgColor.w > 1.0) ? 255.0f : 1.0f;
+  bgColor.x /= (bgColor.x > 1.0) ? 255.0f : 1.0;
+  bgColor.y /= (bgColor.y > 1.0) ? 255.0f : 1.0;
+  bgColor.z /= (bgColor.z > 1.0) ? 255.0f : 1.0;
+  bgColor.w /= (bgColor.w > 1.0) ? 255.0f : 1.0;
 }
 
 void  GUIClippedRectangle::setBordersColor(const Tuple3f& color)
@@ -94,14 +94,14 @@ const Tuple3f &GUIClippedRectangle::getBordersColor()
   return bordersColor;
 }
 
-void  GUIClippedRectangle::setBordersColor(float r, float g, float b)
+void  GUIClippedRectangle::setBordersColor(double r, double g, double b)
 {
-  bordersColor.set(clamp(r, 0.0f, 255.0f),
+  bordersColor.Set(clamp(r, 0.0f, 255.0f),
                    clamp(g, 0.0f, 255.0f),
                    clamp(b, 0.0f, 255.0f));
-  bordersColor.x /= (bordersColor.x > 1.0) ? 255.0f : 1.0f;
-  bordersColor.y /= (bordersColor.y > 1.0) ? 255.0f : 1.0f;
-  bordersColor.z /= (bordersColor.z > 1.0) ? 255.0f : 1.0f;
+  bordersColor.x /= (bordersColor.x > 1.0) ? 255.0f : 1.0;
+  bordersColor.y /= (bordersColor.y > 1.0) ? 255.0f : 1.0;
+  bordersColor.z /= (bordersColor.z > 1.0) ? 255.0f : 1.0;
 }
 
 void GUIClippedRectangle::renderClippedBounds()
@@ -146,27 +146,27 @@ void GUIClippedRectangle::renderClippedBounds()
 
 void  GUIClippedRectangle::computeClippedBounds(const Tuple4i &windowBounds)
 {
-  float yTexOffset    = float(clipSize)/(windowBounds.w - windowBounds.y),
+  double yTexOffset    = float(clipSize)/(windowBounds.w - windowBounds.y),
         xTexOffset    = float(clipSize)/(windowBounds.z - windowBounds.x);
 
   xTexOffset *= textureRectangle.z - textureRectangle.x;
   yTexOffset *= textureRectangle.w - textureRectangle.y;
 
-  vertices[0].set(windowBounds.x, windowBounds.y + clipSize);
-  vertices[1].set(windowBounds.x, windowBounds.w);
-  vertices[2].set(windowBounds.z - clipSize, windowBounds.w);
-  vertices[3].set(windowBounds.z, windowBounds.w - clipSize);
-  vertices[4].set(windowBounds.z, windowBounds.y);
-  vertices[5].set(windowBounds.x + clipSize, windowBounds.y);
-  vertices[6].set(windowBounds.x, windowBounds.y + clipSize);
+  vertices[0].Set(windowBounds.x, windowBounds.y + clipSize);
+  vertices[1].Set(windowBounds.x, windowBounds.w);
+  vertices[2].Set(windowBounds.z - clipSize, windowBounds.w);
+  vertices[3].Set(windowBounds.z, windowBounds.w - clipSize);
+  vertices[4].Set(windowBounds.z, windowBounds.y);
+  vertices[5].Set(windowBounds.x + clipSize, windowBounds.y);
+  vertices[6].Set(windowBounds.x, windowBounds.y + clipSize);
 
-  texCoords[0].set(textureRectangle.x             , textureRectangle.w - yTexOffset);
-  texCoords[1].set(textureRectangle.x             , textureRectangle.y);
-  texCoords[2].set(textureRectangle.z - xTexOffset, textureRectangle.y             );
-  texCoords[3].set(textureRectangle.z             , textureRectangle.y + yTexOffset);
-  texCoords[4].set(textureRectangle.z             , textureRectangle.w);
-  texCoords[5].set(textureRectangle.x + xTexOffset, textureRectangle.w             );
-  texCoords[6].set(textureRectangle.x             , textureRectangle.w - yTexOffset);
+  texCoords[0].Set(textureRectangle.x             , textureRectangle.w - yTexOffset);
+  texCoords[1].Set(textureRectangle.x             , textureRectangle.y);
+  texCoords[2].Set(textureRectangle.z - xTexOffset, textureRectangle.y             );
+  texCoords[3].Set(textureRectangle.z             , textureRectangle.y + yTexOffset);
+  texCoords[4].Set(textureRectangle.z             , textureRectangle.w);
+  texCoords[5].Set(textureRectangle.x + xTexOffset, textureRectangle.w             );
+  texCoords[6].Set(textureRectangle.x             , textureRectangle.w - yTexOffset);
 }
 
 void  GUIClippedRectangle::enableBGColor(bool enable)
@@ -179,7 +179,7 @@ void GUIClippedRectangle::setTextureRectangle(const Tuple4f &tr)
   setTextureRectangle(tr.x, tr.y, tr.z, tr.w);
 }
 
-void GUIClippedRectangle::setTextureRectangle(float x, float y, float z, float w)
+void GUIClippedRectangle::setTextureRectangle(double x, double y, double z, double w)
 {
   if(x > 1.0f || y > 1.0f || z > 1.0f || w > 1.0f)
   if(texture.getID())
@@ -197,7 +197,7 @@ void GUIClippedRectangle::setTextureRectangle(float x, float y, float z, float w
 
   }
 
-  textureRectangle.set(clamp(x, 0.0f, 1.0f),
+  textureRectangle.Set(clamp(x, 0.0f, 1.0f),
                        clamp(y, 0.0f, 1.0f),
                        clamp(z, 0.0f, 1.0f),
                        clamp(w, 0.0f, 1.0f));

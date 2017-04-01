@@ -75,9 +75,9 @@ void CQuaternion::VecSub(const double *src1, const double *src2, double *dst)
 
 void CQuaternion::VecCopy(const double *v1, double *v2)
 {
-   register int i;
+   int i;
 
-   for (i = 0; i < 3; i++)
+   for (int i = 0; i < 3; i++)
    {
       v2[i] = v1[i];
    }
@@ -229,22 +229,22 @@ void CQuaternion::BuildRotationMatrix(double m[4][4])
    m[0][0] = 1.0f - 2.0f * (m_quat[1] * m_quat[1] + m_quat[2] * m_quat[2]);
    m[0][1] = 2.0f * (m_quat[0] * m_quat[1] - m_quat[2] * m_quat[3]);
    m[0][2] = 2.0f * (m_quat[2] * m_quat[0] + m_quat[1] * m_quat[3]);
-   m[0][3] = 0.0f;
+   m[0][3] = 0.0;
 
    m[1][0] = 2.0f * (m_quat[0] * m_quat[1] + m_quat[2] * m_quat[3]);
    m[1][1] = 1.0f - 2.0f * (m_quat[2] * m_quat[2] + m_quat[0] * m_quat[0]);
    m[1][2] = 2.0f * (m_quat[1] * m_quat[2] - m_quat[0] * m_quat[3]);
-   m[1][3] = 0.0f;
+   m[1][3] = 0.0;
 
    m[2][0] = 2.0f * (m_quat[2] * m_quat[0] - m_quat[1] * m_quat[3]);
    m[2][1] = 2.0f * (m_quat[1] * m_quat[2] + m_quat[0] * m_quat[3]);
    m[2][2] = 1.0f - 2.0f * (m_quat[1] * m_quat[1] + m_quat[0] * m_quat[0]);
-   m[2][3] = 0.0f;
+   m[2][3] = 0.0;
 
-   m[3][0] = 0.0f;
-   m[3][1] = 0.0f;
-   m[3][2] = 0.0f;
-   m[3][3] = 1.0f;
+   m[3][0] = 0.0;
+   m[3][1] = 0.0;
+   m[3][2] = 0.0;
+   m[3][3] = 1.0;
 }
 
 
@@ -360,7 +360,7 @@ CQuaternion *CQuaternion::Clone()
 
 
 // Load quaternion.
-void CQuaternion::Load(FILE *fp)
+void CQuaternion::Serialize(Stream& fp)
 {
    for (int i = 0; i < 4; i++)
    {
@@ -371,7 +371,7 @@ void CQuaternion::Load(FILE *fp)
 
 
 // Save quaternion.
-void CQuaternion::Store(FILE *fp)
+void CQuaternion::Store(Stream& fp)
 {
    for (int i = 0; i < 4; i++)
    {

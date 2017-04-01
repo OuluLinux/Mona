@@ -55,22 +55,22 @@ public:
    class Paddle
    {
 public:
-      static const float DEFAULT_WIDTH;
-      static const float DEFAULT_LENGTH;
-      float              width;
-      float              length;
-      float              position;
+      static const double DEFAULT_WIDTH;
+      static const double DEFAULT_LENGTH;
+      double              width;
+      double              length;
+      double              position;
 
       // Constructor.
       Paddle();
 
       // Set properties.
-      void setWidth(float width);
-      void setLength(float length);
-      void setPosition(float position);
+      void setWidth(double width);
+      void setLength(double length);
+      void setPosition(double position);
 
       // Move paddle.
-      void move(float position);
+      void move(double position);
 
       // Load.
       void Load(FILE *);
@@ -84,8 +84,8 @@ public:
    class Ball
    {
 public:
-      static const float DEFAULT_RADIUS;
-      float              radius;
+      static const double DEFAULT_RADIUS;
+      double              radius;
       Vector             position;
       Vector             velocity;
 
@@ -93,10 +93,10 @@ public:
       Ball();
 
       // Set properties.
-      void setRadius(float radius);
-      void setPosition(float x, float y);
-      void setSpeed(float speed);
-      void setVelocity(float dx, float dy);
+      void setRadius(double radius);
+      void setPosition(double x, double y);
+      void setSpeed(double speed);
+      void setVelocity(double dx, double dy);
 
       // Step ball.
       STEP_OUTCOME Step(Paddle& paddle);
@@ -110,25 +110,25 @@ public:
    Ball ball;
 
    // Constructor.
-   Pong(float paddleLength = Paddle::DEFAULT_LENGTH, float ballRadius = Ball::DEFAULT_RADIUS);
+   Pong(double paddleLength = Paddle::DEFAULT_LENGTH, double ballRadius = Ball::DEFAULT_RADIUS);
 
    // Set paddle position.
-   void setPaddlePosition(float position);
+   void setPaddlePosition(double position);
 
    // Set ball position and velocity.
-   void setBallPosition(float x, float y);
-   void setBallSpeed(float speed);
-   void setBallVelocity(float dx, float dy);
+   void setBallPosition(double x, double y);
+   void setBallSpeed(double speed);
+   void setBallVelocity(double dx, double dy);
 
    // Step.
    STEP_OUTCOME Step();
 
    // Load.
-   void Load(char *filename);
+   void Load(String filename);
    void Load(FILE *);
 
    // Save.
-   void Store(char *filename);
+   void Store(String filename);
    void Store(FILE *);
 };
 #endif

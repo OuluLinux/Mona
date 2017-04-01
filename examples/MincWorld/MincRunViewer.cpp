@@ -43,13 +43,13 @@ public class MincRunViewer
          int   mark;
          int   direction;
          int   lensDirection;
-         float lensLeftOutput, lensRightOutput;
+         double lensLeftOutput, lensRightOutput;
          int   monaDirection;
-         float monaLeftOutput, monaRightOutput;
+         double monaLeftOutput, monaRightOutput;
 
          Step(int tick, int mark, int direction,
-              int lensDirection, float lensLeftOutput, float lensRightOutput,
-              int monaDirection, float monaLeftOutput, float monaRightOutput)
+              int lensDirection, double lensLeftOutput, double lensRightOutput,
+              int monaDirection, double monaLeftOutput, double monaRightOutput)
          {
             this.tick            = tick;
             this.mark            = mark;
@@ -69,11 +69,11 @@ public class MincRunViewer
             mark            = -1;
             direction       = -1;
             lensDirection   = -1;
-            lensLeftOutput  = -1.0f;
-            lensRightOutput = -1.0f;
+            lensLeftOutput  = -1.0;
+            lensRightOutput = -1.0;
             monaDirection   = -1;
-            monaLeftOutput  = -1.0f;
-            monaRightOutput = -1.0f;
+            monaLeftOutput  = -1.0;
+            monaRightOutput = -1.0;
          }
       }
 
@@ -94,8 +94,8 @@ public class MincRunViewer
 
 
       void addStep(int tick, int mark, int direction,
-                   int lensDirection, float lensLeftOutput, float lensRightOutput,
-                   int monaDirection, float monaLeftOutput, float monaRightOutput)
+                   int lensDirection, double lensLeftOutput, double lensRightOutput,
+                   int monaDirection, double monaLeftOutput, double monaRightOutput)
       {
          path.Add(new Step(tick, mark, direction,
                            lensDirection, lensLeftOutput, lensRightOutput,
@@ -166,7 +166,7 @@ public class MincRunViewer
       }
       catch (Exception e) {
          System.err.println("Error: " + e.getMessage());
-         return (false);
+         return false;
       }
       finally {
          if (scanner != null)
@@ -190,11 +190,11 @@ public class MincRunViewer
       }
       catch (Exception e) {
          System.err.println("Error: " + e.getMessage());
-         return (false);
+         return false;
       }
-      if (!loadParameters(input)) { return (false); }
-      if (!loadMazes(input)) { return (false); }
-      if (!loadRuns(input)) { return (false); }
+      if (!loadParameters(input)) { return false; }
+      if (!loadMazes(input)) { return false; }
+      if (!loadRuns(input)) { return false; }
       return (true);
    }
 
@@ -214,13 +214,13 @@ public class MincRunViewer
             if (!s.startsWith("Parameters:"))
             {
                System.err.println("Invalid parameters heading");
-               return (false);
+               return false;
             }
          }
          else
          {
             System.err.println("Premature end of parameter input");
-            return (false);
+            return false;
          }
          while (input.GetCount() > 0)
          {
@@ -267,7 +267,7 @@ public class MincRunViewer
       }
       catch (Exception e) {
          System.err.println("Error loading parameters: " + e.getMessage());
-         return (false);
+         return false;
       }
       return (true);
    }
@@ -289,13 +289,13 @@ public class MincRunViewer
             if (!s.startsWith("Generalization mazes:"))
             {
                System.err.println("Invalid generalization mazes heading");
-               return (false);
+               return false;
             }
          }
          else
          {
             System.err.println("Premature end of maze input");
-            return (false);
+            return false;
          }
          maze = null;
          while (input.GetCount() > 0)
@@ -320,7 +320,7 @@ public class MincRunViewer
          if (!s.startsWith("Discrimination maze:"))
          {
             System.err.println("Invalid maze discrimination maze heading");
-            return (false);
+            return false;
          }
          maze = null;
          while (input.GetCount() > 0)
@@ -356,12 +356,12 @@ public class MincRunViewer
          if (discriminationMazeIndex == -1)
          {
             System.err.println("Invalid discrimination maze");
-            return (false);
+            return false;
          }
       }
       catch (Exception e) {
          System.err.println("Error loading mazes: " + e.getMessage());
-         return (false);
+         return false;
       }
       return (true);
    }
@@ -434,7 +434,7 @@ public class MincRunViewer
                else
                {
                   System.err.println("Invalid run format");
-                  return (false);
+                  return false;
                }
             }
             else if (s.startsWith("inputs:"))
@@ -455,14 +455,14 @@ public class MincRunViewer
                      if (step.mark < 0)
                      {
                         System.err.println("Invalid run format");
-                        return (false);
+                        return false;
                      }
                   }
                }
                else
                {
                   System.err.println("Invalid run format");
-                  return (false);
+                  return false;
                }
             }
             else if (s.startsWith("output="))
@@ -520,7 +520,7 @@ public class MincRunViewer
                else
                {
                   System.err.println("Invalid run format");
-                  return (false);
+                  return false;
                }
             }
             else if (s.startsWith("Result run="))
@@ -540,7 +540,7 @@ public class MincRunViewer
                else
                {
                   System.err.println("Invalid run format");
-                  return (false);
+                  return false;
                }
             }
             else if (s.startsWith("Result summary:"))
@@ -561,14 +561,14 @@ public class MincRunViewer
                else
                {
                   System.err.println("Invalid run result summary");
-                  return (false);
+                  return false;
                }
             }
          }
       }
       catch (Exception e) {
          System.err.println("Error loading runs: " + e.getMessage());
-         return (false);
+         return false;
       }
       return (true);
    }

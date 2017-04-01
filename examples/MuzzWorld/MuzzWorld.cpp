@@ -920,10 +920,10 @@ void processHits(GLint hits, GLuint buffer[], int sw) {
 
 		if (current_muzz != i) {
 			current_muzz = i;
-			muzz_states[i].moveAmount = 0.0f;
+			muzz_states[i].moveAmount = 0.0;
 		}
 		else {
-			muzz_states[i].moveAmount = 0.0f;
+			muzz_states[i].moveAmount = 0.0;
 			current_muzz = -1;
 			manualCheck->setChecked(false);
 			terrain_mode = true;

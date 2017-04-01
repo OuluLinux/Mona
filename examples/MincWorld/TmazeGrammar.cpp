@@ -3,7 +3,7 @@
 const double TmazeGrammar::NEAR_ZERO = 0.0001;
 
 // Constructor.
-TmazeGrammar::TmazeGrammar(RANDOM random_seed, int numMarks)
+TmazeGrammar::TmazeGrammar(int random_seed, int numMarks)
 {
    ASSERT(numMarks > 1);
 

@@ -12,7 +12,7 @@ GUISlider::GUISlider(const String &callback, const int   orientation_) :  GUIAlp
                 (orientation_ == OR_VERTICAL) ?  85.0f :  18.0f);
 }
 
-bool GUISlider::loadXMLSettings(const TiXmlElement *element)
+bool GUISlider::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!XMLArbiter::inspectElementInfo(element, "Slider"))
     return Logger::writeErrorLog("Need a Slider node in the xml file");
@@ -26,7 +26,7 @@ bool GUISlider::loadXMLSettings(const TiXmlElement *element)
   setProgress(XMLArbiter::fillComponents1f(element, "progress", progress));
   setSizes((orientation == OR_VERTICAL) ? 18.0f : 100.0f,
                (orientation == OR_VERTICAL) ? 85.0f :  18.0f);
-  return   GUIAlphaElement::loadXMLSettings(element);
+  return   GUIAlphaElement::LoadXMLSettings(element);
 }
 
 void  GUISlider::setDiscSizes(const Tuple2i& dimensions)
@@ -36,7 +36,7 @@ void  GUISlider::setDiscSizes(const Tuple2i& dimensions)
 
 void  GUISlider::setDiscSizes(int width, int height)
 {
-  discSizes.set(clamp(width, 5, 500), clamp(height, 5, 500));
+  discSizes.Set(clamp(width, 5, 500), clamp(height, 5, 500));
   setSizes((orientation == OR_HORIZONTAL) ? dimensions.x            : float(discSizes.x),
                 (orientation == OR_HORIZONTAL) ? float(discSizes.y) : dimensions.y);
 }
@@ -46,18 +46,18 @@ const Tuple2i &GUISlider::getDiscSizes()
   return discSizes;
 }
 
-void  GUISlider::setProgress(float zeroToOne)
+void  GUISlider::setProgress(double zeroToOne)
 {
   if(!pressed)
     progress = clamp(zeroToOne, 0.0f, 1.0f);
 }
 
-float GUISlider::getProgress()
+double GUISlider::getProgress()
 {
   return progress;
 }
 
-void GUISlider::render(float clockTick)
+void GUISlider::render(double clockTick)
 {
   if(!parent || !visible)
     return;

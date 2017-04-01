@@ -43,7 +43,7 @@ void  GUIRectangle::forceUpdate(bool updateArg)
   update = updateArg;
 }
 
-bool GUIRectangle::loadXMLSettings(const TiXmlElement *element)
+bool GUIRectangle::LoadXMLSettings(const TiXmlElement *element)
 {
   if(!element)
     return false;
@@ -147,9 +147,9 @@ void GUIRectangle::setSizes(const Tuple2f &dimensions)
   setSizes(dimensions.x, dimensions.y);
 }
 
-void GUIRectangle::setSizes(float width, float height)
+void GUIRectangle::setSizes(double width, double height)
 {
-  dimensions.set(clamp(width , 0.01f, 2048.0f),
+  dimensions.Set(clamp(width , 0.01f, 2048.0f),
                  clamp(height, 0.01f, 2048.0f));
   update = true;
 }
@@ -164,9 +164,9 @@ void GUIRectangle::setPosition(const Tuple2f &scales)
   setPosition(scales.x, scales.y);
 }
 
-void GUIRectangle::setPosition(float xScale, float yScale)
+void GUIRectangle::setPosition(double xScale, double yScale)
 {
-  position.set(xScale, yScale);
+  position.Set(xScale, yScale);
   update = true;
 }
 

@@ -57,7 +57,7 @@ bool PrintCallback = false;
 Vector<Vector<Vector<float> > > TestingTargetOutputs;
 int   TestNumber;
 int   TickCounter;
-float ErrorAccumulator;
+double ErrorAccumulator;
 int   GameCorrectLengthAccum;
 int   GameLengthAccum;
 bool  GameError;
@@ -68,7 +68,7 @@ int
 main(int argc, char *argv[])
 {
    int  i, n, s, intervals;
-   FILE *fp;
+   Stream& fp;
    char buf[BUFSIZ];
    int  t[7];
 
@@ -234,7 +234,7 @@ main(int argc, char *argv[])
    PrintCallback          = true;
    TestNumber             = -1;
    TickCounter            = 0;
-   ErrorAccumulator       = 0.0f;
+   ErrorAccumulator       = 0.0;
    GameCorrectLengthAccum = 0;
    GameLengthAccum        = 0;
    GameError         = false;
@@ -285,7 +285,7 @@ main(int argc, char *argv[])
 void lensCallback()
 {
    int   i;
-   float error;
+   double error;
 
    if (exampleTick == 0)
    {
@@ -297,7 +297,7 @@ void lensCallback()
       GameLength        = 0;
    }
    TickCounter++;
-   error = 0.0f;
+   error = 0.0;
    for (i = 0; i < 7; i++)
    {
       error += fabs(*netOutputs[i] - TestingTargetOutputs[TestNumber][exampleTick][i]);

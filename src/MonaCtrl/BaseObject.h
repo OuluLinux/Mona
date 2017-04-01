@@ -38,46 +38,46 @@ public:
    cSpacial *getSpacial() { return (m_spacial); }
 
    // Set spacial state.
-   void setSpacial(GLfloat pitch, GLfloat yaw, GLfloat roll,
-                   GLfloat pitchRate, GLfloat yawRate, GLfloat rollRate,
-                   GLfloat x, GLfloat y, GLfloat z, GLfloat scale, GLfloat speed);
+   void setSpacial(GLdouble pitch, GLdouble yaw, GLdouble roll,
+                   GLdouble pitchRate, GLdouble yawRate, GLdouble rollRate,
+                   GLdouble x, GLdouble y, GLdouble z, GLdouble scale, GLdouble speed);
    void setSpacial(cSpacial *spacial);
 
    // Clear spacial.
    void clearSpacial() { m_spacial->Clear(); }
 
    // Rotations.
-   GLfloat getPitch() { return (m_spacial->getPitch()); }
-   GLfloat getYaw()   { return (m_spacial->getYaw()); }
-   GLfloat getRoll()  { return (m_spacial->getRoll()); }
-   void setPitch(GLfloat pitch) { m_spacial->setPitch(pitch); }
-   void setYaw(GLfloat yaw) { m_spacial->setYaw(yaw); }
-   void setRoll(GLfloat roll) { m_spacial->setRoll(roll); }
-   void addPitch(GLfloat pitch)
+   GLdouble getPitch() { return (m_spacial->getPitch()); }
+   GLdouble getYaw()   { return (m_spacial->getYaw()); }
+   GLdouble getRoll()  { return (m_spacial->getRoll()); }
+   void setPitch(GLdouble pitch) { m_spacial->setPitch(pitch); }
+   void setYaw(GLdouble yaw) { m_spacial->setYaw(yaw); }
+   void setRoll(GLdouble roll) { m_spacial->setRoll(roll); }
+   void addPitch(GLdouble pitch)
    {
       m_spacial->setPitch(m_spacial->getPitch() + pitch);
    }
 
 
-   void addYaw(GLfloat yaw)
+   void addYaw(GLdouble yaw)
    {
       m_spacial->setYaw(m_spacial->getYaw() + yaw);
    }
 
 
-   void addRoll(GLfloat roll)
+   void addRoll(GLdouble roll)
    {
       m_spacial->setRoll(m_spacial->getRoll() + roll);
    }
 
 
    // Get direction vectors.
-   void getRight(GLfloat *v)   { m_spacial->getRight(v); }
-   void getUp(GLfloat *v)      { m_spacial->getUp(v); }
-   void getForward(GLfloat *v) { m_spacial->getForward(v); }
+   void getRight(GLdouble *v)   { m_spacial->getRight(v); }
+   void getUp(GLdouble *v)      { m_spacial->getUp(v); }
+   void getForward(GLdouble *v) { m_spacial->getForward(v); }
 
    // Position.
-   void getPosition(GLfloat *v)
+   void getPosition(GLdouble *v)
    {
       v[0] = m_spacial->getX();
       v[1] = m_spacial->getY();
@@ -85,7 +85,7 @@ public:
    }
 
 
-   void setPosition(GLfloat *v)
+   void setPosition(GLdouble *v)
    {
       m_spacial->setX(v[0]);
       m_spacial->setY(v[1]);
@@ -94,13 +94,13 @@ public:
 
 
    // Scale.
-   GLfloat getScale() { return (m_spacial->getScale()); }
-   void setScale(GLfloat scale) { m_spacial->setScale(scale); }
+   GLdouble getScale() { return (m_spacial->getScale()); }
+   void setScale(GLdouble scale) { m_spacial->setScale(scale); }
 
    // Speed.
-   GLfloat getSpeed() { return (m_spacial->getSpeed()); }
-   void setSpeed(GLfloat speed) { m_spacial->setSpeed(speed); }
-   void addSpeed(GLfloat speed)
+   GLdouble getSpeed() { return (m_spacial->getSpeed()); }
+   void setSpeed(GLdouble speed) { m_spacial->setSpeed(speed); }
+   void addSpeed(GLdouble speed)
    {
       m_spacial->setSpeed(m_spacial->getSpeed() + speed);
    }
@@ -110,28 +110,28 @@ public:
    void Update() { m_spacial->Update(); }
 
    // Get model transformation matrix.
-   void getModelTransform(GLfloat *matrix)
+   void getModelTransform(GLdouble *matrix)
    {
       m_spacial->getModelTransform(matrix);
    }
 
 
    // Get world coordinates from local.
-   void localToWorld(GLfloat *local, GLfloat *world)
+   void localToWorld(GLdouble *local, GLdouble *world)
    {
       m_spacial->localToWorld(local, world);
    }
 
 
    // Transform local point.
-   void transformPoint(GLfloat *point)
+   void transformPoint(GLdouble *point)
    {
       m_spacial->transformPoint(point);
    }
 
 
    // Inverse transform local point.
-   void inverseTransformPoint(GLfloat *point)
+   void inverseTransformPoint(GLdouble *point)
    {
       m_spacial->inverseTransformPoint(point);
    }
@@ -140,7 +140,7 @@ public:
    // Get billboard (face toward) rotation to target point given in local coordinates.
    // Return axis and angle for rotation to accomplish billboard.
    // rotation[0-2]=axis, rotation[3]=angle
-   void getBillboard(GLfloat *target, GLfloat *rotation)
+   void getBillboard(GLdouble *target, GLdouble *rotation)
    {
       m_spacial->getBillboard(target, rotation);
    }
@@ -149,45 +149,45 @@ public:
    // Get billboard (face toward) rotation from source to target vectors.
    // Return axis and angle for rotation to accomplish billboard.
    // rotation[0-2]=axis, rotation[3]=angle
-   void getBillboard(GLfloat *target, GLfloat *source, GLfloat *rotation)
+   void getBillboard(GLdouble *target, GLdouble *source, GLdouble *rotation)
    {
       m_spacial->getBillboard(target, source, rotation);
    }
 
 
    // Load an axis-angle rotation into quaternion.
-   void LoadRotation(GLfloat angle, GLfloat *axis)
+   void LoadRotation(GLdouble angle, GLdouble *axis)
    {
       m_spacial->LoadRotation(angle, axis);
    }
 
 
    // Merge an axis-angle rotation into quaternion.
-   void MergeRotation(GLfloat angle, GLfloat *axis)
+   void MergeRotation(GLdouble angle, GLdouble *axis)
    {
       m_spacial->MergeRotation(angle, axis);
    }
 
 
    // Draw axes.
-   void drawAxes(GLfloat span = 1.0f);
+   void drawAxes(GLdouble span = 1.0f);
 
    // Set block vertices.
-   static void setBlockVertices(Vector3f *vertices, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
+   static void setBlockVertices(Vector3f *vertices, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
 
    // Draw a block.
-   static void drawBlock(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
+   static void drawBlock(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
 
    // Draw block edges.
-   static void drawBlockEdges(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
+   static void drawBlockEdges(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
 
    // Load object.
-   void Load(char *filename);
-   void Load(FILE *fp);
+   void Load(String filename);
+   void Serialize(Stream& fp);
 
    // Save object.
-   void Store(char *filename);
-   void Store(FILE *fp);
+   void Store(String filename);
+   void Store(Stream& fp);
 
    // Spacial properties.
    cSpacial *m_spacial;

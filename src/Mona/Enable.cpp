@@ -1,5 +1,3 @@
-// For conditions of distribution and use, see copyright notice in mona.h
-
 #include "Mona.h"
 #include <math.h>
 
@@ -29,8 +27,8 @@ Mona::Enable()
    {
       mediator = *mediator_iter;
       mediator->firing_strength = 0.0;
-      mediator->response_enablings.clearNewInSet();
-      mediator->effect_enablings.clearNewInSet();
+      mediator->response_enablings.ClearNewInSet();
+      mediator->effect_enablings.ClearNewInSet();
    }
 
    // Begin mediator event notifications.
@@ -61,7 +59,7 @@ Mona::Enable()
       {
          notify   = receptor->notify_list[j];
          mediator = notify->mediator;
-         if (notify->eventType == EFFECT_EVENT)
+         if (notify->event_type == EFFECT_EVENT)
          {
             mediator->EffectFiring(receptor->firing_strength);
          }
@@ -78,7 +76,7 @@ Mona::Enable()
          {
             notify   = receptor->notify_list[j];
             mediator = notify->mediator;
-            if (notify->eventType == CAUSE_EVENT)
+            if (notify->event_type == CAUSE_EVENT)
             {
                mediator->CauseFiring(receptor->firing_strength, event_clock);
             }
@@ -123,7 +121,7 @@ Mona::Enable()
 
 // Firing of mediator cause event.
 void
-Mona::Mediator::CauseFiring(WEIGHT notify_strength, TIME cause_begin)
+Mediator::CauseFiring(WEIGHT notify_strength, Time cause_begin)
 {
    int        i;
    Enabling   *enabling;
@@ -171,11 +169,11 @@ Mona::Mediator::CauseFiring(WEIGHT notify_strength, TIME cause_begin)
 
 // Firing of mediator response event.
 void
-Mona::Mediator::ResponseFiring(WEIGHT notify_strength)
+Mediator::ResponseFiring(WEIGHT notify_strength)
 {
    Enabling *enabling, *enabling2;
 
-   Vector<Enabling *>::Iterator enabling_iter;
+   Array<Enabling>::Iterator enabling_iter;
    ENABLEMENT                 enablement;
 
    // Transfer enablings to effect event.
@@ -203,12 +201,12 @@ Mona::Mediator::ResponseFiring(WEIGHT notify_strength)
 
 // Firing of mediator effect event.
 void
-Mona::Mediator::EffectFiring(WEIGHT notify_strength)
+Mediator::EffectFiring(WEIGHT notify_strength)
 {
    int      i;
    Enabling *enabling;
 
-   Vector<Enabling *>::Iterator enabling_iter;
+   Array<Enabling>::Iterator enabling_iter;
    ENABLEMENT                 e, enablement;
    WEIGHT              strength;
    struct Notify       *notify;
@@ -224,7 +222,7 @@ Mona::Mediator::EffectFiring(WEIGHT notify_strength)
    {
       notify   = notify_list[i];
       mediator = notify->mediator;
-      if (notify->eventType == EFFECT_EVENT)
+      if (notify->event_type == EFFECT_EVENT)
       {
          if (mediator->effect_enablings.getOldValue() > 0.0)
          {
@@ -325,7 +323,7 @@ Mona::Mediator::EffectFiring(WEIGHT notify_strength)
    {
       notify   = notify_list[i];
       mediator = notify->mediator;
-      if (notify->eventType == EFFECT_EVENT)
+      if (notify->event_type == EFFECT_EVENT)
       {
          mediator->EffectFiring(strength);
       }
@@ -342,8 +340,8 @@ Mona::Mediator::EffectFiring(WEIGHT notify_strength)
 
 
 // Get enablement including portions in enablings.
-Mona::ENABLEMENT
-Mona::Mediator::GetEnablement()
+ENABLEMENT
+Mediator::GetEnablement()
 {
    return (base_enablement +
           response_enablings.GetValue() +
@@ -353,13 +351,13 @@ Mona::Mediator::GetEnablement()
 
 // Update enablement.
 void
-Mona::Mediator::UpdateEnablement(EVENT_OUTCOME outcome, WEIGHT updateWeight)
+Mediator::UpdateEnablement(EVENT_OUTCOME outcome, WEIGHT updateWeight)
 {
    ENABLEMENT e1, e2;
    double     r;
    Enabling   *enabling;
 
-   Vector<Enabling *>::Iterator enabling_iter;
+   Array<Enabling>::Iterator enabling_iter;
 
    // Instinct enablement cannot be updated.
    if (instinct)
@@ -429,7 +427,7 @@ Mona::Mediator::UpdateEnablement(EVENT_OUTCOME outcome, WEIGHT updateWeight)
 // with the enablements of its overlying mediator hierarchy
 // to determine its ability to predict its effect event.
 void
-Mona::Mediator::UpdateEffectiveEnablement()
+Mediator::UpdateEffectiveEnablement()
 {
    ENABLEMENT    e, et;
    struct Notify *notify;
@@ -448,7 +446,7 @@ Mona::Mediator::UpdateEffectiveEnablement()
    {
       notify   = notify_list[i];
       mediator = notify->mediator;
-      if (notify->eventType == EFFECT_EVENT)
+      if (notify->event_type == EFFECT_EVENT)
       {
          mediator->UpdateEffectiveEnablement();
          e *= (1.0 - (mediator->effective_enablement *
@@ -477,11 +475,11 @@ Mona::Mediator::UpdateEffectiveEnablement()
 
 // Retire enablings.
 void
-Mona::Mediator::RetireEnablings(bool force)
+Mediator::RetireEnablings(bool force)
 {
    Enabling *enabling;
 
-   Vector<Enabling *>::Iterator enabling_iter;
+   Array<Enabling>::Iterator enabling_iter;
 
    // Age and retire response enablings.
    for (enabling_iter = response_enablings.enablings.Begin();
@@ -491,7 +489,7 @@ Mona::Mediator::RetireEnablings(bool force)
       enabling->age++;
       if (force || (enabling->age > 1))
       {
-         enabling_iter     = response_enablings.enablings.erase(enabling_iter);
+         enabling_iter     = response_enablings.enablings.Remove(enabling_iter);
          base_enablement += enabling->value;
          delete enabling;
       }
@@ -510,7 +508,7 @@ Mona::Mediator::RetireEnablings(bool force)
       if (force ||
           (enabling->age > mona->effect_event_intervals[level][enabling->timer_index]))
       {
-         enabling_iter     = effect_enablings.enablings.erase(enabling_iter);
+         enabling_iter     = effect_enablings.enablings.Remove(enabling_iter);
          base_enablement += enabling->value;
          delete enabling;
       }
@@ -523,7 +521,7 @@ Mona::Mediator::RetireEnablings(bool force)
 
 
 // Update goal value.
-void Mona::Mediator::UpdateGoalValue(VALUE_SET& needs)
+void Mediator::UpdateGoalValue(VALUE_SET& needs)
 {
    NEED      need;
    VALUE_SET needsBase, need_deltas;
@@ -536,7 +534,7 @@ void Mona::Mediator::UpdateGoalValue(VALUE_SET& needs)
    need_deltas.Reserve(mona->need_count);
    for (int i = 0; i < mona->need_count; i++)
    {
-      needsBase.set(i, mona->homeostats[i]->GetNeed());
+      needsBase.Set(i, mona->homeostats[i]->GetNeed());
       need = needsBase.Get(i) - needs.Get(i);
       if (need > 1.0)
       {
@@ -546,9 +544,9 @@ void Mona::Mediator::UpdateGoalValue(VALUE_SET& needs)
       {
          need = -1.0;
       }
-      need_deltas.set(i, need);
+      need_deltas.Set(i, need);
    }
-   goals.update(needsBase, need_deltas);
+   goals.Update(needsBase, need_deltas);
 }
 
 
@@ -564,7 +562,7 @@ Mona::ExpireResponseEnablings(RESPONSE expiringResponse)
 
    Vector<WEIGHT>             expire_weights;
    Vector<Mediator *>::Iterator mediator_iter;
-   Vector<Enabling *>::Iterator enabling_iter;
+   Array<Enabling>::Iterator enabling_iter;
 
    for (mediator_iter = mediators.Begin();
         mediator_iter != mediators.End(); mediator_iter++)
@@ -595,7 +593,7 @@ Mona::ExpireResponseEnablings(RESPONSE expiringResponse)
          for (i = 0; i < (int)mediator->notify_list.GetCount(); i++)
          {
             notify = mediator->notify_list[i];
-            if (notify->eventType == EFFECT_EVENT)
+            if (notify->event_type == EFFECT_EVENT)
             {
                ExpireMediatorEnablings(notify->mediator);
             }
@@ -613,7 +611,7 @@ Mona::ExpireMediatorEnablings(Mediator *mediator)
    ENABLEMENT enablement;
 
    Vector<WEIGHT>             expire_weights;
-   Vector<Enabling *>::Iterator enabling_iter;
+   Array<Enabling>::Iterator enabling_iter;
    struct Notify              *notify;
 
    enablement = mediator->GetEnablement();
@@ -637,7 +635,7 @@ Mona::ExpireMediatorEnablings(Mediator *mediator)
    for (int i = 0; i < (int)mediator->notify_list.GetCount(); i++)
    {
       notify = mediator->notify_list[i];
-      if (notify->eventType == EFFECT_EVENT)
+      if (notify->event_type == EFFECT_EVENT)
       {
          ExpireMediatorEnablings(notify->mediator);
       }

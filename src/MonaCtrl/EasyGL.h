@@ -230,8 +230,8 @@ class GUIFont : public NamedObject
     bool operator ==(const GUIFont &compare);
     bool operator !=(const GUIFont &compare);
 
-    bool loadXMLSettings(const TiXmlElement *node);
-    bool build();
+    bool LoadXMLSettings(const TiXmlElement *node);
+    bool Build();
 
   private:
     CFont  font;
@@ -252,7 +252,7 @@ class GUIText
     GUIText &operator =(const GUIText     &text);
     GUIText &operator =(const String &text);
 
-    virtual bool loadXMLSettings(const TiXmlElement *node);
+    virtual bool LoadXMLSettings(const TiXmlElement *node);
 
     void  computeSizes();
     void  printCenteredXY(int x, int y, int startIndex = 0, int endIndex = -1);
@@ -270,19 +270,19 @@ class GUIText
     void  setSize(const Tuple2i& size);
     const Tuple2i& getSize();
 
-    void  setColor(float r, float g, float b);
+    void  setColor(double r, double g, double b);
     void  setColor(const Tuple3f &color);
     const Tuple3f &getColor();
 
     int   GetHeight();
     int   GetWidth();
 
-    void   setHeightScale(float hs);
-    void   setWidthScale(float ws);
+    void   setHeightScale(double hs);
+    void   setWidthScale(double ws);
     void   setScales(Tuple2f scales);
 
-    float  getHeightScale();
-    float  getWidthScale();
+    double  getHeightScale();
+    double  getWidthScale();
     const  Tuple2f & getScales();
 
     bool  needUpdating();
@@ -362,11 +362,11 @@ class GUITexCoordDescriptor
     static int getTextureWidth();
     static int getTextureHeight();
 
-    void loadXMLSettings(const TiXmlElement *element);
+    void LoadXMLSettings(const TiXmlElement *element);
     void setType(int type);
     int  getType();
 
-    void setTexCoords(float x, float y, float z, float w);
+    void setTexCoords(double x, double y, double z, double w);
     void setTexCoords(const Tuple4f& texCoords);
 
     const Tuple4f &getTexCoords();
@@ -410,13 +410,13 @@ class GUIRectangle
     void               setCallbackString(const String& callback);
     const String &getCallbackString();
 
-    bool     loadXMLSettings(const TiXmlElement *node);
+    bool     LoadXMLSettings(const TiXmlElement *node);
 
-    void     setSizes(float width, float height);
+    void     setSizes(double width, double height);
     void     setSizes(const Tuple2f &dimensions);
     const    Tuple2f &getSizes();
 
-    void     setPosition(float xScaleOrPosition, float yScaleOrPosition);
+    void     setPosition(double xScaleOrPosition, double yScaleOrPosition);
     void     setPosition(const Tuple2f &scalesOrPosition);
     const    Tuple2f &getPosition();
     virtual  Tuple2i  getCenter();
@@ -506,17 +506,17 @@ class GUIClippedRectangle
     void  setVisibleBounds(bool visible);
     bool  boundsVisible();
 
-    void  setBGColor(float x, float y, float z, float alpha);
+    void  setBGColor(double x, double y, double z, double alpha);
     void  setBGColor(const Tuple4f& color);
     const Tuple4f &getBGColor();
     const Tuple2i *getVertices() const;
 
     void  setBordersColor(const Tuple3f& color);
-    void  setBordersColor(float x, float y, float z);
+    void  setBordersColor(double x, double y, double z);
     const Tuple3f &getBordersColor();
     const Tuple2f *getTexCoords() const;
 
-    void  setTextureRectangle(float x, float y, float z, float w);
+    void  setTextureRectangle(double x, double y, double z, double w);
     void  setTextureRectangle(const Tuple4f &textureRectangle);
     const Tuple4f &getTextureRectangle();
 
@@ -537,7 +537,7 @@ class GUISeparator : public GUIRectangle
 {
   public:
     GUISeparator(int orientation = OR_HORIZONTAL);
-    virtual bool loadXMLSettings(const TiXmlElement *element);
+    virtual bool LoadXMLSettings(const TiXmlElement *element);
     virtual void checkMouseEvents(MouseEvent  &evt, int extraInfo){};
     virtual void checkKeyboardEvents(KeyEvent evt, int extraInfo){};
     virtual void render(float);
@@ -548,11 +548,11 @@ class GUISeparator : public GUIRectangle
     void    setOrientation(int orientation);
     int     getOrientation();
 
-    void    setRatio(float ratio);
-    float   getRatio();
+    void    setRatio(double ratio);
+    double   getRatio();
   private:
     int   orientation;
-    float ratio;
+    double ratio;
 };
 
 /**********************************************************************************/
@@ -567,30 +567,30 @@ class GUIAlphaElement : public GUIRectangle
   protected:
     GUIText    label;
     Tuple4f    color;
-    float      alphaFadeScale,
+    double      alphaFadeScale,
                minAlpha;
 
-    void       modifyCurrentAlpha(float tick);
+    void       modifyCurrentAlpha(double tick);
  public:
     GUIAlphaElement(const String &callback = "");
 
-    virtual void render(float clockTick) = 0;
-    virtual bool loadXMLSettings(const TiXmlElement *node);
+    virtual void render(double clockTick) = 0;
+    virtual bool LoadXMLSettings(const TiXmlElement *node);
 
-    void  setMinAlpha(float minAlpha);
-    float getMinAlpha();
+    void  setMinAlpha(double minAlpha);
+    double getMinAlpha();
 
-    void  setAlphaFadeScale(float scale);
-    float getAlphaFadeScale();
+    void  setAlphaFadeScale(double scale);
+    double getAlphaFadeScale();
 
-    void  setAlpha(float alpha);
-    float getAlpha();
+    void  setAlpha(double alpha);
+    double getAlpha();
 
     void  setLabelString(const String &label);
     const String  &getLabelString();
 
     void  setColor(const Tuple3f& color);
-    void  setColor(float x, float y, float z);
+    void  setColor(double x, double y, double z);
     const Tuple4f &getColor();
 
     GUIText * getLabel();
@@ -608,8 +608,8 @@ class GUILabel : public GUIAlphaElement
     GUILabel(const String &labelString    = "Unknown Label",
              const String &callbackString = "");
 
-    virtual void  render(float clockTick);
-    virtual bool  loadXMLSettings(const TiXmlElement *element);
+    virtual void  render(double clockTick);
+    virtual bool  LoadXMLSettings(const TiXmlElement *element);
     virtual const Tuple4i &getWindowBounds();
 };
 
@@ -625,10 +625,10 @@ class GUITextBox : public GUIAlphaElement
     GUITextBox(const String &callback  = "",
                const String &fieldText = "");
 
-    virtual void    render(float clockTick);
+    virtual void    render(double clockTick);
     virtual void    checkMouseEvents(MouseEvent &evt, int extraInfo, bool reservedBits = false);
     virtual void    checkKeyboardEvents(KeyEvent evt, int extraInfo);
-    virtual bool    loadXMLSettings(const TiXmlElement *node);
+    virtual bool    LoadXMLSettings(const TiXmlElement *node);
     virtual const   Tuple4i &getWindowBounds();
     void            setText(const String &text);
     const   String &getText() const;
@@ -636,7 +636,7 @@ class GUITextBox : public GUIAlphaElement
     bool    textChanged();
 
     void  setBordersColor(const Tuple3f& color);
-    void  setBordersColor(float r, float g, float b);
+    void  setBordersColor(double r, double g, double b);
     const Tuple3f &getBordersColor() const;
 
     void  setPadding(const Tuple2i& p);
@@ -647,7 +647,7 @@ class GUITextBox : public GUIAlphaElement
     Tuple2i padding;
     Tuple3f bordersColor,
             textColor;
-    float   blinkerTimer;
+    double   blinkerTimer;
     size_t  blinkerPosition,
             textStartIndex,
             textEndIndex;
@@ -669,8 +669,8 @@ class GUIButton : public GUIAlphaElement, public GUIClippedRectangle
   public:
     GUIButton(const String &callback = "");
 
-    virtual void  render(float clockTick);
-    virtual bool  loadXMLSettings(const TiXmlElement *node);
+    virtual void  render(double clockTick);
+    virtual bool  LoadXMLSettings(const TiXmlElement *node);
     virtual const void computeWindowBounds();
 
     void enableBounce(bool bounce);
@@ -691,27 +691,27 @@ class GUICheckBox : public GUIAlphaElement
   public:
     GUICheckBox(const String &callback = "");
 
-    virtual void render(float clockTick);
+    virtual void render(double clockTick);
     virtual void checkMouseEvents(MouseEvent &evt, int extraInfo, bool reservedBits = false);
-    virtual bool loadXMLSettings(const TiXmlElement *node);
+    virtual bool LoadXMLSettings(const TiXmlElement *node);
     virtual void setChecked(bool enabled);
 
-    void  setAlphaMark(float mark);
-    float getAlphaMark();
+    void  setAlphaMark(double mark);
+    double getAlphaMark();
 
-    void  setMinAlphaMark(float mark);
-    float getMinAlphaMark();
+    void  setMinAlphaMark(double mark);
+    double getMinAlphaMark();
 
     bool  isChecked();
 
     void  setBGColor(const Tuple3f& color);
-    void  setBGColor(float x, float y, float z);
+    void  setBGColor(double x, double y, double z);
     const Tuple3f &getBGColor();
     virtual const Tuple4i &getWindowBounds();
 
   protected:
     Tuple3f bgColor;
-    float   markRatio,
+    double   markRatio,
             alphaMark,
             minAlphaMark;
     bool    checked;
@@ -748,11 +748,11 @@ class GUISlider : public GUIAlphaElement
 
     virtual const Tuple4i &getWindowBounds();
     virtual void  checkMouseEvents(MouseEvent &evt, int extreaInfo, bool reservedBits = false);
-    virtual bool  loadXMLSettings(const TiXmlElement *element);
-    virtual void  render(float clockTick);
+    virtual bool  LoadXMLSettings(const TiXmlElement *element);
+    virtual void  render(double clockTick);
 
-    float getProgress();
-    void  setProgress(float zeroToOne);
+    double getProgress();
+    void  setProgress(double zeroToOne);
 
     void  setDiscSizes(const Tuple2i& dimensions);
     void  setDiscSizes(int width, int height);
@@ -763,7 +763,7 @@ class GUISlider : public GUIAlphaElement
   private:
     Tuple4i realWindowBounds;
     Tuple2i discSizes;
-    float   progress;
+    double   progress;
     int     orientation,
             offset;
 
@@ -804,13 +804,13 @@ class GUIPanel : public GUIRectangle,
 
     int   getTreeHeight();
 
-    virtual bool  loadXMLSettings(const char *stackPath);
-    virtual bool  loadXMLSettings(const TiXmlElement *element);
+    virtual bool  LoadXMLSettings(const char *stackPath);
+    virtual bool  LoadXMLSettings(const TiXmlElement *element);
 
     virtual void  notify(GUIRectangle *element);
     virtual void  checkMouseEvents(MouseEvent  &evt, int extraInfo, bool bitInfo = false);
     virtual void  checkKeyboardEvents(KeyEvent evt, int extraInfo);
-    virtual void  render(float tick);
+    virtual void  render(double tick);
 
     virtual void  collectZWidgets(ZWidgets &container);
     virtual void  forceUpdate(bool);
@@ -840,7 +840,7 @@ class GUIFrame : public GUIPanel
     GUIFrame();
    ~GUIFrame();
 
-    virtual bool  loadXMLSettings(const TiXmlElement *element);
+    virtual bool  LoadXMLSettings(const TiXmlElement *element);
 
     void     addOrReplaceTexCoordsInfo(GUITexCoordDescriptor &info);
     void     setElementsTexture(const char* texturePath);
@@ -855,7 +855,7 @@ class GUIFrame : public GUIPanel
     virtual void  forceUpdate(bool update);
     virtual void  enableGUITexture();
     virtual void  disableGUITexture();
-    virtual void  render(float tick);
+    virtual void  render(double tick);
     virtual void  Clear();
 };
 
@@ -873,12 +873,12 @@ class GUIComboBox : public GUIRectangle, public GUIEventListener
 
     virtual GUIEventListener  *getEventsListener();
     virtual const void         computeWindowBounds();
-    virtual bool               loadXMLSettings(const TiXmlElement *node);
-    virtual void               render(float clockTick);
+    virtual bool               LoadXMLSettings(const TiXmlElement *node);
+    virtual void               render(double clockTick);
     virtual void               checkMouseEvents(MouseEvent &evt, int extraInfo, bool reservedBits = false);
     virtual void               actionPerformed(GUIEvent &evt);
 
-    void                    setFontScales(float w, float h);
+    void                    setFontScales(double w, double h);
     void                    setFontScales(const Tuple2f &scales);
     const   Tuple2f        &getFontScales();
 
@@ -891,7 +891,7 @@ class GUIComboBox : public GUIRectangle, public GUIEventListener
     bool                         setSelectedItem(const String &item);
     bool                         setSelectedItemIndex(size_t index);
 
-    void    setScrollingColor(float r, float g, float b, float alpha);
+    void    setScrollingColor(double r, double g, double b, double alpha);
     void    setScrollingColor(const Tuple4f &rgba);
     const   Tuple4f &getScrollingColor() const;
 
@@ -936,21 +936,21 @@ class GUITabbedPanel : public GUIRectangle, public GUIEventListener
 
     virtual GUIEventListener  *getEventsListener();
     virtual const void         computeWindowBounds();
-    virtual bool               loadXMLSettings(const TiXmlElement *node);
-    virtual void               render(float clockTick);
+    virtual bool               LoadXMLSettings(const TiXmlElement *node);
+    virtual void               render(double clockTick);
     virtual void               checkMouseEvents(MouseEvent &evt, int extraInfo, bool reservedBits = false);
     virtual void               checkKeyboardEvents(KeyEvent evt, int extraInfo);
     virtual void               actionPerformed(GUIEvent &evt);
 
-    void               setTabButtonsColor(float r, float g, float b);
+    void               setTabButtonsColor(double r, double g, double b);
     void               setTabButtonsColor(const Tuple3f& color);
     const Tuple3f     &getTabButtonsColor() const;
 
-    void               setTabButtonsBordersColor(float r, float g, float b);
+    void               setTabButtonsBordersColor(double r, double g, double b);
     void               setTabButtonsBordersColor(const Tuple3f& color);
     const Tuple3f     &getTabButtonsBordersColor() const;
 
-    void               setFontScales(float w, float h);
+    void               setFontScales(double w, double h);
     void               setFontScales(const Tuple2f &scales);
     const   Tuple2f   &getFontScales();
 

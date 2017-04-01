@@ -1,5 +1,3 @@
-// For conditions of distribution and use, see copyright notice in mona.h
-
 /*
  * Homeostat.
  * Regulates:
@@ -21,7 +19,7 @@ public:
 
    // Data types.
    typedef unsigned long long   ID;
-   typedef float                SENSOR;
+   typedef double                SENSOR;
    typedef int                  SENSOR_MODE;
    typedef int                  RESPONSE;
    typedef double               NEED;
@@ -41,6 +39,12 @@ public:
       void           *motor;
       NEED           goal_value;
       bool           enabled;
+      int id;
+      
+      void Serialize(Stream& s) {
+          s % sensors % sensor_mode % id % response % goal_value % enabled;
+          if (s.IsLoading()) {motor = NULL; receptor = NULL;}
+      }
    };
 
    NEED         need;
@@ -132,15 +136,12 @@ public:
    void ResponseUpdate();
 
    // Load homeostat.
-   void Load(char *filename);
-   void Load(FILE *);
-
-   // Save homeostat.
-   void Store(char *filename);
-   void Store(FILE *);
+   void Load(String filename);
+   void Serialize(Stream& fp);
+   void Store(String filename);
 
    // Print homeostat.
-   void Print(FILE *out = stdout);
+   //void Print(FILE *out = stdout);
 };
 
 #endif
