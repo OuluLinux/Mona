@@ -1,5 +1,5 @@
-#ifndef __VALUESET__
-#define __VALUESET__
+#ifndef _Mona_ValueSet_h_
+#define _Mona_ValueSet_h_
 
 #include "Common.h"
 

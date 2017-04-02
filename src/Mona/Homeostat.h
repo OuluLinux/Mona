@@ -5,8 +5,8 @@
     2. Goal values that change the need value.
 */
 
-#ifndef __HOMEOSTAT__
-#define __HOMEOSTAT__
+#ifndef _Mona_Homeostat_h_
+#define _Mona_Homeostat_h_
 
 #include "Mona.h"
 

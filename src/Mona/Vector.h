@@ -1,5 +1,5 @@
-#ifndef __VECTOR_HPP__
-#define __VECTOR_HPP__
+#ifndef _Mona_Vector_h_
+#define _Mona_Vector_h_
 
 #include "Common.h"
 

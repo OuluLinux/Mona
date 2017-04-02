@@ -1,0 +1,252 @@
+#include "Mona.h"
+
+
+
+// Receptor constructor.
+Receptor::Receptor(Vector<SENSOR>& centroid,
+				   SENSOR_MODE sensor_mode, Mona* mona) {
+	ASSERT((int)centroid.GetCount() == mona->sensor_count);
+	this->centroid.Clear();
+
+	for (int i = 0; i < (int)centroid.GetCount(); i++)
+		this->centroid.Add(centroid[i]);
+
+	this->sensor_mode = sensor_mode;
+	Init(mona);
+	type   = RECEPTOR;
+	motive = 0.0;
+}
+
+
+// Receptor destructor.
+Receptor::~Receptor() {
+	sub_sensor_modes.Clear();
+	super_sensor_modes.Clear();
+	Clear();
+}
+
+
+// Is given receptor a duplicate of this?
+bool Receptor::IsDuplicate(Receptor* receptor) {
+	if (sensor_mode != receptor->sensor_mode)
+		return false;
+
+	if (GetCentroidDistance(receptor->centroid) == 0.0)
+		return true;
+	else
+		return false;
+}
+
+
+// Load receptor.
+void Receptor::Serialize(Stream& fp) {
+	int      i, j;
+	double    s;
+	Receptor* receptor;
+	Clear();
+	((Neuron*)this)->Load(fp);
+	FREAD_INT(&sensor_mode, fp);
+	centroid.SetCount(mona->sensor_count);
+
+	for (i = 0; i < mona->sensor_count; i++) {
+		FREAD_FLOAT(&s, fp);
+		centroid[i] = (SENSOR)s;
+	}
+
+	FREAD_INT(&j, fp);
+	sub_sensor_modes.Clear();
+
+	for (i = 0; i < j; i++) {
+		receptor = (Receptor*)new ID;
+		ASSERT(receptor != NULL);
+		FREAD_LONG_LONG((ID*)receptor, fp);
+		sub_sensor_modes.Add(receptor);
+	}
+
+	FREAD_INT(&j, fp);
+	super_sensor_modes.Clear();
+
+	for (i = 0; i < j; i++) {
+		receptor = (Receptor*)new ID;
+		ASSERT(receptor != NULL);
+		FREAD_LONG_LONG((ID*)receptor, fp);
+		super_sensor_modes.Add(receptor);
+	}
+}
+
+
+// Save receptor.
+// When changing format increment FORMAT in mona.h
+void Receptor::Store(Stream& fp) {
+	int   i, j;
+	double s;
+	ID    id;
+	((Neuron*)this)->Store(fp);
+	FWRITE_INT(&sensor_mode, fp);
+
+	for (i = 0; i < mona->sensor_count; i++) {
+		s = (float)centroid[i];
+		FWRITE_FLOAT(&s, fp);
+	}
+
+	j = (int)sub_sensor_modes.GetCount();
+	FWRITE_INT(&j, fp);
+
+	for (i = 0; i < j; i++) {
+		id = sub_sensor_modes[i]->id;
+		FWRITE_LONG_LONG(&id, fp);
+	}
+
+	j = (int)super_sensor_modes.GetCount();
+	FWRITE_INT(&j, fp);
+
+	for (i = 0; i < j; i++) {
+		id = super_sensor_modes[i]->id;
+		FWRITE_LONG_LONG(&id, fp);
+	}
+}
+
+/*
+    // Print receptor.
+    #ifdef MONA_TRACKING
+    void Receptor::Print(FILE *out)
+    {
+    Print((TRACKING_FLAGS)0, out);
+    }
+
+
+    void Receptor::Print(TRACKING_FLAGS tracking, FILE *out)
+    #else
+    void Receptor::Print(FILE *out)
+    #endif
+    {
+    fprintf(out, "<receptor><id>%llu</id>", id);
+    fprintf(out, "<sensor_mode>%d</sensor_mode>", sensor_mode);
+    fprintf(out, "<centroid>");
+    for (int i = 0; i < mona->sensor_count; i++)
+    {
+      fprintf(out, "<value>%f</value>", centroid[i]);
+    }
+    fprintf(out, "</centroid>");
+    fprintf(out, "<goals>");
+    goals.Print(out);
+    fprintf(out, "</goals>");
+    if (instinct)
+    {
+      fprintf(out, "<instinct>true</instinct>");
+    }
+    else
+    {
+      fprintf(out, "<instinct>false</instinct>");
+    }
+    #ifdef MONA_TRACKING
+    if ((tracking & TRACK_FIRE) && tracker.fire)
+    {
+      fprintf(out, "<fire>true</fire>");
+    }
+    if ((tracking & TRACK_ENABLE) && tracker.enable)
+    {
+      fprintf(out, "<enable>true</enable>");
+    }
+    if ((tracking & TRACK_DRIVE) && tracker.drive)
+    {
+      fprintf(out, "<motive>%f</motive>", tracker.motive);
+    }
+    #endif
+    fprintf(out, "</receptor>");
+    }
+*/
+
+
+
+
+// Get distance from centroid to given sensor vector.
+SENSOR Receptor::GetCentroidDistance(Vector<SENSOR>& sensors) {
+	return (GetSensorDistance(&centroid, &sensors));
+}
+
+
+// Get distance between sensor vectors.
+// Distance metric is Euclidean distance squared.
+SENSOR Receptor::GetSensorDistance(Vector<SENSOR>* sensorsA,
+								   Vector<SENSOR>* sensorsB) {
+	SENSOR d;
+	SENSOR dist = 0.0;
+
+	for (int i = 0; i < (int)sensorsA->GetCount(); i++) {
+		d     = (*sensorsA)[i] - (*sensorsB)[i];
+		dist += (d * d);
+	}
+
+	return (dist);
+}
+
+
+// RDTree sensor vector search.
+SENSOR Receptor::PatternDistance(void* sensorsA, void* sensorsB) {
+	return (GetSensorDistance((Vector<SENSOR>*)sensorsA, (Vector<SENSOR>*)sensorsB));
+}
+
+
+void* Receptor::LoadPattern(void* mona, Stream& fp) {
+	SENSOR s;
+	Vector<SENSOR>* sensors = new Vector<SENSOR>();
+	ASSERT(sensors != NULL);
+
+	for (int i = 0; i < ((Mona*)mona)->sensor_count; i++) {
+		FREAD_FLOAT(&s, fp);
+		sensors->Add(s);
+	}
+
+	return ((void*)sensors);
+}
+
+
+void Receptor::StorePattern(void* sensorsIn, Stream& fp) {
+	SENSOR s;
+	Vector<SENSOR>* sensors = (Vector<SENSOR>*)sensorsIn;
+
+	for (int i = 0; i < (int)sensors->GetCount(); i++) {
+		s = (*sensors)[i];
+		FWRITE_FLOAT(&s, fp);
+	}
+}
+
+
+void* Receptor::LoadClient(void* mona, Stream& fp) {
+	ID id;
+	FREAD_LONG_LONG(&id, fp);
+	return ((void*)((Mona*)mona)->FindByID(id));
+}
+
+
+void Receptor::StoreClient(void* receptor, Stream& fp) {
+	FWRITE_LONG_LONG(&((Receptor*)receptor)->id, fp);
+}
+
+
+void Receptor::DeletePattern(void* pattern) {
+	delete (Vector<SENSOR>*)pattern;
+}
+
+
+
+// Update goal value.
+void Receptor::UpdateGoalValue() {
+	VALUE_SET needs, need_deltas;
+
+	if (!mona->LEARN_RECEPTOR_GOAL_VALUE)
+		return;
+
+	needs.Reserve(mona->need_count);
+	need_deltas.Reserve(mona->need_count);
+
+	for (int i = 0; i < mona->need_count; i++) {
+		needs.Set(i, mona->homeostats[i]->GetNeed());
+		need_deltas.Set(i, mona->homeostats[i]->GetAndClearNeedDelta());
+	}
+
+	goals.Update(needs, need_deltas);
+}
+
+

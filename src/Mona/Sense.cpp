@@ -190,75 +190,6 @@ Mona::GetCentroidReceptor(Vector<SENSOR>& sensors,
 }
 
 
-// Get distance from centroid to given sensor vector.
-SENSOR Receptor::GetCentroidDistance(Vector<SENSOR>& sensors) {
-	return (GetSensorDistance(&centroid, &sensors));
-}
-
-
-// Get distance between sensor vectors.
-// Distance metric is Euclidean distance squared.
-SENSOR Receptor::GetSensorDistance(Vector<SENSOR>* sensorsA,
-								   Vector<SENSOR>* sensorsB) {
-	SENSOR d;
-	SENSOR dist = 0.0;
-
-	for (int i = 0; i < (int)sensorsA->GetCount(); i++) {
-		d     = (*sensorsA)[i] - (*sensorsB)[i];
-		dist += (d * d);
-	}
-
-	return (dist);
-}
-
-
-// RDTree sensor vector search.
-SENSOR Receptor::PatternDistance(void* sensorsA, void* sensorsB) {
-	return (GetSensorDistance((Vector<SENSOR>*)sensorsA, (Vector<SENSOR>*)sensorsB));
-}
-
-
-void* Receptor::LoadPattern(void* mona, Stream& fp) {
-	SENSOR s;
-	Vector<SENSOR>* sensors = new Vector<SENSOR>();
-	ASSERT(sensors != NULL);
-
-	for (int i = 0; i < ((Mona*)mona)->sensor_count; i++) {
-		FREAD_FLOAT(&s, fp);
-		sensors->Add(s);
-	}
-
-	return ((void*)sensors);
-}
-
-
-void Receptor::StorePattern(void* sensorsIn, Stream& fp) {
-	SENSOR s;
-	Vector<SENSOR>* sensors = (Vector<SENSOR>*)sensorsIn;
-
-	for (int i = 0; i < (int)sensors->GetCount(); i++) {
-		s = (*sensors)[i];
-		FWRITE_FLOAT(&s, fp);
-	}
-}
-
-
-void* Receptor::LoadClient(void* mona, Stream& fp) {
-	ID id;
-	FREAD_LONG_LONG(&id, fp);
-	return ((void*)((Mona*)mona)->FindByID(id));
-}
-
-
-void Receptor::StoreClient(void* receptor, Stream& fp) {
-	FWRITE_LONG_LONG(&((Receptor*)receptor)->id, fp);
-}
-
-
-void Receptor::DeletePattern(void* pattern) {
-	delete (Vector<SENSOR>*)pattern;
-}
-
 
 // Set sensor resolution.
 bool Mona::SetSensorResolution(SENSOR sensorResolution) {
@@ -311,21 +242,3 @@ int Mona::AddSensorMode(Vector<bool>& sensorMask) {
 	return (AddSensorMode(sensorMask, SENSOR_RESOLUTION));
 }
 
-
-// Update goal value.
-void Receptor::UpdateGoalValue() {
-	VALUE_SET needs, need_deltas;
-
-	if (!mona->LEARN_RECEPTOR_GOAL_VALUE)
-		return;
-
-	needs.Reserve(mona->need_count);
-	need_deltas.Reserve(mona->need_count);
-
-	for (int i = 0; i < mona->need_count; i++) {
-		needs.Set(i, mona->homeostats[i]->GetNeed());
-		need_deltas.Set(i, mona->homeostats[i]->GetAndClearNeedDelta());
-	}
-
-	goals.Update(needs, need_deltas);
-}

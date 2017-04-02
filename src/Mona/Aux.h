@@ -2,8 +2,8 @@
 
 // Mona auxiliary classes.
 
-#ifndef __MONA_AUX__
-#define __MONA_AUX__
+#ifndef _Mona_Aux_h_
+#define _Mona_Aux_h_
 
 // Forward declarations.
 class Neuron;
@@ -265,11 +265,11 @@ public:
 	WEIGHT           weight;
 	Vector<Neuron*> path;
 	#ifdef MONA_TRACKING
-	struct DriveElem {
+	struct DriveElement {
 		Neuron* neuron;
 		MOTIVE motive;
 	};
-	Vector<struct DriveElem> drivers;
+	Vector<struct DriveElement> drivers;
 	#endif
 
 	MotiveAccum(const MotiveAccum& src) {

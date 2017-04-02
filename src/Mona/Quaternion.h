@@ -1,5 +1,5 @@
-#ifndef __QUATERNION_HPP__
-#define __QUATERNION_HPP__
+#ifndef _Mona_Quaternion_h_
+#define _Mona_Quaternion_h_
 
 #include "Vector.h"
 
