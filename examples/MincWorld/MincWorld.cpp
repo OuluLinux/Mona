@@ -200,7 +200,7 @@ main(int argc, char* argv[]) {
 		maze = MazeGrammar->generateMaze();
 		ASSERT(maze != NULL);
 
-		for (j = 0; j < (int)GeneralizationMazes.GetCount(); j++) {
+		for (j = 0; j < GeneralizationMazes.GetCount(); j++) {
 			if (GeneralizationMazes[j]->IsDuplicate(maze))
 				break;
 		}
@@ -234,13 +234,13 @@ main(int argc, char* argv[]) {
 	for (i = 0; i < NumMazes; i++) {
 		maze = GeneralizationMazes[i];
 
-		if (intervals < (int)maze->path.GetCount())
+		if (intervals < maze->path.GetCount())
 			intervals = (int)maze->path.GetCount();
 
 		printf("name: { ");
 		fprintf(fp, "name: { ");
 
-		for (j = 0; j < (int)maze->path.GetCount(); j++) {
+		for (j = 0; j < maze->path.GetCount(); j++) {
 			printf("%d ", maze->path[j].mark);
 			fprintf(fp, "%d ", maze->path[j].mark);
 		}
@@ -248,7 +248,7 @@ main(int argc, char* argv[]) {
 		printf("} %d\n", (int)maze->path.GetCount());
 		fprintf(fp, "} %d\n", (int)maze->path.GetCount());
 
-		for (j = 0; j < (int)maze->path.GetCount(); j++) {
+		for (j = 0; j < maze->path.GetCount(); j++) {
 			printf("I:");
 			fprintf(fp, "I:");
 
@@ -277,7 +277,7 @@ main(int argc, char* argv[]) {
 
 			printf(" P: %f %f", maze->path[j].probability, 1.0 - maze->path[j].probability);
 
-			if (j < (int)maze->path.GetCount() - 1) {
+			if (j < maze->path.GetCount() - 1) {
 				printf("\n");
 				fprintf(fp, "\n");
 			}
@@ -306,7 +306,7 @@ main(int argc, char* argv[]) {
 	printf("name: { ");
 	fprintf(fp, "name: { ");
 
-	for (i = 0; i < (int)maze->path.GetCount(); i++) {
+	for (i = 0; i < maze->path.GetCount(); i++) {
 		printf("%d ", maze->path[i].mark);
 		fprintf(fp, "%d ", maze->path[i].mark);
 	}
@@ -314,7 +314,7 @@ main(int argc, char* argv[]) {
 	printf("} %d\n", (int)maze->path.GetCount());
 	fprintf(fp, "} %d\n", (int)maze->path.GetCount());
 
-	for (i = 0; i < (int)maze->path.GetCount(); i++) {
+	for (i = 0; i < maze->path.GetCount(); i++) {
 		printf("I:");
 		fprintf(fp, "I:");
 
@@ -343,7 +343,7 @@ main(int argc, char* argv[]) {
 
 		printf(" P: %f %f", maze->path[i].probability, 1.0 - maze->path[i].probability);
 
-		if (i < (int)maze->path.GetCount() - 1) {
+		if (i < maze->path.GetCount() - 1) {
 			printf("\n");
 			fprintf(fp, "\n");
 		}

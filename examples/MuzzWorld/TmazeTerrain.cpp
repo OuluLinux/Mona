@@ -39,7 +39,7 @@ void TmazeTerrain::GenerateMaze() {
 	xd = 1 - xmin;
 	yd = 1 - ymin;
 
-	for (i = 0; i < (int)tmaze_path.GetCount(); i++) {
+	for (i = 0; i < tmaze_path.GetCount(); i++) {
 		tmaze_path[i].first  += xd;
 		tmaze_path[i].second += yd;
 	}
@@ -50,7 +50,7 @@ void TmazeTerrain::GenerateMaze() {
 			blocks[i][j].elevation = 1;
 	}
 
-	for (i = 0; i < (int)tmaze_path.GetCount(); i++)
+	for (i = 0; i < tmaze_path.GetCount(); i++)
 		blocks[tmaze_path[i].first][tmaze_path[i].second].elevation = 0;
 
 	Build();
@@ -330,7 +330,7 @@ bool TmazeTerrain::CheckCell(Vector<Tuple2<int, int> >& path,
 void TmazeTerrain::GetBounds(Vector<Tuple2<int, int> >& path, int& xmin, int& ymin, int& xmax, int& ymax) {
 	ASSERT(path.GetCount() > 0);
 
-	for (int i = 0; i < (int)path.GetCount(); i++) {
+	for (int i = 0; i < path.GetCount(); i++) {
 		if (i == 0) {
 			xmin = xmax = path[i].first;
 			ymin = ymax = path[i].second;

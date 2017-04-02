@@ -165,7 +165,7 @@ public:
 				else {
 					i -= (int)delta;
 
-					if (i < (int)min)
+					if (i < min)
 						i = (int)min;
 				}
 
@@ -299,7 +299,7 @@ public:
 
 	// Destructor.
 	~BrainParmMutator() {
-		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+		for (int i = 0; i < param_mutators.GetCount(); i++)
 			delete param_mutators[i];
 
 		param_mutators.Clear();
@@ -308,7 +308,7 @@ public:
 
 	// Mutate.
 	void Mutate() {
-		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+		for (int i = 0; i < param_mutators.GetCount(); i++)
 			param_mutators[i]->Mutate();
 
 		// Initialize effect event intervals and weights.
@@ -322,7 +322,7 @@ public:
 
 	// Copy parameters from given brain.
 	void Copy(BrainParmMutator* from) {
-		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+		for (int i = 0; i < param_mutators.GetCount(); i++)
 			param_mutators[i]->Copy(from->param_mutators[i]);
 
 		// Initialize effect intervals.
@@ -336,7 +336,7 @@ public:
 
 	// Randomly merge parameters from given brains.
 	void MindMeld(BrainParmMutator* from1, BrainParmMutator* from2) {
-		for (int i = 0; i < (int)param_mutators.GetCount(); i++) {
+		for (int i = 0; i < param_mutators.GetCount(); i++) {
 			if (randomizer->RAND_BOOL())
 				param_mutators[i]->Copy(from1->param_mutators[i]);
 			else

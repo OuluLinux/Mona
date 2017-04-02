@@ -557,7 +557,7 @@ void TiXmlBase::PutString( const TIXML_STRING& str, TIXML_OSTREAM* stream ) {
 void TiXmlBase::PutString( const TIXML_STRING& str, TIXML_STRING* outString ) {
 	int i = 0;
 
-	while ( i < (int)str.length() ) {
+	while ( i < str.length() ) {
 		unsigned char c = (unsigned char) str[i];
 
 		if (    c == '&'
@@ -574,7 +574,7 @@ void TiXmlBase::PutString( const TIXML_STRING& str, TIXML_STRING* outString ) {
 			// while fails (error case) and break (semicolon found).
 			// However, there is no mechanism (currently) for
 			// this function to return an error.
-			while ( i < (int)str.length() - 1 ) {
+			while ( i < str.length() - 1 ) {
 				outString->append( str.c_str() + i, 1 );
 				++i;
 

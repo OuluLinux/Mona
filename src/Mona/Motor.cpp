@@ -18,26 +18,16 @@ Motor::~Motor() {
 
 // Is given motor a duplicate of this?
 bool Motor::IsDuplicate(Motor* motor) {
-	if (response == motor->response)
+	if (response == motor.response)
 		return true;
 	else
 		return false;
 }
 
 
-// Load motor.
 void Motor::Serialize(Stream& fp) {
-	Clear();
-	((Neuron*)this)->Load(fp);
-	FREAD_INT(&response, fp);
-}
-
-
-// Save motor.
-// When changing format increment FORMAT in mona.h
-void Motor::Store(Stream& fp) {
-	((Neuron*)this)->Store(fp);
-	FWRITE_INT(&response, fp);
+	Neuron::Neuron(fp);
+	fp % response;
 }
 
 /*

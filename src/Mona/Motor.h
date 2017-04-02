@@ -16,11 +16,7 @@ public:
 	// Is given motor a duplicate of this?
 	bool IsDuplicate(Motor*);
 
-	// Load motor.
 	void Serialize(Stream& fp);
-
-	// Save motor.
-	void Store(Stream& fp);
 
 	// Print motor.
 	/*  void Print(FILE *out = stdout);

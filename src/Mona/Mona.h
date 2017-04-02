@@ -40,7 +40,8 @@ enum NEURON_TYPE {
 enum EVENT_TYPE {
 	CAUSE_EVENT,
 	RESPONSE_EVENT,
-	EFFECT_EVENT
+	EFFECT_EVENT,
+	INVALID_EVENT=-1
 };
 
 enum EVENT_OUTCOME {
@@ -72,6 +73,8 @@ public:
 
 	// Print version.
 	static void printVersion(FILE* out = stdout);
+	
+	static const ID NULL_ID;
 
 	// Construct/initialize.
 	Mona();
@@ -129,7 +132,7 @@ public:
 	// receptor in a set reserved for the mode. This
 	// provides the network with selective attention
 	// capabilities.
-	Vector<SensorMode*> sensor_modes;
+	Array<SensorMode> sensor_modes;
 	void                 ApplySensorMode(Vector<SENSOR>& in, Vector<SENSOR>& out, SENSOR_MODE);
 	void                 ApplySensorMode(Vector<SENSOR>& sensors, SENSOR_MODE);
 
@@ -139,8 +142,7 @@ public:
 
 	// Find the receptor having the centroid closest to
 	// the sensor vector for the give sensor mode.
-	Receptor* GetCentroidReceptor(Vector<SENSOR>& sensors,
-								  SENSOR_MODE sensor_mode, SENSOR& distance);
+	Receptor* FindCentroidReceptor(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode, SENSOR& distance);
 
 	// Response.
 	RESPONSE response;
@@ -154,7 +156,7 @@ public:
 	bool               OverrideResponse(RESPONSE);
 	bool               OverrideResponseConditional(RESPONSE, RESPONSE_POTENTIAL);
 	void ClearResponseOverride();
-	Motor* FindMotorByResponse(RESPONSE response);
+	Motor& GetMotorByResponse(RESPONSE response);
 
 	// Needs.
 	int                 need_count;
@@ -244,12 +246,12 @@ public:
 	Time event_clock;
 
 	// Learning event lists.
-	Vector<Vector<LearningEvent*> > learning_events;
-	Vector<GeneralizationEvent*>  generalization_events;
+	Vector<Vector<LearningEvent> > learning_events;
+	Vector<GeneralizationEvent>  generalization_events;
 
 	// Mediator generation.
-	void CreateMediator(LearningEvent* event);
-	void GeneralizeMediator(GeneralizationEvent* event);
+	void CreateMediator(const LearningEvent& effect_event);
+	void GeneralizeMediator(const GeneralizationEvent& event);
 	bool IsDuplicateMediator(Mediator*);
 
 	// Random numbers.
@@ -264,15 +266,15 @@ public:
 
 
 	// Network.
-	Vector<Receptor*> receptors;
-	Vector<Motor*>    motors;
-	Vector<Mediator*>   mediators;
+	Array<Receptor> receptors;
+	Array<Motor>    motors;
+	Array<Mediator>   mediators;
 
 	// Add/delete neurons to/from network.
 	Receptor* NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode);
 	Motor* NewMotor(RESPONSE response);
 	Mediator* NewMediator(ENABLEMENT enablement);
-	void DeleteNeuron(Neuron*);
+	void DeleteNeuron(Neuron& neuron);
 
 	// Clear memory.
 	void ExpireResponseEnablings(RESPONSE);

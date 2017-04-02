@@ -8,7 +8,7 @@ Receptor::Receptor(Vector<SENSOR>& centroid,
 	ASSERT((int)centroid.GetCount() == mona->sensor_count);
 	this->centroid.Clear();
 
-	for (int i = 0; i < (int)centroid.GetCount(); i++)
+	for (int i = 0; i < centroid.GetCount(); i++)
 		this->centroid.Add(centroid[i]);
 
 	this->sensor_mode = sensor_mode;
@@ -28,10 +28,10 @@ Receptor::~Receptor() {
 
 // Is given receptor a duplicate of this?
 bool Receptor::IsDuplicate(Receptor* receptor) {
-	if (sensor_mode != receptor->sensor_mode)
+	if (sensor_mode != receptor.sensor_mode)
 		return false;
 
-	if (GetCentroidDistance(receptor->centroid) == 0.0)
+	if (GetCentroidDistance(receptor.centroid) == 0.0)
 		return true;
 	else
 		return false;
@@ -173,7 +173,7 @@ SENSOR Receptor::GetSensorDistance(Vector<SENSOR>* sensorsA,
 	SENSOR d;
 	SENSOR dist = 0.0;
 
-	for (int i = 0; i < (int)sensorsA->GetCount(); i++) {
+	for (int i = 0; i < sensorsA->GetCount(); i++) {
 		d     = (*sensorsA)[i] - (*sensorsB)[i];
 		dist += (d * d);
 	}
@@ -202,11 +202,11 @@ void* Receptor::LoadPattern(void* mona, Stream& fp) {
 }
 
 
-void Receptor::StorePattern(void* sensorsIn, Stream& fp) {
+void Receptor::StorePattern(void* sensors_in, Stream& fp) {
 	SENSOR s;
-	Vector<SENSOR>* sensors = (Vector<SENSOR>*)sensorsIn;
-
-	for (int i = 0; i < (int)sensors->GetCount(); i++) {
+	Vector<SENSOR>* sensors = (Vector<SENSOR>*)sensors_in;
+#error check this
+	for (int i = 0; i < sensors->GetCount(); i++) {
 		s = (*sensors)[i];
 		FWRITE_FLOAT(&s, fp);
 	}

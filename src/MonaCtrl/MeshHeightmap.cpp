@@ -17,7 +17,7 @@ Poly::Poly(Vector<Vector3f>& vertices) {
 	// Store vertices.
 	ASSERT(vertices.GetCount() > 2);
 
-	for (i = 0; i < (int)vertices.GetCount(); i++)
+	for (i = 0; i < vertices.GetCount(); i++)
 		this->vertices.Add(vertices[i]);
 
 	// Generate 3D plane.
@@ -32,7 +32,7 @@ Poly::Poly(Vector<Vector3f>& vertices) {
 	bounds.min.x = bounds.max.x = vertices[0].x;
 	bounds.min.z = bounds.max.z = vertices[0].z;
 
-	for (i = 1; i < (int)vertices.GetCount(); i++) {
+	for (i = 1; i < vertices.GetCount(); i++) {
 		if (vertices[i].x < bounds.min.x)
 			bounds.min.x = vertices[i].x;
 
@@ -71,7 +71,7 @@ void Poly::Print() {
 	printf("Polygon:\n");
 	printf("\tvertices: ");
 
-	for (int i = 0; i < (int)vertices.GetCount(); i++)
+	for (int i = 0; i < vertices.GetCount(); i++)
 		printf("(%f,%f,%f) ", vertices[i].x, vertices[i].y, vertices[i].z);
 
 	printf("\n");
@@ -93,7 +93,7 @@ QuadTree::~QuadTree() {
 	if (root != NULL)
 		delete root;
 
-	for (int i = 0; i < (int)polygons.GetCount(); i++)
+	for (int i = 0; i < polygons.GetCount(); i++)
 		delete polygons[i];
 }
 
@@ -198,7 +198,7 @@ void QuadNode::Insert(Poly* polygon) {
 	// Insert polygons into outerren.
 	polygons.Add(polygon);
 
-	for (i = 0; i < (int)polygons.GetCount(); i++) {
+	for (i = 0; i < polygons.GetCount(); i++) {
 		for (j = 0; j < 4; j++) {
 			if (outerren[j]->bounds.intersects(polygons[i]->bounds))
 				outerren[j]->Insert(polygons[i]);
@@ -213,7 +213,7 @@ void QuadNode::Insert(Poly* polygon) {
 void QuadNode::Search(double x, double z, Vector<Poly*>& found) {
 	int i;
 
-	for (i = 0; i < (int)polygons.GetCount(); i++) {
+	for (i = 0; i < polygons.GetCount(); i++) {
 		if (polygons[i]->contains(x, z))
 			found.Add(polygons[i]);
 	}
@@ -234,7 +234,7 @@ void QuadNode::Print() {
 	printf("Polygons in node at depth=%d, bounds: xmin=%f,xmax=%f,zmin=%f,zmax=%f\n",
 		   depth, bounds.min.x, bounds.max.x, bounds.min.z, bounds.max.z);
 
-	for (i = 0; i < (int)polygons.GetCount(); i++)
+	for (i = 0; i < polygons.GetCount(); i++)
 		polygons[i]->Print();
 
 	if (outerren[0] == NULL)

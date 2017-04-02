@@ -128,7 +128,7 @@ Tuple2i CFont::getStringSizes(const String& string) {
 		if (string[i] != '\n') {
 			x += spaces[int(string[i])];
 
-			if (dimensions.x < (int)x) dimensions.x = (int)x;
+			if (dimensions.x < x) dimensions.x = (int)x;
 		}
 		else {
 			x = 0;

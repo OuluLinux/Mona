@@ -41,14 +41,14 @@ public:
 
 	// Zero
 	inline void Zero() {
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			values[i] = 0.0;
 	}
 
 
 	// Get a specified value.
 	inline double Get(int index) {
-		ASSERT(index >= 0 && index < (int)values.GetCount());
+		ASSERT(index >= 0 && index < values.GetCount());
 		return (values[index]);
 	}
 
@@ -58,7 +58,7 @@ public:
 		double d;
 		d = 0.0;
 
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			d += values[i];
 
 		return d;
@@ -67,35 +67,35 @@ public:
 
 	// Set a scalar value.
 	inline void Set(int index, double value) {
-		ASSERT(index >= 0 && index < (int)values.GetCount());
+		ASSERT(index >= 0 && index < values.GetCount());
 		values[index] = value;
 	}
 
 
 	// Add a scalar value.
 	inline void Add(int index, double value) {
-		ASSERT(index >= 0 && index < (int)values.GetCount());
+		ASSERT(index >= 0 && index < values.GetCount());
 		values[index] += value;
 	}
 
 
 	// Subtract a scalar value.
 	inline void Subtract(int index, double value) {
-		ASSERT(index >= 0 && index < (int)values.GetCount());
+		ASSERT(index >= 0 && index < values.GetCount());
 		values[index] -= value;
 	}
 
 
 	// Multiply by a scalar value.
 	inline void Multiply(int index, double value) {
-		ASSERT(index >= 0 && index < (int)values.GetCount());
+		ASSERT(index >= 0 && index < values.GetCount());
 		values[index] *= value;
 	}
 
 
 	// Divide by a scalar value.
 	inline void Divide(int index, double value) {
-		ASSERT(index >= 0 && index < (int)values.GetCount());
+		ASSERT(index >= 0 && index < values.GetCount());
 		ASSERT(value != 0.0);
 		values[index] /= value;
 	}
@@ -103,21 +103,21 @@ public:
 
 	// Add a scalar value to all.
 	inline void Add(double value) {
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			values[i] += value;
 	}
 
 
 	// Subtract a scalar value from all.
 	inline void Subtract(double value) {
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			values[i] -= value;
 	}
 
 
 	// Multiply all by a scalar value.
 	inline void Multiply(double value) {
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			values[i] *= value;
 	}
 
@@ -126,7 +126,7 @@ public:
 	inline void Divide(double value) {
 		ASSERT(value != 0.0);
 
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			values[i] /= value;
 	}
 
@@ -136,7 +136,7 @@ public:
 		if (loadSet.GetCount() != (int)values.GetCount())
 			values.SetCount(loadSet.GetCount());
 
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			values[i] = loadSet.values[i];
 	}
 
@@ -145,7 +145,7 @@ public:
 	inline void Add(class ValueSet& addSet) {
 		ASSERT(GetCount() == addSet.GetCount());
 
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			values[i] += addSet.values[i];
 	}
 
@@ -154,7 +154,7 @@ public:
 	inline void Subtract(class ValueSet& subSet) {
 		ASSERT(GetCount() == subSet.GetCount());
 
-		for (int i = 0; i < (int)values.GetCount(); i++)
+		for (int i = 0; i < values.GetCount(); i++)
 			values[i] -= subSet.values[i];
 	}
 
@@ -168,7 +168,7 @@ public:
 	// Print.
 	/*  inline void Print(FILE *out = stdout)
 	    {
-	    for (int i = 0; i < (int)values.GetCount(); i++)
+	    for (int i = 0; i < values.GetCount(); i++)
 	    {
 	      fprintf(out, "%f ", values[i]);
 	    }

@@ -229,7 +229,7 @@ void Minc::lensCallback() {
 		}
 
 		// Output error?
-		if ((exampleTick < (int)maze->path.GetCount()) &&
+		if ((exampleTick < maze->path.GetCount()) &&
 			(direction != maze->path[exampleTick].direction)) {
 			result = false;
 

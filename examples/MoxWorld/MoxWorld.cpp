@@ -480,7 +480,7 @@ public class MoxWorld {
 				sensors[rangeIndex] = ForagerMox.MAX_SENSOR_RANGE *
 									  ForagerMox.MAX_SENSOR_RANGE;
 
-				if ((width / 2) < (int)ForagerMox.MAX_SENSOR_RANGE) {
+				if ((width / 2) < ForagerMox.MAX_SENSOR_RANGE) {
 					x1 = mx - (width / 2);
 					x2 = mx + (width / 2);
 				}
@@ -489,7 +489,7 @@ public class MoxWorld {
 					x2 = mx + (int)ForagerMox.MAX_SENSOR_RANGE;
 				}
 
-				if ((height / 2) < (int)ForagerMox.MAX_SENSOR_RANGE) {
+				if ((height / 2) < ForagerMox.MAX_SENSOR_RANGE) {
 					y1 = my - (height / 2);
 					y2 = my + (height / 2);
 				}
@@ -574,7 +574,7 @@ public class MoxWorld {
 				sensors[rangeIndex] = PredatorMox.MAX_SENSOR_RANGE *
 									  PredatorMox.MAX_SENSOR_RANGE;
 
-				if ((width / 2) < (int)PredatorMox.MAX_SENSOR_RANGE) {
+				if ((width / 2) < PredatorMox.MAX_SENSOR_RANGE) {
 					x1 = mx - (width / 2);
 					x2 = mx + (width / 2);
 				}
@@ -583,7 +583,7 @@ public class MoxWorld {
 					x2 = mx + (int)PredatorMox.MAX_SENSOR_RANGE;
 				}
 
-				if ((height / 2) < (int)PredatorMox.MAX_SENSOR_RANGE) {
+				if ((height / 2) < PredatorMox.MAX_SENSOR_RANGE) {
 					y1 = my - (height / 2);
 					y2 = my + (height / 2);
 				}

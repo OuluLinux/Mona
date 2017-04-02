@@ -46,16 +46,12 @@ public:
 	bool HasInnerInstinct();
 
 	// Event notification.
-	Vector<struct Notify*> notify_list;
+	Vector<Notify> notify_list;
 
 	// Neural network.
 	Mona* mona;
 
-	// Load.
 	void Serialize(Stream& fp);
-
-	// Save.
-	void Store(Stream& fp);
 
 	#ifdef MONA_TRACKING
 	// Track neuron activity.

@@ -11,6 +11,8 @@
 #include "Mona.h"
 
 class Mona;
+class Receptor;
+class Motor;
 
 // Homeostat.
 class Homeostat {
@@ -32,9 +34,9 @@ public:
 	public:
 		Vector<SENSOR> sensors;
 		SENSOR_MODE    sensor_mode;
-		void*           receptor;
+		Receptor*           receptor;
 		RESPONSE       response;
-		void*           motor;
+		Motor*           motor;
 		NEED           goal_value;
 		bool           enabled;
 		int id;

@@ -351,7 +351,7 @@ public:
 				else {
 					i -= (int)delta;
 
-					if (i < (int)min)
+					if (i < min)
 						i = (int)min;
 				}
 
@@ -478,7 +478,7 @@ public:
 
 	// Destructor.
 	~BrainParmMutator() {
-		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+		for (int i = 0; i < param_mutators.GetCount(); i++)
 			delete param_mutators[i];
 
 		param_mutators.Clear();
@@ -487,7 +487,7 @@ public:
 
 	// Mutate.
 	void Mutate() {
-		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+		for (int i = 0; i < param_mutators.GetCount(); i++)
 			param_mutators[i]->Mutate();
 
 		// Initialize brain with new parameters.
@@ -497,7 +497,7 @@ public:
 
 	// Copy parameters from given brain.
 	void Copy(BrainParmMutator* from) {
-		for (int i = 0; i < (int)param_mutators.GetCount(); i++)
+		for (int i = 0; i < param_mutators.GetCount(); i++)
 			param_mutators[i]->Copy(from->param_mutators[i]);
 
 		// Initialize brain with new parameters.
@@ -507,7 +507,7 @@ public:
 
 	// Randomly merge parameters from given brains.
 	void MindMeld(BrainParmMutator* from1, BrainParmMutator* from2) {
-		for (int i = 0; i < (int)param_mutators.GetCount(); i++) {
+		for (int i = 0; i < param_mutators.GetCount(); i++) {
 			if (randomizer->RAND_BOOL())
 				param_mutators[i]->Copy(from1->param_mutators[i]);
 			else
@@ -596,7 +596,7 @@ public:
 				path.Clear();
 				path.Add(2 - j);
 
-				for (k = 0; k < (int)maze_paths[i].GetCount(); k++)
+				for (k = 0; k < maze_paths[i].GetCount(); k++)
 					path.Add(maze_paths[i][k]);
 
 				path.Add(door_associations[j]);
@@ -626,7 +626,7 @@ public:
 		// Run maze path.
 		hopped = false;
 
-		for (i = 0; i < (int)path.GetCount(); i++) {
+		for (i = 0; i < path.GetCount(); i++) {
 			// Override response?
 			if (train || (path[i] == WAIT))
 				mouse->response_override = path[i];
@@ -1118,7 +1118,7 @@ void LogParameters() {
 	Log::logInformation();
 	LOG("Maze paths (doors):");
 
-	for (int i = 0; i < (int)maze_paths.GetCount(); i++) {
+	for (int i = 0; i < maze_paths.GetCount(); i++) {
 		sprintf(Log::messageBuf, "%d %d %d %d",
 				maze_paths[i][0], maze_paths[i][1], maze_paths[i][2], maze_paths[i][3]);
 		Log::logInformation();

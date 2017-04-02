@@ -1659,10 +1659,10 @@ bool MuzzWorld::GetResponseSequenceToGoals(int muzz_index,
 	bool ret, expand, unblocked;
 	Vector<ResponseSearch*>           closed;
 	Vector<ResponseSearch*>           open;
-	Vector<ResponseSearch*>::Iterator iter;
+	//Vector<ResponseSearch*>::Iterator iter;
 	ResponseSearch*                         current, *outer;
 	Vector<struct SensoryResponse>           responseList;
-	Vector<struct SensoryResponse>::Iterator responseItr;
+	//Vector<struct SensoryResponse>::Iterator responseItr;
 	Muzz*                   saveMuzz     = muzzes[muzz_index];
 	struct MuzzState       saveMuzzState = muzz_states[muzz_index];
 	Vector<bool>           savemushrooms;

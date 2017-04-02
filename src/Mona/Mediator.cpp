@@ -22,14 +22,14 @@ Mediator::Mediator(ENABLEMENT enablement, Mona* mona) {
 // Mediator destructor.
 Mediator::~Mediator() {
 	struct Notify* notify;
-	Vector<struct Notify*>::Iterator notifyItr;
+	//Vector<struct Notify*>::Iterator notifyItr;
 
 	if (cause != NULL) {
 		for (notifyItr = cause->notify_list.Begin();
 			 notifyItr != cause->notify_list.End(); notifyItr++) {
 			notify = *notifyItr;
 
-			if (notify->mediator == this) {
+			if (notify.mediator == this) {
 				cause->notify_list.Remove(notifyItr);
 				delete notify;
 				break;
@@ -44,7 +44,7 @@ Mediator::~Mediator() {
 			 notifyItr != response->notify_list.End(); notifyItr++) {
 			notify = *notifyItr;
 
-			if (notify->mediator == this) {
+			if (notify.mediator == this) {
 				response->notify_list.Remove(notifyItr);
 				delete notify;
 				break;
@@ -59,7 +59,7 @@ Mediator::~Mediator() {
 			 notifyItr != effect->notify_list.End(); notifyItr++) {
 			notify = *notifyItr;
 
-			if (notify->mediator == this) {
+			if (notify.mediator == this) {
 				effect->notify_list.Remove(notifyItr);
 				delete notify;
 				break;
@@ -99,9 +99,9 @@ Mediator::GetEffectiveUtility() {
 	UTILITY  bestUtility, utilityWork;
 	bestUtility = utility;
 
-	for (int i = 0; i < (int)notify_list.GetCount(); i++) {
+	for (int i = 0; i < notify_list.GetCount(); i++) {
 		mediator    = notify_list[i]->mediator;
-		utilityWork = mediator->GetEffectiveUtility();
+		utilityWork = mediator.GetEffectiveUtility();
 
 		if (utilityWork > bestUtility)
 			bestUtility = utilityWork;
@@ -139,16 +139,16 @@ Mediator::AddEvent(EVENT_TYPE type, Neuron* neuron) {
 	if (neuron->type == MEDIATOR) {
 		mediator = (Mediator*)neuron;
 
-		if (mediator->level + 1 > level) {
-			level = mediator->level + 1;
+		if (mediator.level + 1 > level) {
+			level = mediator.level + 1;
 			ASSERT(level <= mona->MAX_MEDIATOR_LEVEL);
 		}
 	}
 
 	notify = new struct Notify;
 	ASSERT(notify != NULL);
-	notify->mediator  = this;
-	notify->event_type = type;
+	notify.mediator  = this;
+	notify.event_type = type;
 	neuron->notify_list.Add(notify);
 
 	// Sort by type: effect, response, cause.
@@ -197,13 +197,13 @@ Mediator::AddEvent(EVENT_TYPE type, Neuron* neuron) {
 
 // Is given mediator a duplicate of this?
 bool Mediator::IsDuplicate(Mediator* mediator) {
-	if (cause != mediator->cause)
+	if (cause != mediator.cause)
 		return false;
 
-	if (response != mediator->response)
+	if (response != mediator.response)
 		return false;
 
-	if (effect != mediator->effect)
+	if (effect != mediator.effect)
 		return false;
 
 	return true;
@@ -581,7 +581,7 @@ Mediator::CauseFiring(WEIGHT notify_strength, Time cause_begin) {
 	base_enablement -= delta;
 
 	// Distribute enablement to next neuron.
-	for (i = 0; i < (int)mona->effect_event_interval_weights[level].GetCount(); i++) {
+	for (i = 0; i < mona->effect_event_interval_weights[level].GetCount(); i++) {
 		enablement2 = delta * mona->effect_event_interval_weights[level][i];
 
 		if (enablement2 > 0.0) {
@@ -610,7 +610,7 @@ Mediator::CauseFiring(WEIGHT notify_strength, Time cause_begin) {
 void
 Mediator::ResponseFiring(WEIGHT notify_strength) {
 	Enabling* enabling, *enabling2;
-	Array<Enabling>::Iterator enabling_iter;
+	//Array<Enabling>::Iterator enabling_iter;
 	ENABLEMENT                 enablement;
 
 	// Transfer enablings to effect event.
@@ -640,7 +640,7 @@ void
 Mediator::EffectFiring(WEIGHT notify_strength) {
 	int      i;
 	Enabling* enabling;
-	Array<Enabling>::Iterator enabling_iter;
+	//Array<Enabling>::Iterator enabling_iter;
 	ENABLEMENT                 e, enablement;
 	WEIGHT              strength;
 	struct Notify*       notify;
@@ -652,12 +652,12 @@ Mediator::EffectFiring(WEIGHT notify_strength) {
 	// enablement will be updated instead of current mediator.
 	parentContext = false;
 
-	for (i = 0; i < (int)notify_list.GetCount(); i++) {
+	for (i = 0; i < notify_list.GetCount(); i++) {
 		notify   = notify_list[i];
-		mediator = notify->mediator;
+		mediator = notify.mediator;
 
-		if (notify->event_type == EFFECT_EVENT) {
-			if (mediator->effect_enablings.getOldValue() > 0.0) {
+		if (notify.event_type == EFFECT_EVENT) {
+			if (mediator.effect_enablings.GetOldValue() > 0.0) {
 				parentContext = true;
 				break;
 			}
@@ -713,13 +713,13 @@ Mediator::EffectFiring(WEIGHT notify_strength) {
 	}
 
 	// Update enablement and utility for firing enablings.
-	for (i = 0; i < (int)fire_weights.GetCount(); i++) {
+	for (i = 0; i < fire_weights.GetCount(); i++) {
 		UpdateEnablement(FIRE, fire_weights[i]);
 		UpdateUtility(fire_weights[i]);
 	}
 
 	// Update enablement for expired enablings.
-	for (i = 0; i < (int)expire_weights.GetCount(); i++)
+	for (i = 0; i < expire_weights.GetCount(); i++)
 		UpdateEnablement(EXPIRE, expire_weights[i]);
 
 	#ifdef MONA_TRACE
@@ -737,12 +737,12 @@ Mediator::EffectFiring(WEIGHT notify_strength) {
 	// Notify parent mediators.
 	strength = firing_strength / enablement;
 
-	for (i = 0; i < (int)notify_list.GetCount(); i++) {
+	for (i = 0; i < notify_list.GetCount(); i++) {
 		notify   = notify_list[i];
-		mediator = notify->mediator;
+		mediator = notify.mediator;
 
-		if (notify->event_type == EFFECT_EVENT)
-			mediator->EffectFiring(strength);
+		if (notify.event_type == EFFECT_EVENT)
+			mediator.EffectFiring(strength);
 		else if (strength > 0.0) {
 			// Record cause notification.
 			causeFiring.notify         = notify;
@@ -769,7 +769,7 @@ Mediator::UpdateEnablement(EVENT_OUTCOME outcome, WEIGHT updateWeight) {
 	ENABLEMENT e1, e2;
 	double     r;
 	Enabling*   enabling;
-	Array<Enabling>::Iterator enabling_iter;
+	//Array<Enabling>::Iterator enabling_iter;
 
 	// Instinct enablement cannot be updated.
 	if (instinct)
@@ -838,14 +838,14 @@ Mediator::UpdateEffectiveEnablement() {
 	// and determine combined enabling effect.
 	e = 1.0;
 
-	for (int i = 0; i < (int)notify_list.GetCount(); i++) {
+	for (int i = 0; i < notify_list.GetCount(); i++) {
 		notify   = notify_list[i];
-		mediator = notify->mediator;
+		mediator = notify.mediator;
 
-		if (notify->event_type == EFFECT_EVENT) {
-			mediator->UpdateEffectiveEnablement();
-			e *= (1.0 - (mediator->effective_enablement *
-						 mediator->effective_enabling_weight));
+		if (notify.event_type == EFFECT_EVENT) {
+			mediator.UpdateEffectiveEnablement();
+			e *= (1.0 - (mediator.effective_enablement *
+						 mediator.effective_enabling_weight));
 		}
 	}
 
@@ -870,7 +870,7 @@ Mediator::UpdateEffectiveEnablement() {
 void
 Mediator::RetireEnablings(bool force) {
 	Enabling* enabling;
-	Array<Enabling>::Iterator enabling_iter;
+	//Array<Enabling>::Iterator enabling_iter;
 
 	// Age and retire response enablings.
 	for (enabling_iter = response_enablings.enablings.Begin();
@@ -1044,12 +1044,12 @@ Mediator::DriveCause(MotiveAccum motive_accum) {
 	}
 
 	// Drive motive to parent mediators.
-	for (i = 0; i < (int)notify_list.GetCount(); i++) {
+	for (i = 0; i < notify_list.GetCount(); i++) {
 		mediator = notify_list[i]->mediator;
 
 		if ((w = drive_weights[mediator]) > NEARLY_ZERO) {
 			accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
-			mediator->DriveCause(accum_work);
+			mediator.DriveCause(accum_work);
 		}
 	}
 }

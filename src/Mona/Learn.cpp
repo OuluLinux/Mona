@@ -7,113 +7,102 @@
 
 void
 Mona::Learn() {
-	int           i, j, k;
-	LearningEvent* learning_event;
-	Vector<LearningEvent*>::Iterator learning_event_iter;
-	Motor*    motor;
-	Receptor* receptor;
-	Mediator* mediator;
-	Vector<Mediator*>::Iterator mediator_iter;
+	
 	#ifdef MONA_TRACE
 
 	if (trace_learn)
 		printf("***Learn phase***\n");
 
 	#endif
+	
 	// Purge obsolete events.
-	j = MAX_RESPONSE_EQUIPPED_MEDIATOR_LEVEL;
+	int max_level = MAX_RESPONSE_EQUIPPED_MEDIATOR_LEVEL;
 
-	if (j > MAX_MEDIATOR_LEVEL)
-		j = MAX_MEDIATOR_LEVEL;
+	if (max_level > MAX_MEDIATOR_LEVEL)
+		max_level = MAX_MEDIATOR_LEVEL;
 
-	for (i = 0; i < (int)learning_events.GetCount(); i++) {
-		for (learning_event_iter = learning_events[i].Begin();
-			 learning_event_iter != learning_events[i].End(); ) {
-			learning_event = *learning_event_iter;
+	for (int i = 0; i < learning_events.GetCount(); i++) {
+		Vector<LearningEvent>& sub = learning_events[i];
+		
+		for(int j = 0; j < sub.GetCount();) {
+			LearningEvent& learning_event = sub[j];
 
-			if (learning_event->firing_strength > NEARLY_ZERO) {
+			if (learning_event.firing_strength > NEARLY_ZERO) {
+				
 				// Is event still recent enough to form a new mediator?
-				if (learning_event->neuron->type == MOTOR)
-					k = j;
-				else
-					k = i;
+				int k = learning_event.neuron->type == MOTOR ? max_level : i;
 
-				if ((int)(event_clock - learning_event->end) <= max_learning_effect_event_intervals[k])
-					learning_event_iter++;
+				if ((int)(event_clock.Get() - learning_event.end.Get()) <= max_learning_effect_event_intervals[k])
+					j++;
 				else {
-					learning_event_iter = learning_events[i].Remove(learning_event_iter);
-					delete learning_event;
+					sub.Remove(j);
 				}
 			}
 			else {
-				learning_event_iter = learning_events[i].Remove(learning_event_iter);
-				delete learning_event;
+				sub.Remove(j);
 			}
 		}
 	}
-
+	
 	// Time-stamp and store significant events.
-	for (i = 0; i < (int)receptors.GetCount(); i++) {
-		receptor = receptors[i];
+	for (int i = 0; i < receptors.GetCount(); i++) {
+		Receptor& receptor = receptors[i];
 
-		if (receptor->firing_strength > NEARLY_ZERO) {
-			learning_event = new LearningEvent(receptor);
-			ASSERT(learning_event != NULL);
-			learning_events[0].Add(learning_event);
+		if (receptor.firing_strength > NEARLY_ZERO) {
+			LearningEvent& learning_event = learning_events[0].Add();
+			learning_event.SetNeuron(receptor);
 		}
 	}
 
-	for (i = 0; i < (int)motors.GetCount(); i++) {
-		motor = motors[i];
+	for (int i = 0; i < motors.GetCount(); i++) {
+		Motor& motor = motors[i];
 
-		if (motor->firing_strength > NEARLY_ZERO) {
-			learning_event = new LearningEvent(motor);
-			ASSERT(learning_event != NULL);
-			learning_events[0].Add(learning_event);
+		if (motor.firing_strength > NEARLY_ZERO) {
+			LearningEvent& learning_event = learning_events[0].Add();
+			learning_event.SetNeuron(motor);
 		}
 	}
 
-	for (mediator_iter = mediators.Begin();
-		 mediator_iter != mediators.End(); mediator_iter++) {
-		mediator = *mediator_iter;
+	for(int i = 0; i < mediators.GetCount(); i++) {
+		Mediator& mediator = mediators[i];
 
-		if (!mediator->instinct && (mediator->firing_strength > NEARLY_ZERO)) {
-			if ((mediator->level + 1) < (int)learning_events.GetCount()) {
-				learning_event = new LearningEvent(mediator);
-				ASSERT(learning_event != NULL);
-				learning_events[mediator->level + 1].Add(learning_event);
+		if (!mediator.instinct && (mediator.firing_strength > NEARLY_ZERO)) {
+			if ((mediator.level + 1) < learning_events.GetCount()) {
+				LearningEvent& learning_event = learning_events[mediator.level + 1].Add();
+				learning_event.SetNeuron(mediator);
 			}
 		}
 	}
 
 	// Create new mediators based on potential effect events.
-	for (i = 0; i < (int)learning_events.GetCount(); i++) {
-		for (learning_event_iter = learning_events[i].Begin();
-			 learning_event_iter != learning_events[i].End(); learning_event_iter++) {
-			learning_event = *learning_event_iter;
+	for (int i = 0; i < learning_events.GetCount(); i++) {
+		Vector<LearningEvent>& sub = learning_events[i];
+		
+		for(int j = 0; j < sub.GetCount(); j++) {
+			LearningEvent& learning_event = sub[j];
 
-			if ((learning_event->end == event_clock) &&
-				((learning_event->neuron->type == MEDIATOR) ||
-				 ((learning_event->neuron->type == RECEPTOR) &&
-				  (((Receptor*)learning_event->neuron)->sensor_mode == 0))))
+			if ((learning_event.end == event_clock) &&
+				((learning_event.neuron->type == MEDIATOR) ||
+				 ((learning_event.neuron->type == RECEPTOR) &&
+				  (learning_event.GetNeuron<Receptor>()->sensor_mode == 0))))
 				CreateMediator(learning_event);
 		}
 	}
 
 	// Create mediators with generalized receptor effects.
-	for (i = 0; i < (int)generalization_events.GetCount(); i++) {
-		GeneralizeMediator(generalization_events[i]);
-		delete generalization_events[i];
+	while (!generalization_events.IsEmpty()) {
+		GeneralizeMediator(generalization_events[0]);
+		generalization_events.Remove(0);
 	}
-
 	generalization_events.Clear();
 
 	// Delete excess mediators.
-	while ((int)mediators.GetCount() > MAX_MEDIATORS) {
-		if ((mediator = GetWorstMediator()) == NULL)
+	while (mediators.GetCount() > MAX_MEDIATORS) {
+		Mediator* mediator = GetWorstMediator();
+		if (mediator == NULL)
 			break;
 
-		DeleteNeuron(mediator);
+		DeleteNeuron(*mediator);
 	}
 
 	// Increment event clock.
@@ -122,32 +111,33 @@ Mona::Learn() {
 
 
 // Create new mediators for given effect.
-void
-Mona::CreateMediator(LearningEvent* effectEvent) {
+void Mona::CreateMediator(const LearningEvent& effect_event) {
 	int           i, level;
 	bool          effect_resp_eq, cause_resp_eq;
 	LearningEvent* cause_event, *response_event, *learning_event;
-	Vector<LearningEvent*>::Iterator cause_event_iter,
-		   response_event_iter;
+	//Vector<LearningEvent*>::Iterator cause_event_iter,
+	//	   response_event_iter;
 	Vector<LearningEvent*>    tmp_vector;
 	Mediator*                   mediator;
-	Vector<Mediator*>::Iterator mediator_iter;
+	//Vector<Mediator*>::Iterator mediator_iter;
 	Vector<LearningEvent*>    candidates;
 	double                accum_prob, choose_prob, p;
 
 	// Check event firing strength.
-	if (effectEvent->firing_strength <= NEARLY_ZERO)
+	if (effect_event.firing_strength <= NEARLY_ZERO)
 		return;
 
 	// Find cause event candidates.
 	accum_prob = 0.0;
 
-	if (effectEvent->neuron->type != MEDIATOR) {
+	if (effect_event.neuron->type != MEDIATOR) {
 		level        = 0;
 		effect_resp_eq = true;
 	}
 	else {
-		mediator = (Mediator*)effectEvent->neuron;
+		Mediator* mediator = effect_event.GetNeuron<Mediator>();
+		ASSERT(mediator);
+		
 		level    = mediator->level + 1;
 
 		if (level > MAX_MEDIATOR_LEVEL)
@@ -169,7 +159,7 @@ Mona::CreateMediator(LearningEvent* effectEvent) {
 		if (cause_event->neuron->type == MOTOR)
 			continue;
 
-		if (cause_event->end >= effectEvent->begin)
+		if (cause_event->end >= effect_event.begin)
 			continue;
 
 		// The cause and effect must have equal response-equippage status.
@@ -192,7 +182,7 @@ Mona::CreateMediator(LearningEvent* effectEvent) {
 		choose_prob = RandomInterval(0.0, accum_prob);
 		double p = 0.0;
 
-		for (int i = 0; i < (int)candidates.GetCount(); i++) {
+		for (int i = 0; i < candidates.GetCount(); i++) {
 			if (candidates[i] == NULL)
 				continue;
 
@@ -210,7 +200,7 @@ Mona::CreateMediator(LearningEvent* effectEvent) {
 		candidates[i] = NULL;
 
 		// Make a probabilistic decision to create mediator.
-		if (!RandomChance(effectEvent->probability *
+		if (!RandomChance(effect_event.probability *
 						  cause_event->probability))
 			continue;
 
@@ -242,13 +232,13 @@ Mona::CreateMediator(LearningEvent* effectEvent) {
 
 		// Create the mediator.
 		mediator = NewMediator(INITIAL_ENABLEMENT);
-		mediator->AddEvent(CAUSE_EVENT, cause_event->neuron);
+		mediator.AddEvent(CAUSE_EVENT, cause_event->neuron);
 
 		if (response_event != NULL)
-			mediator->AddEvent(RESPONSE_EVENT, response_event->neuron);
+			mediator.AddEvent(RESPONSE_EVENT, response_event->neuron);
 
-		mediator->AddEvent(EFFECT_EVENT, effectEvent->neuron);
-		mediator->UpdateGoalValue(cause_event->needs);
+		mediator.AddEvent(EFFECT_EVENT, effect_event.neuron);
+		mediator.UpdateGoalValue(cause_event->needs);
 
 		// Duplicate?
 		if (IsDuplicateMediator(mediator)) {
@@ -257,20 +247,20 @@ Mona::CreateMediator(LearningEvent* effectEvent) {
 		}
 
 		// Make new mediator available for learning.
-		if ((mediator->level + 1) < (int)learning_events.GetCount()) {
-			mediator->cause_begin     = cause_event->begin;
-			mediator->firing_strength = cause_event->firing_strength *
-										effectEvent->firing_strength;
+		if ((mediator.level + 1) < learning_events.GetCount()) {
+			mediator.cause_begin     = cause_event->begin;
+			mediator.firing_strength = cause_event->firing_strength *
+										effect_event.firing_strength;
 			learning_event = new LearningEvent(mediator);
 			ASSERT(learning_event != NULL);
-			learning_events[mediator->level + 1].Add(learning_event);
+			learning_events[mediator.level + 1].Add(learning_event);
 		}
 
 		#ifdef MONA_TRACE
 
 		if (trace_learn) {
 			printf("Create mediator:\n");
-			mediator->Print();
+			mediator.Print();
 		}
 
 		#endif
@@ -280,9 +270,9 @@ Mona::CreateMediator(LearningEvent* effectEvent) {
 
 // Create generalized mediators.
 void
-Mona::GeneralizeMediator(GeneralizationEvent* generalization_event) {
+Mona::GeneralizeMediator(const GeneralizationEvent& generalization_event) {
 	LearningEvent* candidate_event, *learning_event;
-	Vector<LearningEvent*>::Iterator candidate_event_iter;
+	//Vector<LearningEvent*>::Iterator candidate_event_iter;
 	Receptor*                effect_receptor, *candidate_receptor;
 	Mediator*                mediator;
 	Vector<LearningEvent*> candidates;
@@ -306,10 +296,10 @@ Mona::GeneralizeMediator(GeneralizationEvent* generalization_event) {
 
 		// Is this a direct superset of the mediator's effect?
 		candidate_receptor = (Receptor*)candidate_event->neuron;
-		effect_receptor    = (Receptor*)generalization_event->mediator->effect;
+		effect_receptor    = (Receptor*)generalization_event.mediator.effect;
 
-		for (i = 0; i < (int)effect_receptor->super_sensor_modes.GetCount(); i++) {
-			if (effect_receptor->super_sensor_modes[i] == candidate_receptor) {
+		for (i = 0; i < effect_receptor.super_sensor_modes.GetCount(); i++) {
+			if (effect_receptor.super_sensor_modes[i] == candidate_receptor) {
 				// Save candidate.
 				candidates.Add(candidate_event);
 				accum_prob += candidate_event->probability;
@@ -323,7 +313,7 @@ Mona::GeneralizeMediator(GeneralizationEvent* generalization_event) {
 		// Make a weighted probabilistic pick of a candidate.
 		choose_prob = RandomInterval(0.0, accum_prob);
 
-		for (i = 0, p = 0.0; i < (int)candidates.GetCount(); i++) {
+		for (i = 0, p = 0.0; i < candidates.GetCount(); i++) {
 			if (candidates[i] == NULL)
 				continue;
 
@@ -341,18 +331,18 @@ Mona::GeneralizeMediator(GeneralizationEvent* generalization_event) {
 		candidates[i]  = NULL;
 
 		// Make a probabilistic decision to create mediator.
-		if (!RandomChance(generalization_event->enabling))
+		if (!RandomChance(generalization_event.enabling))
 			continue;
 
 		// Create the mediator.
 		mediator = NewMediator(INITIAL_ENABLEMENT);
-		mediator->AddEvent(CAUSE_EVENT, generalization_event->mediator->cause);
+		mediator.AddEvent(CAUSE_EVENT, generalization_event.mediator.cause);
 
-		if (generalization_event->mediator->response != NULL)
-			mediator->AddEvent(RESPONSE_EVENT, generalization_event->mediator->response);
+		if (generalization_event.mediator.response != NULL)
+			mediator.AddEvent(RESPONSE_EVENT, generalization_event.mediator.response);
 
-		mediator->AddEvent(EFFECT_EVENT, candidate_event->neuron);
-		mediator->UpdateGoalValue(generalization_event->needs);
+		mediator.AddEvent(EFFECT_EVENT, candidate_event->neuron);
+		mediator.UpdateGoalValue(generalization_event.needs);
 
 		// Duplicate?
 		if (IsDuplicateMediator(mediator)) {
@@ -361,20 +351,20 @@ Mona::GeneralizeMediator(GeneralizationEvent* generalization_event) {
 		}
 
 		// Make new mediator available for learning.
-		if ((mediator->level + 1) < (int)learning_events.GetCount()) {
-			mediator->cause_begin     = generalization_event->begin;
-			mediator->firing_strength = generalization_event->enabling *
+		if ((mediator.level + 1) < learning_events.GetCount()) {
+			mediator.cause_begin     = generalization_event.begin;
+			mediator.firing_strength = generalization_event.enabling *
 										candidate_event->firing_strength;
 			learning_event = new LearningEvent(mediator);
 			ASSERT(learning_event != NULL);
-			learning_events[mediator->level + 1].Add(learning_event);
+			learning_events[mediator.level + 1].Add(learning_event);
 		}
 
 		#ifdef MONA_TRACE
 
 		if (trace_learn) {
 			printf("Create generalized mediator:\n");
-			mediator->Print();
+			mediator.Print();
 		}
 
 		#endif
@@ -387,15 +377,15 @@ bool Mona::IsDuplicateMediator(Mediator* mediator) {
 	int           i, j;
 	struct Notify* notify;
 
-	if (mediator->cause->notify_list.GetCount() < mediator->effect->notify_list.GetCount()) {
-		if ((mediator->response == NULL) ||
-			(mediator->cause->notify_list.GetCount() < mediator->response->notify_list.GetCount())) {
-			for (i = 0, j = (int)mediator->cause->notify_list.GetCount(); i < j; i++) {
-				notify = mediator->cause->notify_list[i];
+	if (mediator.cause->notify_list.GetCount() < mediator.effect->notify_list.GetCount()) {
+		if ((mediator.response == NULL) ||
+			(mediator.cause->notify_list.GetCount() < mediator.response->notify_list.GetCount())) {
+			for (i = 0, j = (int)mediator.cause->notify_list.GetCount(); i < j; i++) {
+				notify = mediator.cause->notify_list[i];
 
-				if (notify->mediator != mediator) {
-					if ((notify->mediator->response == mediator->response) &&
-						(notify->mediator->effect == mediator->effect))
+				if (notify.mediator != mediator) {
+					if ((notify.mediator.response == mediator.response) &&
+						(notify.mediator.effect == mediator.effect))
 						return true;
 				}
 			}
@@ -403,12 +393,12 @@ bool Mona::IsDuplicateMediator(Mediator* mediator) {
 			return false;
 		}
 		else {
-			for (i = 0, j = (int)mediator->response->notify_list.GetCount(); i < j; i++) {
-				notify = mediator->response->notify_list[i];
+			for (i = 0, j = (int)mediator.response->notify_list.GetCount(); i < j; i++) {
+				notify = mediator.response->notify_list[i];
 
-				if (notify->mediator != mediator) {
-					if ((notify->mediator->cause == mediator->cause) &&
-						(notify->mediator->effect == mediator->effect))
+				if (notify.mediator != mediator) {
+					if ((notify.mediator.cause == mediator.cause) &&
+						(notify.mediator.effect == mediator.effect))
 						return true;
 				}
 			}
@@ -417,14 +407,14 @@ bool Mona::IsDuplicateMediator(Mediator* mediator) {
 		}
 	}
 	else {
-		if ((mediator->response == NULL) ||
-			(mediator->effect->notify_list.GetCount() < mediator->response->notify_list.GetCount())) {
-			for (i = 0, j = (int)mediator->effect->notify_list.GetCount(); i < j; i++) {
-				notify = mediator->effect->notify_list[i];
+		if ((mediator.response == NULL) ||
+			(mediator.effect->notify_list.GetCount() < mediator.response->notify_list.GetCount())) {
+			for (i = 0, j = (int)mediator.effect->notify_list.GetCount(); i < j; i++) {
+				notify = mediator.effect->notify_list[i];
 
-				if (notify->mediator != mediator) {
-					if ((notify->mediator->cause == mediator->cause) &&
-						(notify->mediator->response == mediator->response))
+				if (notify.mediator != mediator) {
+					if ((notify.mediator.cause == mediator.cause) &&
+						(notify.mediator.response == mediator.response))
 						return true;
 				}
 			}
@@ -432,12 +422,12 @@ bool Mona::IsDuplicateMediator(Mediator* mediator) {
 			return false;
 		}
 		else {
-			for (i = 0, j = (int)mediator->response->notify_list.GetCount(); i < j; i++) {
-				notify = mediator->response->notify_list[i];
+			for (i = 0, j = (int)mediator.response->notify_list.GetCount(); i < j; i++) {
+				notify = mediator.response->notify_list[i];
 
-				if (notify->mediator != mediator) {
-					if ((notify->mediator->cause == mediator->cause) &&
-						(notify->mediator->effect == mediator->effect))
+				if (notify.mediator != mediator) {
+					if ((notify.mediator.cause == mediator.cause) &&
+						(notify.mediator.effect == mediator.effect))
 						return true;
 				}
 			}
@@ -454,40 +444,40 @@ void Mona::ClearWorkingMemory() {
 	Receptor* receptor;
 	Motor*    motor;
 	Mediator* mediator;
-	Vector<Mediator*>::Iterator      mediator_iter;
+	//Vector<Mediator*>::Iterator      mediator_iter;
 	LearningEvent*                   learning_event;
-	Vector<LearningEvent*>::Iterator learning_event_iter;
+	//Vector<LearningEvent*>::Iterator learning_event_iter;
 
-	for (i = 0; i < (int)receptors.GetCount(); i++) {
+	for (i = 0; i < receptors.GetCount(); i++) {
 		receptor = receptors[i];
-		receptor->firing_strength = 0.0;
-		receptor->motive         = 0.0;
+		receptor.firing_strength = 0.0;
+		receptor.motive         = 0.0;
 		#ifdef MONA_TRACKING
-		receptor->tracker.Clear();
+		receptor.tracker.Clear();
 		#endif
 	}
 
-	for (i = 0; i < (int)motors.GetCount(); i++) {
+	for (i = 0; i < motors.GetCount(); i++) {
 		motor = motors[i];
-		motor->firing_strength = 0.0;
-		motor->motive         = 0.0;
+		motor.firing_strength = 0.0;
+		motor.motive         = 0.0;
 		#ifdef MONA_TRACKING
-		motor->tracker.Clear();
+		motor.tracker.Clear();
 		#endif
 	}
 
 	for (mediator_iter = mediators.Begin();
 		 mediator_iter != mediators.End(); mediator_iter++) {
 		mediator = *mediator_iter;
-		mediator->firing_strength = 0.0;
-		mediator->motive         = 0.0;
-		mediator->RetireEnablings(true);
+		mediator.firing_strength = 0.0;
+		mediator.motive         = 0.0;
+		mediator.RetireEnablings(true);
 		#ifdef MONA_TRACKING
-		mediator->tracker.Clear();
+		mediator.tracker.Clear();
 		#endif
 	}
 
-	for (i = 0; i < (int)learning_events.GetCount(); i++) {
+	for (i = 0; i < learning_events.GetCount(); i++) {
 		for (learning_event_iter = learning_events[i].Begin();
 			 learning_event_iter != learning_events[i].End(); learning_event_iter++) {
 			learning_event = *learning_event_iter;
@@ -503,7 +493,7 @@ void Mona::ClearWorkingMemory() {
 void Mona::ClearLongTermMemory() {
 	Mediator* mediator;
 	Vector<Mediator*>           tmp_mediators;
-	Vector<Mediator*>::Iterator mediator_iter;
+	//Vector<Mediator*>::Iterator mediator_iter;
 	// Must also clear working memory.
 	ClearWorkingMemory();
 
@@ -513,7 +503,7 @@ void Mona::ClearLongTermMemory() {
 		 mediator_iter = mediators.Begin()) {
 		mediator = *mediator_iter;
 
-		if (mediator->instinct || mediator->HasInnerInstinct()) {
+		if (mediator.instinct || mediator.HasInnerInstinct()) {
 			tmp_mediators.Add(mediator);
 			mediators.Remove(mediator_iter);
 		}

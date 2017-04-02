@@ -38,7 +38,7 @@ public:
 		// Initialize.
 		this->mask.Clear();
 
-		for (i = 0; i < (int)mask.GetCount(); i++)
+		for (i = 0; i < mask.GetCount(); i++)
 			this->mask.Add(mask[i]);
 
 		mode             = (int)sensor_modes->GetCount();
@@ -75,7 +75,7 @@ public:
 	void subSuper(SensorMode* sensor_mode, bool& sub, bool& super) {
 		sub = super = true;
 
-		for (int i = 0; i < (int)mask.GetCount() && (sub || super); i++) {
+		for (int i = 0; i < mask.GetCount() && (sub || super); i++) {
 			if (mask[i]) {
 				if (!sensor_mode->mask[i])
 					sub = false;
@@ -94,7 +94,7 @@ public:
 		bool       sub, super;
 		SensorMode* s;
 
-		for (int i = 0; i < (int)subsets.GetCount(); i++) {
+		for (int i = 0; i < subsets.GetCount(); i++) {
 			s = (*sensor_modes)[i];
 			s->subSuper((*sensor_modes)[idx], sub, super);
 
@@ -112,7 +112,7 @@ public:
 		bool       sub, super;
 		SensorMode* s;
 
-		for (int i = 0; i < (int)supersets.GetCount(); i++) {
+		for (int i = 0; i < supersets.GetCount(); i++) {
 			s = (*sensor_modes)[i];
 			s->subSuper((*sensor_modes)[idx], sub, super);
 
@@ -334,7 +334,7 @@ public:
 		Scale(weight);
 		this->weight = accum.weight * weight;
 
-		for (int i = 0; i < (int)accum.path.GetCount(); i++)
+		for (int i = 0; i < accum.path.GetCount(); i++)
 			path.Add(accum.path[i]);
 	}
 
@@ -363,7 +363,7 @@ public:
 	// Add a neuron to the path.
 	// Return true if no loop detected.
 	inline bool AddPath(Neuron* neuron) {
-		for (int i = 0; i < (int)path.GetCount(); i++) {
+		for (int i = 0; i < path.GetCount(); i++) {
 			if (path[i] == neuron)
 				return false;
 		}
@@ -563,56 +563,43 @@ public:
 	// Get enabling value.
 	inline ENABLEMENT GetValue() {
 		ENABLEMENT e;
-		Array<Enabling>::Iterator list_iter;
 		e = 0.0;
-
-		for (list_iter = enablings.Begin();
-			 list_iter != enablings.End(); list_iter++)
-			e       += list_iter->value;
-
-		return (e);
+		for(int i = 0; i < enablings.GetCount(); i++)
+			e += enablings[i].value;
+		return e;
 	}
 
 
 	// Get value of new enablings.
-	inline ENABLEMENT getNewValue() {
+	inline ENABLEMENT GetNewValue() {
 		ENABLEMENT e;
-		Array<Enabling>::Iterator list_iter;
 		e = 0.0;
-
-		for (list_iter = enablings.Begin();
-			 list_iter != enablings.End(); list_iter++) {
-			if (list_iter->new_in_set)
-				e += list_iter->value;
+		for(int i = 0; i < enablings.GetCount(); i++) {
+			Enabling& en = enablings[i];
+			if (en.new_in_set)
+				e += enablings[i].value;
 		}
-
-		return (e);
+		return e;
 	}
 
 
 	// Get value of old enablings.
-	inline ENABLEMENT getOldValue() {
+	inline ENABLEMENT GetOldValue() {
 		ENABLEMENT e;
-		Array<Enabling>::Iterator list_iter;
 		e = 0.0;
-
-		for (list_iter = enablings.Begin();
-			 list_iter != enablings.End(); list_iter++) {
-			if (!list_iter->new_in_set)
-				e += list_iter->value;
+		for(int i = 0; i < enablings.GetCount(); i++) {
+			Enabling& en = enablings[i];
+			if (!en.new_in_set)
+				e += enablings[i].value;
 		}
-
-		return (e);
+		return e;
 	}
 
 
 	// Clear new flags.
 	inline void ClearNewInSet() {
-		Array<Enabling>::Iterator list_iter;
-
-		for (list_iter = enablings.Begin();
-			 list_iter != enablings.End(); list_iter++)
-			list_iter->new_in_set = false;
+		for(int i = 0; i < enablings.GetCount(); i++)
+			enablings[i].new_in_set = false;
 	}
 
 
@@ -636,7 +623,7 @@ public:
 	// Print.
 	/*  void Print(FILE *out = stdout)
 	    {
-	    Array<Enabling>::Iterator list_iter;
+	    //Array<Enabling>::Iterator list_iter;
 
 	    fprintf(out, "<enablingSet>");
 	    for (list_iter = enablings.Begin();
@@ -649,11 +636,16 @@ public:
 };
 
 // Mediator event notifier.
-struct Notify {
-	Mediator*   mediator;
+struct Notify : Moveable<Notify> {
+	ID id;
 	EVENT_TYPE event_type;
-
+	Mediator*   mediator;
+	
+	Notify() : id(-1), event_type(INVALID_EVENT), mediator(NULL) {}
+	
 	void Serialize(Stream& fp) {
+		fp % id % event_type;
+		if (fp.IsLoading()) mediator = NULL;
 	}
 };
 
@@ -674,10 +666,16 @@ public:
 	double probability;
 	VALUE_SET   needs;
 
-	LearningEvent(Neuron* neuron);
+	//LearningEvent(Neuron* neuron);
 	LearningEvent();
 	void Serialize(Stream& fp);
-
+	
+	void SetNeuron(Neuron& neuron);
+	
+	template <class T>
+	T* GetNeuron() const {return dynamic_cast<T*>(neuron);}
+	
+	
 	// Print.
 	/*  void Print(FILE *out = stdout)
 	    {
@@ -769,9 +767,9 @@ public:
 	    {
 	      fprintf(out, "<mediator>\n");
 	    #ifdef MONA_TRACKING
-	      mediator->Print((TRACKING_FLAGS)0, out);
+	      mediator.Print((TRACKING_FLAGS)0, out);
 	    #else
-	      mediator->Print(out);
+	      mediator.Print(out);
 	    #endif
 	    }
 	    else

@@ -48,7 +48,7 @@ void GoalValue::Update(VALUE_SET& needs, VALUE_SET& need_deltas) {
 
 
 
-LearningEvent::LearningEvent(Neuron* neuron) {
+/*LearningEvent::LearningEvent(Neuron* neuron) {
 	this->neuron   = neuron;
 	firing_strength = neuron->firing_strength;
 
@@ -71,7 +71,7 @@ LearningEvent::LearningEvent(Neuron* neuron) {
 
 	for (int i = 0; i < n; i++)
 		needs.Set(i, neuron->mona->homeostats[i]->GetNeed());
-}
+}*/
 
 LearningEvent::LearningEvent() {
 	neuron         = NULL;
@@ -80,6 +80,31 @@ LearningEvent::LearningEvent() {
 	end.Set(0);
 	probability    = 0.0;
 	needs.Clear();
+}
+
+void LearningEvent::SetNeuron(Neuron& neuron) {
+	this->neuron   = &neuron;
+	firing_strength = neuron.firing_strength;
+
+	if (neuron.type == MEDIATOR)
+		begin = ((Mediator*)neuron)->cause_begin;
+	else
+		begin = neuron.mona->event_clock;
+
+	end = neuron.mona->event_clock;
+
+	if (firing_strength > NEARLY_ZERO) {
+		probability =
+			pow(firing_strength, neuron.mona->FIRING_STRENGTH_LEARNING_DAMPER);
+	}
+	else
+		probability = 0.0;
+
+	int n = neuron.mona->need_count;
+	needs.Reserve(n);
+
+	for (int i = 0; i < n; i++)
+		needs.Set(i, neuron.mona->homeostats[i]->GetNeed());
 }
 
 void LearningEvent::Serialize(Stream& fp) {
@@ -107,13 +132,13 @@ void LearningEvent::Serialize(Stream& fp) {
 GeneralizationEvent::GeneralizationEvent(Mediator* mediator, ENABLEMENT enabling) {
 	this->mediator = mediator;
 	this->enabling = enabling;
-	begin          = mediator->cause_begin;
-	end            = mediator->mona->event_clock;
-	int n = mediator->mona->need_count;
+	begin          = mediator.cause_begin;
+	end            = mediator.mona->event_clock;
+	int n = mediator.mona->need_count;
 	needs.Reserve(n);
 
 	for (int i = 0; i < n; i++)
-		needs.Set(i, mediator->mona->homeostats[i]->GetNeed());
+		needs.Set(i, mediator.mona->homeostats[i]->GetNeed());
 }
 
 GeneralizationEvent::GeneralizationEvent() {

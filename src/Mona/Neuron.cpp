@@ -27,7 +27,7 @@ Neuron::Clear() {
 	drive_weights.Clear();
 	instinct = false;
 
-	for (int i = 0; i < (int)notify_list.GetCount(); i++)
+	for (int i = 0; i < notify_list.GetCount(); i++)
 		delete notify_list[i];
 
 	notify_list.Clear();
@@ -44,11 +44,11 @@ bool
 Neuron::HasInnerInstinct() {
 	Mediator* mediator;
 
-	for (int i = 0; i < (int)notify_list.GetCount(); i++) {
+	for (int i = 0; i < notify_list.GetCount(); i++) {
 		mediator = notify_list[i]->mediator;
 
-		if (mediator->instinct ||
-			mediator->HasInnerInstinct())
+		if (mediator.instinct ||
+			mediator.HasInnerInstinct())
 			return true;
 	}
 
@@ -61,57 +61,8 @@ void Neuron::Serialize(Stream& fp) {
 	fp % id % type % creation_time % firing_strength;
 	goals.Serialize(fp);
 	fp % motive % instinct % notify_list;
-	int           i, j;
-	struct Notify* notify;
-	Clear();
-	FREAD_LONG_LONG(&id, fp);
-	FREAD_INT(&i, fp);
-	type = (NEURON_TYPE)i;
-	FREAD_LONG_LONG(&creation_time, fp);
-	FREAD_DOUBLE(&firing_strength, fp);
-	goals.Load(fp);
-	FREAD_DOUBLE(&motive, fp);
-	FREAD_BOOL(&instinct, fp);
-	notify_list.Clear();
-	FREAD_INT(&i, fp);
-	notify_list.SetCount(i);
-
-	for (i = 0; i < (int)notify_list.GetCount(); i++) {
-		notify = new struct Notify;
-		ASSERT(notify != NULL);
-		notify->mediator = (Mediator*)new ID;
-		ASSERT(notify->mediator != NULL);
-		FREAD_LONG_LONG((ID*)notify->mediator, fp);
-		FREAD_INT(&j, fp);
-		notify->event_type = (EVENT_TYPE)j;
-		notify_list[i]     = notify;
-	}
 }
 
-
-// Save neuron.
-// When changing format increment FORMAT in mona.h
-void Neuron::Store(Stream& fp) {
-	int           i, j;
-	struct Notify* notify;
-	FWRITE_LONG_LONG(&id, fp);
-	i = (int)type;
-	FWRITE_INT(&i, fp);
-	FWRITE_LONG_LONG(&creation_time, fp);
-	FWRITE_DOUBLE(&firing_strength, fp);
-	goals.Store(fp);
-	FWRITE_DOUBLE(&motive, fp);
-	FWRITE_BOOL(&instinct, fp);
-	i = (int)notify_list.GetCount();
-	FWRITE_INT(&i, fp);
-
-	for (i = 0; i < (int)notify_list.GetCount(); i++) {
-		notify = notify_list[i];
-		FWRITE_LONG_LONG(&notify->mediator->id, fp);
-		j = (int)notify->event_type;
-		FWRITE_INT(&j, fp);
-	}
-}
 
 
 
@@ -161,31 +112,31 @@ Neuron::InitDrive(VALUE_SET& needs) {
 
 	case MEDIATOR:
 		mediator = (Mediator*)this;
-		down     = mediator->effective_enablement;
+		down     = mediator.effective_enablement;
 		up       = 1.0 - down;
-		e        = mediator->GetEnablement();
+		e        = mediator.GetEnablement();
 		ce       = re = ee = 0.0;
 		// Distribute the down amount among components.
-		re = (mediator->response_enablings.GetValue() / e) * down;
+		re = (mediator.response_enablings.GetValue() / e) * down;
 
-		if (mediator->response != NULL)
-			drive_weights[mediator->response] = re;
+		if (mediator.response != NULL)
+			drive_weights[mediator.response] = re;
 
-		ee = mediator->effect_enablings.GetValue();
-		ee = drive_weights[mediator->effect] = (ee / e) * down;
+		ee = mediator.effect_enablings.GetValue();
+		ee = drive_weights[mediator.effect] = (ee / e) * down;
 		ce = down - (re + ee);
-		drive_weights[mediator->cause] = ce;
+		drive_weights[mediator.cause] = ce;
 		break;
 	}
 
 	// Distribute the up amount among parents.
-	for (i = 0; i < (int)notify_list.GetCount(); i++) {
+	for (i = 0; i < notify_list.GetCount(); i++) {
 		notify   = notify_list[i];
-		mediator = notify->mediator;
+		mediator = notify.mediator;
 
-		if (notify->event_type == EFFECT_EVENT) {
+		if (notify.event_type == EFFECT_EVENT) {
 			drive_weights[mediator] = up *
-									  (1.0 - mediator->effective_enabling_weight);
+									  (1.0 - mediator.effective_enabling_weight);
 		}
 		else
 			drive_weights[mediator] = 0.0;
@@ -234,11 +185,11 @@ Neuron::AccumMotiveTracking() {
 	if (type != MOTOR)
 		return;
 
-	for (i = 0; i < (int)tracker.motive_work_paths.GetCount(); i++) {
+	for (i = 0; i < tracker.motive_work_paths.GetCount(); i++) {
 		if (tracker.motive_paths.GetCount() < Mona::MAX_DRIVER_TRACKS)
 			tracker.motive_paths.Add(tracker.motive_work_paths[i]);
 		else {
-			for (j = 0, k = -1; j < (int)tracker.motive_work_paths.GetCount(); j++) {
+			for (j = 0, k = -1; j < tracker.motive_work_paths.GetCount(); j++) {
 				if (tracker.motive_work_paths[i].motive > tracker.motive_paths[j].motive) {
 					if ((k == -1) || (tracker.motive_paths[j].motive < tracker.motive_paths[k].motive))
 						k = j;
@@ -323,23 +274,23 @@ Neuron::Drive(MotiveAccum motive_accum) {
 		mediator = (Mediator*)this;
 
 		// Drive motive to cause event.
-		if ((w = mediator->drive_weights[mediator->cause]) > NEARLY_ZERO) {
+		if ((w = mediator.drive_weights[mediator.cause]) > NEARLY_ZERO) {
 			accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
-			mediator->cause->Drive(accum_work);
+			mediator.cause->Drive(accum_work);
 		}
 
 		// Drive motive to response event.
-		if (mediator->response != NULL) {
-			if ((w = mediator->drive_weights[mediator->response]) > NEARLY_ZERO) {
+		if (mediator.response != NULL) {
+			if ((w = mediator.drive_weights[mediator.response]) > NEARLY_ZERO) {
 				accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
-				mediator->response->Drive(accum_work);
+				mediator.response->Drive(accum_work);
 			}
 		}
 
 		// Drive motive to effect event.
-		if ((w = mediator->drive_weights[mediator->effect]) > NEARLY_ZERO) {
+		if ((w = mediator.drive_weights[mediator.effect]) > NEARLY_ZERO) {
 			accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
-			mediator->effect->Drive(accum_work);
+			mediator.effect->Drive(accum_work);
 		}
 
 		break;
@@ -348,9 +299,9 @@ Neuron::Drive(MotiveAccum motive_accum) {
 	case RECEPTOR:
 		receptor = (Receptor*)this;
 
-		for (i = 0; i < (int)receptor->sub_sensor_modes.GetCount(); i++) {
+		for (i = 0; i < receptor.sub_sensor_modes.GetCount(); i++) {
 			accum_work.Configure(motive_accum, 1.0);
-			receptor->sub_sensor_modes[i]->Drive(accum_work);
+			receptor.sub_sensor_modes[i]->Drive(accum_work);
 		}
 
 		break;
@@ -361,13 +312,13 @@ Neuron::Drive(MotiveAccum motive_accum) {
 	}
 
 	// Drive motive to parent mediators.
-	for (i = 0; i < (int)notify_list.GetCount(); i++) {
+	for (i = 0; i < notify_list.GetCount(); i++) {
 		mediator = notify_list[i]->mediator;
 
 		if ((w = drive_weights[mediator]) > NEARLY_ZERO) {
 			w *= (1.0 - mona->DRIVE_ATTENUATION);
 			accum_work.Configure(motive_accum, w);
-			mediator->DriveCause(accum_work);
+			mediator.DriveCause(accum_work);
 		}
 	}
 }
@@ -385,7 +336,7 @@ Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out) {
 	struct Activation::DrivePath  d;
 	VALUE_SET needs;
 
-	for (i = 0; i < (int)in.drivers.GetCount(); i++) {
+	for (i = 0; i < in.drivers.GetCount(); i++) {
 		if (in.drivers[i].neuron == this)
 			return false;
 
@@ -418,7 +369,7 @@ Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out) {
 	if (tracker.motive_work_paths.GetCount() < Mona::MAX_DRIVER_TRACKS)
 		tracker.motive_work_paths.Add(d);
 	else {
-		for (i = 0, j = -1; i < (int)tracker.motive_work_paths.GetCount(); i++) {
+		for (i = 0, j = -1; i < tracker.motive_work_paths.GetCount(); i++) {
 			if (d.motive_work.GetValue() > tracker.motive_work_paths[i].motive_work.GetValue()) {
 				if ((j == -1) ||
 					(tracker.motive_work_paths[i].motive_work.GetValue() <

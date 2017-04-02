@@ -131,17 +131,17 @@ main(int argc, char* argv[]) {
 	for (m = 0; m < numMazes; m++) {
 		maze = Mazes[m];
 
-		if (intervals < (int)maze->path.GetCount())
+		if (intervals < maze->path.GetCount())
 			intervals = (int)maze->path.GetCount();
 
 		fprintf(fp, "name: { ");
 
-		for (i = 0; i < (int)maze->path.GetCount(); i++)
+		for (i = 0; i < maze->path.GetCount(); i++)
 			fprintf(fp, "%d ", maze->path[i].mark);
 
 		fprintf(fp, "} %d\n", (int)maze->path.GetCount());
 
-		for (i = 0; i < (int)maze->path.GetCount(); i++) {
+		for (i = 0; i < maze->path.GetCount(); i++) {
 			fprintf(fp, "I:");
 
 			for (j = 0; j < numMazeMarks; j++) {
@@ -158,7 +158,7 @@ main(int argc, char* argv[]) {
 			else
 				fprintf(fp, "1 0");
 
-			if (i < (int)maze->path.GetCount() - 1)
+			if (i < maze->path.GetCount() - 1)
 				fprintf(fp, "\n");
 			else
 				fprintf(fp, ";\n");

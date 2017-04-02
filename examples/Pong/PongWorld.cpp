@@ -671,7 +671,7 @@ main(int argc, char* argv[]) {
 				if (LensFp != NULL) {
 					fprintf(LensFp, "name: { game_%d } %d\n", i, (int)LensGame.GetCount());
 
-					for (k = 0; k < (int)LensGame.GetCount(); k++) {
+					for (k = 0; k < LensGame.GetCount(); k++) {
 						fprintf(LensFp, "%s", LensGame[k].c_str());
 
 						if (k == (int)LensGame.GetCount() - 1)

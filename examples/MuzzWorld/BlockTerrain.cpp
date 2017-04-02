@@ -397,7 +397,7 @@ void BlockTerrain::GetConnectablePlatforms(
 	// List the platforms.
 	for (i = 0; i < width; i++) {
 		for (j = 0; j < height; j++) {
-			for (k = 0; k < (int)platforms.GetCount(); k++) {
+			for (k = 0; k < platforms.GetCount(); k++) {
 				if (platforms[k] == blocks[i][j].platform)
 					break;
 			}
@@ -408,8 +408,8 @@ void BlockTerrain::GetConnectablePlatforms(
 	}
 
 	// Sort by platform number.
-	for (i = 0; i < (int)platforms.GetCount(); i++) {
-		for (j = i + 1; j < (int)platforms.GetCount(); j++) {
+	for (i = 0; i < platforms.GetCount(); i++) {
+		for (j = i + 1; j < platforms.GetCount(); j++) {
 			if (platforms[j] < platforms[i]) {
 				k            = platforms[i];
 				platforms[i] = platforms[j];
@@ -421,8 +421,8 @@ void BlockTerrain::GetConnectablePlatforms(
 	// Find platforms having a connectable border.
 	connectable_platforms.Clear();
 
-	for (i = 0; i < (int)platforms.GetCount(); i++) {
-		for (j = i + 1; j < (int)platforms.GetCount(); j++) {
+	for (i = 0; i < platforms.GetCount(); i++) {
+		for (j = i + 1; j < platforms.GetCount(); j++) {
 			if (GetConnectableBlocks(platforms[i], platforms[j], connectable_blocks) &&
 				!already_connected)
 				continue;
@@ -1649,7 +1649,7 @@ void BlockTerrain::Draw() {
 			x = (double)i * block_size;
 			z = (double)j * block_size;
 
-			for (k = 0; k < (int)blocks[i][j].texture_indexes.GetCount(); k++) {
+			for (k = 0; k < blocks[i][j].texture_indexes.GetCount(); k++) {
 				y = (double)k * block_size;
 				glPushMatrix();
 				glTranslatef(x, y, z);
