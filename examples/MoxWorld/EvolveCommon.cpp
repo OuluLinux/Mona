@@ -39,7 +39,7 @@ public class EvolveCommon {
 		}
 
 		public int GetValue() {
-			return (value);
+			return value;
 		}
 
 
@@ -49,7 +49,7 @@ public class EvolveCommon {
 
 
 		public String GetName() {
-			return (name);
+			return name;
 		}
 
 
@@ -528,9 +528,9 @@ public class EvolveCommon {
 
 		// Get information.
 		String getInfo() {
-			return ("mox=" + mox.id +
+			return "mox=" + mox.id +
 					", fitness=" + fitness +
-					", generation=" + generation);
+					", generation=" + generation;
 		}
 	}
 }

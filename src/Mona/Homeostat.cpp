@@ -59,19 +59,19 @@ int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
 
 	// Check for duplicate.
 	if ((goal_index = FindGoal(sensors, sensor_mode, false)) != -1) {
-		((Receptor*)goals[goal_index].receptor)->goals.SetValue(need_index, goal_value);
+		goals[goal_index].receptor->goals.SetValue(need_index, goal_value);
 
 		if (goals[goal_index].response != NULL_RESPONSE) {
 			// Clear old motor goal value.
-			((Motor*)goals[goal_index].motor)->goals.SetValue(need_index, 0.0);
+			(goals[goal_index].motor)->goals.SetValue(need_index, 0.0);
 		}
 
 		goals[goal_index].response = response;
 
 		if (response != NULL_RESPONSE) {
-			goals[goal_index].motor = (void*)mona->GetMotorByResponse(response);
+			goals[goal_index].motor = &mona->GetMotorByResponse(response);
 			ASSERT(goals[goal_index].motor != NULL);
-			((Motor*)goals[goal_index].motor)->goals.SetValue(need_index, 0.0);
+			(goals[goal_index].motor)->goals.SetValue(need_index, 0.0);
 		}
 		else
 			goals[goal_index].motor = NULL;
@@ -86,20 +86,21 @@ int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
 			goal.sensors.Add(sensors_work[i]);
 
 		goal.sensor_mode = sensor_mode;
-		Receptor* receptor = mona->FindCentroidReceptor(sensors_work, sensor_mode, distance);
+		Receptor* found_receptor = mona->FindCentroidReceptor(sensors_work, sensor_mode, distance);
 
-		if ((receptor == NULL) ||
-			((receptor != NULL) && (distance > mona->sensor_mode.resolution)))
-			receptor = mona->NewReceptor(sensors_work, sensor_mode);
+		if ((found_receptor == NULL) ||
+			((found_receptor != NULL) && (distance > mona->sensor_modes[sensor_mode]->resolution)))
+			found_receptor = mona->NewReceptor(sensors_work, sensor_mode);
 
+		Receptor& receptor = *found_receptor;
+		
 		receptor.goals.SetValue(need_index, goal_value);
-		goal.receptor = (void*)receptor;
+		goal.receptor = &receptor;
 		goal.response = response;
 
 		if (response != NULL_RESPONSE) {
-			goal.motor = (void*)mona->GetMotorByResponse(response);
-			ASSERT(goal.motor != NULL);
-			((Motor*)goal.motor)->goals.SetValue(need_index, 0.0);
+			goal.motor = &mona->GetMotorByResponse(response);
+			goal.motor->goals.SetValue(need_index, 0.0);
 		}
 		else
 			goal.motor = NULL;
@@ -107,7 +108,7 @@ int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
 		goal.goal_value = goal_value;
 		goal.enabled   = true;
 		goals.Add(goal);
-		goal_index = (int)goals.GetCount() - 1;
+		goal_index = goals.GetCount() - 1;
 	}
 
 	return (goal_index);
@@ -147,7 +148,7 @@ int Homeostat::FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode) {
 	for (int i = 0; i < goals.GetCount(); i++) {
 		if ((goals[i].sensor_mode == sensor_mode) &&
 			(Receptor::GetSensorDistance(&goals[i].sensors, &sensors_work)
-			 <= mona->sensor_mode.resolution))
+			 <= mona->sensor_modes[sensor_mode]->resolution))
 			return (i);
 	}
 
@@ -159,14 +160,16 @@ int Homeostat::FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode) {
 bool Homeostat::GetGoalInfo(int goal_index, Vector<SENSOR>& sensors,
 							SENSOR_MODE& sensor_mode, RESPONSE& response,
 							NEED& goal_value, bool& enabled) {
-	if ((goal_index < 0) || (goal_index >= (int)goals.GetCount()))
+	if ((goal_index < 0) || (goal_index >= goals.GetCount()))
 		return false;
 
-	sensors    = goals[goal_index].sensors;
-	sensor_mode = goals[goal_index].sensor_mode;
-	response   = goals[goal_index].response;
-	goal_value  = goals[goal_index].goal_value;
-	enabled    = goals[goal_index].enabled;
+	Goal& g = goals[goal_index];
+	sensors     <<= g.sensors;
+	sensor_mode = g.sensor_mode;
+	response    = g.response;
+	goal_value  = g.goal_value;
+	enabled     = g.enabled;
+	
 	return true;
 }
 
@@ -184,8 +187,7 @@ bool Homeostat::IsGoalEnabled(int goal_index) {
 bool Homeostat::EnableGoal(int goal_index) {
 	if ((goal_index >= 0) && (goal_index < goals.GetCount())) {
 		goals[goal_index].enabled = true;
-		((Receptor*)goals[goal_index].receptor)->goals.SetValue(need_index,
-																goals[goal_index].goal_value);
+		goals[goal_index].receptor->goals.SetValue(need_index, goals[goal_index].goal_value);
 		return true;
 	}
 	else
@@ -197,7 +199,7 @@ bool Homeostat::EnableGoal(int goal_index) {
 bool Homeostat::DisableGoal(int goal_index) {
 	if ((goal_index >= 0) && (goal_index < goals.GetCount())) {
 		goals[goal_index].enabled = false;
-		((Receptor*)goals[goal_index].receptor)->goals.SetValue(need_index, 0.0);
+		goals[goal_index].receptor->goals.SetValue(need_index, 0.0);
 		return true;
 	}
 	else
@@ -207,39 +209,43 @@ bool Homeostat::DisableGoal(int goal_index) {
 
 // Remove goal at index.
 bool Homeostat::RemoveGoal(int goal_index) {
-	if ((goal_index < 0) || (goal_index >= (int)goals.GetCount()))
+	if ((goal_index < 0) || (goal_index >= goals.GetCount()))
 		return false;
 
+	Goal& g = goals[goal_index];
+	
 	// Clear goal value of associated receptors.
-	((Receptor*)goals[goal_index].receptor)->goals.SetValue(need_index, 0.0);
+	g.receptor->goals.SetValue(need_index, 0.0);
 
 	// Clear goal value of associated motor.
-	if (goals[goal_index].response != NULL_RESPONSE)
-		((Motor*)goals[goal_index].motor)->goals.SetValue(need_index, 0.0);
+	if (g.response != NULL_RESPONSE)
+		g.motor->goals.SetValue(need_index, 0.0);
 
 	// Remove entry.
-	goals.Remove(goals.Begin() + goal_index);
+	goals.Remove(goal_index);
 	return true;
 }
 
 
 // Remove neuron from goals.
-void Homeostat::RemoveNeuron(void* neuron) {
-	int  i;
+void Homeostat::RemoveNeuron(Neuron* neuron) {
 	bool done;
 	done = false;
-
+	Motor* motor = dynamic_cast<Motor*>(neuron);
+	
 	while (!done) {
 		done = true;
 
-		for (i = 0; i < goals.GetCount(); i++) {
-			if ((goals[i].receptor == neuron) || (goals[i].motor == neuron)) {
-				((Receptor*)goals[i].receptor)->goals.SetValue(need_index, 0.0);
+		for (int i = 0; i < goals.GetCount(); i++) {
+			Goal& g = goals[i];
+			
+			if ((g.receptor.r == neuron) || (g.motor == motor)) {
+				g.receptor->goals.SetValue(need_index, 0.0);
 
-				if (goals[i].response != NULL_RESPONSE)
-					((Motor*)goals[i].motor)->goals.SetValue(need_index, 0.0);
+				if (g.response != NULL_RESPONSE)
+					g.motor->goals.SetValue(need_index, 0.0);
 
-				goals.Remove(goals.Begin() + i);
+				goals.Remove(i);
 				done = false;
 				break;
 			}
@@ -261,8 +267,8 @@ void Homeostat::SensorsUpdate() {
 			<= mona->sensor_modes[goals[i].sensor_mode]->resolution) {
 			if (goals[i].response != NULL_RESPONSE) {
 				// Shift goal value to motor.
-				((Motor*)goals[i].motor)->goals.SetValue(need_index, goals[i].goal_value);
-				((Receptor*)goals[i].receptor)->goals.SetValue(need_index, 0.0);
+				goals[i].motor->goals.SetValue(need_index, goals[i].goal_value);
+				goals[i].receptor->goals.SetValue(need_index, 0.0);
 			}
 			else {
 				need -= goals[i].goal_value;
@@ -281,14 +287,14 @@ void Homeostat::ResponseUpdate() {
 	for (int i = 0; i < goals.GetCount(); i++) {
 		if (goals[i].response != NULL_RESPONSE) {
 			if (goals[i].response == mona->response) {
-				need -= ((Motor*)goals[i].motor)->goals.GetValue(need_index);
+				need -= goals[i].motor->goals.GetValue(need_index);
 
 				if (need < 0.0)
 					need = 0.0;
 			}
 
-			((Motor*)goals[i].motor)->goals.SetValue(need_index, 0.0);
-			((Receptor*)goals[i].receptor)->goals.SetValue(need_index, goals[i].goal_value);
+			goals[i].motor->goals.SetValue(need_index, 0.0);
+			goals[i].receptor->goals.SetValue(need_index, goals[i].goal_value);
 		}
 	}
 
@@ -316,10 +322,10 @@ void Homeostat::Serialize(Stream& fp) {
 	if (fp.IsLoading()) {
 		for (int i = 0; i < goals.GetCount(); i++) {
 			Goal& g = goals[i];
-			g.receptor = (void*)mona->FindByID(g.id);
+			g.receptor.FindFrom(mona);
 
 			if (g.response != NULL_RESPONSE)
-				g.motor = mona->GetMotorByResponse(g.response);
+				g.motor = &mona->GetMotorByResponse(g.response);
 			else
 				g.motor = NULL;
 		}

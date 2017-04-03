@@ -30,58 +30,54 @@ public:
 
 	// Initialize.
 	// Return mode.
-	int Init(Vector<bool>& mask, SENSOR resolution,
-			 Vector<SensorMode*>* sensor_modes) {
-		int        i, j;
-		bool       sub, super;
-		SensorMode* s;
+	int Init(Vector<bool>& mask, SENSOR resolution, Vector<SensorMode*>& sensor_modes) {
+		bool sub, super;
+		
 		// Initialize.
-		this->mask.Clear();
-
-		for (i = 0; i < mask.GetCount(); i++)
-			this->mask.Add(mask[i]);
-
-		mode             = (int)sensor_modes->GetCount();
+		this->mask		 <<= mask;
+		mode             = sensor_modes.GetCount();
 		this->resolution = resolution;
 
 		// Determine subset/supersets.
-		for (i = 0, j = (int)sensor_modes->GetCount(); i < j; i++) {
-			s = (*sensor_modes)[i];
-			subSuper(s, sub, super);
+		int count = sensor_modes.GetCount();
+		for (int i = 0; i < count; i++) {
+			SensorMode& s = *sensor_modes[i];
+			
+			SubSuper(s, sub, super);
 
 			if (sub && super)
 				continue;
 
 			if (sub) {
-				if (!subTransitive(i, sensor_modes)) {
+				if (!SubTransitive(i, sensor_modes)) {
 					subsets.Add(i);
-					s->supersets.Add(j);
+					s.supersets.Add(count);
 				}
 			}
 			else if (super) {
-				if (!superTransitive(i, sensor_modes)) {
+				if (!SuperTransitive(i, sensor_modes)) {
 					supersets.Add(i);
-					s->subsets.Add(j);
+					s.subsets.Add(count);
 				}
 			}
 		}
 
-		sensor_modes->Add(this);
+		sensor_modes.Add(this);
 		return (mode);
 	}
 
 
 	// Given mode is subset/superset?
-	void subSuper(SensorMode* sensor_mode, bool& sub, bool& super) {
+	void SubSuper(SensorMode& sensor_mode, bool& sub, bool& super) {
 		sub = super = true;
 
 		for (int i = 0; i < mask.GetCount() && (sub || super); i++) {
 			if (mask[i]) {
-				if (!sensor_mode->mask[i])
+				if (!sensor_mode.mask[i])
 					sub = false;
 			}
 			else {
-				if (sensor_mode->mask[i])
+				if (sensor_mode.mask[i])
 					super = false;
 			}
 		}
@@ -90,15 +86,14 @@ public:
 
 	// Given mode is a transitive subset?
 	// if A->B and B->C, then C is transitive.
-	bool subTransitive(int idx, Vector<SensorMode*>* sensor_modes) {
+	bool SubTransitive(int idx, Vector<SensorMode*>& sensor_modes) {
 		bool       sub, super;
-		SensorMode* s;
 
 		for (int i = 0; i < subsets.GetCount(); i++) {
-			s = (*sensor_modes)[i];
-			s->subSuper((*sensor_modes)[idx], sub, super);
+			SensorMode& s = *sensor_modes[i];
+			s.SubSuper(*sensor_modes[idx], sub, super);
 
-			if (sub || s->subTransitive(idx, sensor_modes))
+			if (sub || s.SubTransitive(idx, sensor_modes))
 				return true;
 		}
 
@@ -108,15 +103,14 @@ public:
 
 	// Given mode is a transitive superset?
 	// if A->B and B->C, then C is transitive.
-	bool superTransitive(int idx, Vector<SensorMode*>* sensor_modes) {
+	bool SuperTransitive(int idx, Vector<SensorMode*>& sensor_modes) {
 		bool       sub, super;
-		SensorMode* s;
 
 		for (int i = 0; i < supersets.GetCount(); i++) {
-			s = (*sensor_modes)[i];
-			s->subSuper((*sensor_modes)[idx], sub, super);
+			SensorMode& s = *sensor_modes[i];
+			s.SubSuper(*sensor_modes[idx], sub, super);
 
-			if (super || s->superTransitive(idx, sensor_modes))
+			if (super || s.SuperTransitive(idx, sensor_modes))
 				return true;
 		}
 
@@ -638,7 +632,7 @@ public:
 // Mediator event notifier.
 struct Notify : Moveable<Notify> {
 	ID id;
-	EVENT_TYPE event_type;
+	int event_type;
 	Mediator*   mediator;
 	
 	Notify() : id(-1), event_type(INVALID_EVENT), mediator(NULL) {}
@@ -668,6 +662,8 @@ public:
 
 	//LearningEvent(Neuron* neuron);
 	LearningEvent();
+	virtual ~LearningEvent() {}
+	
 	void Serialize(Stream& fp);
 	
 	void SetNeuron(Neuron& neuron);
@@ -744,7 +740,7 @@ public:
 	Time       end;
 	VALUE_SET  needs;
 
-	GeneralizationEvent(Mediator* mediator, ENABLEMENT enabling);
+	GeneralizationEvent(Mediator& mediator, ENABLEMENT enabling);
 
 
 	GeneralizationEvent();

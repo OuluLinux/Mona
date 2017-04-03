@@ -2,11 +2,16 @@
 
 
 
+Atomic neuron_counter;
 
+
+
+Neuron::Neuron() {
+	mem_id = AtomicInc(neuron_counter);
+}
 
 // Initialize neuron.
-void
-Neuron::Init(Mona* mona) {
+void Neuron::Init(Mona* mona) {
 	Clear();
 	this->mona = mona;
 	goals.Init(mona->need_count, mona);
@@ -14,8 +19,7 @@ Neuron::Init(Mona* mona) {
 
 
 // Clear neuron.
-void
-Neuron::Clear() {
+void Neuron::Clear() {
 	id             = NULL_ID;
 	creation_time.Set(INVALID_TIME);
 	firing_strength = 0.0;
@@ -27,10 +31,8 @@ Neuron::Clear() {
 	drive_weights.Clear();
 	instinct = false;
 
-	for (int i = 0; i < notify_list.GetCount(); i++)
-		delete notify_list[i];
-
 	notify_list.Clear();
+	
 	#ifdef MONA_TRACKING
 	tracker.fire   = false;
 	tracker.enable = false;
@@ -42,16 +44,12 @@ Neuron::Clear() {
 // Does neuron have an instinct parent?
 bool
 Neuron::HasInnerInstinct() {
-	Mediator* mediator;
-
 	for (int i = 0; i < notify_list.GetCount(); i++) {
-		mediator = notify_list[i]->mediator;
+		Mediator& mediator = *notify_list[i].mediator;
 
-		if (mediator.instinct ||
-			mediator.HasInnerInstinct())
+		if (mediator.instinct || mediator.HasInnerInstinct())
 			return true;
 	}
-
 	return false;
 }
 
@@ -70,18 +68,18 @@ void Neuron::Serialize(Stream& fp) {
 // Initialize neuron drive.
 void
 Neuron::InitDrive(VALUE_SET& needs) {
-	int           i;
 	ENABLEMENT    up, down, e, ce, re, ee;
-	Mediator*      mediator;
-	struct Notify* notify;
+	
 	motive      = 0.0;
 	motive_valid = false;
 	motive_work.Init(needs);
 	motive_work_valid = false;
+	
 	#ifdef MONA_TRACKING
 	tracker.motive_paths.Clear();
 	tracker.motive_work_paths.Clear();
 	#endif
+	
 	/*
 	    Assign drive weights to destinations:
 
@@ -102,16 +100,14 @@ Neuron::InitDrive(VALUE_SET& needs) {
 	drive_weights.Clear();
 
 	// Divide the down amount.
-	switch (type) {
-	case RECEPTOR:
+	if (type == RECEPTOR) {
 		up = 1.0;
-		break;
-
-	case MOTOR:
+	}
+	else if (type == MOTOR) {
 		return;
-
-	case MEDIATOR:
-		mediator = (Mediator*)this;
+	}
+	else if (type == MEDIATOR) {
+		Mediator& mediator = dynamic_cast<Mediator&>(*this);
 		down     = mediator.effective_enablement;
 		up       = 1.0 - down;
 		e        = mediator.GetEnablement();
@@ -120,26 +116,24 @@ Neuron::InitDrive(VALUE_SET& needs) {
 		re = (mediator.response_enablings.GetValue() / e) * down;
 
 		if (mediator.response != NULL)
-			drive_weights[mediator.response] = re;
+			drive_weights.GetAdd(mediator.response->mem_id) = re;
 
 		ee = mediator.effect_enablings.GetValue();
-		ee = drive_weights[mediator.effect] = (ee / e) * down;
+		ee = (drive_weights.GetAdd(mediator.effect->mem_id) = (ee / e) * down);
 		ce = down - (re + ee);
-		drive_weights[mediator.cause] = ce;
-		break;
+		drive_weights.GetAdd(mediator.cause->mem_id) = ce;
 	}
 
 	// Distribute the up amount among parents.
-	for (i = 0; i < notify_list.GetCount(); i++) {
-		notify   = notify_list[i];
-		mediator = notify.mediator;
+	for (int i = 0; i < notify_list.GetCount(); i++) {
+		Notify& notify = notify_list[i];
+		Mediator& mediator = *notify.mediator;
 
 		if (notify.event_type == EFFECT_EVENT) {
-			drive_weights[mediator] = up *
-									  (1.0 - mediator.effective_enabling_weight);
+			drive_weights.GetAdd(mediator.mem_id) = up * (1.0 - mediator.effective_enabling_weight);
 		}
 		else
-			drive_weights[mediator] = 0.0;
+			drive_weights.GetAdd(mediator.mem_id) = 0.0;
 	}
 }
 
@@ -225,19 +219,16 @@ Neuron::FinalizeMotive() {
 // Neuron drive.
 void
 Neuron::Drive(MotiveAccum motive_accum) {
-	int         i;
-	Mediator*    mediator;
-	Receptor*    receptor;
-	MOTIVE      m;
-	WEIGHT      w;
-	MotiveAccum accum_work;
+	MOTIVE       m;
+	WEIGHT       w;
+	MotiveAccum  accum_work;
 
 	// Prevent looping.
 	if (!motive_accum.AddPath(this))
 		return;
 
 	// Accumulate need change due to goal value.
-	if ((type != MEDIATOR) || !((Mediator*)this)->IsGoalValueSubsumed())
+	if ((type != MEDIATOR) || !dynamic_cast<Mediator*>(this)->IsGoalValueSubsumed())
 		motive_accum.AccumulateGoals(goals);
 
 	// Accumulate motive.
@@ -268,54 +259,49 @@ Neuron::Drive(MotiveAccum motive_accum) {
 
 	#endif
 
-	switch (type) {
 	// Distribute motive to component events.
-	case MEDIATOR:
-		mediator = (Mediator*)this;
+	if (type == MEDIATOR) {
+		Mediator& mediator = dynamic_cast<Mediator&>(*this);
 
 		// Drive motive to cause event.
-		if ((w = mediator.drive_weights[mediator.cause]) > NEARLY_ZERO) {
+		if ((w = mediator.drive_weights.Get(mediator.cause->mem_id)) > NEARLY_ZERO) {
 			accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
 			mediator.cause->Drive(accum_work);
 		}
 
 		// Drive motive to response event.
 		if (mediator.response != NULL) {
-			if ((w = mediator.drive_weights[mediator.response]) > NEARLY_ZERO) {
+			if ((w = mediator.drive_weights.Get(mediator.response->mem_id)) > NEARLY_ZERO) {
 				accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
 				mediator.response->Drive(accum_work);
 			}
 		}
 
 		// Drive motive to effect event.
-		if ((w = mediator.drive_weights[mediator.effect]) > NEARLY_ZERO) {
+		if ((w = mediator.drive_weights.Get(mediator.effect->mem_id)) > NEARLY_ZERO) {
 			accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
 			mediator.effect->Drive(accum_work);
 		}
-
-		break;
-
+	}
 	// Receptor drives motive to subset receptors.
-	case RECEPTOR:
-		receptor = (Receptor*)this;
-
-		for (i = 0; i < receptor.sub_sensor_modes.GetCount(); i++) {
+	else if (type == RECEPTOR) {
+		Receptor& receptor = dynamic_cast<Receptor&>(*this);
+		
+		for (int i = 0; i < receptor.sub_sensor_modes.GetCount(); i++) {
 			accum_work.Configure(motive_accum, 1.0);
 			receptor.sub_sensor_modes[i]->Drive(accum_work);
 		}
-
-		break;
-
+	}
 	// Drive terminates on motor neurons.
-	case MOTOR:
+	else if (type == MOTOR) {
 		return;
 	}
 
 	// Drive motive to parent mediators.
-	for (i = 0; i < notify_list.GetCount(); i++) {
-		mediator = notify_list[i]->mediator;
+	for (int i = 0; i < notify_list.GetCount(); i++) {
+		Mediator& mediator = *notify_list[i].mediator;
 
-		if ((w = drive_weights[mediator]) > NEARLY_ZERO) {
+		if ((w = drive_weights.Get(mediator.mem_id)) > NEARLY_ZERO) {
 			w *= (1.0 - mona->DRIVE_ATTENUATION);
 			accum_work.Configure(motive_accum, w);
 			mediator.DriveCause(accum_work);

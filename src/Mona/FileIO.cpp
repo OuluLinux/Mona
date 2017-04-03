@@ -24,7 +24,7 @@ char* getPath(char* dir, char* file) {
 
 	// Sanity check.
 	if ((file == NULL) || (*file == '\0'))
-		return (NULL);
+		return NULL;
 
 	// Fixed path?
 	if ((file[0] == '/') || (file[0] == '.')) {
@@ -425,7 +425,7 @@ int myfreadString(char* str, int size, Stream& fp) {
 	c = fgetc(fp);
 
 		if (c == EOF)
-			return (0);
+			return 0;
 
 		if (c == '"')
 			break;

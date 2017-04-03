@@ -14,7 +14,7 @@ public:
 	RESPONSE response;
 
 	// Is given motor a duplicate of this?
-	bool IsDuplicate(Motor*);
+	bool IsDuplicate(Motor&);
 
 	void Serialize(Stream& fp);
 

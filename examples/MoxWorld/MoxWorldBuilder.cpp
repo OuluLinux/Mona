@@ -174,7 +174,7 @@ public class MoxWorldBuilder {
 
 
 	public bool updatedashboard(int step, int steps) {
-		return (updatedashboard(step, steps, ""));
+		return updatedashboard(step, steps, "");
 	}
 
 

@@ -74,18 +74,18 @@ public class MoxWorld {
 	// Get width.
 	int GetWidth() {
 		if (game_of_life != null)
-			return (game_of_life.size.width);
+			return game_of_life.size.width;
 		else
-			return (0);
+			return 0;
 	}
 
 
 	// Get height.
 	int GetHeight() {
 		if (game_of_life != null)
-			return (game_of_life.size.height);
+			return game_of_life.size.height;
 		else
-			return (0);
+			return 0;
 	}
 
 
@@ -775,7 +775,7 @@ public class MoxWorld {
 
 
 	public bool updatedashboard(int step, int steps) {
-		return (updatedashboard(step, steps, ""));
+		return updatedashboard(step, steps, "");
 	}
 
 

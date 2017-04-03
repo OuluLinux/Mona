@@ -4,8 +4,21 @@
 
 
 // Mediator constructor.
-Mediator::Mediator(ENABLEMENT enablement, Mona* mona) {
-	Init(mona);
+Mediator::Mediator() {
+	type                     = MEDIATOR;
+	level                    = 0;
+	effective_enablement      = 0.0;
+	effective_enabling_weight  = 0.0;
+	effective_enablement_valid = false;
+	utility_weight            = 0.0;
+	UpdateUtility(0.0);
+	cause      = response = effect = NULL;
+	cause_begin.Set(0);
+	base_enablement = 0;
+}
+
+void Mediator::Init(ENABLEMENT enablement, Mona* mona) {
+	Neuron::Init(mona);
 	type                     = MEDIATOR;
 	level                    = 0;
 	base_enablement           = enablement;
@@ -15,23 +28,21 @@ Mediator::Mediator(ENABLEMENT enablement, Mona* mona) {
 	utility_weight            = 0.0;
 	UpdateUtility(0.0);
 	cause      = response = effect = NULL;
-	cause_begin = 0;
+	cause_begin.Set(0);
 }
 
 
 // Mediator destructor.
 Mediator::~Mediator() {
 	struct Notify* notify;
-	//Vector<struct Notify*>::Iterator notifyItr;
+	//Vector<struct Notify*>::Iterator notify_iter;
 
-	if (cause != NULL) {
-		for (notifyItr = cause->notify_list.Begin();
-			 notifyItr != cause->notify_list.End(); notifyItr++) {
-			notify = *notifyItr;
+	if (!cause.IsNull()) {
+		for(int i = 0; i < cause->notify_list.GetCount(); i++) {
+			Notify& notify = cause->notify_list[i];
 
 			if (notify.mediator == this) {
-				cause->notify_list.Remove(notifyItr);
-				delete notify;
+				cause->notify_list.Remove(i);
 				break;
 			}
 		}
@@ -39,14 +50,12 @@ Mediator::~Mediator() {
 
 	cause = NULL;
 
-	if (response != NULL) {
-		for (notifyItr = response->notify_list.Begin();
-			 notifyItr != response->notify_list.End(); notifyItr++) {
-			notify = *notifyItr;
+	if (!response.IsNull()) {
+		for(int i = 0; i < response->notify_list.GetCount(); i++) {
+			Notify& notify = response->notify_list[i];
 
 			if (notify.mediator == this) {
-				response->notify_list.Remove(notifyItr);
-				delete notify;
+				response->notify_list.Remove(i);
 				break;
 			}
 		}
@@ -54,14 +63,12 @@ Mediator::~Mediator() {
 
 	response = NULL;
 
-	if (effect != NULL) {
-		for (notifyItr = effect->notify_list.Begin();
-			 notifyItr != effect->notify_list.End(); notifyItr++) {
-			notify = *notifyItr;
+	if (!effect.IsNull()) {
+		for(int i = 0; i < effect->notify_list.GetCount(); i++) {
+			Notify& notify = effect->notify_list[i];
 
 			if (notify.mediator == this) {
-				effect->notify_list.Remove(notifyItr);
-				delete notify;
+				effect->notify_list.Remove(i);
 				break;
 			}
 		}
@@ -76,8 +83,7 @@ Mediator::~Mediator() {
 
 // Update mediator utility using its enablement
 // and an asymptotic increment based on use.
-void
-Mediator::UpdateUtility(WEIGHT updateWeight) {
+void Mediator::UpdateUtility(WEIGHT updateWeight) {
 	WEIGHT w;
 	// Check for floating point overflow.
 	w = utility_weight + updateWeight + mona->UTILITY_ASYMPTOTE;
@@ -95,49 +101,45 @@ Mediator::UpdateUtility(WEIGHT updateWeight) {
 // which is the greatest utility of itself and its parents.
 UTILITY
 Mediator::GetEffectiveUtility() {
-	Mediator* mediator;
-	UTILITY  bestUtility, utilityWork;
-	bestUtility = utility;
+	UTILITY  best_utility, utility_work;
+	best_utility = utility;
 
 	for (int i = 0; i < notify_list.GetCount(); i++) {
-		mediator    = notify_list[i]->mediator;
-		utilityWork = mediator.GetEffectiveUtility();
+		Mediator& mediator = *notify_list[i].mediator;
+		utility_work = mediator.GetEffectiveUtility();
 
-		if (utilityWork > bestUtility)
-			bestUtility = utilityWork;
+		if (utility_work > best_utility)
+			best_utility = utility_work;
 	}
 
-	return (bestUtility);
+	return best_utility;
 }
 
 
 // Add mediator event.
-void
-Mediator::AddEvent(EVENT_TYPE type, Neuron* neuron) {
-	int           i, j, k;
-	struct Notify* notify;
-	Mediator*      mediator;
+void Mediator::AddEvent(int type, Neuron& neuron) {
 
 	switch (type) {
-	case CAUSE_EVENT:
-		ASSERT(cause == NULL);
-		cause = neuron;
-		break;
-
-	case RESPONSE_EVENT:
-		ASSERT(response == NULL);
-		response = neuron;
-		break;
-
-	case EFFECT_EVENT:
-		ASSERT(effect == NULL);
-		effect = neuron;
-		break;
-		ASSERT(false);
+		case CAUSE_EVENT:
+			ASSERT(cause.IsNull());
+			cause = &neuron;
+			break;
+	
+		case RESPONSE_EVENT:
+			ASSERT(response.IsNull());
+			response = &neuron;
+			break;
+	
+		case EFFECT_EVENT:
+			ASSERT(effect.IsNull());
+			effect = &neuron;
+			break;
+			
+		default: Panic("Unknown event");
 	}
 
-	if (neuron->type == MEDIATOR) {
-		mediator = (Mediator*)neuron;
+	if (neuron.type == MEDIATOR) {
+		Mediator& mediator = dynamic_cast<Mediator&>(neuron);
 
 		if (mediator.level + 1 > level) {
 			level = mediator.level + 1;
@@ -145,33 +147,33 @@ Mediator::AddEvent(EVENT_TYPE type, Neuron* neuron) {
 		}
 	}
 
-	notify = new struct Notify;
-	ASSERT(notify != NULL);
-	notify.mediator  = this;
+	Notify& notify = neuron.notify_list.Add();
+	notify.mediator = this;
 	notify.event_type = type;
-	neuron->notify_list.Add(notify);
 
 	// Sort by type: effect, response, cause.
-	for (i = 0, j = (int)neuron->notify_list.GetCount(); i < j; i++) {
-		for (k = i + 1; k < j; k++) {
-			switch (neuron->notify_list[k]->event_type) {
+	int count = neuron.notify_list.GetCount();
+	for (int i = 0; i < count; i++) {
+		for (int k = i + 1; k < count; k++) {
+			switch (neuron.notify_list[k].event_type) {
+				
 			case EFFECT_EVENT:
-				switch (neuron->notify_list[i]->event_type) {
+				switch (neuron.notify_list[i].event_type) {
 				case EFFECT_EVENT:
 					break;
 
 				case RESPONSE_EVENT:
 				case CAUSE_EVENT:
-					notify = neuron->notify_list[i];
-					neuron->notify_list[i] = neuron->notify_list[k];
-					neuron->notify_list[k] = notify;
+					notify = neuron.notify_list[i];
+					neuron.notify_list[i] = neuron.notify_list[k];
+					neuron.notify_list[k] = notify;
 					break;
 				}
 
 				break;
 
 			case RESPONSE_EVENT:
-				switch (neuron->notify_list[i]->event_type) {
+				switch (neuron.notify_list[i].event_type) {
 				case EFFECT_EVENT:
 					break;
 
@@ -179,9 +181,9 @@ Mediator::AddEvent(EVENT_TYPE type, Neuron* neuron) {
 					break;
 
 				case CAUSE_EVENT:
-					notify = neuron->notify_list[i];
-					neuron->notify_list[i] = neuron->notify_list[k];
-					neuron->notify_list[k] = notify;
+					notify = neuron.notify_list[i];
+					neuron.notify_list[i] = neuron.notify_list[k];
+					neuron.notify_list[k] = notify;
 					break;
 				}
 
@@ -189,6 +191,7 @@ Mediator::AddEvent(EVENT_TYPE type, Neuron* neuron) {
 
 			case CAUSE_EVENT:
 				break;
+				
 			}
 		}
 	}
@@ -196,7 +199,7 @@ Mediator::AddEvent(EVENT_TYPE type, Neuron* neuron) {
 
 
 // Is given mediator a duplicate of this?
-bool Mediator::IsDuplicate(Mediator* mediator) {
+bool Mediator::IsDuplicate(Mediator& mediator) {
 	if (cause != mediator.cause)
 		return false;
 
@@ -212,13 +215,19 @@ bool Mediator::IsDuplicate(Mediator* mediator) {
 
 // Load mediator.
 void Mediator::Serialize(Stream& fp) {
+	
+	Neuron::Serialize(fp);
+	
+	fp % level % base_enablement % utility % utility_weight;
+	
+	
 	int i;
 	Clear();
 	((Neuron*)this)->Load(fp);
 	FREAD_INT(&level, fp);
-	FREAD_DOUBLE(&base_enablement, fp);
-	FREAD_DOUBLE(&utility, fp);
-	FREAD_DOUBLE(&utility_weight, fp);
+	FREAD_DOUBLE(&, fp);
+	FREAD_DOUBLE(&, fp);
+	FREAD_DOUBLE(&, fp);
 	cause = (Neuron*)new ID;
 	ASSERT(cause != NULL);
 	FREAD_LONG_LONG((ID*)cause, fp);
@@ -755,8 +764,7 @@ Mediator::EffectFiring(WEIGHT notify_strength) {
 
 
 // Get enablement including portions in enablings.
-ENABLEMENT
-Mediator::GetEnablement() {
+ENABLEMENT Mediator::GetEnablement() {
 	return (base_enablement +
 			response_enablings.GetValue() +
 			effect_enablings.GetValue());
@@ -764,8 +772,7 @@ Mediator::GetEnablement() {
 
 
 // Update enablement.
-void
-Mediator::UpdateEnablement(EVENT_OUTCOME outcome, WEIGHT updateWeight) {
+void Mediator::UpdateEnablement(int outcome, WEIGHT updateWeight) {
 	ENABLEMENT e1, e2;
 	double     r;
 	Enabling*   enabling;
@@ -906,19 +913,19 @@ Mediator::RetireEnablings(bool force) {
 
 
 // Update goal value.
-void Mediator::UpdateGoalValue(VALUE_SET& needs) {
+void Mediator::UpdateGoalValue(const VALUE_SET& needs) {
 	NEED      need;
-	VALUE_SET needsBase, need_deltas;
+	VALUE_SET needs_base, need_deltas;
 
 	if (level < mona->LEARN_MEDIATOR_GOAL_VALUE_MIN_LEVEL)
 		return;
 
-	needsBase.Reserve(mona->need_count);
+	needs_base.Reserve(mona->need_count);
 	need_deltas.Reserve(mona->need_count);
 
 	for (int i = 0; i < mona->need_count; i++) {
-		needsBase.Set(i, mona->homeostats[i]->GetNeed());
-		need = needsBase.Get(i) - needs.Get(i);
+		needs_base.Set(i, mona->homeostats[i]->GetNeed());
+		need = needs_base.Get(i) - needs.Get(i);
 
 		if (need > 1.0)
 			need = 1.0;
@@ -929,7 +936,7 @@ void Mediator::UpdateGoalValue(VALUE_SET& needs) {
 		need_deltas.Set(i, need);
 	}
 
-	goals.Update(needsBase, need_deltas);
+	goals.Update(needs_base, need_deltas);
 }
 
 
@@ -975,9 +982,10 @@ Mediator::IsGoalValueSubsumed() {
 			break;
 
 		if (effect->type == MEDIATOR) {
-			cause    = ((Mediator*)effect)->cause;
-			response = ((Mediator*)effect)->response;
-			effect   = ((Mediator*)effect)->effect;
+			Mediator* m = dynamic_cast<Mediator*>(effect);
+			cause    = m->cause;
+			response = m->response;
+			effect   = m->effect;
 		}
 		else
 			effect = NULL;
@@ -1030,14 +1038,14 @@ Mediator::DriveCause(MotiveAccum motive_accum) {
 	#endif
 
 	// Drive motive to cause event.
-	if ((w = drive_weights[cause]) > NEARLY_ZERO) {
+	if ((w = drive_weights.Get(cause.mem_id)) > NEARLY_ZERO) {
 		accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
 		cause->Drive(accum_work);
 	}
 
 	// Drive motive to response event.
 	if (response != NULL) {
-		if ((w = drive_weights[response]) > NEARLY_ZERO) {
+		if ((w = drive_weights.Get(response.mem_id)) > NEARLY_ZERO) {
 			accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
 			response->Drive(accum_work);
 		}
@@ -1047,7 +1055,7 @@ Mediator::DriveCause(MotiveAccum motive_accum) {
 	for (i = 0; i < notify_list.GetCount(); i++) {
 		mediator = notify_list[i]->mediator;
 
-		if ((w = drive_weights[mediator]) > NEARLY_ZERO) {
+		if ((w = drive_weights.Get(mediator.mem_id)) > NEARLY_ZERO) {
 			accum_work.Configure(motive_accum, w * (1.0 - mona->DRIVE_ATTENUATION));
 			mediator.DriveCause(accum_work);
 		}

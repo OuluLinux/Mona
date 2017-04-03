@@ -1,13 +1,5 @@
 #include "EvolveMouse.h"
 
-// Version (SCCS "what" format).
-const char* MouseEvolveVersion = MOUSE_EVOLVE_VERSION;
-
-// Print version.
-void
-printEvolveVersion(FILE* out = stdout) {
-	fprintf(out, "%s\n", &MouseEvolveVersion[5]);
-}
 
 
 // Usage.
@@ -1090,7 +1082,7 @@ int main(int argc, char* argv[]) {
 
 	CloseHandle(hFile);
 		#endif
-	return (0);
+	return 0;
 }
 
 

@@ -87,7 +87,7 @@ void LearningEvent::SetNeuron(Neuron& neuron) {
 	firing_strength = neuron.firing_strength;
 
 	if (neuron.type == MEDIATOR)
-		begin = ((Mediator*)neuron)->cause_begin;
+		begin = dynamic_cast<Mediator&>(neuron).cause_begin;
 	else
 		begin = neuron.mona->event_clock;
 
@@ -129,8 +129,8 @@ void LearningEvent::Serialize(Stream& fp) {
 
 
 
-GeneralizationEvent::GeneralizationEvent(Mediator* mediator, ENABLEMENT enabling) {
-	this->mediator = mediator;
+GeneralizationEvent::GeneralizationEvent(Mediator& mediator, ENABLEMENT enabling) {
+	this->mediator = &mediator;
 	this->enabling = enabling;
 	begin          = mediator.cause_begin;
 	end            = mediator.mona->event_clock;

@@ -29,10 +29,10 @@ public:
 	void Place();
 
 	inline double GetPlaceX() {
-		return (m_place_position[0]);
+		return m_place_position[0];
 	}
 	inline double GetPlaceY() {
-		return (m_place_position[2]);
+		return m_place_position[2];
 	}
 
 	void Draw();

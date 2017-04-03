@@ -31,20 +31,20 @@ typedef double                   UTILITY;
 typedef double                   WEIGHT;
 typedef unsigned long long       COUNTER;
 
-enum NEURON_TYPE {
+enum {
 	RECEPTOR,
 	MOTOR,
 	MEDIATOR
 };
 
-enum EVENT_TYPE {
+enum {
 	CAUSE_EVENT,
 	RESPONSE_EVENT,
 	EFFECT_EVENT,
 	INVALID_EVENT=-1
 };
 
-enum EVENT_OUTCOME {
+enum {
 	EXPIRE,
 	FIRE
 };
@@ -63,7 +63,7 @@ enum { DEFAULT_RANDOM_SEED = 4517 };
 
 
 // Mona: sensory/response, neural network, and needs.
-class Mona {
+class Mona : public IdFinder {
 public:
 
 	// Content format.
@@ -81,9 +81,9 @@ public:
 	Mona(int sensor_count, int response_count, int need_count, int random_seed = DEFAULT_RANDOM_SEED);
 	void InitParms();
 	void InitNet(int sensor_count, int response_count, int need_count, int random_seed = DEFAULT_RANDOM_SEED);
-	bool SetSensorResolution(SENSOR sensorResolution);
-	int AddSensorMode(Vector<bool>& sensorMask);
-	int AddSensorMode(Vector<bool>& sensorMask, SENSOR sensorResolution);
+	bool SetSensorResolution(SENSOR sensor_resolution);
+	int AddSensorMode(Vector<bool>& sensor_mask);
+	int AddSensorMode(Vector<bool>& sensor_mask, SENSOR sensor_resolution);
 
 	// Destructor.
 	~Mona();
@@ -132,9 +132,9 @@ public:
 	// receptor in a set reserved for the mode. This
 	// provides the network with selective attention
 	// capabilities.
-	Array<SensorMode> sensor_modes;
-	void                 ApplySensorMode(Vector<SENSOR>& in, Vector<SENSOR>& out, SENSOR_MODE);
-	void                 ApplySensorMode(Vector<SENSOR>& sensors, SENSOR_MODE);
+	Vector<SensorMode*> sensor_modes;
+	void ApplySensorMode(Vector<SENSOR>& in, Vector<SENSOR>& out, SENSOR_MODE);
+	void ApplySensorMode(Vector<SENSOR>& sensors, SENSOR_MODE);
 
 	// Sensor centroid search spaces.
 	// Each sensor mode defines a space.
@@ -252,7 +252,7 @@ public:
 	// Mediator generation.
 	void CreateMediator(const LearningEvent& effect_event);
 	void GeneralizeMediator(const GeneralizationEvent& event);
-	bool IsDuplicateMediator(Mediator*);
+	bool IsDuplicateMediator(Mediator& mediator);
 
 	// Random numbers.
 	int random_seed;
@@ -273,12 +273,14 @@ public:
 	// Add/delete neurons to/from network.
 	Receptor* NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode);
 	Motor* NewMotor(RESPONSE response);
-	Mediator* NewMediator(ENABLEMENT enablement);
-	void DeleteNeuron(Neuron& neuron);
+	Mediator& AddMediator(ENABLEMENT enablement);
+	//void DeleteNeuron(Neuron& neuron);
+	void DeleteNeuron(Mediator& neuron);
+	void DeleteNeuron(Receptor& neuron);
 
 	// Clear memory.
 	void ExpireResponseEnablings(RESPONSE);
-	void ExpireMediatorEnablings(Mediator*);
+	void ExpireMediatorEnablings(Mediator&);
 	void ClearWorkingMemory();
 	void ClearLongTermMemory();
 
@@ -287,9 +289,9 @@ public:
 	Mediator* GetBestMediator(int min_level = 0);
 
 	// Load network.
-	bool Load(String filename);
-	bool Store(String filename);
-	bool Serialize(Stream& fp);
+	void Load(String filename);
+	void Store(String filename);
+	void Serialize(Stream& fp);
 	Neuron* FindByID(ID id);
 
 	// Clear network.

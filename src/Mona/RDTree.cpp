@@ -10,7 +10,7 @@ const double RDTree::DEFAULT_RADIUS = 100.0;
 RDTree::RDSearch* RDTree::EMPTY = (RDSearch*)(-1);
 
 // Node constructors.
-RDTree::RDNode::RDNode(void* pattern, void* client) {
+RDTree::RDNode::RDNode(void* pattern, Receptor* client) {
 	this->pattern = pattern;
 	this->client  = client;
 	outer_list     = outer_last = NULL;
@@ -100,7 +100,7 @@ void RDTree::DeleteSubtree(RDNode* node) {
 
 
 // Insert pattern.
-void RDTree::Insert(void* pattern, void* client) {
+void RDTree::Insert(void* pattern, Receptor* client) {
 	RDNode* node = new RDNode(pattern, client);
 	ASSERT(node != NULL);
 	Insert(root, node);
@@ -567,7 +567,7 @@ RDTree::RDSearch* RDTree::GetSearchWork(struct SearchCtrl* search_ctrl) {
 
 /* load tree */
 bool RDTree::Load(String filename, void* (*load_pattern)(Stream& s),
-				  void* (*load_client)(Stream& s)) {
+				  Receptor* (*load_client)(Stream& s)) {
 	FileIn fp(filename);
 
 	if (!fp.IsOpen())
@@ -580,7 +580,7 @@ bool RDTree::Load(String filename, void* (*load_pattern)(Stream& s),
 
 /* load tree */
 void RDTree::Load(Stream& fp, void* (*load_pattern)(Stream& s),
-				  void* (*load_client)(Stream& s)) {
+				  Receptor* (*load_client)(Stream& s)) {
 	int   n;
 	double d;
 	DeleteSubtree(root);
@@ -605,7 +605,7 @@ void RDTree::Load(Stream& fp, void* (*load_pattern)(Stream& s),
 /* load outerren */
 void RDTree::LoadOuter(Stream& fp, RDNode* parent,
 					   void* (*load_pattern)(Stream& s),
-					   void* (*load_client)(Stream& s)) {
+					   Receptor* (*load_client)(Stream& s)) {
 	int    n;
 	double  d;
 	RDNode* p, *p2;
@@ -642,7 +642,7 @@ void RDTree::LoadOuter(Stream& fp, RDNode* parent,
 /* load tree with address resolver */
 bool RDTree::Load(String filename, void* helper,
 				  void* (*load_pattern)(void* helper, Stream& s),
-				  void* (*load_client)(void* helper, Stream& s)) {
+				  Receptor* (*load_client)(void* helper, Stream& s)) {
 	FileIn in(filename);
 
 	if (!in.IsOpen())
@@ -656,7 +656,7 @@ bool RDTree::Load(String filename, void* helper,
 /* load tree with address resolver */
 void RDTree::Load(Stream& fp, void* helper,
 				  void* (*load_pattern)(void* helper, Stream& s),
-				  void* (*load_client)(void* helper, Stream& s)) {
+				  Receptor* (*load_client)(void* helper, Stream& s)) {
 	int   n;
 	double d;
 	root = NULL;
@@ -681,7 +681,7 @@ void RDTree::Load(Stream& fp, void* helper,
 void RDTree::LoadOuter(Stream& fp, void* helper,
 					   RDNode* parent,
 					   void* (*load_pattern)(void* helper, Stream& s),
-					   void* (*load_client)(void* helper, Stream& s)) {
+					   Receptor* (*load_client)(void* helper, Stream& s)) {
 	int    n;
 	double  d;
 	RDNode* p, *p2;

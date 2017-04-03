@@ -73,14 +73,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			NumMazeMarks = atoi(argv[i]);
 
 			if (NumMazeMarks < 2) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -91,14 +91,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			NumMazes = atoi(argv[i]);
 
 			if (NumMazes < 1) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -109,7 +109,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			RandomSeed = atoi(argv[i]);
@@ -121,14 +121,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			GeneralizationRuns = atoi(argv[i]);
 
 			if (GeneralizationRuns < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -139,14 +139,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			DiscriminationRuns = atoi(argv[i]);
 
 			if (DiscriminationRuns < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -157,27 +157,27 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			ResultRuns = atoi(argv[i]);
 
 			if (ResultRuns < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
 		}
 
 		printUsage();
-		return (1);
+		return 1;
 	}
 
 	if ((NumMazeMarks == -1) || (NumMazes == -1) ||
 		(RandomSeed == INVALID_RANDOM) || (ResultRuns == -1)) {
 		printUsage();
-		return (1);
+		return 1;
 	}
 	else {
 		printf("Parameters:\n");
@@ -213,7 +213,7 @@ main(int argc, char* argv[]) {
 
 	if ((int)GeneralizationMazes.GetCount() < NumMazes) {
 		fprintf(stderr, "Cannot create %d unique files\n", NumMazes);
-		return (1);
+		return 1;
 	}
 
 	// Create generalization example file.
@@ -226,7 +226,7 @@ main(int argc, char* argv[]) {
 
 	if ((fp = fopen(GeneralizationFileName, "w")) == NULL) {
 		fprintf(stderr, "Cannot create generalization example file %s\n", GeneralizationFileName);
-		return (1);
+		return 1;
 	}
 
 	intervals = 0;
@@ -300,7 +300,7 @@ main(int argc, char* argv[]) {
 
 	if ((fp = fopen(DiscriminationFileName, "w")) == NULL) {
 		fprintf(stderr, "Cannot create discrimination example file %s\n", DiscriminationFileName);
-		return (1);
+		return 1;
 	}
 
 	printf("name: { ");
@@ -358,7 +358,7 @@ main(int argc, char* argv[]) {
 	// Start lens.
 	if (startLens(argv[0])) {
 		fprintf(stderr, "Lens failed to start\n");
-		return (1);
+		return 1;
 	}
 
 	// Load maze examples.
@@ -421,5 +421,5 @@ main(int argc, char* argv[]) {
 	}
 
 	printf("\n");
-	return (0);
+	return 0;
 }

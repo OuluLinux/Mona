@@ -558,7 +558,7 @@ bool BlockTerrain::GetConnectableBlocks(int platform1, int platform2,
 		}
 	}
 
-	return (already_connected);
+	return already_connected;
 }
 
 

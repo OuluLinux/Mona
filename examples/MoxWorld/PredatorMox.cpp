@@ -26,7 +26,7 @@ public class PredatorMox extends Mox {
 		}
 
 		public int GetValue() {
-			return (value);
+			return value;
 		}
 	}
 
@@ -77,30 +77,30 @@ public class PredatorMox extends Mox {
 			mona = new Mona(SENSOR_CONFIG.NUM_SENSORS.GetValue(),
 							RESPONSE_TYPE.NUM_RESPONSES.GetValue(),
 							NEED_TYPE.NUM_NEEDS.GetValue(), random_seed);
-			boolean[] sensorMask = new boolean[SENSOR_CONFIG.NUM_SENSORS.GetValue()];
+			boolean[] sensor_mask = new boolean[SENSOR_CONFIG.NUM_SENSORS.GetValue()];
 
 			for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++)
-				sensorMask[i] = true;
+				sensor_mask[i] = true;
 
-			mona.AddSensorMode(sensorMask, SENSOR_RESOLUTION);
-
-			for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++) {
-				if (i < SENSOR_CONFIG.NUM_RANGE_SENSORS.GetValue())
-					sensorMask[i] = true;
-				else
-					sensorMask[i] = false;
-			}
-
-			mona.AddSensorMode(sensorMask, SENSOR_RESOLUTION);
+			mona.AddSensorMode(sensor_mask, SENSOR_RESOLUTION);
 
 			for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++) {
 				if (i < SENSOR_CONFIG.NUM_RANGE_SENSORS.GetValue())
-					sensorMask[i] = false;
+					sensor_mask[i] = true;
 				else
-					sensorMask[i] = true;
+					sensor_mask[i] = false;
 			}
 
-			mona.AddSensorMode(sensorMask, SENSOR_RESOLUTION);
+			mona.AddSensorMode(sensor_mask, SENSOR_RESOLUTION);
+
+			for (int i = 0; i < SENSOR_CONFIG.NUM_SENSORS.GetValue(); i++) {
+				if (i < SENSOR_CONFIG.NUM_RANGE_SENSORS.GetValue())
+					sensor_mask[i] = false;
+				else
+					sensor_mask[i] = true;
+			}
+
+			mona.AddSensorMode(sensor_mask, SENSOR_RESOLUTION);
 		}
 	}
 

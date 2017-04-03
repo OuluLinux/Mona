@@ -116,10 +116,10 @@ public:
 	void Place();
 
 	inline double GetPlaceX() {
-		return (m_place_position[0]);
+		return m_place_position[0];
 	}
 	inline double GetPlaceY() {
-		return (m_place_position[2]);
+		return m_place_position[2];
 	}
 	inline double GetPlaceDirection() {
 		return m_place_direction;
@@ -137,7 +137,7 @@ public:
 	void Highlight();
 
 	double GetNeed(int need) {
-		return (brain.GetNeed(need));
+		return brain.GetNeed(need);
 	}
 	void SetNeed(int need, double value) {
 		brain.SetNeed(need, value);

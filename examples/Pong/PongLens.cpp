@@ -73,7 +73,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			PongTrainingExamplesFile = argv[i];
@@ -85,14 +85,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			TrainingEpochs = atoi(argv[i]);
 
 			if (TrainingEpochs < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -103,7 +103,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			PongTestingExamplesFile = argv[i];
@@ -111,24 +111,24 @@ main(int argc, char* argv[]) {
 		}
 
 		printUsage();
-		return (1);
+		return 1;
 	}
 
 	if ((PongTrainingExamplesFile == NULL) || (PongTestingExamplesFile == NULL)) {
 		printUsage();
-		return (1);
+		return 1;
 	}
 
 	// Start lens.
 	if (startLens(argv[0])) {
 		fprintf(stderr, "Lens failed to start\n");
-		return (1);
+		return 1;
 	}
 
 	// Determine max intervals.
 	if ((fp = fopen(PongTrainingExamplesFile, "r")) == NULL) {
 		fprintf(stderr, "Cannot open %s\n", PongTrainingExamplesFile);
-		return (1);
+		return 1;
 	}
 
 	intervals = 0;
@@ -152,7 +152,7 @@ main(int argc, char* argv[]) {
 
 	if ((fp = fopen(PongTestingExamplesFile, "r")) == NULL) {
 		fprintf(stderr, "Cannot open %s\n", PongTestingExamplesFile);
-		return (1);
+		return 1;
 	}
 
 	n = -1;
@@ -254,7 +254,7 @@ main(int argc, char* argv[]) {
 	delete netOutputs;
 	netInputs  = NULL;
 	clientProc = NULL;
-	return (0);
+	return 0;
 }
 
 

@@ -310,19 +310,9 @@ CQuaternion* CQuaternion::Clone() {
 }
 
 
-// Load quaternion.
 void CQuaternion::Serialize(Stream& fp) {
 	for (int i = 0; i < 4; i++)
-		FREAD_FLOAT(&m_quat[i], fp);
-
-	FREAD_INT(&m_normal_count, fp);
+		fp % m_quat[i];
+	fp % m_normal_count;
 }
 
-
-// Save quaternion.
-void CQuaternion::Store(Stream& fp) {
-	for (int i = 0; i < 4; i++)
-		FWRITE_FLOAT(&m_quat[i], fp);
-
-	FWRITE_INT(&m_normal_count, fp);
-}

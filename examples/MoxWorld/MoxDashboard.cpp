@@ -126,7 +126,7 @@ public class Moxdashboard extends JFrame {
 
 	// Get need value.
 	double GetNeed(int needNum) {
-		return (mox.GetNeed(needNum));
+		return mox.GetNeed(needNum);
 	}
 
 
@@ -207,7 +207,7 @@ public class Moxdashboard extends JFrame {
 
 	// Get driver choice.
 	int getDriverChoice() {
-		return (driver.driverChoice.getSelectedIndex());
+		return driver.driverChoice.getSelectedIndex();
 	}
 
 

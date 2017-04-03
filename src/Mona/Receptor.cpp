@@ -27,7 +27,7 @@ Receptor::~Receptor() {
 
 
 // Is given receptor a duplicate of this?
-bool Receptor::IsDuplicate(Receptor* receptor) {
+bool Receptor::IsDuplicate(Receptor& receptor) {
 	if (sensor_mode != receptor.sensor_mode)
 		return false;
 
@@ -40,71 +40,11 @@ bool Receptor::IsDuplicate(Receptor* receptor) {
 
 // Load receptor.
 void Receptor::Serialize(Stream& fp) {
-	int      i, j;
-	double    s;
-	Receptor* receptor;
-	Clear();
-	((Neuron*)this)->Load(fp);
-	FREAD_INT(&sensor_mode, fp);
-	centroid.SetCount(mona->sensor_count);
-
-	for (i = 0; i < mona->sensor_count; i++) {
-		FREAD_FLOAT(&s, fp);
-		centroid[i] = (SENSOR)s;
-	}
-
-	FREAD_INT(&j, fp);
-	sub_sensor_modes.Clear();
-
-	for (i = 0; i < j; i++) {
-		receptor = (Receptor*)new ID;
-		ASSERT(receptor != NULL);
-		FREAD_LONG_LONG((ID*)receptor, fp);
-		sub_sensor_modes.Add(receptor);
-	}
-
-	FREAD_INT(&j, fp);
-	super_sensor_modes.Clear();
-
-	for (i = 0; i < j; i++) {
-		receptor = (Receptor*)new ID;
-		ASSERT(receptor != NULL);
-		FREAD_LONG_LONG((ID*)receptor, fp);
-		super_sensor_modes.Add(receptor);
-	}
+	Neuron::Serialize(fp);
+	fp % sensor_mode % centroid % sub_sensor_modes % super_sensor_modes;
 }
 
 
-// Save receptor.
-// When changing format increment FORMAT in mona.h
-void Receptor::Store(Stream& fp) {
-	int   i, j;
-	double s;
-	ID    id;
-	((Neuron*)this)->Store(fp);
-	FWRITE_INT(&sensor_mode, fp);
-
-	for (i = 0; i < mona->sensor_count; i++) {
-		s = (float)centroid[i];
-		FWRITE_FLOAT(&s, fp);
-	}
-
-	j = (int)sub_sensor_modes.GetCount();
-	FWRITE_INT(&j, fp);
-
-	for (i = 0; i < j; i++) {
-		id = sub_sensor_modes[i]->id;
-		FWRITE_LONG_LONG(&id, fp);
-	}
-
-	j = (int)super_sensor_modes.GetCount();
-	FWRITE_INT(&j, fp);
-
-	for (i = 0; i < j; i++) {
-		id = super_sensor_modes[i]->id;
-		FWRITE_LONG_LONG(&id, fp);
-	}
-}
 
 /*
     // Print receptor.

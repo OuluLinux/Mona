@@ -8,11 +8,57 @@
 #ifndef _Mona_Homeostat_h_
 #define _Mona_Homeostat_h_
 
-#include "Mona.h"
-
 class Mona;
 class Receptor;
 class Motor;
+class Neuron;
+
+
+struct IdFinder {
+	
+	virtual Neuron* FindByID(int id) = 0;
+};
+
+template <class T>
+struct ClassID : Moveable<ClassID<T> > {
+	T* r;
+	int64 id;
+	
+	
+	typedef ClassID<T> ClassT;
+	
+	ClassID() : id(-1), r(NULL) {}
+	ClassID(T* r) : r(r), id(-1) {}
+	
+	void Serialize(Stream& s) {
+		s % id;
+		if (s.IsLoading()) {
+			r = NULL;
+		}
+	}
+	
+	bool operator != (T* cmp) const {return cmp != r;}
+	bool operator == (T* cmp) const {return cmp == r;}
+	
+	bool operator != (const ClassT& cmp) const {return cmp.r != r;}
+	bool operator == (const ClassT& cmp) const {return cmp.r == r;}
+	
+	bool IsNull() const {return r == NULL;}
+	
+	bool FindFrom(IdFinder* mona) {
+		Neuron* n = mona->FindByID(id);
+		if (!n) return false;
+		r = dynamic_cast<T*>(n);
+		return r != NULL;
+	}
+	
+	T* operator->() {return r;}
+	
+	operator T&() {return *r;}
+	
+};
+
+typedef ClassID<Receptor> ReceptorID;
 
 // Homeostat.
 class Homeostat {
@@ -20,7 +66,7 @@ public:
 
 	// Data types.
 	typedef unsigned long long   ID;
-	typedef double                SENSOR;
+	typedef double               SENSOR;
 	typedef int                  SENSOR_MODE;
 	typedef int                  RESPONSE;
 	typedef double               NEED;
@@ -30,24 +76,24 @@ public:
 	// Sensory-response goal.
 	// Environmental stimuli and response that produce need changes.
 	// Used to update receptor neuron goal values.
-	class Goal {
+	class Goal : Moveable<Goal> {
 	public:
 		Vector<SENSOR> sensors;
 		SENSOR_MODE    sensor_mode;
-		Receptor*           receptor;
 		RESPONSE       response;
-		Motor*           motor;
+		Motor*         motor;
 		NEED           goal_value;
 		bool           enabled;
-		int id;
-
+		ReceptorID     receptor;
+		
+		Goal() {}
+		Goal(const Goal& g) {*this = g;}
+		void operator=(const Goal& g) {
+			Panic("TODO");
+		}
+		
 		void Serialize(Stream& s) {
-			s % sensors % sensor_mode % id % response % goal_value % enabled;
-
-			if (s.IsLoading()) {
-				motor = NULL;
-				receptor = NULL;
-			}
+			s % sensors % sensor_mode % receptor % response % goal_value % enabled;
 		}
 	};
 
@@ -130,7 +176,7 @@ public:
 	bool DeactivateGoal(int goal_index);
 
 	// Remove neuron from goals.
-	void RemoveNeuron(void* neuron);
+	void RemoveNeuron(Neuron* neuron);
 
 	// Update homeostat based on sensors.
 	void SensorsUpdate();

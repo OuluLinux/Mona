@@ -258,7 +258,7 @@ static int _bmp_IsPowerOf2(int x) {
 	}
 
 	/* if it didn't find a bit, x was 0, which isn't a power of 2 */
-	return (0);
+	return 0;
 }
 
 

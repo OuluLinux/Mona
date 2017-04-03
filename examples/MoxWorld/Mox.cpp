@@ -38,7 +38,7 @@ public abstract class Mox {
 		}
 
 		public int GetValue() {
-			return (value);
+			return value;
 		}
 
 
@@ -62,7 +62,7 @@ public abstract class Mox {
 		}
 
 		public int GetValue() {
-			return (value);
+			return value;
 		}
 
 
@@ -94,7 +94,7 @@ public abstract class Mox {
 		}
 
 		public int GetValue() {
-			return (value);
+			return value;
 		}
 	}
 
@@ -115,7 +115,7 @@ public abstract class Mox {
 		}
 
 		public int GetValue() {
-			return (value);
+			return value;
 		}
 	}
 
@@ -140,7 +140,7 @@ public abstract class Mox {
 		}
 
 		public int GetValue() {
-			return (value);
+			return value;
 		}
 	}
 
@@ -379,7 +379,7 @@ public abstract class Mox {
 			}
 		}
 
-		return (response);
+		return response;
 	}
 
 
@@ -405,7 +405,7 @@ public abstract class Mox {
 		synchronized (mutex) {
 			ret = mona.GetNeed(need_type);
 		}
-		return (ret);
+		return ret;
 	}
 
 
@@ -422,7 +422,7 @@ public abstract class Mox {
 		synchronized (mutex) {
 			ret = mona.Print(filename);
 		}
-		return (ret);
+		return ret;
 	}
 
 
@@ -447,7 +447,7 @@ public abstract class Mox {
 		synchronized (mutex) {
 			t = cycleTimeAccumulator;
 		}
-		return (t);
+		return t;
 	}
 
 
@@ -460,6 +460,6 @@ public abstract class Mox {
 			j = (i + 1) / 2;
 
 		long stopTime = ProcessInformation.getProcessCPUTime();
-		return ((stopTime - startTime) * 10);
+		return (stopTime - startTime) * 10;
 	}
 }

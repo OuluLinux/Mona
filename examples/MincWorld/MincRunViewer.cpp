@@ -341,9 +341,9 @@ public class MincRunViewer {
 
 	private int getDirection(String[] e) {
 		if (e[e.length - 5].equals("1"))
-			return (0);
+			return 0;
 		else
-			return (1);
+			return 1;
 	}
 
 

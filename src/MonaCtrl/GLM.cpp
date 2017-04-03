@@ -1966,7 +1966,7 @@ glmReadPPM(String filename, int* width, int* height) {
 
 	if (!fp) {
 		perror(filename);
-		return (NULL);
+		return NULL;
 	}
 
 	/*  grab first two chars of the file and make sure that it has the
@@ -1975,7 +1975,7 @@ glmReadPPM(String filename, int* width, int* height) {
 
 	if (strncmp(head, "P6", 2)) {
 		fprintf(stderr, "%s: Not a raw PPM file\n", filename);
-		return (NULL);
+		return NULL;
 	}
 
 	/* grab the three elements in the header (height, width, maxval). */

@@ -312,10 +312,10 @@ void Mona::InflateNeed(int index) {
 		}
 	}
 
-	or (int i = 0; i < learning_events.GetCount(); i++) {
+	for (int i = 0; i < learning_events.GetCount(); i++) {
 		Vector<LearningEvent>& sub = learning_events[i];
 		
-		for(int j = 0; j < sub.GetCount();) {
+		for(int j = 0; j < sub.GetCount(); j++) {
 			LearningEvent& learning_event = sub[j];
 			need = learning_event.needs.Get(index) + delta_need;
 			learning_event.needs.Set(index, need);
@@ -443,7 +443,7 @@ Mona::NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode) {
 	for (int i = 0; i < r->centroid.GetCount(); i++)
 		sensors->Add(r->centroid[i]);
 
-	sensor_centroids[sensor_mode]->Insert((void*)sensors, (void*)r);
+	sensor_centroids[sensor_mode]->Insert((void*)sensors, r);
 	receptors.Add(r);
 	return (r);
 }
@@ -465,133 +465,137 @@ Mona::NewMotor(RESPONSE response) {
 
 
 // Create mediator and add to network.
-Mediator*
-Mona::NewMediator(ENABLEMENT enablement) {
-	Mediator* m;
+Mediator& Mona::AddMediator(ENABLEMENT enablement) {
+	/*Mediator* m;
 	m = new Mediator(enablement, this);
 	ASSERT(m != NULL);
 	m->id = id_dispenser;
 	id_dispenser++;
 	m->creation_time = event_clock;
 	mediators.Add(m);
-	return (m);
+	return (m);*/
+	Mediator& m = mediators.Add();
+	m.Init(enablement, this);
+	m.id = id_dispenser;
+	id_dispenser++;
+	m.creation_time = event_clock;
+	return m;
 }
 
 
 // Remove neuron from network.
-void
-Mona::DeleteNeuron(Neuron& neuron) {
-	int           i, j;
-	struct Notify* notify;
-	LearningEvent* learning_event;
-	//Vector<LearningEvent*>::Iterator learning_event_iter;
-	Receptor* receptor, *refReceptor;
+/*void Mona::DeleteNeuron(Neuron& neuron) {
 
 	// Delete parents.
-	while (neuron->notify_list.GetCount() > 0) {
-		notify = neuron->notify_list[0];
-		DeleteNeuron((Neuron*)notify.mediator);
+	while (neuron.notify_list.GetCount() > 0) {
+		Notify& notify = neuron.notify_list[0];
+		DeleteNeuron(*notify.mediator);
+		
+		// Conversion addition:
+		//notify.mediator = NULL;
+		ASSERT(notify.mediator == NULL); // somebody have to clean this
 	}
 
 	// Remove from learning space.
-	if (neuron->type != MEDIATOR)
-		i = 0;
-	else
-		i = ((Mediator*)neuron)->level + 1;
+	int space;
+	if (neuron.type != MEDIATOR)
+		space = 0;
+	else {
+		Mediator& mediator = dynamic_cast<Mediator&>(neuron);
+		space = mediator.level + 1;
+	}
 
-	if (i < learning_events.GetCount()) {
-		for (learning_event_iter = learning_events[i].Begin();
-			 learning_event_iter != learning_events[i].End(); ) {
-			learning_event = *learning_event_iter;
+	if (space < learning_events.GetCount()) {
+		Vector<LearningEvent>& sub = learning_events[space];
+		
+		for(int j = 0; j < sub.GetCount();) {
+			LearningEvent& learning_event = sub[j];
 
-			if (learning_event.neuron == neuron) {
-				learning_event_iter =
-					learning_events[i].Remove(learning_event_iter);
-				delete learning_event;
+			if (learning_event.neuron == &neuron) {
+				sub.Remove(j);
 			}
 			else
-				learning_event_iter++;
+				j++;
 		}
 	}
 
 	// Delete neuron.
-	switch (neuron->type) {
-	case RECEPTOR:
-		receptor = (Receptor*)neuron;
-
-		for (i = 0; i < receptors.GetCount(); i++) {
-			if (receptors[i] == receptor) {
-				receptors.Remove(receptors.Begin() + i);
+	if (neuron.type == RECEPTOR) {
+		Receptor& receptor = dynamic_cast<Receptor&>(neuron);
+		
+		for (int i = 0; i < receptors.GetCount(); i++) {
+			if (&receptors[i] == &receptor) {
+				receptors.Remove(i);
 				break;
 			}
 		}
 
-		for (i = 0; i < receptor.sub_sensor_modes.GetCount(); i++) {
-			refReceptor = receptor.sub_sensor_modes[i];
+		for (int i = 0; i < receptor.sub_sensor_modes.GetCount(); i++) {
+			Receptor& ref_receptor = *receptor.sub_sensor_modes[i];
 
-			for (j = 0; j < refReceptor->super_sensor_modes.GetCount(); j++) {
-				if (refReceptor->super_sensor_modes[j] == receptor) {
-					refReceptor->super_sensor_modes.Remove(refReceptor->super_sensor_modes.Begin() + j);
+			for (int j = 0; j < ref_receptor.super_sensor_modes.GetCount(); j++) {
+				if (ref_receptor.super_sensor_modes[j] == &receptor) {
+					ref_receptor.super_sensor_modes.Remove(j);
 					break;
 				}
 			}
 		}
 
-		for (i = 0; i < receptor.super_sensor_modes.GetCount(); i++) {
-			refReceptor = receptor.super_sensor_modes[i];
+		for (int i = 0; i < receptor.super_sensor_modes.GetCount(); i++) {
+			Receptor& ref_receptor = *receptor.super_sensor_modes[i];
 
-			for (j = 0; j < refReceptor->sub_sensor_modes.GetCount(); j++) {
-				if (refReceptor->sub_sensor_modes[j] == receptor) {
-					refReceptor->sub_sensor_modes.Remove(refReceptor->sub_sensor_modes.Begin() + j);
+			for (int j = 0; j < ref_receptor.sub_sensor_modes.GetCount(); j++) {
+				if (ref_receptor.sub_sensor_modes[j] == &receptor) {
+					ref_receptor.sub_sensor_modes.Remove(j);
 					break;
 				}
 			}
 		}
 
-		for (i = 0; i < homeostats.GetCount(); i++)
-			homeostats[i]->RemoveNeuron(neuron);
+		for (int i = 0; i < homeostats.GetCount(); i++)
+			homeostats[i]->RemoveNeuron(&neuron);
 
-		if ((int)sensor_centroids.GetCount() > 0)
+		if (sensor_centroids.GetCount() > 0)
 			sensor_centroids[receptor.sensor_mode]->Remove((void*) & (receptor.centroid));
-
+		#error wtf
 		delete receptor;
-		break;
-
-	case MOTOR:
-		for (i = 0; i < motors.GetCount(); i++) {
-			if (motors[i] == (Motor*)neuron) {
+	}
+	else if (neuron.type == MOTOR) {
+		Motor& motor = dynamic_cast<Motor&>(neuron);
+		
+		for (int i = 0; i < motors.GetCount(); i++) {
+			if (motors[i] == motor) {
 				motors.Remove(motors.Begin() + i);
 				break;
 			}
 		}
 
-		for (i = 0; i < homeostats.GetCount(); i++)
-			homeostats[i]->RemoveNeuron(neuron);
-
+		for (int i = 0; i < homeostats.GetCount(); i++)
+			homeostats[i]->RemoveNeuron(&neuron);
+		
+		#error wtf
 		delete (Motor*)neuron;
-		break;
-
-	case MEDIATOR:
-		mediators.Remove((Mediator*)neuron);
-		delete (Mediator*)neuron;
+	}
+	else if (neuron.type == MEDIATOR) {
+		mediators.Remove(mediator);
 		break;
 	}
-}
+	else Panic("Invalid type");
+}*/
 
 
 // Get mediator with worst utility.
 // Skip instinct mediators and those with instinct parents.
 Mediator*
 Mona::GetWorstMediator(int min_level) {
-	Mediator* mediator;
+	//Mediator* mediator;
 	//Vector<Mediator*>::Iterator mediator_iter;
 	Vector<Mediator*>         worst_mediators;
 	UTILITY utility, worst_utility;
 	worst_utility = 0.0;
-
-	for (mediator_iter = mediators.Begin();
-		 mediator_iter != mediators.End(); mediator_iter++) {
-		mediator = *mediator_iter;
+	
+	for(int i = 0; i < mediators.GetCount(); i++) {
+		Mediator& mediator = mediators[i];
 
 		if (mediator.level < min_level)
 			continue;
@@ -603,18 +607,18 @@ Mona::GetWorstMediator(int min_level) {
 
 		if ((worst_mediators.GetCount() == 0) || (utility < worst_utility)) {
 			worst_mediators.Clear();
-			worst_mediators.Add(mediator);
+			worst_mediators.Add(&mediator);
 			worst_utility = utility;
 		}
 		else if ((utility - worst_utility) <= NEARLY_ZERO)
-			worst_mediators.Add(mediator);
+			worst_mediators.Add(&mediator);
 	}
 
 	if (worst_mediators.GetCount() == 0)
-		return (NULL);
+		return NULL;
 	else {
 		// Return a random choice of worst.
-		return (worst_mediators[Random((int)worst_mediators.GetCount())]);
+		return worst_mediators[Random((int)worst_mediators.GetCount())];
 	}
 }
 
@@ -622,32 +626,30 @@ Mona::GetWorstMediator(int min_level) {
 // Get mediator with best utility.
 Mediator*
 Mona::GetBestMediator(int min_level) {
-	Mediator* mediator;
-	//Vector<Mediator*>::Iterator mediator_iter;
 	Vector<Mediator*>         best_mediators;
-	UTILITY utility, bestUtility;
-	bestUtility = 0.0;
-
-	for (mediator_iter = mediators.Begin();
-		 mediator_iter != mediators.End(); mediator_iter++) {
-		mediator = *mediator_iter;
+	UTILITY utility, best_utility;
+	best_utility = 0.0;
+	
+	
+	for(int i = 0; i < mediators.GetCount(); i++) {
+		Mediator& mediator = mediators[i];
 
 		if (mediator.level < min_level)
 			continue;
 
 		utility = mediator.GetEffectiveUtility();
 
-		if ((best_mediators.GetCount() == 0) || (utility > bestUtility)) {
+		if ((best_mediators.GetCount() == 0) || (utility > best_utility)) {
 			best_mediators.Clear();
-			best_mediators.Add(mediator);
-			bestUtility = utility;
+			best_mediators.Add(&mediator);
+			best_utility = utility;
 		}
-		else if ((bestUtility - utility) <= NEARLY_ZERO)
-			best_mediators.Add(mediator);
+		else if ((best_utility - utility) <= NEARLY_ZERO)
+			best_mediators.Add(&mediator);
 	}
 
 	if (best_mediators.GetCount() == 0)
-		return (NULL);
+		return NULL;
 	else {
 		// Return a random choice.
 		return (best_mediators[Random((int)best_mediators.GetCount())]);
@@ -656,14 +658,16 @@ Mona::GetBestMediator(int min_level) {
 
 
 // Load network from a file.
-void
-Mona::Load(String filename) {
+void Mona::Load(String filename) {
 	LoadFromFile(*this, filename);
 }
 
+// Save network to file.
+void Mona::Store(String filename) {
+	StoreToFile(*this, filename);
+}
 
-void
-Mona::Serialize(Stream& fp) {
+void Mona::Serialize(Stream& fp) {
 	int           i, j, k, format;
 	Time          t;
 	double        d;
@@ -808,21 +812,21 @@ Mona::Serialize(Stream& fp) {
 
 		for (j = 0, k = (int)receptor.sub_sensor_modes.GetCount(); j < k; j++) {
 			id = (ID*)(receptor.sub_sensor_modes[j]);
-			receptor.sub_sensor_modes[j] = (Receptor*)FindByID(*id);
+			receptor.sub_sensor_modes[j] = dynamic_cast<Receptor*>(FindByID(*id));
 			ASSERT(receptor.sub_sensor_modes[j] != NULL);
 			delete id;
 		}
 
 		for (j = 0, k = (int)receptor.super_sensor_modes.GetCount(); j < k; j++) {
 			id = (ID*)(receptor.super_sensor_modes[j]);
-			receptor.super_sensor_modes[j] = (Receptor*)FindByID(*id);
+			receptor.super_sensor_modes[j] = dynamic_cast<Receptor*>(FindByID(*id));
 			ASSERT(receptor.super_sensor_modes[j] != NULL);
 			delete id;
 		}
 
 		for (j = 0, k = (int)receptor.notify_list.GetCount(); j < k; j++) {
-			notify           = receptor.notify_list[j];
-			notify.mediator = (Mediator*)FindByID(notify.id);
+			notify = receptor.notify_list[j];
+			notify.mediator = dynamic_cast<Mediator*>(FindByID(notify.id));
 			ASSERT(notify.mediator != NULL);
 		}
 	}
@@ -832,7 +836,7 @@ Mona::Serialize(Stream& fp) {
 
 		for (j = 0, k = (int)motor.notify_list.GetCount(); j < k; j++) {
 			notify           = motor.notify_list[j];
-			notify.mediator = (Mediator*)FindByID(notify.id);
+			notify.mediator = dynamic_cast<Mediator*>(FindByID(notify.id));
 			ASSERT(notify.mediator != NULL);
 		}
 	}
@@ -859,7 +863,7 @@ Mona::Serialize(Stream& fp) {
 
 		for (i = 0, j = (int)mediator.notify_list.GetCount(); i < j; i++) {
 			notify           = mediator.notify_list[i];
-			notify.mediator = (Mediator*)FindByID(notify.id);
+			notify.mediator = dynamic_cast<Mediator*>(FindByID(notify.id));
 			ASSERT(notify.mediator != NULL);
 		}
 	}
@@ -895,8 +899,7 @@ Mona::Serialize(Stream& fp) {
 
 
 // Find neuron by id.
-Mona::Neuron*
-Mona::FindByID(ID id) {
+Mona::Neuron* Mona::FindByID(ID id) {
 	int      i;
 	Receptor* receptor;
 	Motor*    motor;
@@ -925,27 +928,12 @@ Mona::FindByID(ID id) {
 			return ((Neuron*)mediator);
 	}
 
-	return (NULL);
-}
-
-
-// Save network to file.
-bool
-Mona::Store(String filename) {
-	Stream& fp;
-
-	if ((fp = FOPEN_WRITE(filename)) == NULL)
-		return false;
-
-	bool ret = Store(fp);
-	FCLOSE(fp);
-	return (ret);
+	return NULL;
 }
 
 
 // When changing format increment FORMAT in mona.h
-bool
-Mona::Store(Stream& fp) {
+bool Mona::Store(Stream& fp) {
 	int           i, j, k;
 	Time          t;
 	double        d;

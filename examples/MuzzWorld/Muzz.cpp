@@ -229,38 +229,38 @@ Muzz::~Muzz() {
 // Initialize muzz brain.
 void Muzz::InitBrain(Mona* brain) {
 	int i;
-	Vector<bool>         sensorMask;
+	Vector<bool>         sensor_mask;
 	Vector<bool>         bits;
 	Vector<SENSOR> goal_sensors;
 	// Initialize network.
 	brain->InitNet(NUM_BRAIN_SENSORS, NUM_RESPONSES, NUM_NEEDS,
 				   brain->random_seed);
-	sensorMask.Clear();
+	sensor_mask.Clear();
 
 	for (i = 0; i < NUM_BRAIN_SENSORS; i++)
-		sensorMask.Add(true);
+		sensor_mask.Add(true);
 
-	brain->AddSensorMode(sensorMask);
-	sensorMask.Clear();
-
-	for (i = 0; i < NUM_BRAIN_SENSORS; i++) {
-		if (i < NUM_BRAIN_SENSOR_MODE_1)
-			sensorMask.Add(true);
-		else
-			sensorMask.Add(false);
-	}
-
-	brain->AddSensorMode(sensorMask);
-	sensorMask.Clear();
+	brain->AddSensorMode(sensor_mask);
+	sensor_mask.Clear();
 
 	for (i = 0; i < NUM_BRAIN_SENSORS; i++) {
 		if (i < NUM_BRAIN_SENSOR_MODE_1)
-			sensorMask.Add(false);
+			sensor_mask.Add(true);
 		else
-			sensorMask.Add(true);
+			sensor_mask.Add(false);
 	}
 
-	brain->AddSensorMode(sensorMask);
+	brain->AddSensorMode(sensor_mask);
+	sensor_mask.Clear();
+
+	for (i = 0; i < NUM_BRAIN_SENSORS; i++) {
+		if (i < NUM_BRAIN_SENSOR_MODE_1)
+			sensor_mask.Add(false);
+		else
+			sensor_mask.Add(true);
+	}
+
+	brain->AddSensorMode(sensor_mask);
 	// Add sensory goals.
 	goal_sensors.SetCount(NUM_BRAIN_SENSORS);
 
@@ -327,13 +327,13 @@ void Muzz::SetColor(const Color& color) {
 
 // Get terrain.
 BlockTerrain* Muzz::GetTerrain() {
-	return (m_terrain);
+	return m_terrain;
 }
 
 
 // Get randomizer.
 Random* Muzz::Getrandomizer() {
-	return (m_randomizer);
+	return m_randomizer;
 }
 
 
@@ -729,7 +729,7 @@ int Muzz::Cycle(int* sensors, int cycleNum) {
 		}
 	}
 
-	return (response);
+	return response;
 }
 
 

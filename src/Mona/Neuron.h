@@ -4,7 +4,10 @@
 
 class Neuron {
 public:
-
+	
+	Neuron();
+	virtual ~Neuron() {}
+	
 	static const int NULL_ID;
 
 	// Initialize/clear.
@@ -13,9 +16,10 @@ public:
 
 	// Identifier.
 	ID id;
+	int mem_id;
 
 	// Neuron type.
-	NEURON_TYPE type;
+	int type;
 
 	// Creation time.
 	Time creation_time;
@@ -37,7 +41,7 @@ public:
 
 	MotiveAccum           motive_work;
 	bool                  motive_work_valid;
-	VectorMap<Neuron*, double> drive_weights;
+	VectorMap<int, double> drive_weights;
 
 	// Instinct?
 	bool instinct;
@@ -85,5 +89,6 @@ public:
 	#endif
 };
 
+typedef ClassID<Neuron> NeuronID;
 
 #endif

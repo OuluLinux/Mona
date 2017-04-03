@@ -205,14 +205,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			TrainingRuns = atoi(argv[i]);
 
 			if (TrainingRuns < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -223,14 +223,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			UnforcedTrainingRunModulo = atoi(argv[i]);
 
 			if (UnforcedTrainingRunModulo <= 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -241,7 +241,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			TrainingPlaybackFile = argv[i];
@@ -253,7 +253,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			TrainingRandomSeed = atoi(argv[i]);
@@ -265,14 +265,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			TestingRuns = atoi(argv[i]);
 
 			if (TestingRuns < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -283,7 +283,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			TestingPlaybackFile = argv[i];
@@ -295,7 +295,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			TestingRandomSeed = atoi(argv[i]);
@@ -308,19 +308,19 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			GridSizes = atoi(argv[i]);
 
 			if (GridSizes < 1) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			if ((GridSizes % 2) == 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			CellSize = 1.0f / (float)GridSizes;
@@ -332,28 +332,28 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			StartX = atoi(argv[i]);
 
 			if (StartX < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			i++;
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			StartY = atoi(argv[i]);
 
 			if (StartY < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -364,14 +364,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			BallSpeed = (float)atof(argv[i]);
 
 			if (BallSpeed <= 0.0f) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -382,7 +382,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			LoadFile = argv[i];
@@ -394,7 +394,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			SaveFile = argv[i];
@@ -411,14 +411,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				fprintf(stderr, "Invalid pongTest option\n");
-				return (1);
+				return 1;
 			}
 
 			pongTest = atoi(argv[i]);
 
 			if ((pongTest < 0) || (pongTest > 2)) {
 				fprintf(stderr, "Invalid pongTest value\n");
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -429,7 +429,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			LensInputFile = argv[i];
@@ -441,7 +441,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			NuPICinputFile = argv[i];
@@ -453,7 +453,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			MoxWorxInputFile = argv[i];
@@ -461,35 +461,35 @@ main(int argc, char* argv[]) {
 		}
 
 		printUsage();
-		return (1);
+		return 1;
 	}
 
 	if (TrainingRuns == -1) {
 		printUsage();
-		return (1);
+		return 1;
 	}
 
 	if ((LensInputFile != NULL) || (NuPICinputFile != NULL) || (MoxWorxInputFile != NULL)) {
 		if ((TestingRuns != -1) || (pongTest != 0)) {
 			printUsage();
-			return (1);
+			return 1;
 		}
 
 		if ((TestingPlaybackFile != NULL) || gotTestingRandom) {
 			printUsage();
-			return (1);
+			return 1;
 		}
 	}
 	else {
 		if ((TestingRuns == -1) && (pongTest == 0)) {
 			printUsage();
-			return (1);
+			return 1;
 		}
 	}
 
 	if ((StartX >= GridSizes) || (StartY >= GridSizes)) {
 		printUsage();
-		return (1);
+		return 1;
 	}
 
 	if (BallSpeed == 0.0f)
@@ -524,7 +524,7 @@ main(int argc, char* argv[]) {
 
 		if (!mona->Load(LoadFile)) {
 			fprintf(stderr, "Cannot load from file %s\n", LoadFile);
-			return (1);
+			return 1;
 		}
 	}
 
@@ -534,7 +534,7 @@ main(int argc, char* argv[]) {
 
 		if (trainingPlaybackFp == NULL) {
 			fprintf(stderr, "Cannot open training playback file %s\n", TrainingPlaybackFile);
-			return (1);
+			return 1;
 		}
 		else
 			fprintf(trainingPlaybackFp, "Size %d\n", GridSizes);
@@ -547,7 +547,7 @@ main(int argc, char* argv[]) {
 
 		if (NuPICfp == NULL) {
 			fprintf(stderr, "Cannot open NuPIC file %s\n", NuPICinputFile);
-			return (1);
+			return 1;
 		}
 		else {
 			fprintf(NuPICfp, "game, ball_sensor, paddle_sensor, response\n");
@@ -563,7 +563,7 @@ main(int argc, char* argv[]) {
 
 		if (LensFp == NULL) {
 			fprintf(stderr, "Cannot open Lens file %s\n", LensInputFile);
-			return (1);
+			return 1;
 		}
 	}
 	else
@@ -574,7 +574,7 @@ main(int argc, char* argv[]) {
 
 		if (MoxWorxFp == NULL) {
 			fprintf(stderr, "Cannot open MoxWorx file %s\n", MoxWorxInputFile);
-			return (1);
+			return 1;
 		}
 
 		fprintf(MoxWorxFp, "%d\n", GridSizes);
@@ -711,7 +711,7 @@ main(int argc, char* argv[]) {
 	}
 
 	if (pongTest != 0)
-		return (0);
+		return 0;
 
 	if (trainingPlaybackFp != NULL) {
 		fclose(trainingPlaybackFp);
@@ -736,20 +736,20 @@ main(int argc, char* argv[]) {
 	if (SaveFile != NULL) {
 		if (!mona->Store(SaveFile)) {
 			fprintf(stderr, "Cannot save to file %s\n", SaveFile);
-			return (1);
+			return 1;
 		}
 	}
 
 	// Testing runs?
 	if (TestingRuns == -1)
-		return (0);
+		return 0;
 
 	if (TestingPlaybackFile != NULL) {
 		testingPlaybackFp = fopen(TestingPlaybackFile, "w");
 
 		if (testingPlaybackFp == NULL) {
 			fprintf(stderr, "Cannot open testing playback file %s\n", TestingPlaybackFile);
-			return (1);
+			return 1;
 		}
 		else
 			fprintf(testingPlaybackFp, "Size %d\n", GridSizes);
@@ -882,7 +882,7 @@ main(int argc, char* argv[]) {
 		testingPlaybackFp = NULL;
 	}
 
-	return (0);
+	return 0;
 }
 
 

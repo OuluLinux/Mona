@@ -43,7 +43,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			mazeSeed = atoi(argv[i]);
@@ -55,14 +55,14 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			numMazeMarks = atoi(argv[i]);
 
 			if (numMazeMarks < 2) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -80,7 +80,7 @@ main(int argc, char* argv[]) {
 
 			if (numMazes < 0) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			continue;
@@ -91,7 +91,7 @@ main(int argc, char* argv[]) {
 
 			if (i >= argc) {
 				printUsage();
-				return (1);
+				return 1;
 			}
 
 			outputFile = argv[i];
@@ -99,12 +99,12 @@ main(int argc, char* argv[]) {
 		}
 
 		printUsage();
-		return (1);
+		return 1;
 	}
 
 	if ((mazeSeed < 0) || (numMazeMarks < 0) || (numMazes < 0)) {
 		printUsage();
-		return (1);
+		return 1;
 	}
 
 	// Generate mazes.
@@ -120,7 +120,7 @@ main(int argc, char* argv[]) {
 	if (outputFile != NULL) {
 		if ((fp = fopen(outputFile, "w")) == NULL) {
 			fprintf(stderr, "Cannot open maze output file %s for writing\n", outputFile);
-			return (1);
+			return 1;
 		}
 	}
 	else
@@ -168,5 +168,5 @@ main(int argc, char* argv[]) {
 	if (outputFile != NULL)
 		fclose(fp);
 
-	return (0);
+	return 0;
 }

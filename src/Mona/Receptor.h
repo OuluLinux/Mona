@@ -20,8 +20,8 @@ public:
 	// Sensor mode and links to receptors
 	// with subset and superset sensor modes.
 	SENSOR_MODE        sensor_mode;
-	Vector<Receptor*> sub_sensor_modes;
-	Vector<Receptor*> super_sensor_modes;
+	Vector<ReceptorID> sub_sensor_modes;
+	Vector<ReceptorID> super_sensor_modes;
 
 	// Get distance from centroid to given sensor vector.
 	SENSOR GetCentroidDistance(Vector<SENSOR>& sensors);
@@ -30,17 +30,13 @@ public:
 	static SENSOR GetSensorDistance(Vector<SENSOR>* sensorsA, Vector<SENSOR>* sensorsB);
 
 	// Is given receptor a duplicate of this?
-	bool IsDuplicate(Receptor*);
+	bool IsDuplicate(Receptor&);
 
 	// Update goal value.
 	void UpdateGoalValue();
-
-	// Load receptor.
+	
 	void Serialize(Stream& fp);
-
-	// Save receptor.
-	void Store(Stream& fp);
-
+	
 	// RDTree sensor vector search.
 	static SENSOR PatternDistance(void* sensorsA, void* sensorsB);
 	static void* LoadPattern(void* mona, Stream& fp);

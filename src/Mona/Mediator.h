@@ -10,9 +10,11 @@
 class Mediator : public Neuron {
 public:
 	// Construct/destruct.
-	Mediator(ENABLEMENT enablement, Mona* mona);
+	Mediator();
 	~Mediator();
-
+	
+	void Init(ENABLEMENT enablement, Mona* mona);
+	
 	// Level 0 mediator is composed of non-mediator neurons.
 	// Level n mediator is composed of at most level n-1 mediators.
 	int level;
@@ -20,7 +22,7 @@ public:
 	// Enablement.
 	ENABLEMENT base_enablement;
 	ENABLEMENT GetEnablement();
-	void UpdateEnablement(EVENT_OUTCOME outcome, WEIGHT updateWeight);
+	void UpdateEnablement(int outcome, WEIGHT updateWeight);
 
 	// Effective enablement.
 	ENABLEMENT effective_enablement;
@@ -35,16 +37,16 @@ public:
 	UTILITY GetEffectiveUtility();
 
 	// Update goal value.
-	void UpdateGoalValue(VALUE_SET& needs);
+	void UpdateGoalValue(const VALUE_SET& needs);
 
 	// Is goal value subsumed by component?
 	bool IsGoalValueSubsumed();
 
 	// Events.
-	Neuron* cause;
-	Neuron* response;
-	Neuron* effect;
-	void   AddEvent(EVENT_TYPE, Neuron*);
+	NeuronID cause;
+	NeuronID response;
+	NeuronID effect;
+	void   AddEvent(int, Neuron&);
 
 	// Enablings.
 	EnablingSet response_enablings;
@@ -63,7 +65,7 @@ public:
 	void DriveCause(MotiveAccum);
 
 	// Is given mediator a duplicate of this?
-	bool IsDuplicate(Mediator*);
+	bool IsDuplicate(Mediator&);
 
 	// Load mediator.
 	void Serialize(Stream& fp);

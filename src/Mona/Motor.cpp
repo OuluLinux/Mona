@@ -17,7 +17,7 @@ Motor::~Motor() {
 
 
 // Is given motor a duplicate of this?
-bool Motor::IsDuplicate(Motor* motor) {
+bool Motor::IsDuplicate(Motor& motor) {
 	if (response == motor.response)
 		return true;
 	else
@@ -26,7 +26,7 @@ bool Motor::IsDuplicate(Motor* motor) {
 
 
 void Motor::Serialize(Stream& fp) {
-	Neuron::Neuron(fp);
+	Neuron::Serialize(fp);
 	fp % response;
 }
 

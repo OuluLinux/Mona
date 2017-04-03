@@ -13,7 +13,7 @@ Time gettime() {
 
 	if (base_time == 0) {
 		base_time = (Time)GetTickCount64();
-		return (0);
+		return 0;
 	}
 	else {
 		t = (Time)GetTickCount64();
@@ -30,7 +30,7 @@ Time gettime() {
 	if (base_sec == 0) {
 		base_sec  = tv.tv_sec;
 		base_usec = tv.tv_usec;
-		return (0);
+		return 0;
 	}
 	else {
 		t = (Time)(((tv.tv_sec - base_sec) * 1000) + ((tv.tv_usec - base_usec) / 1000));

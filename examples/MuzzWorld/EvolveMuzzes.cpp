@@ -463,7 +463,7 @@ public:
 
 	// Get fitness.
 	double getFitness() {
-		return (fitness);
+		return fitness;
 	}
 
 
@@ -526,7 +526,6 @@ void Evolve(), Evaluate(), Prune(), Mutate(), DoMating();
 
 // Main.
 int main2(int argc, char* argv[]) {
-	int  i;
 	Stream& fp;
 	int  muzzID;
 	char buf[200];
@@ -1155,7 +1154,7 @@ int main2(int argc, char* argv[]) {
 
 	CloseHandle(hFile);
 		#endif
-	return (0);
+	return 0;
 }
 
 

@@ -103,7 +103,7 @@ Mona::ExpireResponseEnablings(RESPONSE expiringResponse) {
 	for (int i = 0; i < mediators.GetCount(); i++) {
 		Mediator& mediator = mediators[i];
 
-		if ((mediator.response != NULL) && (((Motor*)mediator.response)->response == expiringResponse)) {
+		if ((mediator.response != NULL) && (dynamic_cast<Motor*>(mediator.response.r)->response == expiringResponse)) {
 			double enablement = mediator.GetEnablement();
 			expire_weights.Clear();
 
@@ -124,7 +124,7 @@ Mona::ExpireResponseEnablings(RESPONSE expiringResponse) {
 				Notify& notify = mediator.notify_list[i];
 
 				if (notify.event_type == EFFECT_EVENT)
-					ExpireMediatorEnablings(notify.mediator);
+					ExpireMediatorEnablings(*notify.mediator);
 			}
 		}
 	}
@@ -132,23 +132,19 @@ Mona::ExpireResponseEnablings(RESPONSE expiringResponse) {
 
 
 // Expire mediator enablings.
-void
-Mona::ExpireMediatorEnablings(Mediator* mediator) {
-	Enabling*   enabling;
+void Mona::ExpireMediatorEnablings(Mediator& mediator) {
 	ENABLEMENT enablement;
-	Vector<WEIGHT>             expire_weights;
-	//Array<Enabling>::Iterator enabling_iter;
-	struct Notify*              notify;
+	Vector<WEIGHT> expire_weights;
+	
 	enablement = mediator.GetEnablement();
+	
+	for(int i = 0; i < mediator.effect_enablings.enablings.GetCount(); i++) {
+		Enabling& enabling = mediator.effect_enablings.enablings[i];
 
-	for (enabling_iter = mediator.effect_enablings.enablings.Begin();
-		 enabling_iter != mediator.effect_enablings.enablings.End(); enabling_iter++) {
-		enabling = *enabling_iter;
-
-		if (enabling->value > 0.0) {
-			expire_weights.Add(enabling->value / enablement);
-			mediator.base_enablement += enabling->value;
-			enabling->value           = 0.0;
+		if (enabling.value > 0.0) {
+			expire_weights.Add(enabling.value / enablement);
+			mediator.base_enablement += enabling.value;
+			enabling.value           = 0.0;
 		}
 	}
 
@@ -156,9 +152,9 @@ Mona::ExpireMediatorEnablings(Mediator* mediator) {
 		mediator.UpdateEnablement(EXPIRE, expire_weights[i]);
 
 	for (int i = 0; i < mediator.notify_list.GetCount(); i++) {
-		notify = mediator.notify_list[i];
+		Notify& notify = mediator.notify_list[i];
 
 		if (notify.event_type == EFFECT_EVENT)
-			ExpireMediatorEnablings(notify.mediator);
+			ExpireMediatorEnablings(*notify.mediator);
 	}
 }

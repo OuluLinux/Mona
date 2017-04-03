@@ -971,7 +971,7 @@ matrixT::pivot(size_t row) {
 		return (k);
 	}
 
-	return (0);
+	return 0;
 }
 
 
@@ -993,7 +993,7 @@ matrixT::Det() const _THROW_MATRIX_ERROR {
 		int indx = temp.pivot(k);
 
 		if (indx == -1)
-			return (0);
+			return 0;
 
 		if (indx != 0)
 			detVal = -detVal;

@@ -14,7 +14,7 @@ Tmaze::~Tmaze() {
 
 
 // Is given maze a duplicate?
-bool Tmaze::IsDuplicate(Tmaze* maze) {
+bool Tmaze::IsDuplicate(Tmaze& maze) {
 	if ((int)path.GetCount() != (int)maze->path.GetCount())
 		return false;
 

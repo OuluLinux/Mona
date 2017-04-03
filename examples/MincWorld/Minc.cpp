@@ -263,7 +263,6 @@ void Minc::Load(String filename) {
 
 
 void Minc::Serialize(Stream& fp) {
-	int  i;
 	bool b;
 	char buf[100];
 	FREAD_INT(&id, fp);
@@ -334,7 +333,6 @@ void Minc::Store(String filename) {
 
 
 void Minc::Store(Stream& fp) {
-	int  i;
 	bool b;
 	FWRITE_INT(&id, fp);
 	FWRITE_INT(&numMarks, fp);

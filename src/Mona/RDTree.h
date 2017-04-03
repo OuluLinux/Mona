@@ -3,6 +3,9 @@
 
 #include "Common.h"
 
+class Receptor;
+
+
 // Mona: sensory/response, neural network, and needs.
 class RDTree {
 public:
@@ -15,7 +18,7 @@ public:
 	class RDNode {
 	public:
 		void* pattern;           /* pattern value */
-		void* client;            /* client link */
+		Receptor* client;        /* client link */
 	private:
 		RDNode* outer_list;      /* outer pattern list */
 		RDNode* outer_last;      /* last outer */
@@ -23,7 +26,7 @@ public:
 		RDNode* equal_prev;      /* previous sibling */
 		double  distance;         /* distance from outer to parent */
 	public:
-		RDNode(void* pattern, void* client);
+		RDNode(void* pattern, Receptor* client);
 		RDNode();
 		friend class RDTree;
 	};
@@ -54,21 +57,21 @@ public:
 	void DeleteSubtree(RDNode*);
 
 	// Insert, remove, and search.
-	void Insert(void* pattern, void* client);
+	void Insert(void* pattern, Receptor* client);
 	void Remove(void* pattern);
 	RDSearch* Search(void* pattern, int max_find = 1, int max_search = (-1));
 
 	// Load and save tree.
 	bool Load(String filename, void* (*load_pattern)(Stream& s),
-			  void* (*load_client)(Stream& s) = NULL);
+			  Receptor* (*load_client)(Stream& s) = NULL);
 	void Load(Stream& s, void* (*load_pattern)(Stream& s),
-			  void* (*load_client)(Stream& s) = NULL);
+			  Receptor* (*load_client)(Stream& s) = NULL);
 	bool Load(String filename, void* helper,
 			  void* (*load_pattern)(void* helper, Stream& s),
-			  void* (*load_client)(void* helper, Stream& s) = NULL);
+			  Receptor* (*load_client)(void* helper, Stream& s) = NULL);
 	void Load(Stream& s, void* helper,
 			  void* (*load_pattern)(void* helper, Stream& s),
-			  void* (*load_client)(void* helper, Stream& s) = NULL);
+			  Receptor* (*load_client)(void* helper, Stream& s) = NULL);
 	bool Store(String filename, void (*store_pattern)(void* pattern, Stream& fp),
 			   void (*store_client)(void* client, Stream& fp) = NULL);
 	void Store(Stream& s, void (*store_pattern)(void* pattern, Stream& fp),
@@ -134,10 +137,10 @@ private:
 	RDSearch* GetSearchWork(struct SearchCtrl* search_ctrl);
 
 	void LoadOuter(Stream& s, RDNode* parent, void* (*load_pattern)(Stream& s),
-				   void* (*load_client)(Stream& s));
+				   Receptor* (*load_client)(Stream& s));
 	void LoadOuter(Stream& s, void* helper, RDNode* parent,
 				   void* (*load_pattern)(void* helper, Stream& s),
-				   void* (*load_client)(void* helper, Stream& s));
+				   Receptor* (*load_client)(void* helper, Stream& s));
 	void StoreOuter(Stream& s, RDNode* parent,
 					void (*store_pattern)(void* pattern, Stream& fp),
 					void (*store_client)(void* client, Stream& fp));

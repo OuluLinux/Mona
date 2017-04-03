@@ -45,13 +45,13 @@ public class GameOfLife {
 
 	// Get grid width.
 	public int GetWidth() {
-		return (size.width);
+		return size.width;
 	}
 
 
 	// Get grid height.
 	public int GetHeight() {
-		return (size.height);
+		return size.height;
 	}
 
 

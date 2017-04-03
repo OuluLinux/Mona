@@ -27,6 +27,6 @@ public:
 	~Tmaze();
 
 	// Is given maze a duplicate?
-	bool IsDuplicate(Tmaze* maze);
+	bool IsDuplicate(Tmaze& maze);
 };
 #endif

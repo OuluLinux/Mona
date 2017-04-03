@@ -96,7 +96,6 @@ void MuzzWorld::DockInit() {
 }
 
 void MuzzWorld::Runmuzzes() {
-	int  i;
 	bool moveDone, gotGoals, foundGoals;
 	// Complete movements for previous responses before proceeding.
 	moveDone = true;
@@ -1831,5 +1830,5 @@ bool MuzzWorld::GetResponseSequenceToGoals(int muzz_index,
 
 	// Restore muzz ID dispenser after search.
 	Muzz::id_dispenser = id_dispenser;
-	return (ret);
+	return ret;
 }

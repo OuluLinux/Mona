@@ -42,3 +42,4 @@ using namespace Upp;
 
 double RandomInterval(double a, double b);
 bool RandomChance(double d);
+bool RandomBoolean();
