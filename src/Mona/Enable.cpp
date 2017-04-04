@@ -2,8 +2,7 @@
 #include <math.h>
 
 // Enablement processing.
-void
-Mona::Enable() {
+void Mona::Enable() {
 	
 	#ifdef MONA_TRACE
 	if (trace_enable)
@@ -96,8 +95,7 @@ Mona::Enable() {
 
 
 // Expire response enablings.
-void
-Mona::ExpireResponseEnablings(RESPONSE expiringResponse) {
+void Mona::ExpireResponseEnablings(RESPONSE expiringResponse) {
 	Vector<WEIGHT> expire_weights;
 
 	for (int i = 0; i < mediators.GetCount(); i++) {

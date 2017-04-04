@@ -4,11 +4,12 @@
 #include "Common.h"
 
 class Receptor;
+class Mona;
 
 typedef double SENSOR;
 
 // Mona: sensory/response, neural network, and needs.
-class RDTree {
+class RDTree : Moveable<RDTree> {
 public:
 
 	// Tree configuration parameter.
@@ -27,7 +28,7 @@ public:
 		RDNode* equal_prev;      // previous sibling
 		double  distance;        // distance from outer to parent
 	public:
-		RDNode(Vector<SENSOR>& pattern, Receptor& client);
+		RDNode(const Vector<SENSOR>& pattern, Receptor* client);
 		RDNode();
 		friend class RDTree;
 	};
@@ -41,7 +42,7 @@ public:
 	private:
 		double    workdist;       // work distance
 		int      state;           // search state
-		RDSearch* outer_list;     // outerren
+		RDSearch* outer_list;     // outer
 		RDSearch* equal_next;        // next sibling
 		RDSearch* equal_prev;        // previous sibling
 	public:
@@ -53,32 +54,26 @@ public:
 	RDTree();
 	//RDTree(double (*dist_func)(void*, void*), void (*del_func)(void*) = NULL);
 	//RDTree(double radius, double (*dist_func)(void*, void*), void (*del_func)(void*) = NULL);
-	void Init(double (*dist_func)(void*, void*), void (*del_func)(void*) = NULL);
-	void Init(double radius, double (*dist_func)(void*, void*), void (*del_func)(void*) = NULL);
+	void Init(double (*dist_func)(const Vector<SENSOR>&, const Vector<SENSOR>&), void (*del_func)(Vector<SENSOR>&) = NULL);
+	void Init(double radius, double (*dist_func)(const Vector<SENSOR>&, const Vector<SENSOR>&), void (*del_func)(Vector<SENSOR>&) = NULL);
+	void Connect(double(*dist_func)(const Vector<SENSOR>&, const Vector<SENSOR>&), void(*del_func)(Vector<SENSOR>&));
 	
 	// Destructor.
 	~RDTree();
 	void DeleteSubtree(RDNode*);
 
 	// Insert, remove, and search.
-	void Insert(Vector<SENSOR>& pattern, Receptor& client);
-	void Remove(void* pattern);
-	RDSearch* Search(void* pattern, int max_find = 1, int max_search = (-1));
+	void Insert(const Vector<SENSOR>& pattern, Receptor& client);
+	void Remove(const Vector<SENSOR>& pattern);
+	RDSearch* Search(const Vector<SENSOR>& pattern, int max_find = 1, int max_search = (-1));
 
 	// Load and save tree.
-	bool Load(String filename, void* (*load_pattern)(Stream& s),
-			  Receptor* (*load_client)(Stream& s) = NULL);
-	void Load(Stream& s, void* (*load_pattern)(Stream& s),
-			  Receptor* (*load_client)(Stream& s) = NULL);
-	bool Load(String filename, void* helper,
-			  void* (*load_pattern)(void* helper, Stream& s),
-			  Receptor* (*load_client)(void* helper, Stream& s) = NULL);
-	void Load(Stream& s, void* helper,
-			  void* (*load_pattern)(void* helper, Stream& s),
-			  Receptor* (*load_client)(void* helper, Stream& s) = NULL);
-	bool Store(String filename, void (*store_pattern)(void* pattern, Stream& fp),
-			   void (*store_client)(void* client, Stream& fp) = NULL);
-	void Store(Stream& s, void (*store_pattern)(void* pattern, Stream& fp),
+	/*void Load(Stream& s, void* (*load_pattern)(Stream& s),
+			  Receptor* (*load_client)(Stream& s) = NULL);*/
+	void Load(Stream& s, Mona& mona,
+			  void (*load_pattern)(Mona& mona, Vector<SENSOR>& sensors, Stream& s),
+			  void* (*load_client)(Mona& mona, Stream& s) = NULL);
+	void Store(Stream& s, void (*store_pattern)(const Vector<SENSOR>& pattern, Stream& fp),
 			   void (*store_client)(void* client, Stream& fp) = NULL);
 
 	// Print.
@@ -91,10 +86,10 @@ private:
 	RDNode* root;
 
 	// Pattern distance function.
-	double (*dist_func)(void* pattern0, void* pattern1);
+	double (*dist_func)(const Vector<SENSOR>& pattern0, const Vector<SENSOR>& pattern1);
 
 	// Pattern delete function.
-	void (*del_func)(void* pattern);
+	void (*del_func)(Vector<SENSOR>& pattern);
 
 	// Search states.
 	enum {
@@ -135,19 +130,19 @@ private:
 	};
 
 	// Internal functions.
-	void Insert(RDNode& current, RDNode& node);
+	void Insert(RDNode* current, RDNode& node);
 	void Search(struct SearchCtrl* search_ctrl, RDNode* search_node);
 	void FoundPattern(struct SearchCtrl* search_ctrl, RDSearch* sw_found, int* found_count, RDSearch** sw_cut);
 	RDSearch* GetSearchWork(struct SearchCtrl* search_ctrl);
 
-	void LoadOuter(Stream& s, RDNode* parent, void* (*load_pattern)(Stream& s),
-				   Receptor* (*load_client)(Stream& s));
-	void LoadOuter(Stream& s, void* helper, RDNode* parent,
-				   void* (*load_pattern)(void* helper, Stream& s),
-				   Receptor* (*load_client)(void* helper, Stream& s));
+	/*void LoadOuter(Stream& s, RDNode* parent, void* (*load_pattern)(Stream& s),
+				   Receptor* (*load_client)(Stream& s));*/
+	void LoadOuter(Stream& s, Mona& mona, RDNode* parent,
+				   void (*load_pattern)(Mona& mona, Vector<SENSOR>& sensors, Stream& s),
+				   void* (*load_client)(Mona& mona, Stream& s) = NULL);
 	void StoreOuter(Stream& s, RDNode* parent,
-					void (*store_pattern)(void* pattern, Stream& fp),
-					void (*store_client)(void* client, Stream& fp));
+					void (*store_pattern)(const Vector<SENSOR>& pattern, Stream& fp),
+					void (*store_client)(void* client, Stream& fp) = NULL);
 	void PrintNode(Stream& s, RDNode* node, int level,
 				   void (*print_pattern)(void* pattern, Stream& fp));
 };

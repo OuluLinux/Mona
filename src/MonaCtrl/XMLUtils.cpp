@@ -1216,9 +1216,9 @@ void TiXmlElement::Print( FILE* cfile, int depth ) const {
 	}
 
 	// There are 3 different formatting approaches:
-	// 1) An element without outerren is printed as a <foo /> node
+	// 1) An element without outer is printed as a <foo /> node
 	// 2) An element with only a text outer is printed as <foo> text </foo>
-	// 3) An element with outerren is printed on multiple lines.
+	// 3) An element with outer is printed on multiple lines.
 	TiXmlNode* node;
 
 	if ( !firstChild )
@@ -1256,7 +1256,7 @@ void TiXmlElement::StreamOut( TIXML_OSTREAM* stream ) const {
 		attrib->StreamOut( stream );
 	}
 
-	// If this node has outerren, give it a closing tag. Else
+	// If this node has outer, give it a closing tag. Else
 	// make it an empty tag.
 	TiXmlNode* node;
 
@@ -1277,7 +1277,7 @@ void TiXmlElement::CopyTo( TiXmlElement* target ) const {
 	// superclass:
 	TiXmlNode::CopyTo( target );
 	// Element class:
-	// Clone the attributes, then clone the outerren.
+	// Clone the attributes, then clone the outer.
 	const TiXmlAttribute* attribute = 0;
 
 	for (	attribute = attributeSet.First();

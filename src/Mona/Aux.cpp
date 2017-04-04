@@ -3,7 +3,7 @@
 void GoalValue::Update(VALUE_SET& needs, VALUE_SET& need_deltas) {
 	update_count++;
 
-	for (i = 0, j = needs.GetCount(); i < j; i++) {
+	for (int i = 0; i < needs.GetCount(); i++) {
 		if (need_deltas.Get(i) > 0.0) {
 			double v = values.Get(i);
 			values.Set(i, v - ((v / (double)update_count) *
@@ -73,8 +73,8 @@ void GoalValue::Update(VALUE_SET& needs, VALUE_SET& need_deltas) {
 LearningEvent::LearningEvent() {
 	neuron         = NULL;
 	firing_strength = 0.0;
-	begin.Set(0);
-	end.Set(0);
+	begin = 0;
+	end = 0;
 	probability    = 0.0;
 	needs.Clear();
 }
@@ -126,7 +126,15 @@ void LearningEvent::Serialize(Stream& fp) {
 
 
 
-GeneralizationEvent::GeneralizationEvent(Mediator& mediator, ENABLEMENT enabling) {
+GeneralizationEvent::GeneralizationEvent() {
+	mediator = NULL;
+	enabling = 0.0;
+	begin = 0;
+	end = 0;
+	needs.Clear();
+}
+
+void GeneralizationEvent::Init(Mediator& mediator, ENABLEMENT enabling) {
 	this->mediator = &mediator;
 	this->enabling = enabling;
 	begin          = mediator.cause_begin;
@@ -136,12 +144,4 @@ GeneralizationEvent::GeneralizationEvent(Mediator& mediator, ENABLEMENT enabling
 
 	for (int i = 0; i < n; i++)
 		needs.Set(i, mediator.mona->homeostats[i].GetNeed());
-}
-
-GeneralizationEvent::GeneralizationEvent() {
-	mediator = NULL;
-	enabling = 0.0;
-	begin.Set(0);
-	end.Set(0);
-	needs.Clear();
 }

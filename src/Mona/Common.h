@@ -40,6 +40,6 @@ using namespace Upp;
 #define FREAD_STRING(ptr, size, s)	*ptr = s.Get(size);
 #define FWRITE_STRING(ptr, size, s)	s.Put(*ptr);
 
-double RandomInterval(double a, double b);
-bool RandomChance(double d);
+double RandomInterval(double min, double max);
+bool RandomChance(double p);
 bool RandomBoolean();

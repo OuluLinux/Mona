@@ -4,7 +4,7 @@
 
 Atomic neuron_counter;
 
-
+const int Neuron::NULL_ID = -1;
 
 Neuron::Neuron() {
 	mem_id = AtomicInc(neuron_counter);
@@ -17,11 +17,15 @@ void Neuron::Init(Mona* mona) {
 	goals.Init(mona->need_count, mona);
 }
 
+void Neuron::Neuron::Connect(Mona* mona) {
+	this->mona = mona;
+	goals.Connect(mona->need_count, mona);
+}
 
 // Clear neuron.
 void Neuron::Clear() {
 	id             = NULL_ID;
-	creation_time.Set(INVALID_TIME);
+	creation_time  = INVALID_TIME;
 	firing_strength = 0.0;
 	goals.Clear();
 	motive      = 0.0;

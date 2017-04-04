@@ -13,7 +13,7 @@ class Mediator;
     class Motor;*/
 
 // Sensor mode.
-class SensorMode {
+class SensorMode : Moveable<SensorMode> {
 public:
 	SENSOR_MODE         mode;
 	Vector<bool>        mask;
@@ -185,7 +185,13 @@ public:
 		values.Reserve(goal_count);
 		this->mona = mona;
 	}
-
+	
+	void Connect(int goal_count, Mona* mona) {
+		ASSERT(values.GetCount() == goal_count);
+		this->mona = mona;
+	}
+	
+	
 
 	// Destructor.
 	~GoalValue() {
@@ -427,11 +433,15 @@ public:
 	int         timer_index;
 	EnablingSet* set;
 	bool        new_in_set;
-	Time        cause_begin;
+	int64       cause_begin;
 	VALUE_SET   needs;
 
 	// Constructor.
-	Enabling(ENABLEMENT value, MOTIVE motive, int64 age,
+	Enabling() {
+		set = NULL;
+		Clear();
+	}
+	/*Enabling(ENABLEMENT value, MOTIVE motive, int64 age,
 			 int timer_index, Time cause_begin) {
 		Clear();
 		this->value      = value;
@@ -439,12 +449,7 @@ public:
 		this->age        = age;
 		this->timer_index = timer_index;
 		this->cause_begin = cause_begin;
-	}
-
-
-	Enabling() {
-		Clear();
-	}
+	}*/
 
 
 	// Destructor.
@@ -453,6 +458,15 @@ public:
 	}
 
 
+	void Init(ENABLEMENT value, MOTIVE motive, int64 age, int timer_index, int64 cause_begin) {
+		Clear();
+		this->value      = value;
+		this->motive     = motive;
+		this->age        = age;
+		this->timer_index = timer_index;
+		this->cause_begin = cause_begin;
+	}
+	
 	// Set needs.
 	void SetNeeds(Vector<Homeostat>& homeostats) {
 		int n = (int)homeostats.GetCount();
@@ -464,7 +478,7 @@ public:
 
 
 	// Clone.
-	inline Enabling* Clone() {
+	/*inline Enabling* Clone() {
 		Enabling* enabling;
 		enabling = new Enabling(value, motive, age,
 								timer_index, cause_begin);
@@ -472,6 +486,11 @@ public:
 		enabling->new_in_set = new_in_set;
 		enabling->needs.Load(needs);
 		return (enabling);
+	}*/
+	void Clone(Enabling& enabling) {
+		enabling.Init(value, motive, age, timer_index, cause_begin);
+		enabling.new_in_set = new_in_set;
+		enabling.needs.Load(needs);
 	}
 
 
@@ -483,7 +502,7 @@ public:
 		timer_index = -1;
 		set        = NULL;
 		new_in_set   = false;
-		cause_begin.Set(0);
+		cause_begin = 0;
 		needs.Clear();
 	}
 
@@ -633,26 +652,27 @@ public:
 
 
 // Mediator firing notification.
-struct FiringNotify {
+struct FiringNotify : Moveable<FiringNotify> {
 	struct Notify* notify;
 	WEIGHT        notify_strength;
-	Time          cause_begin;
+	int64         cause_begin;
 };
 
 
 // Generalization learning event.
-class GeneralizationEvent {
+class GeneralizationEvent : Moveable<GeneralizationEvent> {
 public:
 	Mediator*  mediator;
 	ENABLEMENT enabling;
-	Time       begin;
-	Time       end;
+	int64      begin;
+	int64      end;
 	VALUE_SET  needs;
 
-	GeneralizationEvent(Mediator& mediator, ENABLEMENT enabling);
-
-
+	//GeneralizationEvent(Mediator& mediator, ENABLEMENT enabling);
 	GeneralizationEvent();
+	
+	void Init(Mediator& mediator, ENABLEMENT enabling);
+
 
 
 	void Serialize(Stream& fp) {

@@ -1,8 +1,7 @@
 #include "Mona.h"
 
 // Sense environment.
-void
-Mona::Sense() {
+void Mona::Sense() {
 	SENSOR_MODE sensor_mode;
 	Vector<SENSOR>     sensors_work;
 	SENSOR             distance;
@@ -187,9 +186,8 @@ void Mona::ApplySensorMode(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode) {
 // Find the receptor containing the centroid closest to
 // the sensor vector for the current sensor mode.
 // Also return the centroid-vector distance.
-Receptor* Mona::FindCentroidReceptor(Vector<SENSOR>& sensors,
-						  SENSOR_MODE sensor_mode, SENSOR& distance) {
-	RDTree::RDSearch* result = sensor_centroids[sensor_mode].Search((void*)&sensors, 1);
+Receptor* Mona::FindCentroidReceptor(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode, SENSOR& distance) {
+	RDTree::RDSearch* result = sensor_centroids[sensor_mode].Search(sensors, 1);
 
 	if (result != NULL) {
 		distance = result->distance;
@@ -247,8 +245,7 @@ int Mona::AddSensorMode(Vector<bool>& sensor_mask, SENSOR sensor_resolution) {
 	
 	// Create associated centroid search tree.
 	RDTree& t = sensor_centroids.Add();
-	t.Init(Receptor::PatternDistance,
-						   Receptor::DeletePattern);
+	t.Init(Receptor::PatternDistance, Receptor::DeletePattern);
 	return s->mode;
 }
 

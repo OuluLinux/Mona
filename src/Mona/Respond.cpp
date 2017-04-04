@@ -1,8 +1,7 @@
 #include "Mona.h"
 
 // Respond.
-void
-Mona::Respond() {
+void Mona::Respond() {
 	RESPONSE_POTENTIAL max;
 	
 	#ifdef MONA_TRACE

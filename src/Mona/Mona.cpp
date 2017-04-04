@@ -11,17 +11,14 @@ Mona::Mona() {
 }
 
 
-// Construct network.
-Mona::Mona(int sensor_count, int response_count, int need_count,
-		   int random_seed) {
+void Mona::Init(int sensor_count, int response_count, int need_count) {
 	ClearVars();
 	InitParms();
-	InitNet(sensor_count, response_count, need_count, random_seed);
+	InitNet(sensor_count, response_count, need_count);
 }
 
 // Behavior cycle.
-RESPONSE
-Mona::Cycle(Vector<SENSOR>& sensors) {
+RESPONSE Mona::Cycle(Vector<SENSOR>& sensors) {
 	// Input sensors.
 	ASSERT((int)sensors.GetCount() == sensor_count);
 	this->sensors.Clear();
@@ -208,8 +205,7 @@ bool Mona::AuditDefaultEffectEventIntervals() {
 
 
 // Mona initializer.
-void Mona::InitNet(int sensor_count, int response_count, int need_count,
-				   int random_seed) {
+void Mona::InitNet(int sensor_count, int response_count, int need_count) {
 	// Sanity checks.
 	ASSERT(sensor_count > 0);
 	ASSERT(response_count >= 0);
@@ -224,7 +220,7 @@ void Mona::InitNet(int sensor_count, int response_count, int need_count,
 	this->sensor_count   = sensor_count;
 	this->response_count = response_count;
 	this->need_count     = need_count;
-	this->random_seed   = random_seed;
+	
 	// Set random seed.
 	//random.SRAND(random_seed);
 	// Initialize sensors.
@@ -250,9 +246,11 @@ void Mona::InitNet(int sensor_count, int response_count, int need_count,
 
 	// Set default maximum cumulative motive.
 	max_motive = (MOTIVE)need_count;
+	
 	// Learning initialization.
-	event_clock.Set(0);
+	event_clock = 0;
 	learning_events.SetCount(MAX_MEDIATOR_LEVEL + 1);
+	
 	#ifdef MONA_TRACE
 	// Tracing.
 	trace_sense   = false;
@@ -271,7 +269,6 @@ void Mona::ClearVars() {
 	need_count                  = 0;
 	response_override          = NULL_RESPONSE;
 	response_override_potential = -1.0;
-	random_seed                = INVALID_RANDOM;
 	id_dispenser               = 0;
 }
 
@@ -432,9 +429,8 @@ bool Mona::RemoveGoal(int need_index, int goal_index) {
 
 // Create receptor and add to network.
 Receptor& Mona::NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode) {
-	//Receptor* r = new Receptor(centroid, sensor_mode, this);
-	//ASSERT(r != NULL);
 	Receptor& r = receptors.Add();
+	r.Init(centroid, sensor_mode, this);
 	
 	r.id = id_dispenser;
 	id_dispenser++;
@@ -475,6 +471,112 @@ Mediator& Mona::AddMediator(ENABLEMENT enablement) {
 
 
 // Remove neuron from network.
+void Mona::DeleteNeuron(Mediator& neuron) {
+	// Delete parents.
+	while (neuron.notify_list.GetCount() > 0) {
+		Notify& notify = neuron.notify_list[0];
+		DeleteNeuron(*notify.mediator);
+		
+		// Conversion addition:
+		//notify.mediator = NULL;
+		ASSERT(notify.mediator == NULL); // somebody have to clean this
+	}
+	
+	ASSERT(neuron.type == MEDIATOR);
+	Mediator& mediator = neuron;
+	int space = mediator.level + 1;
+		
+	if (space < learning_events.GetCount()) {
+		Vector<LearningEvent>& sub = learning_events[space];
+		
+		for(int j = 0; j < sub.GetCount();) {
+			LearningEvent& learning_event = sub[j];
+
+			if (learning_event.neuron == &neuron) {
+				sub.Remove(j);
+			}
+			else
+				j++;
+		}
+	}
+	
+	for(int i = 0; i < mediators.GetCount(); i++) {
+		if (&mediators[i] == &mediator) {
+			mediators.Remove(i);
+			return;
+		}
+	}
+	
+	Panic("Deleting mediator failed");
+}
+
+void Mona::DeleteNeuron(Receptor& neuron) {
+	// Delete parents.
+	while (neuron.notify_list.GetCount() > 0) {
+		Notify& notify = neuron.notify_list[0];
+		DeleteNeuron(*notify.mediator);
+		
+		// Conversion addition:
+		//notify.mediator = NULL;
+		ASSERT(notify.mediator == NULL); // somebody have to clean this
+	}
+	
+	int space = 0;
+	
+	if (space < learning_events.GetCount()) {
+		Vector<LearningEvent>& sub = learning_events[space];
+		
+		for(int j = 0; j < sub.GetCount();) {
+			LearningEvent& learning_event = sub[j];
+
+			if (learning_event.neuron == &neuron) {
+				sub.Remove(j);
+			}
+			else
+				j++;
+		}
+	}
+	
+	Receptor& receptor = neuron;
+	
+	for (int i = 0; i < receptor.sub_sensor_modes.GetCount(); i++) {
+		Receptor& ref_receptor = *receptor.sub_sensor_modes[i];
+
+		for (int j = 0; j < ref_receptor.super_sensor_modes.GetCount(); j++) {
+			if (ref_receptor.super_sensor_modes[j] == &receptor) {
+				ref_receptor.super_sensor_modes.Remove(j);
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < receptor.super_sensor_modes.GetCount(); i++) {
+		Receptor& ref_receptor = *receptor.super_sensor_modes[i];
+
+		for (int j = 0; j < ref_receptor.sub_sensor_modes.GetCount(); j++) {
+			if (ref_receptor.sub_sensor_modes[j] == &receptor) {
+				ref_receptor.sub_sensor_modes.Remove(j);
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < homeostats.GetCount(); i++)
+		homeostats[i].RemoveNeuron(&neuron);
+
+	if (sensor_centroids.GetCount() > 0)
+		sensor_centroids[receptor.sensor_mode].Remove(receptor.centroid);
+	
+	for (int i = 0; i < receptors.GetCount(); i++) {
+		if (&receptors[i] == &receptor) {
+			receptors.Remove(i);
+			return;
+		}
+	}
+	
+	Panic("Deleting receptor failed");
+}
+
 /*void Mona::DeleteNeuron(Neuron& neuron) {
 
 	// Delete parents.
@@ -671,14 +773,13 @@ void Mona::Serialize(Stream& fp) {
 	fp % MAX_RESPONSE_EQUIPPED_MEDIATOR_LEVEL % MIN_RESPONSE_UNEQUIPPED_MEDIATOR_LEVEL % SENSOR_RESOLUTION;
 	fp % LEARN_MEDIATOR_GOAL_VALUE_MIN_LEVEL % LEARN_RECEPTOR_GOAL_VALUE % effect_event_intervals;
 	fp % effect_event_interval_weights % max_learning_effect_event_intervals % sensor_count;
-	fp % response_count % need_count % random_seed;
+	fp % response_count % need_count;
 	
-	InitNet(sensor_count, response_count, need_count, random_seed);
+	InitNet(sensor_count, response_count, need_count);
 	
 	fp % sensor_modes % sensors % response;
 	fp % event_clock % learning_events % receptors;
 	fp % motors % mediators % homeostats;
-	fp % sensor_centroids;
 	
 	
 	if (fp.IsLoading()) {
@@ -687,7 +788,7 @@ void Mona::Serialize(Stream& fp) {
 		for (int i = 0; i < receptors.GetCount(); i++) {
 			Receptor& r = receptors[i];
 			id_dispenser = Max64(id_dispenser, r.id+1);
-			r.Connect(sensors, 0, this);
+			r.Connect(this);
 		}
 		
 		for(int i = 0; i < motors.GetCount(); i++) {
@@ -699,7 +800,7 @@ void Mona::Serialize(Stream& fp) {
 		for(int i = 0; i < mediators.GetCount(); i++) {
 			Mediator& m = mediators[i];
 			id_dispenser = Max64(id_dispenser, m.id+1);
-			m.Connect(0.0, this);
+			m.Neuron::Connect(this);
 		}
 		
 		// Resolve neuron addresses using id.
@@ -749,24 +850,31 @@ void Mona::Serialize(Stream& fp) {
 			}
 		}
 		
+		int count;
+		fp % count;
+		sensor_centroids.SetCount(count);
 		for(int i = 0; i < sensor_centroids.GetCount(); i++) {
-			sensor_centroids[i].Connect(this);
-			/*
-			rdTree = new RDTree(Receptor::PatternDistance,
-								Receptor::DeletePattern);
-			ASSERT(rdTree != NULL);
-			rdTree->Load(fp, this, Receptor::load_patternern,
-						 Receptor::load_client);
-			sensor_centroids.Add(rdTree);
-			*/
-			Panic("TODO");
+			RDTree& rd = sensor_centroids[i];
+			
+			rd.Connect(Receptor::PatternDistance, Receptor::DeletePattern);
+			rd.Load(fp, *this, Receptor::LoadPattern, Receptor::LoadClient);
+		}
+	}
+	
+	// Storing
+	else {
+		int count = sensor_centroids.GetCount();
+		fp % count;
+		for(int i = 0; i < sensor_centroids.GetCount(); i++) {
+			RDTree& rd = sensor_centroids[i];
+			rd.Store(fp, Receptor::StorePattern, Receptor::StoreClient);
 		}
 	}
 }
 
 
 // Find neuron by id.
-Neuron* Mona::FindByID(ID id) {
+Neuron* Mona::FindByID(int id) {
 	
 	for (int i = 0; i < receptors.GetCount(); i++) {
 		Receptor& receptor = receptors[i];
@@ -796,7 +904,7 @@ Neuron* Mona::FindByID(ID id) {
 // When changing format increment FORMAT in mona.h
 bool Mona::Store(Stream& fp) {
 	int           i, j, k;
-	Time          t;
+	int64          t;
 	double        d;
 	int           format;
 	LearningEvent* learning_event;
@@ -928,48 +1036,20 @@ void Mona::Clear() {
 	//Vector<LearningEvent*>::Iterator learning_event_iter;
 	*/
 	sensors.Clear();
-
-	for (int i = 0; i < sensor_modes.GetCount(); i++)
-		delete sensor_modes[i];
-
 	sensor_modes.Clear();
-
-	for (int i = 0; i < sensor_centroids.GetCount(); i++)
-		delete sensor_centroids[i];
-
 	sensor_centroids.Clear();
 
-	while ((int)receptors.GetCount() > 0) {
-		receptor = receptors[0];
+	while (receptors.GetCount() > 0) {
+		Receptor& receptor = receptors[0];
 		DeleteNeuron(receptor);
 	}
-
+	
 	receptors.Clear();
 	response_potentials.Clear();
-
-	for (i = 0; i < motors.GetCount(); i++) {
-		motor = motors[i];
-		delete motor;
-	}
-
 	motors.Clear();
-
-	for (int i = 0; i < homeostats.GetCount(); i++)
-		delete homeostats[i];
-
 	homeostats.Clear();
-
-	for (int i = 0; i < learning_events.GetCount(); i++) {
-		for (learning_event_iter = learning_events[i].Begin();
-			 learning_event_iter != learning_events[i].End(); learning_event_iter++) {
-			learning_event = *learning_event_iter;
-			delete learning_event;
-		}
-
-		learning_events[i].Clear();
-	}
-
 	learning_events.Clear();
+	
 	ClearVars();
 }
 

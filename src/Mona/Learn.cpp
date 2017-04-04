@@ -5,8 +5,7 @@
 
 #include "Mona.h"
 
-void
-Mona::Learn() {
+void Mona::Learn() {
 	
 	#ifdef MONA_TRACE
 
@@ -32,7 +31,7 @@ Mona::Learn() {
 				// Is event still recent enough to form a new mediator?
 				int k = learning_event.neuron->type == MOTOR ? max_level : i;
 
-				if ((int)(event_clock.Get() - learning_event.end.Get()) <= max_learning_effect_event_intervals[k])
+				if ((event_clock - learning_event.end) <= max_learning_effect_event_intervals[k])
 					j++;
 				else {
 					sub.Remove(j);
@@ -266,8 +265,7 @@ void Mona::CreateMediator(LearningEvent& effect_event) {
 
 
 // Create generalized mediators.
-void
-Mona::GeneralizeMediator(const GeneralizationEvent& generalization_event) {
+void Mona::GeneralizeMediator(const GeneralizationEvent& generalization_event) {
 	//LearningEvent* candidate_event, *learning_event;
 	//Vector<LearningEvent*>::Iterator candidate_event_iter;
 	//Receptor*                effect_receptor, *candidate_receptor;
@@ -468,29 +466,19 @@ void Mona::ClearWorkingMemory() {
 
 // Clear long term memory.
 void Mona::ClearLongTermMemory() {
-	Vector<Mediator*> tmp_mediators;
 	
 	// Must also clear working memory.
 	ClearWorkingMemory();
 
 	// Delete all non-instinct mediators.
-	for(; mediators.GetCount();) {
-		Mediator& mediator = mediators[0];
+	for(int i = 0; i < mediators.GetCount(); i++) {
+		Mediator& mediator = mediators[i];
 
-		if (mediator.instinct || mediator.HasInnerInstinct()) {
-			tmp_mediators.Add(&mediator);
-			#error NOoooooooooooooooooooooooooooooooooooooooooooooo x(
-			mediators.Remove(0);
-		}
-		else
+		if (!(mediator.instinct || mediator.HasInnerInstinct())) {
+			int target_count = mediators.GetCount()-1;
 			DeleteNeuron(mediator);
-	}
-
-	mediators.Clear();
-
-	for (mediator_iter = tmp_mediators.Begin();
-		 mediator_iter != tmp_mediators.End(); mediator_iter++) {
-		mediator = *mediator_iter;
-		mediators.Add(mediator);
+			ASSERT(mediators.GetCount() == target_count); // just to be sure
+			i--;
+		}
 	}
 }

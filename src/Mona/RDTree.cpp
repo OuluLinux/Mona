@@ -12,9 +12,9 @@ RDTree::RDSearch* RDTree::EMPTY = (RDSearch*)(-1);
 
 
 // Node constructors.
-RDTree::RDNode::RDNode(Vector<SENSOR>& pattern, Receptor& client) {
+RDTree::RDNode::RDNode(const Vector<SENSOR>& pattern, Receptor* client) {
 	this->pattern <<= pattern;
-	this->client  = &client;
+	this->client  = client;
 	outer_list    = outer_last = NULL;
 	equal_next    = equal_prev = NULL;
 	distance      = 0.0;
@@ -62,7 +62,15 @@ RDTree::RDSearch::RDSearch() {
 
 
 // Constructors.
-/*RDTree::RDTree(double(*dist_func)(void*, void*), void(*del_func)(void*)) {
+RDTree::RDTree() {
+	RADIUS         = DEFAULT_RADIUS;
+	this->dist_func = NULL;
+	this->del_func  = NULL;
+	root           = NULL;
+	stkMem         = STKMEM_QUANTUM;
+}
+
+void RDTree::Init(double(*dist_func)(const Vector<SENSOR>&, const Vector<SENSOR>&), void(*del_func)(Vector<SENSOR>&)) {
 	RADIUS         = DEFAULT_RADIUS;
 	this->dist_func = dist_func;
 	this->del_func  = del_func;
@@ -70,16 +78,20 @@ RDTree::RDSearch::RDSearch() {
 	stkMem         = STKMEM_QUANTUM;
 }
 
-
-RDTree::RDTree(double radius, double(*dist_func)(void*, void*),
-			   void(*del_func)(void*)) {
+void RDTree::Init(double radius, double(*dist_func)(const Vector<SENSOR>&, const Vector<SENSOR>&), void(*del_func)(Vector<SENSOR>&)) {
 	RADIUS         = radius;
 	this->dist_func = dist_func;
 	this->del_func  = del_func;
 	root           = NULL;
 	stkMem         = STKMEM_QUANTUM;
 }
-*/
+
+void RDTree::Connect(double(*dist_func)(const Vector<SENSOR>&, const Vector<SENSOR>&), void(*del_func)(Vector<SENSOR>&)) {
+	this->dist_func = dist_func;
+	this->del_func  = del_func;
+}
+
+
 
 // Destructor.
 RDTree::~RDTree() {
@@ -113,7 +125,7 @@ void RDTree::DeleteSubtree(RDNode* node) {
 	for (p2 = p; p2 != NULL; p2 = p3) {
 		p3 = p2->equal_next;
 
-		if ((p2->pattern != NULL) && (del_func != NULL))
+		if ((!p2->pattern.IsEmpty()) && (del_func != NULL))
 			del_func(p2->pattern);
 
 		delete p2;
@@ -122,14 +134,14 @@ void RDTree::DeleteSubtree(RDNode* node) {
 
 
 // Insert pattern.
-void RDTree::Insert(Vector<SENSOR>& pattern, Receptor& client) {
-	RDNode* node = new RDNode(pattern, client);
+void RDTree::Insert(const Vector<SENSOR>& pattern, Receptor& client) {
+	RDNode* node = new RDNode(pattern, &client);
 	ASSERT(node != NULL);
-	Insert(*root, *node);
+	Insert(root, *node);
 }
 
 
-void RDTree::Insert(RDNode& current, RDNode& node) {
+void RDTree::Insert(RDNode* current, RDNode& node) {
 	RDNode* p, *p2, *p3;
 	double  dcn, dnn;
 	
@@ -141,17 +153,16 @@ void RDTree::Insert(RDNode& current, RDNode& node) {
 	node.distance  = 0.0;
 
 	// new root?
-	/*if (current == NULL) {
+	if (current == NULL) {
 		root = &node;
 		return;
-	}*/
-	Panic("TODO: check root checking");
-
+	}
+	
 	// add pattern to first acceptable branch
-	dcn = dist_func(current.pattern, node.pattern);
+	dcn = dist_func(current->pattern, node.pattern);
 
 	while (1) {
-		for (p = current.outer_list; p != NULL; p = p->equal_next) {
+		for (p = current->outer_list; p != NULL; p = p->equal_next) {
 			
 			// check relative distances
 			dnn = dist_func(p->pattern, node.pattern);
@@ -172,30 +183,30 @@ void RDTree::Insert(RDNode& current, RDNode& node) {
 	// link new as outer of current pattern
 	node.distance = dcn;
 	node.equal_next  = NULL;
-	node.equal_prev  = current.outer_last;
+	node.equal_prev  = current->outer_last;
 
-	if (current.outer_last != NULL)
-		current.outer_last->equal_next = node;
+	if (current->outer_last != NULL)
+		current->outer_last->equal_next = &node;
 	else
-		current.outer_list = node;
+		current->outer_list = &node;
 
-	current.outer_last = node;
+	current->outer_last = &node;
 
 	
 	// check if previously added patterns should be un-linked from the
-	// current pattern and linked as outerren of the new pattern.
-	for (p = current.outer_list; p != node && p != NULL; ) {
+	// current pattern and linked as outer of the new pattern.
+	for (p = current->outer_list; p != &node && p != NULL; ) {
 		dnn = dist_func(p->pattern, node.pattern);
 
 		// if should be linked to new pattern
 		if (dnn <= (node.distance * RADIUS)) {
-			// re-link outerren
+			// re-link outer
 			p2 = p->equal_next;
 
 			if (p->equal_prev != NULL)
 				p->equal_prev->equal_next = p2;
 			else
-				current.outer_list = p2;
+				current->outer_list = p2;
 
 			if (p2 != NULL)
 				p2->equal_prev = p->equal_prev;
@@ -217,17 +228,17 @@ void RDTree::Insert(RDNode& current, RDNode& node) {
 			// add list to current pattern
 			for (p2 = p; p2 != NULL; p2 = p3) {
 				p3 = p2->equal_next;
-				Insert(current, p2);
+				Insert(current, *p2);
 			}
 
 			// restart check (since outer configuration may have changed)
-			for (p = current.outer_list; p != node && p != NULL; p = p->equal_next) {
+			for (p = current->outer_list; p != &node && p != NULL; p = p->equal_next) {
 			}
 
 			if (p == NULL)
 				break;
 
-			p = current.outer_list;
+			p = current->outer_list;
 		}
 		else
 			p = p->equal_next;
@@ -236,7 +247,7 @@ void RDTree::Insert(RDNode& current, RDNode& node) {
 
 
 // Remove pattern.
-void RDTree::Remove(void* pattern) {
+void RDTree::Remove(const Vector<SENSOR>& pattern) {
 	RDNode* current, *node, *p, *p2, *p3;
 	double  d;
 
@@ -298,7 +309,7 @@ void RDTree::Remove(void* pattern) {
 	// add list to parent pattern
 	for (p2 = p; p2 != NULL; p2 = p3) {
 		p3 = p2->equal_next;
-		Insert(current, p2);
+		Insert(current, *p2);
 
 		if (current == NULL)
 			current = root;
@@ -311,7 +322,7 @@ void RDTree::Remove(void* pattern) {
 
 // search space for patterns closest to the given pattern
 // return best matches
-RDTree::RDSearch* RDTree::Search(void* pattern, int max_find, int max_search) {
+RDTree::RDSearch* RDTree::Search(const Vector<SENSOR>& pattern, int max_find, int max_search) {
 	RDSearch* sw, *sw2, *sw3;
 	RDSearch* search_list = NULL;
 
@@ -592,22 +603,13 @@ RDTree::RDSearch* RDTree::GetSearchWork(struct SearchCtrl* search_ctrl) {
 }
 
 
-/* load tree */
-bool RDTree::Load(String filename, void* (*load_pattern)(Stream& s),
-				  Receptor* (*load_client)(Stream& s)) {
-	FileIn fp(filename);
-
-	if (!fp.IsOpen())
-		return false;
-
-	Load(fp, load_pattern, load_client);
-	return true;
-}
 
 
-/* load tree */
-void RDTree::Load(Stream& fp, void* (*load_pattern)(Stream& s),
-				  Receptor* (*load_client)(Stream& s)) {
+
+// load tree
+/*void RDTree::Load(Stream& fp,
+								void (*load_pattern)(Stream& s),
+								Receptor* (*load_client)(Stream& s)) {
 	int   n;
 	double d;
 	DeleteSubtree(root);
@@ -629,7 +631,7 @@ void RDTree::Load(Stream& fp, void* (*load_pattern)(Stream& s),
 }
 
 
-/* load outerren */
+// load outer
 void RDTree::LoadOuter(Stream& fp, RDNode* parent,
 					   void* (*load_pattern)(Stream& s),
 					   Receptor* (*load_client)(Stream& s)) {
@@ -663,67 +665,57 @@ void RDTree::LoadOuter(Stream& fp, RDNode* parent,
 		p2 = p;
 		LoadOuter(fp, p, load_pattern, load_client);
 	}
-}
+}*/
 
 
-/* load tree with address resolver */
-bool RDTree::Load(String filename, void* helper,
-				  void* (*load_pattern)(void* helper, Stream& s),
-				  Receptor* (*load_client)(void* helper, Stream& s)) {
-	FileIn in(filename);
-
-	if (!in.IsOpen())
-		return false;
-
-	Load(in, helper, load_pattern, load_client);
-	return true;
-}
-
-
-/* load tree with address resolver */
-void RDTree::Load(Stream& fp, void* helper,
-				  void* (*load_pattern)(void* helper, Stream& s),
-				  Receptor* (*load_client)(void* helper, Stream& s)) {
+// load tree with address resolver
+void RDTree::Load(Stream& s, Mona& mona,
+				  void (*load_pattern)(Mona& mona, Vector<SENSOR>& sensors, Stream& s),
+				  void* (*load_client)(Mona& mona, Stream& s)) {
+	ASSERT(s.IsLoading());
+	
 	int   n;
 	double d;
 	root = NULL;
-	FREAD_INT(&n, fp);
+	s % n;
 
 	if (n == 1) {
 		root = new RDNode();
 		ASSERT(root != NULL);
-		root->pattern = load_pattern(helper, fp);
+		load_pattern(mona, root->pattern, s);
 
 		if (load_client != NULL)
-			root->client = load_client(helper, fp);
+			root->client = (Receptor*)load_client(mona, s);
 
-		FREAD_FLOAT(&d, fp);
+		s % d;
 		root->distance = d;
-		LoadOuter(fp, helper, root, load_pattern, load_client);
+		LoadOuter(s, mona, root, load_pattern, load_client);
 	}
 }
 
 
-/* load outerren with address resolver */
-void RDTree::LoadOuter(Stream& fp, void* helper,
-					   RDNode* parent,
-					   void* (*load_pattern)(void* helper, Stream& s),
-					   Receptor* (*load_client)(void* helper, Stream& s)) {
+// load outer with address resolver
+void RDTree::LoadOuter(Stream& s, Mona& mona,
+					    RDNode* parent,
+					    void (*load_pattern)(Mona& mona, Vector<SENSOR>& sensors, Stream& s),
+						void* (*load_client)(Mona& mona, Stream& s)) {
+	ASSERT(s.IsLoading());
+	
 	int    n;
 	double  d;
 	RDNode* p, *p2;
-	FREAD_INT(&n, fp);
+	s % n;
 	p2 = NULL;
 
 	for (int i = 0; i < n; i++) {
 		p = new RDNode();
 		ASSERT(p != NULL);
-		p->pattern = load_pattern(helper, fp);
+		load_pattern(mona, p->pattern, s);
 
 		if (load_client != NULL)
-			p->client = load_client(helper, fp);
+			p->client = (Receptor*)load_client(mona, s);
 
-		FREAD_FLOAT(&d, fp);
+		s % d;
 		p->distance = d;
 
 		if (i == 0)
@@ -737,147 +729,140 @@ void RDTree::LoadOuter(Stream& fp, void* helper,
 		}
 
 		p2 = p;
-		LoadOuter(fp, helper, p, load_pattern, load_client);
+		LoadOuter(s, mona, p, load_pattern, load_client);
 	}
 }
 
 
-/* save tree */
-bool RDTree::Store(String filename, void (*store_pattern)(void* pattern, Stream& fp),
-				   void (*store_client)(void* client, Stream& fp)) {
-	FileOut fp(filename);
 
-	if (!fp.IsOpen())
-		return false;
-
-	Store(fp, store_pattern, store_client);
-	return true;
-}
-
-
-/* save tree */
-void RDTree::Store(Stream& fp, void (*store_pattern)(void* pattern, Stream& fp),
-				   void (*store_client)(void* client, Stream& fp)) {
+// store tree
+void RDTree::Store(Stream& s, void (*store_pattern)(const Vector<SENSOR>& pattern, Stream& fp),
+					void (*store_client)(void* client, Stream& fp)) {
+	ASSERT(s.IsStoring());
+	
 	int   n;
 	double d;
 
 	if (root == NULL) {
 		n = 0;
-		FWRITE_INT(&n, fp);
+		s % n;
 	}
 	else {
 		n = 1;
-		FWRITE_INT(&n, fp);
-		store_pattern(root->pattern, fp);
+		s % n;
+		store_pattern(root->pattern, s);
 
 		if (store_client != NULL)
-			store_client(root->client, fp);
+			store_client(root->client, s);
 
 		d = root->distance;
-		FWRITE_FLOAT(&d, fp);
-		StoreOuter(fp, root, store_pattern, store_client);
+		s % d;
+		StoreOuter(s, root, store_pattern, store_client);
 	}
 }
 
 
-/* save outerren */
-void RDTree::StoreOuter(Stream& fp, RDNode* parent,
-						void (*store_pattern)(void* pattern, Stream& fp),
+// store outer
+void RDTree::StoreOuter(Stream& s, RDNode* parent,
+						void (*store_pattern)(const Vector<SENSOR>& pattern, Stream& fp),
 						void (*store_client)(void* client, Stream& fp)) {
+	ASSERT(s.IsStoring());
+	
 	int    n;
 	double  d;
 	RDNode* p;
 
-	for (p = parent->outer_list, n = 0; p != NULL; p = p->equal_next, n++) {
-	}
+	for (p = parent->outer_list, n = 0; p != NULL; p = p->equal_next, n++) {}
 
-	FWRITE_INT(&n, fp);
+	s % n;
 
 	for (p = parent->outer_list; p != NULL; p = p->equal_next) {
-		store_pattern(p->pattern, fp);
+		store_pattern(p->pattern, s);
 
 		if (store_client != NULL)
-			store_client(p->client, fp);
+			store_client(p->client, s);
 
 		d = p->distance;
-		FWRITE_FLOAT(&d, fp);
-		StoreOuter(fp, p, store_pattern, store_client);
+		s % d;
+		StoreOuter(s, p, store_pattern, store_client);
 	}
 }
 
 
-// Print tree.
+
 /*
-    bool RDTree::Print(String filename, void (*print_pattern)(void *pattern, Stream& fp))
-    {
-    if (filename.IsEmpty())
-    {
-      //Print(print_pattern);
-      return;
-    }
-    else
-    {
-      FileOut fp(filename);
-      if (!fp.IsOpen())
-         return false;
-      Print(print_pattern, fp);
-    }
-    return true;
-    }
+
+// Print tree.
+bool RDTree::Print(String filename, void (*print_pattern)(void *pattern, Stream& fp))
+{
+if (filename.IsEmpty())
+{
+  //Print(print_pattern);
+  return;
+}
+else
+{
+  FileOut fp(filename);
+  if (!fp.IsOpen())
+     return false;
+  Print(print_pattern, fp);
+}
+return true;
+}
 
 
-    void RDTree::Print(void (*print_pattern)(void *pattern, Stream& fp), Stream& fp)
-    {
-    fprintf(fp, "<RDTree>\n");
-    PrintNode(fp, root, 0, print_pattern);
-    fprintf(fp, "</RDTree>\n");
-    }
+void RDTree::Print(void (*print_pattern)(void *pattern, Stream& fp), Stream& fp)
+{
+fprintf(fp, "<RDTree>\n");
+PrintNode(fp, root, 0, print_pattern);
+fprintf(fp, "</RDTree>\n");
+}
 
 
-    // print node
-    void RDTree::PrintNode(Stream& fp, RDNode *node, int level,
-                       void (*print_pattern)(void *pattern, Stream& fp))
-    {
-    int    i;
-    RDNode *p;
+// print node
+void RDTree::PrintNode(Stream& fp, RDNode *node, int level,
+                   void (*print_pattern)(void *pattern, Stream& fp))
+{
+int    i;
+RDNode *p;
 
-    if (node != NULL)
-    {
-      for (i = 0; i < level; i++)
-      {
-         fprintf(fp, "  ");
-      }
-      fprintf(fp, "<node>\n");
-      for (i = 0; i < level; i++)
-      {
-         fprintf(fp, "  ");
-      }
-      fprintf(fp, "  <pattern>");
-      print_pattern(node->pattern, fp);
-      fprintf(fp, "</pattern>\n");
-      for (i = 0; i < level; i++)
-      {
-         fprintf(fp, "  ");
-      }
-      fprintf(fp, "  <distance>%f</distance>\n", node->distance);
-      for (i = 0; i < level; i++)
-      {
-         fprintf(fp, "  ");
-      }
-      fprintf(fp, "  <outerren>\n");
-      for (p = node->outer_list; p != NULL; p = p->equal_next)
-      {
-         PrintNode(fp, p, level + 1, print_pattern);
-      }
-      for (i = 0; i < level; i++)
-      {
-         fprintf(fp, "  ");
-      }
-      fprintf(fp, "  </outerren>\n");
-      for (i = 0; i < level; i++)
-      {
-         fprintf(fp, "  ");
-      }
-      fprintf(fp, "</node>\n");
-    }
-    }*/
+if (node != NULL)
+{
+  for (i = 0; i < level; i++)
+  {
+     fprintf(fp, "  ");
+  }
+  fprintf(fp, "<node>\n");
+  for (i = 0; i < level; i++)
+  {
+     fprintf(fp, "  ");
+  }
+  fprintf(fp, "  <pattern>");
+  print_pattern(node->pattern, fp);
+  fprintf(fp, "</pattern>\n");
+  for (i = 0; i < level; i++)
+  {
+     fprintf(fp, "  ");
+  }
+  fprintf(fp, "  <distance>%f</distance>\n", node->distance);
+  for (i = 0; i < level; i++)
+  {
+     fprintf(fp, "  ");
+  }
+  fprintf(fp, "  <outer>\n");
+  for (p = node->outer_list; p != NULL; p = p->equal_next)
+  {
+     PrintNode(fp, p, level + 1, print_pattern);
+  }
+  for (i = 0; i < level; i++)
+  {
+     fprintf(fp, "  ");
+  }
+  fprintf(fp, "  </outer>\n");
+  for (i = 0; i < level; i++)
+  {
+     fprintf(fp, "  ");
+  }
+  fprintf(fp, "</node>\n");
+}
+}*/

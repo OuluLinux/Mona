@@ -1,12 +1,6 @@
 #ifndef _Mona_Mona_h_
 #define _Mona_Mona_h_
 
-//#include <Core/Core.h>
-//using namespace Upp;
-
-//namespace Mona {};
-
-
 
 // Tracing and event tracking compilation symbols:
 // MONA_TRACE: use with run-time tracing flags below for execution flow trace.
@@ -78,9 +72,9 @@ public:
 
 	// Construct/initialize.
 	Mona();
-	Mona(int sensor_count, int response_count, int need_count, int random_seed = DEFAULT_RANDOM_SEED);
+	void Init(int sensor_count, int response_count, int need_count);
 	void InitParms();
-	void InitNet(int sensor_count, int response_count, int need_count, int random_seed = DEFAULT_RANDOM_SEED);
+	void InitNet(int sensor_count, int response_count, int need_count);
 	bool SetSensorResolution(SENSOR sensor_resolution);
 	int AddSensorMode(Vector<bool>& sensor_mask);
 	int AddSensorMode(Vector<bool>& sensor_mask, SENSOR sensor_resolution);
@@ -119,6 +113,10 @@ public:
 	bool trace_drive;
 	bool trace_respond;
 	#endif
+	
+	
+	void SetEffectEventIntervals(int level, int intervals);
+	void SetEffectEventInterval(int level, int interval, int value, double weight);
 
 	// Sensors.
 	Vector<SENSOR> sensors;
@@ -243,7 +241,7 @@ public:
 	COUNTER id_dispenser;
 
 	// Event clock.
-	Time event_clock;
+	int64 event_clock;
 
 	// Learning event lists.
 	Vector<Vector<LearningEvent> > learning_events;
@@ -254,10 +252,7 @@ public:
 	void GeneralizeMediator(const GeneralizationEvent& event);
 	bool IsDuplicateMediator(Mediator& mediator);
 
-	// Random numbers.
-	int random_seed;
-	//Random random;
-
+	
 	#ifdef MONA_TRACKING
 	// Tracking flags.
 	typedef unsigned int   TRACKING_FLAGS;
@@ -292,7 +287,7 @@ public:
 	void Load(String filename);
 	void Store(String filename);
 	void Serialize(Stream& fp);
-	Neuron* FindByID(ID id);
+	virtual Neuron* FindByID(int id);
 
 	// Clear network.
 	void Clear();

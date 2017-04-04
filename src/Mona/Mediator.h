@@ -14,7 +14,6 @@ public:
 	~Mediator();
 	
 	void Init(ENABLEMENT enablement, Mona* mona);
-	void Connect(ENABLEMENT enablement, Mona* mona);
 	
 	// Level 0 mediator is composed of non-mediator neurons.
 	// Level n mediator is composed of at most level n-1 mediators.
@@ -23,7 +22,7 @@ public:
 	// Enablement.
 	ENABLEMENT base_enablement;
 	ENABLEMENT GetEnablement();
-	void UpdateEnablement(int outcome, WEIGHT updateWeight);
+	void UpdateEnablement(int outcome, WEIGHT update_weight);
 
 	// Effective enablement.
 	ENABLEMENT effective_enablement;
@@ -34,7 +33,7 @@ public:
 	// Utility.
 	UTILITY utility;
 	WEIGHT  utility_weight;
-	void UpdateUtility(WEIGHT updateWeight);
+	void UpdateUtility(WEIGHT update_weight);
 	UTILITY GetEffectiveUtility();
 
 	// Update goal value.
@@ -54,10 +53,10 @@ public:
 	EnablingSet effect_enablings;
 
 	// Time of causation.
-	Time cause_begin;
+	int64 cause_begin;
 
 	// Event firing.
-	void CauseFiring(WEIGHT notify_strength, Time cause_begin);
+	void CauseFiring(WEIGHT notify_strength, int64 cause_begin);
 	void ResponseFiring(WEIGHT notify_strength);
 	void EffectFiring(WEIGHT notify_strength);
 	void RetireEnablings(bool force = false);

@@ -137,7 +137,7 @@ QuadNode::QuadNode(int depth, Bounds& bounds) {
 	this->depth = depth;
 
 	for (int i = 0; i < 4; i++)
-		outerren[i] = NULL;
+		outer[i] = NULL;
 
 	this->bounds = bounds;
 }
@@ -146,8 +146,8 @@ QuadNode::QuadNode(int depth, Bounds& bounds) {
 // Destructor.
 QuadNode::~QuadNode() {
 	for (int i = 0; i < 4; i++) {
-		if (outerren[i] != NULL)
-			delete outerren[i];
+		if (outer[i] != NULL)
+			delete outer[i];
 	}
 }
 
@@ -160,48 +160,48 @@ void QuadNode::Insert(Poly* polygon) {
 
 	// OK at this depth?
 	if ((depth >= QuadTree::MAX_DEPTH) ||
-		((polygons.GetCount() < QuadTree::MAX_POLYGONS) && (outerren[0] == NULL))) {
+		((polygons.GetCount() < QuadTree::MAX_POLYGONS) && (outer[0] == NULL))) {
 		polygons.Add(polygon);
 		return;
 	}
 
-	// Create outerren?
-	if (outerren[0] == NULL) {
+	// Create outer?
+	if (outer[0] == NULL) {
 		rx = (bounds.max.x - bounds.min.x) / 2.0;
 		rz = (bounds.max.z - bounds.min.z) / 2.0;
 		outerBounds.min.x = bounds.min.x;
 		outerBounds.max.x = bounds.max.x - rx;
 		outerBounds.min.z = bounds.min.z;
 		outerBounds.max.z = bounds.max.z - rz;
-		outerren[0]       = new QuadNode(depth + 1, outerBounds);
-		ASSERT(outerren[0] != NULL);
+		outer[0]       = new QuadNode(depth + 1, outerBounds);
+		ASSERT(outer[0] != NULL);
 		outerBounds.min.x = bounds.min.x;
 		outerBounds.max.x = bounds.max.x - rx;
 		outerBounds.min.z = bounds.min.z + rz;
 		outerBounds.max.z = bounds.max.z;
-		outerren[1]       = new QuadNode(depth + 1, outerBounds);
-		ASSERT(outerren[1] != NULL);
+		outer[1]       = new QuadNode(depth + 1, outerBounds);
+		ASSERT(outer[1] != NULL);
 		outerBounds.min.x = bounds.min.x + rx;
 		outerBounds.max.x = bounds.max.x;
 		outerBounds.min.z = bounds.min.z + rz;
 		outerBounds.max.z = bounds.max.z;
-		outerren[2]       = new QuadNode(depth + 1, outerBounds);
-		ASSERT(outerren[2] != NULL);
+		outer[2]       = new QuadNode(depth + 1, outerBounds);
+		ASSERT(outer[2] != NULL);
 		outerBounds.min.x = bounds.min.x + rx;
 		outerBounds.max.x = bounds.max.x;
 		outerBounds.min.z = bounds.min.z;
 		outerBounds.max.z = bounds.max.z - rz;
-		outerren[3]       = new QuadNode(depth + 1, outerBounds);
-		ASSERT(outerren[3] != NULL);
+		outer[3]       = new QuadNode(depth + 1, outerBounds);
+		ASSERT(outer[3] != NULL);
 	}
 
-	// Insert polygons into outerren.
+	// Insert polygons into outer.
 	polygons.Add(polygon);
 
 	for (i = 0; i < polygons.GetCount(); i++) {
 		for (j = 0; j < 4; j++) {
-			if (outerren[j]->bounds.intersects(polygons[i]->bounds))
-				outerren[j]->Insert(polygons[i]);
+			if (outer[j]->bounds.intersects(polygons[i]->bounds))
+				outer[j]->Insert(polygons[i]);
 		}
 	}
 
@@ -218,12 +218,12 @@ void QuadNode::Search(double x, double z, Vector<Poly*>& found) {
 			found.Add(polygons[i]);
 	}
 
-	if (outerren[0] == NULL)
+	if (outer[0] == NULL)
 		return;
 
 	for (i = 0; i < 4; i++) {
-		if (outerren[i]->bounds.contains(x, z))
-			outerren[i]->Search(x, z, found);
+		if (outer[i]->bounds.contains(x, z))
+			outer[i]->Search(x, z, found);
 	}
 }
 
@@ -237,11 +237,11 @@ void QuadNode::Print() {
 	for (i = 0; i < polygons.GetCount(); i++)
 		polygons[i]->Print();
 
-	if (outerren[0] == NULL)
+	if (outer[0] == NULL)
 		return;
 
 	for (i = 0; i < 4; i++)
-		outerren[i]->Print();
+		outer[i]->Print();
 }
 
 

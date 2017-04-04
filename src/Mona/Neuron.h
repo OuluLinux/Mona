@@ -23,7 +23,7 @@ public:
 	int type;
 
 	// Creation time.
-	Time creation_time;
+	int64 creation_time;
 
 	// Firing strength.
 	ENABLEMENT firing_strength;
@@ -96,12 +96,12 @@ typedef ClassID<Neuron> NeuronID;
 
 
 // Learning event.
-class LearningEvent {
+class LearningEvent : Moveable<LearningEvent> {
 public:
 	NeuronID    neuron;
 	WEIGHT      firing_strength;
-	Time        begin;
-	Time        end;
+	int64       begin;
+	int64       end;
 	double probability;
 	VALUE_SET   needs;
 

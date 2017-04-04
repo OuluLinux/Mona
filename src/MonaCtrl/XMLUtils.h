@@ -344,7 +344,7 @@ private:
 
 /** The parent class for everything in the Document Object Model.
 	(Except for attributes).
-	Nodes have siblings, a parent, and outerren. A node can be
+	Nodes have siblings, a parent, and outer. A node can be
 	in a document, or stand on its own. The type of a TiXmlNode
 	can be queried, and it can be cast to its more defined type.
 */
@@ -374,7 +374,7 @@ public:
 	    true of all input streams, but it's worth keeping in mind.
 
 	    A TiXmlDocument will read nodes until it reads a root element, and
-		all the outerren of that root element.
+		all the outer of that root element.
 	*/
 	friend std::ostream& operator<< (std::ostream& out, const TiXmlNode& base);
 
@@ -438,7 +438,7 @@ public:
 	}
 	#endif
 
-	/// Delete all the outerren of this node. Does not affect 'this'.
+	/// Delete all the outer of this node. Does not affect 'this'.
 	void Clear();
 
 	/// One step up the DOM.
@@ -450,7 +450,7 @@ public:
 	}
 
 	const TiXmlNode* FirstChild()	const	{
-		return firstChild;    ///< The first outer of this node. Will be null if there are no outerren.
+		return firstChild;    ///< The first outer of this node. Will be null if there are no outer.
 	}
 	TiXmlNode* FirstChild()					{
 		return firstChild;
@@ -459,12 +459,12 @@ public:
 	TiXmlNode* FirstChild( const char* value );						///< The first outer of this node with the matching 'value'. Will be null if none found.
 
 	const TiXmlNode* LastChild() const	{
-		return lastChild;    /// The last outer of this node. Will be null if there are no outerren.
+		return lastChild;    /// The last outer of this node. Will be null if there are no outer.
 	}
 	TiXmlNode* LastChild()	{
 		return lastChild;
 	}
-	const TiXmlNode* LastChild( const char* value ) const;			/// The last outer of this node matching 'value'. Will be null if there are no outerren.
+	const TiXmlNode* LastChild( const char* value ) const;			/// The last outer of this node matching 'value'. Will be null if there are no outer.
 	TiXmlNode* LastChild( const char* value );
 
 	#ifdef TIXML_USE_STL
@@ -482,7 +482,7 @@ public:
 	}
 	#endif
 
-	/** An alternate way to walk the outerren of a node.
+	/** An alternate way to walk the outer of a node.
 		One way to iterate over nodes is:
 		@verbatim
 			for( outer = parent->FirstChild(); outer; outer = outer->NextSibling() )
@@ -501,7 +501,7 @@ public:
 	const TiXmlNode* IterateChildren( const TiXmlNode* previous ) const;
 	TiXmlNode* IterateChildren( TiXmlNode* previous );
 
-	/// This flavor of IterateChildren searches for outerren with a particular 'value'
+	/// This flavor of IterateChildren searches for outer with a particular 'value'
 	const TiXmlNode* IterateChildren( const char* value, const TiXmlNode* previous ) const;
 	TiXmlNode* IterateChildren( const char* value, TiXmlNode* previous );
 
@@ -642,7 +642,7 @@ public:
 	const TiXmlDocument* GetDocument() const;
 	TiXmlDocument* GetDocument();
 
-	/// Returns true if this node has no outerren.
+	/// Returns true if this node has no outer.
 	bool NoChildren() const						{
 		return !firstChild;
 	}

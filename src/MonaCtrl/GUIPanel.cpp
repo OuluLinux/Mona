@@ -285,8 +285,8 @@ void GUIPanel::forceUpdate(bool updateArg) {
 
 void GUIPanel::packYAxisLayout() {
 	computeWindowBounds();
-	Vector<int> outerrenHeights,
-		   outerrenWidths;
+	Vector<int> outerHeights,
+		   outerWidths;
 	size_t      t          = 0;
 	int         height     = 0,
 				xOffset    = 0,
@@ -294,10 +294,10 @@ void GUIPanel::packYAxisLayout() {
 
 	for (t = 0; t < elements.GetCount(); t++) {
 		const Tuple4i& outerBounds = elements[t]->getWindowBounds();
-		outerrenHeights.Add(outerBounds.w - outerBounds.y + interval.y);
-		outerrenWidths.Add(outerBounds.z - outerBounds.x);
-		height       += outerrenHeights[t];
-		panelWidth    = outerrenWidths[t] > panelWidth ? outerrenWidths[t] : panelWidth;
+		outerHeights.Add(outerBounds.w - outerBounds.y + interval.y);
+		outerWidths.Add(outerBounds.z - outerBounds.x);
+		height       += outerHeights[t];
+		panelWidth    = outerWidths[t] > panelWidth ? outerWidths[t] : panelWidth;
 	}
 
 	dimensions.Set(float(panelWidth), float(height));
@@ -310,18 +310,18 @@ void GUIPanel::packYAxisLayout() {
 	computeClippedBounds(windowBounds);
 
 	for (t = 0; t < elements.GetCount(); t++) {
-		xOffset = (layout == PL_YAXIS_CEN_LAYOUT) * (panelWidth - outerrenWidths[t]) / 2;
+		xOffset = (layout == PL_YAXIS_CEN_LAYOUT) * (panelWidth - outerWidths[t]) / 2;
 		elements[t]->setAnchorPoint(AT_CORNERLU);
 		elements[t]->setPosition(float(interval.x + xOffset), float(height));
 		elements[t]->computeWindowBounds();
-		height += outerrenHeights[t];
+		height += outerHeights[t];
 	}
 }
 
 void GUIPanel::packXAxisLayout() {
 	computeWindowBounds();
-	Vector<int> outerrenWidths,
-		   outerrenHeights;
+	Vector<int> outerWidths,
+		   outerHeights;
 	double       offset      = 0;
 	size_t      t           = 0;
 	int         height      = 0,
@@ -330,9 +330,9 @@ void GUIPanel::packXAxisLayout() {
 
 	for (t = 0; t < elements.GetCount(); t++) {
 		const Tuple4i& outerBounds = elements[t]->getWindowBounds();
-		outerrenHeights.Add(outerBounds.w - outerBounds.y);
-		outerrenWidths.Add (outerBounds.z - outerBounds.x + interval.x);
-		width       += outerrenWidths[t];
+		outerHeights.Add(outerBounds.w - outerBounds.y);
+		outerWidths.Add (outerBounds.z - outerBounds.x + interval.x);
+		width       += outerWidths[t];
 		height       = outerBounds.w - outerBounds.y;
 		panelHeight  = height > panelHeight ? height : panelHeight;
 	}
@@ -347,11 +347,11 @@ void GUIPanel::packXAxisLayout() {
 	computeClippedBounds(windowBounds);
 
 	for (t = 0; t < elements.GetCount(); t++) {
-		offset = clamp(float(panelHeight - outerrenHeights[t]) / 2.0f + interval.y, 0.0f, 1000.0f);
+		offset = clamp(float(panelHeight - outerHeights[t]) / 2.0f + interval.y, 0.0f, 1000.0f);
 		elements[t]->setAnchorPoint(AT_CORNERLU);
 		elements[t]->setPosition(float(width), offset);
 		elements[t]->computeWindowBounds();
-		width += outerrenWidths[t];
+		width += outerWidths[t];
 	}
 }
 

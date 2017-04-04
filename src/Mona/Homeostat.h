@@ -59,6 +59,8 @@ struct ClassID : Moveable<ClassID<T> > {
 	operator T&() {return *r;}
 	operator const T&() const {return *r;}
 	
+	operator T*() {return r;}
+	
 	template <class A>
 	A& As() {return dynamic_cast<A&>(*r);}
 	
@@ -67,7 +69,7 @@ struct ClassID : Moveable<ClassID<T> > {
 typedef ClassID<Receptor> ReceptorID;
 
 // Homeostat.
-class Homeostat {
+class Homeostat : Moveable<Homeostat> {
 public:
 
 	// Data types.

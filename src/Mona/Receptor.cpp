@@ -3,8 +3,12 @@
 
 
 // Receptor constructor.
-/*Receptor::Receptor(Vector<SENSOR>& centroid,
-				   SENSOR_MODE sensor_mode, Mona* mona) {
+Receptor::Receptor() {
+	type   = RECEPTOR;
+	motive = 0.0;
+}
+
+void Receptor::Init(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode, Mona* mona) {
 	ASSERT((int)centroid.GetCount() == mona->sensor_count);
 	this->centroid.Clear();
 
@@ -12,10 +16,18 @@
 		this->centroid.Add(centroid[i]);
 
 	this->sensor_mode = sensor_mode;
-	Init(mona);
+	Neuron::Init(mona);
 	type   = RECEPTOR;
 	motive = 0.0;
-}*/
+}
+
+
+void Receptor::Connect(Mona* mona) {
+	ASSERT(centroid.GetCount() == mona->sensor_count);
+	Neuron::Connect(mona);
+	type   = RECEPTOR;
+}
+
 
 
 // Receptor destructor.
@@ -102,73 +114,69 @@ void Receptor::Serialize(Stream& fp) {
 
 // Get distance from centroid to given sensor vector.
 SENSOR Receptor::GetCentroidDistance(Vector<SENSOR>& sensors) {
-	return (GetSensorDistance(&centroid, &sensors));
+	return (GetSensorDistance(centroid, sensors));
 }
 
 
 // Get distance between sensor vectors.
 // Distance metric is Euclidean distance squared.
-SENSOR Receptor::GetSensorDistance(Vector<SENSOR>* sensorsA,
-								   Vector<SENSOR>* sensorsB) {
+SENSOR Receptor::GetSensorDistance(const Vector<SENSOR>& sensorsA, const Vector<SENSOR>& sensorsB) {
 	SENSOR d;
 	SENSOR dist = 0.0;
 
-	for (int i = 0; i < sensorsA->GetCount(); i++) {
-		d     = (*sensorsA)[i] - (*sensorsB)[i];
+	for (int i = 0; i < sensorsA.GetCount(); i++) {
+		d     = sensorsA[i] - sensorsB[i];
 		dist += (d * d);
 	}
 
-	return (dist);
+	return dist;
 }
 
 
 // RDTree sensor vector search.
-SENSOR Receptor::PatternDistance(void* sensorsA, void* sensorsB) {
-	return (GetSensorDistance((Vector<SENSOR>*)sensorsA, (Vector<SENSOR>*)sensorsB));
+SENSOR Receptor::PatternDistance(const Vector<SENSOR>& sensorsA, const Vector<SENSOR>& sensorsB) {
+	return GetSensorDistance(sensorsA, sensorsB);
 }
 
 
-/*void* Receptor::LoadPattern(void* mona, Stream& fp) {
+void Receptor::LoadPattern(Mona& mona, Vector<SENSOR>& sensors, Stream& fp) {
+	ASSERT(fp.IsLoading());
 	SENSOR s;
-	Vector<SENSOR>* sensors = new Vector<SENSOR>();
-	ASSERT(sensors != NULL);
-
-	for (int i = 0; i < ((Mona*)mona)->sensor_count; i++) {
-		FREAD_FLOAT(&s, fp);
-		sensors->Add(s);
-	}
-
-	return ((void*)sensors);
-}*/
-
-
-void Receptor::StorePattern(Vector<SENSOR>& sensors_in, Stream& fp) {
-	SENSOR s;
-	Vector<SENSOR>* sensors = (Vector<SENSOR>*)sensors_in;
-#error check this
-	for (int i = 0; i < sensors->GetCount(); i++) {
-		s = (*sensors)[i];
-		FWRITE_FLOAT(&s, fp);
+	
+	sensors.SetCount(mona.sensor_count);
+	for (int i = 0; i < mona.sensor_count; i++) {
+		fp % s;
+		sensors[i] = s;
 	}
 }
 
 
-void* Receptor::LoadClient(void* mona, Stream& fp) {
+void Receptor::StorePattern(const Vector<SENSOR>& sensors_in, Stream& fp) {
+	ASSERT(fp.IsStoring());
+	for (int i = 0; i < sensors_in.GetCount(); i++) {
+		SENSOR s = sensors_in[i];
+		fp % s;
+	}
+}
+
+
+void* Receptor::LoadClient(Mona& mona, Stream& fp) {
+	ASSERT(fp.IsLoading());
 	ID id;
-	FREAD_LONG_LONG(&id, fp);
-	return ((void*)((Mona*)mona)->FindByID(id));
+	fp % id;
+	return mona.FindByID(id);
 }
-
 
 void Receptor::StoreClient(void* receptor, Stream& fp) {
-	FWRITE_LONG_LONG(&((Receptor*)receptor)->id, fp);
+	ASSERT(fp.IsStoring());
+	fp % ((Receptor*)receptor)->id;
 }
 
 
-void Receptor::DeletePattern(void* pattern) {
-	delete (Vector<SENSOR>*)pattern;
-}
 
+void Receptor::DeletePattern(Vector<SENSOR>& pattern) {
+	pattern.Clear();
+}
 
 
 // Update goal value.

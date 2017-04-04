@@ -12,8 +12,8 @@ public:
 
 	// Construct/destruct.
 	Receptor();
-	//Receptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode, Mona* mona);
-	void Connect(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode, Mona* mona);
+	void Init(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode, Mona* mona);
+	void Connect(Mona* mona);
 	~Receptor();
 
 	// Centroid sensor vector.
@@ -29,7 +29,7 @@ public:
 	SENSOR GetCentroidDistance(Vector<SENSOR>& sensors);
 
 	// Get distance between sensor vectors.
-	static SENSOR GetSensorDistance(Vector<SENSOR>* sensorsA, Vector<SENSOR>* sensorsB);
+	static SENSOR GetSensorDistance(const Vector<SENSOR>& sensorsA, const Vector<SENSOR>& sensorsB);
 
 	// Is given receptor a duplicate of this?
 	bool IsDuplicate(Receptor&);
@@ -40,12 +40,12 @@ public:
 	void Serialize(Stream& fp);
 	
 	// RDTree sensor vector search.
-	static SENSOR PatternDistance(void* sensorsA, void* sensorsB);
-	static void* LoadPattern(void* mona, Stream& fp);
-	static void StorePattern(void* sensors, Stream& fp);
-	static void* LoadClient(void* mona, Stream& fp);
+	static SENSOR PatternDistance(const Vector<SENSOR>& sensorsA, const Vector<SENSOR>& sensorsB);
+	static void LoadPattern(Mona& mona, Vector<SENSOR>& sensors, Stream& fp);
+	static void StorePattern(const Vector<SENSOR>& sensors, Stream& fp);
+	static void* LoadClient(Mona& mona, Stream& fp);
 	static void StoreClient(void* receptor, Stream& fp);
-	static void DeletePattern(void* pattern);
+	static void DeletePattern(Vector<SENSOR>& pattern);
 
 	// Print receptor.
 	/*      void Print(FILE *out = stdout);

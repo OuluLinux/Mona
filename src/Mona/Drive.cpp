@@ -1,9 +1,7 @@
 #include "Mona.h"
-#include <math.h>
 
 // Drive need changes caused by goal values through network.
-void
-Mona::Drive() {
+void Mona::Drive() {
 	MotiveAccum motive_accum;
 	VALUE_SET needs;
 	
@@ -119,8 +117,7 @@ Mona::Drive() {
 }
 
 // Clear motive working accumulators.
-void
-Mona::ClearMotiveWork() {
+void Mona::ClearMotiveWork() {
 	for (int i = 0; i < receptors.GetCount(); i++) {
 		Neuron& neuron = receptors[i];
 		neuron.ClearMotiveWork();
@@ -139,8 +136,7 @@ Mona::ClearMotiveWork() {
 
 
 // Set motives.
-void
-Mona::SetMotives() {
+void Mona::SetMotives() {
 	for (int i = 0; i < receptors.GetCount(); i++) {
 		Neuron& neuron = receptors[i];
 		neuron.SetMotive();
@@ -161,8 +157,7 @@ Mona::SetMotives() {
 
 
 // Finalize motives.
-void
-Mona::FinalizeMotives() {
+void Mona::FinalizeMotives() {
 	for (int i = 0; i < receptors.GetCount(); i++) {
 		Neuron& neuron = receptors[i];
 		neuron.FinalizeMotive();

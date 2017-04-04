@@ -13,8 +13,12 @@ Homeostat::Homeostat() {
 	freq_timer    = 0;
 }
 
+// Destructor.
+Homeostat::~Homeostat() {
+	goals.Clear();
+}
 
-/*Homeostat::Homeostat(int need_index, Mona* mona) {
+void Homeostat::Init(int need_index, Mona* mona) {
 	need            = 0.0;
 	this->need_index = need_index;
 	need_delta       = 0.0;
@@ -22,14 +26,7 @@ Homeostat::Homeostat() {
 	periodic_need    = 0.0;
 	frequency       = 0;
 	freq_timer       = 0;
-}*/
-
-
-// Destructor.
-Homeostat::~Homeostat() {
-	goals.Clear();
 }
-
 
 // Set periodic need.
 void Homeostat::SetPeriodicNeed(int frequency, NEED need) {
@@ -89,8 +86,8 @@ int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
 		Receptor* found_receptor = mona->FindCentroidReceptor(sensors_work, sensor_mode, distance);
 
 		if ((found_receptor == NULL) ||
-			((found_receptor != NULL) && (distance > mona->sensor_modes[sensor_mode]->resolution)))
-			found_receptor = mona->NewReceptor(sensors_work, sensor_mode);
+			((found_receptor != NULL) && (distance > mona->sensor_modes[sensor_mode].resolution)))
+			found_receptor = &mona->NewReceptor(sensors_work, sensor_mode);
 
 		Receptor& receptor = *found_receptor;
 		
@@ -115,16 +112,14 @@ int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
 }
 
 
-int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
-					   NEED goal_value) {
+int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode, NEED goal_value) {
 	return (AddGoal(sensors, sensor_mode, NULL_RESPONSE, goal_value));
 }
 
 
 // Find index of goal matching sensors, sensor mode
 // and response. Return -1 for no match.
-int Homeostat::FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
-						RESPONSE response) {
+int Homeostat::FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode, RESPONSE response) {
 	int i;
 
 	if ((i = FindGoal(sensors, sensor_mode)) != -1) {
@@ -147,8 +142,8 @@ int Homeostat::FindGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode) {
 
 	for (int i = 0; i < goals.GetCount(); i++) {
 		if ((goals[i].sensor_mode == sensor_mode) &&
-			(Receptor::GetSensorDistance(&goals[i].sensors, &sensors_work)
-			 <= mona->sensor_modes[sensor_mode]->resolution))
+			(Receptor::GetSensorDistance(goals[i].sensors, sensors_work)
+			 <= mona->sensor_modes[sensor_mode].resolution))
 			return (i);
 	}
 
@@ -259,11 +254,11 @@ void Homeostat::SensorsUpdate() {
 	Vector<SENSOR> sensors;
 
 	// Update the need value when sensors match.
-	for (i = 0; i < goals.GetCount(); i++) {
+	for (int i = 0; i < goals.GetCount(); i++) {
 		mona->ApplySensorMode(mona->sensors, sensors, goals[i].sensor_mode);
 
-		if (Receptor::GetSensorDistance(&goals[i].sensors, &sensors)
-			<= mona->sensor_modes[goals[i].sensor_mode]->resolution) {
+		if (Receptor::GetSensorDistance(goals[i].sensors, sensors)
+			<= mona->sensor_modes[goals[i].sensor_mode].resolution) {
 			if (goals[i].response != NULL_RESPONSE) {
 				// Shift goal value to motor.
 				goals[i].motor->goals.SetValue(need_index, goals[i].goal_value);

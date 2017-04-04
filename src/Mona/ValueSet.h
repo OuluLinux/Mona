@@ -47,9 +47,8 @@ public:
 
 
 	// Get a specified value.
-	inline double Get(int index) {
-		ASSERT(index >= 0 && index < values.GetCount());
-		return (values[index]);
+	inline double Get(int index) const {
+		return values[index];
 	}
 
 

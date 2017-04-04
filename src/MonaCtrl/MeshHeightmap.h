@@ -112,7 +112,7 @@ public:
 		depth = 0;
 
 		for (int i = 0; i < 4; i++)
-			outerren[i] = NULL;
+			outer[i] = NULL;
 	}
 
 
@@ -132,7 +132,7 @@ public:
 
 	// Data members.
 	int            depth;
-	QuadNode*       outerren[4];
+	QuadNode*       outer[4];
 	Bounds         bounds;
 	Vector<Poly*> polygons;
 };
