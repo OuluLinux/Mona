@@ -3,7 +3,7 @@
 
 
 // Receptor constructor.
-Receptor::Receptor(Vector<SENSOR>& centroid,
+/*Receptor::Receptor(Vector<SENSOR>& centroid,
 				   SENSOR_MODE sensor_mode, Mona* mona) {
 	ASSERT((int)centroid.GetCount() == mona->sensor_count);
 	this->centroid.Clear();
@@ -15,7 +15,7 @@ Receptor::Receptor(Vector<SENSOR>& centroid,
 	Init(mona);
 	type   = RECEPTOR;
 	motive = 0.0;
-}
+}*/
 
 
 // Receptor destructor.
@@ -128,7 +128,7 @@ SENSOR Receptor::PatternDistance(void* sensorsA, void* sensorsB) {
 }
 
 
-void* Receptor::LoadPattern(void* mona, Stream& fp) {
+/*void* Receptor::LoadPattern(void* mona, Stream& fp) {
 	SENSOR s;
 	Vector<SENSOR>* sensors = new Vector<SENSOR>();
 	ASSERT(sensors != NULL);
@@ -139,10 +139,10 @@ void* Receptor::LoadPattern(void* mona, Stream& fp) {
 	}
 
 	return ((void*)sensors);
-}
+}*/
 
 
-void Receptor::StorePattern(void* sensors_in, Stream& fp) {
+void Receptor::StorePattern(Vector<SENSOR>& sensors_in, Stream& fp) {
 	SENSOR s;
 	Vector<SENSOR>* sensors = (Vector<SENSOR>*)sensors_in;
 #error check this
@@ -182,8 +182,8 @@ void Receptor::UpdateGoalValue() {
 	need_deltas.Reserve(mona->need_count);
 
 	for (int i = 0; i < mona->need_count; i++) {
-		needs.Set(i, mona->homeostats[i]->GetNeed());
-		need_deltas.Set(i, mona->homeostats[i]->GetAndClearNeedDelta());
+		needs.Set(i, mona->homeostats[i].GetNeed());
+		need_deltas.Set(i, mona->homeostats[i].GetAndClearNeedDelta());
 	}
 
 	goals.Update(needs, need_deltas);

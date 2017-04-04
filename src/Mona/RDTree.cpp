@@ -9,23 +9,36 @@ const double RDTree::DEFAULT_RADIUS = 100.0;
 
 RDTree::RDSearch* RDTree::EMPTY = (RDSearch*)(-1);
 
+
+
 // Node constructors.
-RDTree::RDNode::RDNode(void* pattern, Receptor* client) {
-	this->pattern = pattern;
-	this->client  = client;
-	outer_list     = outer_last = NULL;
-	equal_next       = equal_prev = NULL;
+RDTree::RDNode::RDNode(Vector<SENSOR>& pattern, Receptor& client) {
+	this->pattern <<= pattern;
+	this->client  = &client;
+	outer_list    = outer_last = NULL;
+	equal_next    = equal_prev = NULL;
 	distance      = 0.0;
 }
 
 
 RDTree::RDNode::RDNode() {
-	pattern   = NULL;
-	client    = NULL;
-	outer_list = outer_last = NULL;
-	equal_next   = equal_prev = NULL;
-	distance  = 0.0;
+	client        = NULL;
+	outer_list    = outer_last = NULL;
+	equal_next    = equal_prev = NULL;
+	distance      = 0.0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Search element constructor.
@@ -39,8 +52,17 @@ RDTree::RDSearch::RDSearch() {
 }
 
 
+
+
+
+
+
+
+
+
+
 // Constructors.
-RDTree::RDTree(double(*dist_func)(void*, void*), void(*del_func)(void*)) {
+/*RDTree::RDTree(double(*dist_func)(void*, void*), void(*del_func)(void*)) {
 	RADIUS         = DEFAULT_RADIUS;
 	this->dist_func = dist_func;
 	this->del_func  = del_func;
@@ -57,7 +79,7 @@ RDTree::RDTree(double radius, double(*dist_func)(void*, void*),
 	root           = NULL;
 	stkMem         = STKMEM_QUANTUM;
 }
-
+*/
 
 // Destructor.
 RDTree::~RDTree() {
@@ -69,7 +91,7 @@ RDTree::~RDTree() {
 void RDTree::DeleteSubtree(RDNode* node) {
 	RDNode* p, *p2, *p3;
 
-	/* convert tree to list */
+	// convert tree to list
 	if ((p = node) == NULL)
 		return;
 
@@ -87,7 +109,7 @@ void RDTree::DeleteSubtree(RDNode* node) {
 		}
 	}
 
-	/* delete list */
+	// delete list
 	for (p2 = p; p2 != NULL; p2 = p3) {
 		p3 = p2->equal_next;
 
@@ -100,39 +122,43 @@ void RDTree::DeleteSubtree(RDNode* node) {
 
 
 // Insert pattern.
-void RDTree::Insert(void* pattern, Receptor* client) {
+void RDTree::Insert(Vector<SENSOR>& pattern, Receptor& client) {
 	RDNode* node = new RDNode(pattern, client);
 	ASSERT(node != NULL);
-	Insert(root, node);
+	Insert(*root, *node);
 }
 
 
-void RDTree::Insert(RDNode* current, RDNode* node) {
+void RDTree::Insert(RDNode& current, RDNode& node) {
 	RDNode* p, *p2, *p3;
 	double  dcn, dnn;
-	/* clear node */
-	node->outer_list = NULL;
-	node->outer_last = NULL;
-	node->equal_next   = NULL;
-	node->equal_prev   = NULL;
-	node->distance  = 0.0;
+	
+	// clear node
+	node.outer_list = NULL;
+	node.outer_last = NULL;
+	node.equal_next   = NULL;
+	node.equal_prev   = NULL;
+	node.distance  = 0.0;
 
-	/* new root? */
-	if (current == NULL) {
-		root = node;
+	// new root?
+	/*if (current == NULL) {
+		root = &node;
 		return;
-	}
+	}*/
+	Panic("TODO: check root checking");
 
-	/* add pattern to first acceptable branch */
-	dcn = dist_func(current->pattern, node->pattern);
+	// add pattern to first acceptable branch
+	dcn = dist_func(current.pattern, node.pattern);
 
 	while (1) {
-		for (p = current->outer_list; p != NULL; p = p->equal_next) {
-			/* check relative distances */
-			dnn = dist_func(p->pattern, node->pattern);
+		for (p = current.outer_list; p != NULL; p = p->equal_next) {
+			
+			// check relative distances
+			dnn = dist_func(p->pattern, node.pattern);
 
 			if (dnn <= (p->distance * RADIUS)) {
-				/* change current fragment */
+				
+				// change current fragment
 				current = p;
 				dcn     = dnn;
 				break;
@@ -143,39 +169,38 @@ void RDTree::Insert(RDNode* current, RDNode* node) {
 			break;
 	}
 
-	/* link new as outer of current pattern */
-	node->distance = dcn;
-	node->equal_next  = NULL;
-	node->equal_prev  = current->outer_last;
+	// link new as outer of current pattern
+	node.distance = dcn;
+	node.equal_next  = NULL;
+	node.equal_prev  = current.outer_last;
 
-	if (current->outer_last != NULL)
-		current->outer_last->equal_next = node;
+	if (current.outer_last != NULL)
+		current.outer_last->equal_next = node;
 	else
-		current->outer_list = node;
+		current.outer_list = node;
 
-	current->outer_last = node;
+	current.outer_last = node;
 
-	/*
-	    check if previously added patterns should be un-linked from the
-	    current pattern and linked as outerren of the new pattern.
-	*/
-	for (p = current->outer_list; p != node && p != NULL; ) {
-		dnn = dist_func(p->pattern, node->pattern);
+	
+	// check if previously added patterns should be un-linked from the
+	// current pattern and linked as outerren of the new pattern.
+	for (p = current.outer_list; p != node && p != NULL; ) {
+		dnn = dist_func(p->pattern, node.pattern);
 
-		/* if should be linked to new pattern */
-		if (dnn <= (node->distance * RADIUS)) {
-			/* re-link outerren */
+		// if should be linked to new pattern
+		if (dnn <= (node.distance * RADIUS)) {
+			// re-link outerren
 			p2 = p->equal_next;
 
 			if (p->equal_prev != NULL)
 				p->equal_prev->equal_next = p2;
 			else
-				current->outer_list = p2;
+				current.outer_list = p2;
 
 			if (p2 != NULL)
 				p2->equal_prev = p->equal_prev;
 
-			/* convert outer sub-tree to list */
+			// convert outer sub-tree to list
 			for (p2 = p3 = p, p->equal_next = NULL; ; p3 = p3->equal_next) {
 				for ( ; p2->equal_next != NULL; p2 = p2->equal_next) {
 				}
@@ -189,20 +214,20 @@ void RDTree::Insert(RDNode* current, RDNode* node) {
 				p2->equal_next = p3->outer_list;
 			}
 
-			/* add list to current pattern */
+			// add list to current pattern
 			for (p2 = p; p2 != NULL; p2 = p3) {
 				p3 = p2->equal_next;
 				Insert(current, p2);
 			}
 
-			/* restart check (since outer configuration may have changed) */
-			for (p = current->outer_list; p != node && p != NULL; p = p->equal_next) {
+			// restart check (since outer configuration may have changed)
+			for (p = current.outer_list; p != node && p != NULL; p = p->equal_next) {
 			}
 
 			if (p == NULL)
 				break;
 
-			p = current->outer_list;
+			p = current.outer_list;
 		}
 		else
 			p = p->equal_next;
@@ -236,7 +261,7 @@ void RDTree::Remove(void* pattern) {
 			return;
 	}
 
-	/* unlink pattern */
+	// unlink pattern
 	if (node == root)
 		current = root = NULL;
 	else {
@@ -252,7 +277,8 @@ void RDTree::Remove(void* pattern) {
 	}
 
 	node->equal_next = node->equal_prev = NULL;
-	/* convert outer sub-tree to list */
+	
+	// convert outer sub-tree to list
 	p = node->outer_list;
 
 	for (p2 = p; p2 != NULL; p2 = p2->equal_next) {
@@ -269,7 +295,7 @@ void RDTree::Remove(void* pattern) {
 		}
 	}
 
-	/* add list to parent pattern */
+	// add list to parent pattern
 	for (p2 = p; p2 != NULL; p2 = p3) {
 		p3 = p2->equal_next;
 		Insert(current, p2);
@@ -283,8 +309,8 @@ void RDTree::Remove(void* pattern) {
 }
 
 
-/* search space for patterns closest to the given pattern */
-/* return best matches */
+// search space for patterns closest to the given pattern
+// return best matches
 RDTree::RDSearch* RDTree::Search(void* pattern, int max_find, int max_search) {
 	RDSearch* sw, *sw2, *sw3;
 	RDSearch* search_list = NULL;
@@ -292,7 +318,7 @@ RDTree::RDSearch* RDTree::Search(void* pattern, int max_find, int max_search) {
 	if (root == NULL)
 		return (search_list);
 
-	/* prepare for search */
+	// prepare for search
 	struct SearchCtrl search_ctrl;
 	search_ctrl.search_list    = NULL;
 	search_ctrl.search_best    = NULL;
@@ -309,10 +335,11 @@ RDTree::RDSearch* RDTree::Search(void* pattern, int max_find, int max_search) {
 	search_ctrl.search_work_idx = 0;
 	search_ctrl.search_work_use = 0;
 	RDNode node(pattern, NULL);
-	/* search tree */
+	
+	// search tree
 	Search(&search_ctrl, &node);
 
-	/* extract search results */
+	// extract search results
 	for (sw = search_ctrl.search_list, sw3 = NULL; sw != NULL; sw = sw->search_next) {
 		sw2 = new RDSearch();
 		ASSERT(sw2 != NULL);

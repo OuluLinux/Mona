@@ -110,7 +110,7 @@ Mona::Learn() {
 
 
 // Create new mediators for given effect.
-void Mona::CreateMediator(const LearningEvent& effect_event) {
+void Mona::CreateMediator(LearningEvent& effect_event) {
 	int           level;
 	bool          effect_resp_eq, cause_resp_eq;
 	LearningEvent *response_event;
@@ -159,7 +159,7 @@ void Mona::CreateMediator(const LearningEvent& effect_event) {
 			continue;
 
 		// The cause and effect must have equal response-equippage status.
-		if ((level == 0) || (dynamic_cast<Mediator&>(*cause_event.neuron).response != NULL))
+		if ((level == 0) || (cause_event.neuron.As<Mediator>().response != NULL))
 			cause_resp_eq = true;
 		else
 			cause_resp_eq = false;
@@ -232,12 +232,12 @@ void Mona::CreateMediator(const LearningEvent& effect_event) {
 
 		// Create the mediator.
 		Mediator& mediator = AddMediator(INITIAL_ENABLEMENT);
-		mediator.AddEvent(CAUSE_EVENT, *cause_event.neuron);
+		mediator.AddEvent(CAUSE_EVENT, cause_event.neuron);
 
 		if (response_event != NULL)
-			mediator.AddEvent(RESPONSE_EVENT, *response_event->neuron);
+			mediator.AddEvent(RESPONSE_EVENT, response_event->neuron);
 
-		mediator.AddEvent(EFFECT_EVENT, *effect_event.neuron);
+		mediator.AddEvent(EFFECT_EVENT, effect_event.neuron);
 		mediator.UpdateGoalValue(cause_event.needs);
 
 		// Duplicate?
@@ -274,7 +274,6 @@ Mona::GeneralizeMediator(const GeneralizationEvent& generalization_event) {
 	//Mediator*                mediator;
 	Vector<LearningEvent*> candidates;
 	double             accum_prob, choose_prob, p;
-	int i;
 	// Find effect event candidates.
 	accum_prob = 0.0;
 	
@@ -292,7 +291,7 @@ Mona::GeneralizeMediator(const GeneralizationEvent& generalization_event) {
 			continue;
 
 		// Is this a direct superset of the mediator's effect?
-		Receptor& candidate_receptor = dynamic_cast<Receptor&>(*candidate_event.neuron);
+		Receptor& candidate_receptor = dynamic_cast<Receptor&>(*candidate_event.neuron.r);
 		Receptor& effect_receptor    = dynamic_cast<Receptor&>(*generalization_event.mediator->effect.r);
 
 		for (int i = 0; i < effect_receptor.super_sensor_modes.GetCount(); i++) {
@@ -309,23 +308,27 @@ Mona::GeneralizeMediator(const GeneralizationEvent& generalization_event) {
 	while (true) {
 		// Make a weighted probabilistic pick of a candidate.
 		choose_prob = RandomInterval(0.0, accum_prob);
-
-		for (i = 0, p = 0.0; i < candidates.GetCount(); i++) {
+		
+		int j = -1;
+		double p = 0.0;
+		for (int i = 0; i < candidates.GetCount(); i++) {
 			if (candidates[i] == NULL)
 				continue;
 
 			p += candidates[i]->probability;
 
-			if (choose_prob <= p)
+			if (choose_prob <= p) {
+				j = i;
 				break;
+			}
 		}
 
-		if (i == (int)candidates.GetCount())
+		if (j == -1)
 			break;
 
-		LearningEvent& candidate_event = *candidates[i];
+		LearningEvent& candidate_event = *candidates[j];
 		accum_prob     -= candidate_event.probability;
-		candidates[i]  = NULL;
+		candidates[j]  = NULL;
 
 		// Make a probabilistic decision to create mediator.
 		if (!RandomChance(generalization_event.enabling))
@@ -338,7 +341,7 @@ Mona::GeneralizeMediator(const GeneralizationEvent& generalization_event) {
 		if (!generalization_event.mediator->response.IsNull())
 			mediator.AddEvent(RESPONSE_EVENT, generalization_event.mediator->response);
 
-		mediator.AddEvent(EFFECT_EVENT, *candidate_event.neuron);
+		mediator.AddEvent(EFFECT_EVENT, candidate_event.neuron);
 		mediator.UpdateGoalValue(generalization_event.needs);
 
 		// Duplicate?

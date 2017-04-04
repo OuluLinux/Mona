@@ -115,7 +115,7 @@ Mona::Respond() {
 
 	// Update need based on response.
 	for (int i = 0; i < need_count; i++)
-		homeostats[i]->ResponseUpdate();
+		homeostats[i].ResponseUpdate();
 }
 
 

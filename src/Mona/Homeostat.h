@@ -46,6 +46,7 @@ struct ClassID : Moveable<ClassID<T> > {
 	bool IsNull() const {return r == NULL;}
 	
 	bool FindFrom(IdFinder* mona) {
+		if (id == -1) {r = NULL; return false;}
 		Neuron* n = mona->FindByID(id);
 		if (!n) return false;
 		r = dynamic_cast<T*>(n);
@@ -53,8 +54,13 @@ struct ClassID : Moveable<ClassID<T> > {
 	}
 	
 	T* operator->() {return r;}
+	const T* operator->() const {return r;}
 	
 	operator T&() {return *r;}
+	operator const T&() const {return *r;}
+	
+	template <class A>
+	A& As() {return dynamic_cast<A&>(*r);}
 	
 };
 
@@ -108,7 +114,8 @@ public:
 
 	// Constructors.
 	Homeostat();
-	Homeostat(int need_index, Mona* mona);
+	//Homeostat(int need_index, Mona* mona);
+	void Init(int need_index, Mona* mona);
 
 	// Destructor.
 	~Homeostat();

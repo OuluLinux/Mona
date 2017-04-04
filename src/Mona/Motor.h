@@ -7,7 +7,10 @@ class Motor : public Neuron {
 public:
 
 	// Construct/destruct.
-	Motor(RESPONSE response, Mona* mona);
+	Motor();
+	//Motor(RESPONSE response, Mona* mona);
+	void Init(RESPONSE response, Mona* mona);
+	void Connect(RESPONSE response, Mona* mona);
 	~Motor();
 
 	// Response.

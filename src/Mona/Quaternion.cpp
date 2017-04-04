@@ -67,8 +67,6 @@ void CQuaternion::VecSub(const double* src1, const double* src2, double* dst) {
 
 
 void CQuaternion::VecCopy(const double* v1, double* v2) {
-	int i;
-
 	for (int i = 0; i < 3; i++)
 		v2[i] = v1[i];
 }

@@ -3,11 +3,11 @@
 
 
 // Motor constructor.
-Motor::Motor(RESPONSE response, Mona* mona) {
+/*Motor::Motor(RESPONSE response, Mona* mona) {
 	Init(mona);
 	type           = MOTOR;
 	this->response = response;
-}
+}*/
 
 
 // Motor destructor.

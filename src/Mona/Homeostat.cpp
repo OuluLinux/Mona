@@ -14,7 +14,7 @@ Homeostat::Homeostat() {
 }
 
 
-Homeostat::Homeostat(int need_index, Mona* mona) {
+/*Homeostat::Homeostat(int need_index, Mona* mona) {
 	need            = 0.0;
 	this->need_index = need_index;
 	need_delta       = 0.0;
@@ -22,7 +22,7 @@ Homeostat::Homeostat(int need_index, Mona* mona) {
 	periodic_need    = 0.0;
 	frequency       = 0;
 	freq_timer       = 0;
-}
+}*/
 
 
 // Destructor.
@@ -256,7 +256,6 @@ void Homeostat::RemoveNeuron(Neuron* neuron) {
 
 // Update homeostat based on sensors.
 void Homeostat::SensorsUpdate() {
-	int i;
 	Vector<SENSOR> sensors;
 
 	// Update the need value when sensors match.

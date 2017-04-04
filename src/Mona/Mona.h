@@ -132,13 +132,13 @@ public:
 	// receptor in a set reserved for the mode. This
 	// provides the network with selective attention
 	// capabilities.
-	Vector<SensorMode*> sensor_modes;
+	Vector<SensorMode> sensor_modes;
 	void ApplySensorMode(Vector<SENSOR>& in, Vector<SENSOR>& out, SENSOR_MODE);
 	void ApplySensorMode(Vector<SENSOR>& sensors, SENSOR_MODE);
 
 	// Sensor centroid search spaces.
 	// Each sensor mode defines a space.
-	Vector<RDTree*> sensor_centroids;
+	Vector<RDTree> sensor_centroids;
 
 	// Find the receptor having the centroid closest to
 	// the sensor vector for the give sensor mode.
@@ -160,7 +160,7 @@ public:
 
 	// Needs.
 	int                 need_count;
-	Vector<Homeostat*> homeostats;
+	Vector<Homeostat> homeostats;
 
 	// Need management.
 	NEED GetNeed(int index);
@@ -250,7 +250,7 @@ public:
 	Vector<GeneralizationEvent>  generalization_events;
 
 	// Mediator generation.
-	void CreateMediator(const LearningEvent& effect_event);
+	void CreateMediator(LearningEvent& effect_event);
 	void GeneralizeMediator(const GeneralizationEvent& event);
 	bool IsDuplicateMediator(Mediator& mediator);
 
@@ -271,9 +271,9 @@ public:
 	Array<Mediator>   mediators;
 
 	// Add/delete neurons to/from network.
-	Receptor* NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode);
-	Motor* NewMotor(RESPONSE response);
-	Mediator& AddMediator(ENABLEMENT enablement);
+	Receptor&	NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode);
+	Motor&		NewMotor(RESPONSE response);
+	Mediator&	AddMediator(ENABLEMENT enablement);
 	//void DeleteNeuron(Neuron& neuron);
 	void DeleteNeuron(Mediator& neuron);
 	void DeleteNeuron(Receptor& neuron);

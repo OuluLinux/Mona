@@ -42,10 +42,9 @@ void Neuron::Clear() {
 
 
 // Does neuron have an instinct parent?
-bool
-Neuron::HasInnerInstinct() {
+bool Neuron::HasInnerInstinct() {
 	for (int i = 0; i < notify_list.GetCount(); i++) {
-		Mediator& mediator = *notify_list[i].mediator;
+		Mediator& mediator = notify_list[i].mediator;
 
 		if (mediator.instinct || mediator.HasInnerInstinct())
 			return true;
@@ -66,8 +65,7 @@ void Neuron::Serialize(Stream& fp) {
 
 
 // Initialize neuron drive.
-void
-Neuron::InitDrive(VALUE_SET& needs) {
+void Neuron::InitDrive(VALUE_SET& needs) {
 	ENABLEMENT    up, down, e, ce, re, ee;
 	
 	motive      = 0.0;
@@ -127,7 +125,7 @@ Neuron::InitDrive(VALUE_SET& needs) {
 	// Distribute the up amount among parents.
 	for (int i = 0; i < notify_list.GetCount(); i++) {
 		Notify& notify = notify_list[i];
-		Mediator& mediator = *notify.mediator;
+		Mediator& mediator = notify.mediator;
 
 		if (notify.event_type == EFFECT_EVENT) {
 			drive_weights.GetAdd(mediator.mem_id) = up * (1.0 - mediator.effective_enabling_weight);
@@ -139,8 +137,7 @@ Neuron::InitDrive(VALUE_SET& needs) {
 
 
 // Clear motive working accumulators.
-void
-Neuron::ClearMotiveWork() {
+void Neuron::ClearMotiveWork() {
 	motive_work.reset();
 	motive_work_valid = false;
 	#ifdef MONA_TRACKING
@@ -153,8 +150,7 @@ Neuron::ClearMotiveWork() {
 
 
 // Set neuron motive.
-void
-Neuron::SetMotive() {
+void Neuron::SetMotive() {
 	MOTIVE m;
 	m = motive_work.GetValue();
 
@@ -172,10 +168,7 @@ Neuron::SetMotive() {
 
 #ifdef MONA_TRACKING
 // Accumulate motive tracking.
-void
-Neuron::AccumMotiveTracking() {
-	int i, j, k;
-
+void Neuron::AccumMotiveTracking() {
 	if (type != MOTOR)
 		return;
 
@@ -204,8 +197,7 @@ Neuron::AccumMotiveTracking() {
 
 
 // Finalize neuron motive.
-void
-Neuron::FinalizeMotive() {
+void Neuron::FinalizeMotive() {
 	motive = motive / mona->max_motive;
 
 	if (motive > 1.0)
@@ -217,8 +209,7 @@ Neuron::FinalizeMotive() {
 
 
 // Neuron drive.
-void
-Neuron::Drive(MotiveAccum motive_accum) {
+void Neuron::Drive(MotiveAccum motive_accum) {
 	MOTIVE       m;
 	WEIGHT       w;
 	MotiveAccum  accum_work;
@@ -299,7 +290,7 @@ Neuron::Drive(MotiveAccum motive_accum) {
 
 	// Drive motive to parent mediators.
 	for (int i = 0; i < notify_list.GetCount(); i++) {
-		Mediator& mediator = *notify_list[i].mediator;
+		Mediator& mediator = notify_list[i].mediator;
 
 		if ((w = drive_weights.Get(mediator.mem_id)) > NEARLY_ZERO) {
 			w *= (1.0 - mona->DRIVE_ATTENUATION);
@@ -315,9 +306,7 @@ Neuron::Drive(MotiveAccum motive_accum) {
 #ifdef MONA_TRACKING
 // Track motive.
 // Returns true if tracking continues.
-bool
-Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out) {
-	int i, j;
+bool Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out) {
 	struct MotiveAccum::DriveElement e;
 	struct Activation::DrivePath  d;
 	VALUE_SET needs;
@@ -333,7 +322,7 @@ Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out) {
 	needs.Reserve(mona->need_count);
 
 	for (i = 0; i < mona->need_count; i++)
-		needs.Set(i, mona->homeostats[i]->GetNeed());
+		needs.Set(i, mona->homeostats[i].GetNeed());
 
 	d.motive_work.Init(needs);
 	needs.Clear();

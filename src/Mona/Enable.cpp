@@ -42,8 +42,8 @@ Mona::Enable() {
 
 		for (int j = 0; j < receptor.notify_list.GetCount(); j++) {
 			Notify& notify     = receptor.notify_list[j];
-			ASSERT(notify.mediator);
-			Mediator& mediator = *notify.mediator;
+			ASSERT(!notify.mediator.IsNull());
+			Mediator& mediator = notify.mediator;
 
 			if (notify.event_type == EFFECT_EVENT)
 				mediator.EffectFiring(receptor.firing_strength);
@@ -57,8 +57,8 @@ Mona::Enable() {
 		if (receptor.firing_strength > 0.0) {
 			for (int j = 0; j < receptor.notify_list.GetCount(); j++) {
 				Notify& notify     = receptor.notify_list[j];
-				ASSERT(notify.mediator);
-				Mediator& mediator = *notify.mediator;
+				ASSERT(!notify.mediator.IsNull());
+				Mediator& mediator = notify.mediator;
 
 				if (notify.event_type == CAUSE_EVENT)
 					mediator.CauseFiring(receptor.firing_strength, event_clock);
@@ -69,8 +69,8 @@ Mona::Enable() {
 	// Notify mediators of remaining cause firing events.
 	for (int i = 0; i < cause_firings.GetCount(); i++) {
 		FiringNotify& firing_notify = cause_firings[i];
-		ASSERT(firing_notify.notify->mediator);
-		Mediator& mediator = *firing_notify.notify->mediator;
+		ASSERT(!firing_notify.notify->mediator.IsNull());
+		Mediator& mediator = firing_notify.notify->mediator;
 		mediator.CauseFiring(firing_notify.notify_strength, firing_notify.cause_begin);
 	}
 	cause_firings.Clear();
@@ -124,7 +124,7 @@ Mona::ExpireResponseEnablings(RESPONSE expiringResponse) {
 				Notify& notify = mediator.notify_list[i];
 
 				if (notify.event_type == EFFECT_EVENT)
-					ExpireMediatorEnablings(*notify.mediator);
+					ExpireMediatorEnablings(notify.mediator);
 			}
 		}
 	}
@@ -155,6 +155,6 @@ void Mona::ExpireMediatorEnablings(Mediator& mediator) {
 		Notify& notify = mediator.notify_list[i];
 
 		if (notify.event_type == EFFECT_EVENT)
-			ExpireMediatorEnablings(*notify.mediator);
+			ExpireMediatorEnablings(notify.mediator);
 	}
 }

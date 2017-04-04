@@ -14,6 +14,7 @@ public:
 	~Mediator();
 	
 	void Init(ENABLEMENT enablement, Mona* mona);
+	void Connect(ENABLEMENT enablement, Mona* mona);
 	
 	// Level 0 mediator is composed of non-mediator neurons.
 	// Level n mediator is composed of at most level n-1 mediators.
@@ -87,5 +88,26 @@ public:
 	    #endif*/
 };
 
+typedef ClassID<Mediator> MediatorID;
+
+
+
+
+
+
+
+// Mediator event notifier.
+struct Notify : Moveable<Notify> {
+	//ID id;
+	int event_type;
+	MediatorID   mediator;
+	
+	Notify() : event_type(INVALID_EVENT) {}
+	
+	void Serialize(Stream& fp) {
+		fp % mediator % event_type;
+		Panic("TODO: FindFrom in this caller");
+	}
+};
 
 #endif

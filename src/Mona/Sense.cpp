@@ -25,7 +25,7 @@ Mona::Sense() {
 
 	// Update need based on sensors.
 	for (int i = 0; i < need_count; i++)
-		homeostats[i]->SensorsUpdate();
+		homeostats[i].SensorsUpdate();
 
 	// Clear receptor firings.
 	for (int i = 0; i < receptors.GetCount(); i++) {
@@ -42,7 +42,7 @@ Mona::Sense() {
 
 	// Fire receptors matching sensor modes.
 	for (int sm = 0; sm < sensor_modes.GetCount(); sm++) {
-		SensorMode& sensor_mode = *sensor_modes[sm];
+		SensorMode& sensor_mode = sensor_modes[sm];
 		
 		// Apply sensor mode to sensors.
 		ApplySensorMode(sensors, sensors_work, sm);
@@ -56,7 +56,7 @@ Mona::Sense() {
 		if ((found_receptor == NULL) || ((found_receptor != NULL) &&
 								   (distance > sensor_mode.resolution) &&
 								   (distance > NEARLY_ZERO))) {
-			found_receptor = NewReceptor(sensors_work, sm);
+			found_receptor = &NewReceptor(sensors_work, sm);
 			add_receptor = true;
 		}
 		
@@ -167,7 +167,7 @@ void Mona::ApplySensorMode(Vector<SENSOR>& sensors_in, Vector<SENSOR>& sensors_o
 	sensors_out.Clear();
 
 	for (int i = 0; i < sensors_in.GetCount(); i++) {
-		if (sensor_modes[sensor_mode]->mask[i])
+		if (sensor_modes[sensor_mode].mask[i])
 			sensors_out.Add(sensors_in[i]);
 		else
 			sensors_out.Add(0.0);
@@ -189,7 +189,7 @@ void Mona::ApplySensorMode(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode) {
 // Also return the centroid-vector distance.
 Receptor* Mona::FindCentroidReceptor(Vector<SENSOR>& sensors,
 						  SENSOR_MODE sensor_mode, SENSOR& distance) {
-	RDTree::RDSearch* result = sensor_centroids[sensor_mode]->Search((void*)&sensors, 1);
+	RDTree::RDSearch* result = sensor_centroids[sensor_mode].Search((void*)&sensors, 1);
 
 	if (result != NULL) {
 		distance = result->distance;
@@ -228,15 +228,15 @@ int Mona::AddSensorMode(Vector<bool>& sensor_mask, SENSOR sensor_resolution) {
 		bool duplicate = true;
 
 		for (int j = 0; j < sensor_mask.GetCount(); j++) {
-			if (sensor_modes[i]->mask[j] != sensor_mask[j]) {
+			if (sensor_modes[i].mask[j] != sensor_mask[j]) {
 				duplicate = false;
 				break;
 			}
 		}
 
 		if (duplicate) {
-			if (sensor_modes[i]->resolution == sensor_resolution)
-				return (sensor_modes[i]->mode);
+			if (sensor_modes[i].resolution == sensor_resolution)
+				return (sensor_modes[i].mode);
 		}
 	}
 
@@ -246,11 +246,10 @@ int Mona::AddSensorMode(Vector<bool>& sensor_mask, SENSOR sensor_resolution) {
 	s->Init(sensor_mask, sensor_resolution, sensor_modes);
 	
 	// Create associated centroid search tree.
-	RDTree* t = new RDTree(Receptor::PatternDistance,
+	RDTree& t = sensor_centroids.Add();
+	t.Init(Receptor::PatternDistance,
 						   Receptor::DeletePattern);
-	ASSERT(t != NULL);
-	sensor_centroids.Add(t);
-	return (s->mode);
+	return s->mode;
 }
 
 

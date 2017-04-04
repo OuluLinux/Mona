@@ -11,7 +11,9 @@ class Receptor : public Neuron {
 public:
 
 	// Construct/destruct.
-	Receptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode, Mona* mona);
+	Receptor();
+	//Receptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode, Mona* mona);
+	void Connect(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode, Mona* mona);
 	~Receptor();
 
 	// Centroid sensor vector.

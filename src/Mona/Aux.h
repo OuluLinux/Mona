@@ -30,7 +30,7 @@ public:
 
 	// Initialize.
 	// Return mode.
-	int Init(Vector<bool>& mask, SENSOR resolution, Vector<SensorMode*>& sensor_modes) {
+	int Init(Vector<bool>& mask, SENSOR resolution, Vector<SensorMode>& sensor_modes) {
 		bool sub, super;
 		
 		// Initialize.
@@ -41,7 +41,7 @@ public:
 		// Determine subset/supersets.
 		int count = sensor_modes.GetCount();
 		for (int i = 0; i < count; i++) {
-			SensorMode& s = *sensor_modes[i];
+			SensorMode& s = sensor_modes[i];
 			
 			SubSuper(s, sub, super);
 
@@ -62,8 +62,10 @@ public:
 			}
 		}
 
-		sensor_modes.Add(this);
-		return (mode);
+		//sensor_modes.Add(this);
+		Panic("TODO: convert the previous commented line");
+		
+		return mode;
 	}
 
 
@@ -86,12 +88,12 @@ public:
 
 	// Given mode is a transitive subset?
 	// if A->B and B->C, then C is transitive.
-	bool SubTransitive(int idx, Vector<SensorMode*>& sensor_modes) {
-		bool       sub, super;
+	bool SubTransitive(int idx, Vector<SensorMode>& sensor_modes) {
+		bool sub, super;
 
 		for (int i = 0; i < subsets.GetCount(); i++) {
-			SensorMode& s = *sensor_modes[i];
-			s.SubSuper(*sensor_modes[idx], sub, super);
+			SensorMode& s = sensor_modes[i];
+			s.SubSuper(sensor_modes[idx], sub, super);
 
 			if (sub || s.SubTransitive(idx, sensor_modes))
 				return true;
@@ -103,12 +105,12 @@ public:
 
 	// Given mode is a transitive superset?
 	// if A->B and B->C, then C is transitive.
-	bool SuperTransitive(int idx, Vector<SensorMode*>& sensor_modes) {
-		bool       sub, super;
+	bool SuperTransitive(int idx, Vector<SensorMode>& sensor_modes) {
+		bool sub, super;
 
 		for (int i = 0; i < supersets.GetCount(); i++) {
-			SensorMode& s = *sensor_modes[i];
-			s.SubSuper(*sensor_modes[idx], sub, super);
+			SensorMode& s = sensor_modes[i];
+			s.SubSuper(sensor_modes[idx], sub, super);
 
 			if (super || s.SuperTransitive(idx, sensor_modes))
 				return true;
@@ -127,8 +129,7 @@ public:
 	// Print.
 	/*  void Print(FILE *out = stdout)
 	    {
-	    int i, j, size;
-
+	    
 	    fprintf(out, "<mode>%d</mode>", mode);
 	    fprintf(out, "<mask>");
 	    size = (int)mask.GetCount();
@@ -453,12 +454,12 @@ public:
 
 
 	// Set needs.
-	void SetNeeds(Vector<Homeostat*>& homeostats) {
+	void SetNeeds(Vector<Homeostat>& homeostats) {
 		int n = (int)homeostats.GetCount();
 		needs.Reserve(n);
 
 		for (int i = 0; i < n; i++)
-			needs.Set(i, homeostats[i]->GetNeed());
+			needs.Set(i, homeostats[i].GetNeed());
 	}
 
 
@@ -629,19 +630,7 @@ public:
 	    }*/
 };
 
-// Mediator event notifier.
-struct Notify : Moveable<Notify> {
-	ID id;
-	int event_type;
-	Mediator*   mediator;
-	
-	Notify() : id(-1), event_type(INVALID_EVENT), mediator(NULL) {}
-	
-	void Serialize(Stream& fp) {
-		fp % id % event_type;
-		if (fp.IsLoading()) mediator = NULL;
-	}
-};
+
 
 // Mediator firing notification.
 struct FiringNotify {
@@ -650,86 +639,6 @@ struct FiringNotify {
 	Time          cause_begin;
 };
 
-// Learning event.
-class LearningEvent {
-public:
-	Neuron*      neuron;
-	WEIGHT      firing_strength;
-	Time        begin;
-	Time        end;
-	double probability;
-	VALUE_SET   needs;
-
-	//LearningEvent(Neuron* neuron);
-	LearningEvent();
-	virtual ~LearningEvent() {}
-	
-	void Serialize(Stream& fp);
-	
-	void SetNeuron(Neuron& neuron);
-	
-	template <class T>
-	T* GetNeuron() const {return dynamic_cast<T*>(neuron);}
-	
-	
-	// Print.
-	/*  void Print(FILE *out = stdout)
-	    {
-	    if (neuron != NULL)
-	    {
-	      fprintf(out, "<neuron>\n");
-	      switch (neuron->type)
-	      {
-	    #ifdef MONA_TRACKING
-	      case RECEPTOR:
-	         ((Receptor *)neuron)->Print((TRACKING_FLAGS)0, out);
-	         fprintf(out, "\n");
-	         break;
-
-	      case MOTOR:
-	         ((Motor *)neuron)->Print((TRACKING_FLAGS)0, out);
-	         fprintf(false, false, out, "\n");
-	         break;
-
-	      case MEDIATOR:
-	         ((Mediator *)neuron)->Print((TRACKING_FLAGS)0, out);
-	         break;
-
-	    #else
-	      case RECEPTOR:
-	         ((Receptor *)neuron)->Print(out);
-	         fprintf(out, "\n");
-	         break;
-
-	      case MOTOR:
-	         ((Motor *)neuron)->Print(out);
-	         fprintf(out, "\n");
-	         break;
-
-	      case MEDIATOR:
-	         ((Mediator *)neuron)->Print(out);
-	         break;
-	    #endif
-	      }
-	    }
-	    else
-	    {
-	      fprintf(out, "<neuron>NULL");
-	    }
-	    fprintf(out, "</neuron>\n");
-	    fprintf(out, "<firing_strength>%f</firing_strength>", firing_strength);
-	    fprintf(out, "<begin>%llu</begin>", begin);
-	    fprintf(out, "<end>%llu</end>", end);
-	    fprintf(out, "<probability>%f</probability>", probability);
-	    fprintf(out, "<needs>");
-	    int n = needs.GetCount();
-	    for (int i = 0; i < n; i++)
-	    {
-	      fprintf(out, "<need>%f</need>", needs.Get(i));
-	    }
-	    fprintf(out, "/<needs>");
-	    }*/
-};
 
 // Generalization learning event.
 class GeneralizationEvent {

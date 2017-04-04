@@ -105,7 +105,7 @@ Mediator::GetEffectiveUtility() {
 	best_utility = utility;
 
 	for (int i = 0; i < notify_list.GetCount(); i++) {
-		Mediator& mediator = *notify_list[i].mediator;
+		Mediator& mediator = notify_list[i].mediator;
 		utility_work = mediator.GetEffectiveUtility();
 
 		if (utility_work > best_utility)
@@ -221,7 +221,6 @@ void Mediator::Serialize(Stream& fp) {
 	fp % level % base_enablement % utility % utility_weight;
 	
 	
-	int i;
 	Clear();
 	((Neuron*)this)->Load(fp);
 	FREAD_INT(&level, fp);
@@ -252,8 +251,7 @@ void Mediator::Serialize(Stream& fp) {
 
 // Save mediator.
 // When changing format increment FORMAT in mona.h
-void Mediator::Store(Stream& fp) {
-	int i;
+/*void Mediator::Store(Stream& fp) {
 	((Neuron*)this)->Store(fp);
 	FWRITE_INT(&level, fp);
 	FWRITE_DOUBLE(&base_enablement, fp);
@@ -275,7 +273,7 @@ void Mediator::Store(Stream& fp) {
 	response_enablings.Store(fp);
 	effect_enablings.Store(fp);
 	FWRITE_LONG_LONG(&cause_begin, fp);
-}
+}*/
 
 /*
     // Print mediator.
@@ -330,8 +328,7 @@ void Mediator::Store(Stream& fp) {
     void Mediator::Print(bool brief, int level, FILE *out)
     #endif
     {
-    int i;
-
+    
     for (i = 0; i < level; i++)
     {
       fprintf(out, "    ");
@@ -924,7 +921,7 @@ void Mediator::UpdateGoalValue(const VALUE_SET& needs) {
 	need_deltas.Reserve(mona->need_count);
 
 	for (int i = 0; i < mona->need_count; i++) {
-		needs_base.Set(i, mona->homeostats[i]->GetNeed());
+		needs_base.Set(i, mona->homeostats[i].GetNeed());
 		need = needs_base.Get(i) - needs.Get(i);
 
 		if (need > 1.0)

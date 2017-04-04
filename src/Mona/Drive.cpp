@@ -18,7 +18,7 @@ Mona::Drive() {
 	needs.Reserve(need_count);
 
 	for (int i = 0; i < need_count; i++)
-		needs.Set(i, homeostats[i]->GetNeed());
+		needs.Set(i, homeostats[i].GetNeed());
 
 	#ifdef MONA_TRACE
 	if (trace_drive) {
