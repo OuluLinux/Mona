@@ -99,7 +99,19 @@ void MazeCtrl::Paint(Draw& w) {
 	
 	screen_to_room.Clear();
 	
+	Font fnt = Arial(14);
+	
 	for(int i = 0; i < app->maze.GetCount(); i++) {
+		
+		String title;
+		if (i == 0)			title = "Start";
+		else if (i == 1)	title = "Entry";
+		else if (i > 1 && i < app->maze.GetCount()-2)	title = "Maze";
+		else if (i == app->maze.GetCount() - 2) title = "Exit";
+		else title = "Goal";
+		Size txt_sz = GetTextSize(title, fnt);
+		
+		
 		Array<Room>& vert = app->maze[i];
 		for(int j = 0; j < vert.GetCount(); j++) {
 			Room& room = vert[j];
@@ -109,6 +121,12 @@ void MazeCtrl::Paint(Draw& w) {
 			int t = vert_pos	* h_grid; // top ...
 			int x = l + (w_grid - box_grid) / 2;
 			int y = t + (h_grid - box_grid) / 2;
+			
+			if (j == 0) {
+				int tx = l + (w_grid - txt_sz.cx) / 2;
+				int ty = t + 4;
+				id.DrawText(tx, ty, title, fnt, Black());
+			}
 			
 			if (room.selected) {
 				id.DrawRect(x, y, width, height, Black());
