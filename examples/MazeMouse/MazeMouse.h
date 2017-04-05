@@ -84,7 +84,7 @@ class MazeMouse : public TopWindow {
 
 	// Maze.
 	Array<Array<Room> > maze;
-	Size roomSize;
+	Size room_size;
 	int       begin_maze_index;
 	int       end_maze_index;
 	int       mouseX;
@@ -93,7 +93,7 @@ class MazeMouse : public TopWindow {
 	// Display.
 	/*  Size screen_size;
 	    Canvas    mazeCanvas;
-	    Size mazeSize;
+	    Size maze_size;
 	    Graphics  canvasGraphics;
 	    Image     mazeImage;
 	    Graphics  imageGraphics;

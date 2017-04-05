@@ -34,7 +34,7 @@ public:
 	// Motive.
 	MOTIVE motive;
 	bool   motive_valid;
-	void   Drive(MotiveAccum); // also copy in original
+	void   Drive(MotiveAccum&); // also copy in original
 	void InitDrive(VALUE_SET& needs);
 	void ClearMotiveWork();
 	void SetMotive();

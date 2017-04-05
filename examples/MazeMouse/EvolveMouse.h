@@ -1,3 +1,4 @@
+#if 0
 #ifndef EVOLVE_MOUSE
 #define EVOLVE_MOUSE
 
@@ -18,4 +19,5 @@ using namespace Upp;
 #define DEFAULT_MUTATION_RATE               0.25
 #define SAVE_FREQUENCY                      10
 
+#endif
 #endif

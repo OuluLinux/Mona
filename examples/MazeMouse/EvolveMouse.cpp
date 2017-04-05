@@ -1,6 +1,7 @@
+#if 0
 #include "EvolveMouse.h"
 
-
+/*
 
 // Usage.
 char* Usage[] = {
@@ -52,7 +53,7 @@ void printInfo(char* buf) {
 void printUsage() {
 	for (int i = 0; Usage[i] != NULL; i++)
 		printInfo(Usage[i]);
-}
+}*/
 
 
 // Evolution generation.
@@ -112,7 +113,7 @@ int door_associations[3];
 Vector<Vector<int> > maze_paths;
 
 // Maze room.
-class Room {
+/*class Room {
 public:
 
 	int            type;
@@ -138,7 +139,7 @@ public:
 
 		if (fwd)	doors.Add(fwd);
 	}
-};
+};*/
 
 // Maze.
 Vector<Room*> maze[7];
@@ -151,106 +152,79 @@ int mouseY;
 
 // Build maze.
 void buildMaze() {
-	Vector<Room*> doors;
+	// Build maze.
+	int x;
+	int y;
+	maze_size		= Size(WIDTH, HEIGHT);
+	room_size		= Size(maze_size.cx / 15, maze_size.cy / 11);
+	maze.SetCount(7);
 	maze[0].SetCount(3);
-	maze[0][1]     = new Room(START_ROOM, 0, 1);
-	maze[0][0]     = new Room(START_ROOM, 0, 0);
-	maze[0][2]     = new Room(START_ROOM, 0, 2);
-	begin_maze_index = 1;
 	maze[1].SetCount(1);
-	maze[1][0] = new Room(BEGIN_MAZE, 1, 0);
-	doors.SetCount(3);
-	doors[0] = NULL;
-	doors[1] = NULL;
-	doors[2] = maze[1][0];
-	maze[0][0]->setDoors(doors);
-	doors[0] = NULL;
-	doors[1] = maze[1][0];
-	doors[2] = NULL;
-	maze[0][1]->setDoors(doors);
-	doors[0] = maze[1][0];
-	doors[1] = NULL;
-	doors[2] = NULL;
-	maze[0][2]->setDoors(doors);
 	maze[2].SetCount(3);
-	maze[2][1] = new Room(MAZE_ROOM, 2, 1);
-	maze[2][0] = new Room(MAZE_ROOM, 2, 0);
-	maze[2][2] = new Room(MAZE_ROOM, 2, 2);
-	doors[0]   = maze[2][0];
-	doors[1]   = maze[2][1];
-	doors[2]   = maze[2][2];
-	maze[1][0]->setDoors(doors);
 	maze[3].SetCount(5);
-	maze[3][2] = new Room(MAZE_ROOM, 3, 2);
-	maze[3][1] = new Room(MAZE_ROOM, 3, 1);
-	maze[3][0] = new Room(MAZE_ROOM, 3, 0);
-	maze[3][3] = new Room(MAZE_ROOM, 3, 3);
-	maze[3][4] = new Room(MAZE_ROOM, 3, 4);
-	doors[0]   = maze[3][0];
-	doors[1]   = maze[3][1];
-	doors[2]   = maze[3][2];
-	maze[2][0]->setDoors(doors);
-	doors[0] = maze[3][1];
-	doors[1] = maze[3][2];
-	doors[2] = maze[3][3];
-	maze[2][1]->setDoors(doors);
-	doors[0] = maze[3][2];
-	doors[1] = maze[3][3];
-	doors[2] = maze[3][4];
-	maze[2][2]->setDoors(doors);
 	maze[4].SetCount(3);
-	maze[4][1] = new Room(MAZE_ROOM, 4, 1);
-	maze[4][0] = new Room(MAZE_ROOM, 4, 0);
-	maze[4][2] = new Room(MAZE_ROOM, 4, 2);
-	doors[0]   = NULL;
-	doors[1]   = NULL;
-	doors[2]   = maze[4][0];
-	maze[3][0]->setDoors(doors);
-	doors[0] = NULL;
-	doors[1] = maze[4][0];
-	doors[2] = maze[4][1];
-	maze[3][1]->setDoors(doors);
-	doors[0] = maze[4][0];
-	doors[1] = maze[4][1];
-	doors[2] = maze[4][2];
-	maze[3][2]->setDoors(doors);
-	doors[0] = maze[4][1];
-	doors[1] = maze[4][2];
-	doors[2] = NULL;
-	maze[3][3]->setDoors(doors);
-	doors[0] = maze[4][2];
-	doors[1] = NULL;
-	doors[2] = NULL;
-	maze[3][4]->setDoors(doors);
-	end_maze_index = 5;
 	maze[5].SetCount(1);
-	maze[5][0] = new Room(END_MAZE, 5, 0);
-	doors[0]   = NULL;
-	doors[1]   = NULL;
-	doors[2]   = maze[5][0];
-	maze[4][0]->setDoors(doors);
-	doors[0] = NULL;
-	doors[1] = maze[5][0];
-	doors[2] = NULL;
-	maze[4][1]->setDoors(doors);
-	doors[0] = maze[5][0];
-	doors[1] = NULL;
-	doors[2] = NULL;
-	maze[4][2]->setDoors(doors);
 	maze[6].SetCount(3);
-	maze[6][1] = new Room(GOAL_ROOM, 6, 1);
-	maze[6][0] = new Room(GOAL_ROOM, 6, 0);
-	maze[6][2] = new Room(GOAL_ROOM, 6, 2);
-	doors[0]   = maze[6][0];
-	doors[1]   = maze[6][1];
-	doors[2]   = maze[6][2];
-	maze[5][0]->setDoors(doors);
-	doors[0] = NULL;
-	doors[1] = NULL;
-	doors[2] = NULL;
-	maze[6][0]->setDoors(doors);
-	maze[6][1]->setDoors(doors);
-	maze[6][2]->setDoors(doors);
+	x              = room_size.cx;
+	y              = (maze_size.cy / 2) - (room_size.cy / 2);
+	maze[0][1]     .Init(x, y, START_ROOM, 0, 1);
+	maze[0][0]     .Init(x, y - (room_size.cy * 2), START_ROOM, 0, 0);
+	maze[0][2]     .Init(x, y + (room_size.cy * 2), START_ROOM, 0, 2);
+	begin_maze_index = 1;
+	x             += (room_size.cx * 2);
+	y              = (maze_size.cy / 2) - (room_size.cy / 2);
+	maze[1][0]     .Init(x, y, BEGIN_MAZE, 1, 0);
+	maze[0][0].SetDoors(NULL, NULL, &maze[1][0]);
+	maze[0][1].SetDoors(NULL, &maze[1][0], NULL);
+	maze[0][2].SetDoors(&maze[1][0], NULL, NULL);
+	x         += (room_size.cx * 2);
+	y          = (maze_size.cy / 2) - (room_size.cy / 2);
+	maze[2][1] .Init(x, y, MAZE_ROOM, 2, 1);
+	maze[2][0] .Init(x, y - (room_size.cy * 2), MAZE_ROOM, 2, 0);
+	maze[2][2] .Init(x, y + (room_size.cy * 2), MAZE_ROOM, 2, 2);
+	maze[1][0].SetDoors(&maze[2][0], &maze[2][1], &maze[2][2]);
+	x         += (room_size.cx * 2);
+	y          = (maze_size.cy / 2) - (room_size.cy / 2);
+	maze[3][2] .Init(x, y, MAZE_ROOM, 3, 2);
+	maze[3][1] .Init(x, y - (room_size.cy * 2), MAZE_ROOM, 3, 1);
+	maze[3][0] .Init(x, y - (room_size.cy * 4), MAZE_ROOM, 3, 0);
+	maze[3][3] .Init(x, y + (room_size.cy * 2), MAZE_ROOM, 3, 3);
+	maze[3][4] .Init(x, y + (room_size.cy * 4), MAZE_ROOM, 3, 4);
+	maze[2][0].SetDoors(&maze[3][0], &maze[3][1], &maze[3][2]);
+	maze[2][1].SetDoors(&maze[3][1], &maze[3][2], &maze[3][3]);
+	maze[2][2].SetDoors(&maze[3][2], &maze[3][3], &maze[3][4]);
+	x         += (room_size.cx * 2);
+	y          = (maze_size.cy / 2) - (room_size.cy / 2);
+	maze[4][1] .Init(x, y, MAZE_ROOM, 4, 1);
+	maze[4][0] .Init(x, y - (room_size.cy * 2), MAZE_ROOM, 4, 0);
+	maze[4][2] .Init(x, y + (room_size.cy * 2), MAZE_ROOM, 4, 2);
+	maze[3][0].SetDoors(NULL, NULL, &maze[4][0]);
+	maze[3][1].SetDoors(NULL, &maze[4][0], &maze[4][1]);
+	maze[3][2].SetDoors(&maze[4][0], &maze[4][1], &maze[4][2]);
+	maze[3][3].SetDoors(&maze[4][1], &maze[4][2], NULL);
+	maze[3][4].SetDoors(&maze[4][2], NULL, NULL);
+	end_maze_index = 5;
+	x           += (room_size.cx * 2);
+	y            = (maze_size.cy / 2) - (room_size.cy / 2);
+	maze[5][0]   .Init(x, y, END_MAZE, 5, 0);
+	maze[4][0].SetDoors(NULL, NULL, &maze[5][0]);
+	maze[4][1].SetDoors(NULL, &maze[5][0], NULL);
+	maze[4][2].SetDoors(&maze[5][0], NULL, NULL);
+	x         += (room_size.cx * 2);
+	y          = (maze_size.cy / 2) - (room_size.cy / 2);
+	maze[6][1] .Init(x, y, GOAL_ROOM, 6, 1);
+	maze[6][0] .Init(x, y - (room_size.cy * 2), GOAL_ROOM, 6, 0);
+	maze[6][2] .Init(x, y + (room_size.cy * 2), GOAL_ROOM, 6, 2);
+	maze[5][0].SetDoors(&maze[6][0], &maze[6][1], &maze[6][2]);
+	maze[6][0].SetDoors(NULL, NULL, NULL);
+	maze[6][1].SetDoors(NULL, NULL, NULL);
+	maze[6][2].SetDoors(NULL, NULL, NULL);
+	mouseX = mouseY = 0;
+	maze[0][0].has_mouse = true;
+	maze[0][0].selected = true;
+	maze[end_maze_index + 1][2].has_cheese = true;
+	maze[end_maze_index + 1][2].selected  = true;
+	
 	mouseX = mouseY = 0;
 }
 
@@ -1389,3 +1363,4 @@ void DoMating() {
 		offspring->MindMeld(member1, member2);
 	}
 }
+#endif

@@ -115,10 +115,10 @@ void Mona::ExpireResponseEnablings(RESPONSE expiringResponse) {
 				}
 			}
 
-			for (i = 0; i < expire_weights.GetCount(); i++)
+			for (int i = 0; i < expire_weights.GetCount(); i++)
 				mediator.UpdateEnablement(EXPIRE, expire_weights[i]);
 
-			for (i = 0; i < mediator.notify_list.GetCount(); i++) {
+			for (int i = 0; i < mediator.notify_list.GetCount(); i++) {
 				Notify& notify = mediator.notify_list[i];
 
 				if (notify.event_type == EFFECT_EVENT)

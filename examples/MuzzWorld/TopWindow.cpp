@@ -1744,7 +1744,7 @@ bool MuzzWorld::GetResponseSequenceToGoals(int muzz_index,
 			break;
 		}
 
-		// Expand outerren?
+		// Expand outer?
 		if ((max_searchDepth == -1) || (current->depth < max_searchDepth)) {
 			expand = true;
 

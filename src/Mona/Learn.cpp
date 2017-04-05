@@ -21,7 +21,7 @@ void Mona::Learn() {
 		max_level = MAX_MEDIATOR_LEVEL;
 
 	for (int i = 0; i < learning_events.GetCount(); i++) {
-		Vector<LearningEvent>& sub = learning_events[i];
+		Array<LearningEvent>& sub = learning_events[i];
 		
 		for(int j = 0; j < sub.GetCount();) {
 			LearningEvent& learning_event = sub[j];
@@ -75,7 +75,7 @@ void Mona::Learn() {
 
 	// Create new mediators based on potential effect events.
 	for (int i = 0; i < learning_events.GetCount(); i++) {
-		Vector<LearningEvent>& sub = learning_events[i];
+		Array<LearningEvent>& sub = learning_events[i];
 		
 		for(int j = 0; j < sub.GetCount(); j++) {
 			LearningEvent& learning_event = sub[j];
@@ -143,7 +143,7 @@ void Mona::CreateMediator(LearningEvent& effect_event) {
 			effect_resp_eq = false;
 	}
 	
-	Vector<LearningEvent>& sub = learning_events[level];
+	Array<LearningEvent>& sub = learning_events[level];
 	
 	for(int j = 0; j < sub.GetCount(); j++) {
 		LearningEvent& cause_event = sub[j];
@@ -213,7 +213,7 @@ void Mona::CreateMediator(LearningEvent& effect_event) {
 			 RandomBoolean())) {
 			tmp_vector.Clear();
 			
-			Vector<LearningEvent>& sub = learning_events[0];
+			Array<LearningEvent>& sub = learning_events[0];
 			for(int i = 0; i < sub.GetCount(); i++) {
 				LearningEvent& response_event = sub[i];
 
@@ -275,7 +275,7 @@ void Mona::GeneralizeMediator(const GeneralizationEvent& generalization_event) {
 	// Find effect event candidates.
 	accum_prob = 0.0;
 	
-	Vector<LearningEvent>& sub = learning_events[0];
+	Array<LearningEvent>& sub = learning_events[0];
 	for(int i = 0; i < sub.GetCount(); i++) {
 		LearningEvent& candidate_event = sub[i];
 		
@@ -459,8 +459,10 @@ void Mona::ClearWorkingMemory() {
 		mediator.tracker.Clear();
 		#endif
 	}
-
-	learning_events.Clear();
+	
+	for(int i = 0; i < learning_events.GetCount(); i++) {
+		learning_events[i].Clear();
+	}
 }
 
 
@@ -477,8 +479,11 @@ void Mona::ClearLongTermMemory() {
 		if (!(mediator.instinct || mediator.HasInnerInstinct())) {
 			int target_count = mediators.GetCount()-1;
 			DeleteNeuron(mediator);
-			ASSERT(mediators.GetCount() == target_count); // just to be sure
-			i--;
+			int count = mediators.GetCount();
+			int diff = target_count - count;
+			ASSERT(diff >= 0); // just to be sure
+			i -= 1 + diff;
+			if (i < -1) i = -1;
 		}
 	}
 }

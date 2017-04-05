@@ -30,7 +30,7 @@ public:
 
 	// Initialize.
 	// Return mode.
-	int Init(Vector<bool>& mask, SENSOR resolution, Vector<SensorMode>& sensor_modes) {
+	int Init(Vector<bool>& mask, SENSOR resolution, Array<SensorMode>& sensor_modes) {
 		bool sub, super;
 		
 		// Initialize.
@@ -62,8 +62,7 @@ public:
 			}
 		}
 
-		//sensor_modes.Add(this);
-		Panic("TODO: convert the previous commented line");
+		sensor_modes.Add(this);
 		
 		return mode;
 	}
@@ -88,7 +87,7 @@ public:
 
 	// Given mode is a transitive subset?
 	// if A->B and B->C, then C is transitive.
-	bool SubTransitive(int idx, Vector<SensorMode>& sensor_modes) {
+	bool SubTransitive(int idx, Array<SensorMode>& sensor_modes) {
 		bool sub, super;
 
 		for (int i = 0; i < subsets.GetCount(); i++) {
@@ -105,7 +104,7 @@ public:
 
 	// Given mode is a transitive superset?
 	// if A->B and B->C, then C is transitive.
-	bool SuperTransitive(int idx, Vector<SensorMode>& sensor_modes) {
+	bool SuperTransitive(int idx, Array<SensorMode>& sensor_modes) {
 		bool sub, super;
 
 		for (int i = 0; i < supersets.GetCount(); i++) {
@@ -265,6 +264,7 @@ public:
 	VALUE_SET        delta;
 	WEIGHT           weight;
 	Vector<Neuron*> path;
+	
 	#ifdef MONA_TRACKING
 	struct DriveElement {
 		Neuron* neuron;
@@ -273,9 +273,9 @@ public:
 	Vector<struct DriveElement> drivers;
 	#endif
 
-	MotiveAccum(const MotiveAccum& src) {
+	/*MotiveAccum(const MotiveAccum& src) {
 		Panic("TODO");
-	}
+	}*/
 
 	// Constructor.
 	MotiveAccum() {
@@ -557,9 +557,8 @@ public:
 	}
 
 
-	// Insert an enabling.
-	inline Enabling& Insert() {
-		Panic("rename to Add");
+	// Add an enabling.
+	inline Enabling& Add() {
 		Enabling& e = enablings.Add();
 		e.set      = this;
 		e.new_in_set = true;

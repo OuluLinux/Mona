@@ -19,7 +19,7 @@ using namespace Upp;
 #define INVALID_RANDOM    0xffffffffUL
 #define INVALID_TIME -1
 
-#define FREAD_INT(ptr, s)			s.Get(ptr, sizeof(int))
+/*#define FREAD_INT(ptr, s)			s.Get(ptr, sizeof(int))
 #define FWRITE_INT(ptr, s)			s.Put(ptr, sizeof(int))
 #define FREAD_SHORT(ptr, s)			s.Get(ptr, sizeof(short))
 #define FWRITE_SHORT(ptr, s)		s.Put(ptr, sizeof(short))
@@ -38,7 +38,7 @@ using namespace Upp;
 #define FREAD_BYTES(ptr, size, s)	s.Get(ptr, size)
 #define FWRITE_BYTES(ptr, size, s)	s.Put(ptr, size)
 #define FREAD_STRING(ptr, size, s)	*ptr = s.Get(size);
-#define FWRITE_STRING(ptr, size, s)	s.Put(*ptr);
+#define FWRITE_STRING(ptr, size, s)	s.Put(*ptr);*/
 
 double RandomInterval(double min, double max);
 bool RandomChance(double p);

@@ -14,7 +14,7 @@ void Mona::Sense() {
 		printf("***Sense phase***\n");
 		printf("Sensors: ");
 
-		for (i = 0; i < sensors.GetCount(); i++)
+		for (int i = 0; i < sensors.GetCount(); i++)
 			printf("%f ", sensors[i]);
 
 		printf("\n");
@@ -138,7 +138,7 @@ void Mona::Sense() {
 		if (trace_sense) {
 			printf("Receptor firing: centroid=[ ");
 
-			for (i = 0; i < sensor_count; i++)
+			for (int i = 0; i < sensor_count; i++)
 				printf("%f ", receptor.centroid[i]);
 
 			printf("], sensor_mode=%d\n", receptor.sensor_mode);
@@ -251,6 +251,6 @@ int Mona::AddSensorMode(Vector<bool>& sensor_mask, SENSOR sensor_resolution) {
 
 
 int Mona::AddSensorMode(Vector<bool>& sensor_mask) {
-	return (AddSensorMode(sensor_mask, SENSOR_RESOLUTION));
+	return AddSensorMode(sensor_mask, SENSOR_RESOLUTION);
 }
 

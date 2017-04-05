@@ -10,7 +10,7 @@ public:
 	ValueSet() {}
 
 	ValueSet(int size) {
-		values.SetCount(size);
+		values.SetCount(size, 0.0);
 	}
 
 
@@ -35,7 +35,7 @@ public:
 	// Allocate
 	inline void Reserve(int size) {
 		Clear();
-		values.SetCount(size);
+		values.SetCount(size, 0.0);
 	}
 
 
@@ -132,8 +132,7 @@ public:
 
 	// Load given set of values into this.
 	inline void Load(class ValueSet& loadSet) {
-		if (loadSet.GetCount() != (int)values.GetCount())
-			values.SetCount(loadSet.GetCount());
+		values.SetCount(loadSet.GetCount(), 0.0);
 
 		for (int i = 0; i < values.GetCount(); i++)
 			values[i] = loadSet.values[i];

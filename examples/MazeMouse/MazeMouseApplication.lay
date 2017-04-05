@@ -1,0 +1,10 @@
+LAYOUT(CtrlBar, 548, 28)
+	ITEM(Button, help, SetLabel(t_("Help")).HCenterPosZ(72, 234).VCenterPosZ(20, 0))
+	ITEM(Button, reset, SetLabel(t_("Reset")).HCenterPosZ(72, 158).VCenterPosZ(20, 0))
+	ITEM(Button, start_trial, SetLabel(t_("Start Trial")).HCenterPosZ(72, -234).VCenterPosZ(20, 0))
+	ITEM(Label, dv___3, SetLabel(t_("Mouse Response:")).SetAlign(ALIGN_RIGHT).HCenterPosZ(100, 0).VCenterPosZ(19, 0))
+	ITEM(Label, dv___4, SetLabel(t_("Mode:")).SetAlign(ALIGN_RIGHT).HCenterPosZ(52, -168).VCenterPosZ(19, 0))
+	ITEM(DropList, train_mode, HCenterPosZ(84, -96).VCenterPosZ(19, 0))
+	ITEM(EditString, response, SetEditable(false).HCenterPosZ(64, 86).VCenterPosZ(19, 0))
+END_LAYOUT
+

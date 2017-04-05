@@ -28,7 +28,7 @@ char* getPath(char* dir, char* file) {
 
 	// Fixed path?
 	if ((file[0] == '/') || (file[0] == '.')) {
-		if ((path = (char*)malloc(strlen(file) + 1)) == NULL) {
+		if ((path = (char*)MemoryAlloc(strlen(file) + 1)) == NULL) {
 			fprintf(stderr, "getPath: cannot malloc path memory\n");
 			exit(1);
 		}
@@ -43,7 +43,7 @@ char* getPath(char* dir, char* file) {
 
 		// Replace Cygwin path with Windows path.
 		if ((strncmp(home, "/cygdrive/", 10) == 0) && (strlen(home) >= 11)) {
-			if ((path = (char*)malloc(strlen(home) + strlen(dir) + 2)) == NULL) {
+			if ((path = (char*)MemoryAlloc(strlen(home) + strlen(dir) + 2)) == NULL) {
 				fprintf(stderr, "getPath: cannot malloc path memory\n");
 				exit(1);
 			}
@@ -51,7 +51,7 @@ char* getPath(char* dir, char* file) {
 			sprintf(path, "c:%s/%s", &home[11], dir);
 		}
 		else {
-			if ((path = (char*)malloc(strlen(home) + strlen(dir) + 2)) == NULL) {
+			if ((path = (char*)MemoryAlloc(strlen(home) + strlen(dir) + 2)) == NULL) {
 				fprintf(stderr, "getPath: cannot malloc path memory\n");
 				exit(1);
 			}
@@ -61,7 +61,7 @@ char* getPath(char* dir, char* file) {
 
 		if (GetFileAttributes(path) != 0xffffffff)
 		#else
-		if ((path = (char*)malloc(strlen(home) + strlen(dir) + 2)) == NULL) {
+		if ((path = (char*)MemoryAlloc(strlen(home) + strlen(dir) + 2)) == NULL) {
 			fprintf(stderr, "getPath: cannot malloc path memory\n");
 			exit(1);
 		}
@@ -72,21 +72,21 @@ char* getPath(char* dir, char* file) {
 		#endif
 		{
 			// Add the file.
-			if ((path2 = (char*)malloc(strlen(path) + strlen(file) + 2)) == NULL) {
+			if ((path2 = (char*)MemoryAlloc(strlen(path) + strlen(file) + 2)) == NULL) {
 				fprintf(stderr, "getPath: cannot malloc path memory\n");
 				exit(1);
 			}
 
 			sprintf(path2, "%s/%s", path, file);
-			free(path);
+			MemoryFree(path);
 			return (path2);
 		}
 		else
-			free(path);
+			MemoryFree(path);
 	}
 
 	// Try relative paths.
-	if ((path = (char*)malloc(strlen(dir) + 1)) == NULL) {
+	if ((path = (char*)MemoryAlloc(strlen(dir) + 1)) == NULL) {
 		fprintf(stderr, "getPath: cannot malloc path memory\n");
 		exit(1);
 	}
@@ -99,9 +99,9 @@ char* getPath(char* dir, char* file) {
 	if (access(path, F_OK) != -1)
 	#endif
 	{
-		free(path);
+		MemoryFree(path);
 
-		if ((path = (char*)malloc(strlen(dir) + strlen(file) + 2)) == NULL) {
+		if ((path = (char*)MemoryAlloc(strlen(dir) + strlen(file) + 2)) == NULL) {
 			fprintf(stderr, "getPath: cannot malloc path memory\n");
 			exit(1);
 		}
@@ -110,9 +110,9 @@ char* getPath(char* dir, char* file) {
 		return (path);
 	}
 	else
-		free(path);
+		MemoryFree(path);
 
-	if ((path = (char*)malloc(strlen(dir) + 4)) == NULL) {
+	if ((path = (char*)MemoryAlloc(strlen(dir) + 4)) == NULL) {
 		fprintf(stderr, "getPath: cannot malloc path memory\n");
 		exit(1);
 	}
@@ -125,9 +125,9 @@ char* getPath(char* dir, char* file) {
 	if (access(path, F_OK) != -1)
 	#endif
 	{
-		free(path);
+		MemoryFree(path);
 
-		if ((path = (char*)malloc(strlen(dir) + strlen(file) + 5)) == NULL) {
+		if ((path = (char*)MemoryAlloc(strlen(dir) + strlen(file) + 5)) == NULL) {
 			fprintf(stderr, "getPath: cannot malloc path memory\n");
 			exit(1);
 		}
@@ -136,9 +136,9 @@ char* getPath(char* dir, char* file) {
 		return (path);
 	}
 	else
-		free(path);
+		MemoryFree(path);
 
-	if ((path = (char*)malloc(strlen(dir) + 7)) == NULL) {
+	if ((path = (char*)MemoryAlloc(strlen(dir) + 7)) == NULL) {
 		fprintf(stderr, "getPath: cannot malloc path memory\n");
 		exit(1);
 	}
@@ -151,9 +151,9 @@ char* getPath(char* dir, char* file) {
 	if (access(path, F_OK) != -1)
 	#endif
 	{
-		free(path);
+		MemoryFree(path);
 
-		if ((path = (char*)malloc(strlen(dir) + strlen(file) + 8)) == NULL) {
+		if ((path = (char*)MemoryAlloc(strlen(dir) + strlen(file) + 8)) == NULL) {
 			fprintf(stderr, "getPath: cannot malloc path memory\n");
 			exit(1);
 		}
@@ -162,10 +162,10 @@ char* getPath(char* dir, char* file) {
 		return (path);
 	}
 	else
-		free(path);
+		MemoryFree(path);
 
 	// Default to input file.
-	if ((path = (char*)malloc(strlen(file) + 1)) == NULL) {
+	if ((path = (char*)MemoryAlloc(strlen(file) + 1)) == NULL) {
 		fprintf(stderr, "getPath: cannot malloc path memory\n");
 		exit(1);
 	}

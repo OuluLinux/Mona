@@ -7,6 +7,7 @@ Atomic neuron_counter;
 const int Neuron::NULL_ID = -1;
 
 Neuron::Neuron() {
+	mona = NULL;
 	mem_id = AtomicInc(neuron_counter);
 }
 
@@ -144,6 +145,7 @@ void Neuron::InitDrive(VALUE_SET& needs) {
 void Neuron::ClearMotiveWork() {
 	motive_work.reset();
 	motive_work_valid = false;
+	
 	#ifdef MONA_TRACKING
 	tracker.motive_work_paths.Clear();
 	#endif
@@ -176,11 +178,12 @@ void Neuron::AccumMotiveTracking() {
 	if (type != MOTOR)
 		return;
 
-	for (i = 0; i < tracker.motive_work_paths.GetCount(); i++) {
+	for (int i = 0; i < tracker.motive_work_paths.GetCount(); i++) {
 		if (tracker.motive_paths.GetCount() < Mona::MAX_DRIVER_TRACKS)
 			tracker.motive_paths.Add(tracker.motive_work_paths[i]);
 		else {
-			for (j = 0, k = -1; j < tracker.motive_work_paths.GetCount(); j++) {
+			int k = -1;
+			for (int j = 0; j < tracker.motive_work_paths.GetCount(); j++) {
 				if (tracker.motive_work_paths[i].motive > tracker.motive_paths[j].motive) {
 					if ((k == -1) || (tracker.motive_paths[j].motive < tracker.motive_paths[k].motive))
 						k = j;
@@ -213,7 +216,7 @@ void Neuron::FinalizeMotive() {
 
 
 // Neuron drive.
-void Neuron::Drive(MotiveAccum motive_accum) {
+void Neuron::Drive(MotiveAccum& motive_accum) {
 	MOTIVE       m;
 	WEIGHT       w;
 	MotiveAccum  accum_work;
@@ -315,7 +318,7 @@ bool Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out) {
 	struct Activation::DrivePath  d;
 	VALUE_SET needs;
 
-	for (i = 0; i < in.drivers.GetCount(); i++) {
+	for (int i = 0; i < in.drivers.GetCount(); i++) {
 		if (in.drivers[i].neuron == this)
 			return false;
 
@@ -325,7 +328,7 @@ bool Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out) {
 
 	needs.Reserve(mona->need_count);
 
-	for (i = 0; i < mona->need_count; i++)
+	for (int i = 0; i < mona->need_count; i++)
 		needs.Set(i, mona->homeostats[i].GetNeed());
 
 	d.motive_work.Init(needs);
@@ -348,7 +351,8 @@ bool Neuron::TrackMotive(MotiveAccum& in, MotiveAccum& out) {
 	if (tracker.motive_work_paths.GetCount() < Mona::MAX_DRIVER_TRACKS)
 		tracker.motive_work_paths.Add(d);
 	else {
-		for (i = 0, j = -1; i < tracker.motive_work_paths.GetCount(); i++) {
+		int j = -1;
+		for (int i = 0; i < tracker.motive_work_paths.GetCount(); i++) {
 			if (d.motive_work.GetValue() > tracker.motive_work_paths[i].motive_work.GetValue()) {
 				if ((j == -1) ||
 					(tracker.motive_work_paths[i].motive_work.GetValue() <

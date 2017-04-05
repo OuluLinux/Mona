@@ -11,7 +11,6 @@ Mediator::Mediator() {
 	effective_enabling_weight  = 0.0;
 	effective_enablement_valid = false;
 	utility_weight            = 0.0;
-	UpdateUtility(0.0);
 	cause      = response = effect = NULL;
 	cause_begin = 0;
 	base_enablement = 0;
@@ -43,7 +42,7 @@ Mediator::~Mediator() {
 
 			if (notify.mediator == this) {
 				cause->notify_list.Remove(i);
-				break;
+				i--;
 			}
 		}
 	}
@@ -56,7 +55,7 @@ Mediator::~Mediator() {
 
 			if (notify.mediator == this) {
 				response->notify_list.Remove(i);
-				break;
+				i--;
 			}
 		}
 	}
@@ -69,7 +68,7 @@ Mediator::~Mediator() {
 
 			if (notify.mediator == this) {
 				effect->notify_list.Remove(i);
-				break;
+				i--;
 			}
 		}
 	}
@@ -563,7 +562,7 @@ void Mediator::CauseFiring(WEIGHT notify_strength, int64 cause_begin) {
 
 		if (enablement2 > 0.0) {
 			if (response != NULL) {
-				Enabling& enabling = response_enablings.Insert();
+				Enabling& enabling = response_enablings.Add();
 				enabling.Init(enablement2, motive, 0, i, cause_begin);
 				enabling.SetNeeds(mona->homeostats);
 				
@@ -572,7 +571,7 @@ void Mediator::CauseFiring(WEIGHT notify_strength, int64 cause_begin) {
 				#endif
 			}
 			else {
-				Enabling& enabling = effect_enablings.Insert();
+				Enabling& enabling = effect_enablings.Add();
 				enabling.Init(enablement2, motive, 0, i, cause_begin);
 				enabling.SetNeeds(mona->homeostats);
 				
@@ -591,13 +590,13 @@ void Mediator::ResponseFiring(WEIGHT notify_strength) {
 
 	// Transfer enablings to effect event.
 	for(int i = 0; i < response_enablings.enablings.GetCount(); i++) {
-		Enabling& enabling = response_enablings.enablings.Add();
+		Enabling& enabling = response_enablings.enablings[i];
 		enablement = enabling.value * notify_strength;
 		base_enablement += (enabling.value - enablement);
 		enabling.value = 0.0;
 
 		if (enablement > 0.0) {
-			Enabling& enabling2 = effect_enablings.Insert();
+			Enabling& enabling2 = effect_enablings.Add();
 			enabling.Clone(enabling2);
 			enabling2.value    = enablement;
 			enabling2.motive   = motive;
@@ -949,7 +948,7 @@ bool Mediator::IsGoalValueSubsumed() {
 
 
 // Drive mediator cause.
-void Mediator::DriveCause(MotiveAccum motive_accum) {
+void Mediator::DriveCause(MotiveAccum& motive_accum) {
 	MOTIVE      m;
 	WEIGHT      w;
 	MotiveAccum accum_work;

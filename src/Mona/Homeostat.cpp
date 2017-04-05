@@ -48,12 +48,10 @@ void Homeostat::ClearPeriodicNeed() {
 // Replace duplicate response and goal value.
 int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
 					   RESPONSE response, NEED goal_value) {
-	int goal_index, i;
-	Vector<SENSOR> sensors_work;
-	Receptor* receptor;
+	int            goal_index;
 	SENSOR         distance;
-	Goal           goal;
-
+	Vector<SENSOR> sensors_work;
+	
 	// Check for duplicate.
 	if ((goal_index = FindGoal(sensors, sensor_mode, false)) != -1) {
 		goals[goal_index].receptor->goals.SetValue(need_index, goal_value);
@@ -79,7 +77,9 @@ int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
 		// Add entry.
 		mona->ApplySensorMode(sensors, sensors_work, sensor_mode);
 
-		for (i = 0; i < sensors_work.GetCount(); i++)
+		Goal& goal = goals.Add();
+		goal_index = goals.GetCount() - 1;
+		for (int i = 0; i < sensors_work.GetCount(); i++)
 			goal.sensors.Add(sensors_work[i]);
 
 		goal.sensor_mode = sensor_mode;
@@ -104,16 +104,15 @@ int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode,
 
 		goal.goal_value = goal_value;
 		goal.enabled   = true;
-		goals.Add(goal);
-		goal_index = goals.GetCount() - 1;
+		//goals.Add(goal);
 	}
 
-	return (goal_index);
+	return goal_index;
 }
 
 
 int Homeostat::AddGoal(Vector<SENSOR>& sensors, SENSOR_MODE sensor_mode, NEED goal_value) {
-	return (AddGoal(sensors, sensor_mode, NULL_RESPONSE, goal_value));
+	return AddGoal(sensors, sensor_mode, NULL_RESPONSE, goal_value);
 }
 
 

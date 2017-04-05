@@ -50,14 +50,14 @@ void MazeMouse::Init() {
 	JPanel screen = (JPanel)getContentPane();
 	screen.setLayout(new FlowLayout());
 	screen_size = getSize();
-	mazeSize   = new Size(screen_size.width,
+	maze_size   = new Size(screen_size.width,
 						  (int)((double)screen_size.height * .90));
 	mazeCanvas = new Canvas();
-	mazeCanvas.setSize(mazeSize.width, mazeSize.height);
+	mazeCanvas.setSize(maze_size.width, maze_size.height);
 	mazeCanvas.addMouseListener(new MazeMouseListener());
 	mazeCanvas.addKeyListener(new MazeKeyListener());
 	screen.Add(mazeCanvas);
-	mazeImage = createImage(mazeSize.width, mazeSize.height);
+	mazeImage = createImage(maze_size.width, maze_size.height);
 	// Get font.
 	font = new Font("Helvetica", Font.BOLD, 12);
 	// Add controls.
@@ -90,18 +90,18 @@ void MazeMouse::Init() {
 	int x;
 	int y;
 	Room[] doors;
-	roomSize       = new Size(mazeSize.width / 15, mazeSize.height / 11);
+	room_size      = new Size(maze_size.width / 15, maze_size.height / 11);
 	maze           = new Room[7][];
 	maze[0]        = new Room[3];
-	x              = roomSize.width;
-	y              = (mazeSize.height / 2) - (roomSize.height / 2);
+	x              = room_size.width;
+	y              = (maze_size.height / 2) - (room_size.height / 2);
 	maze[0][1]     = new Room(x, y, START_ROOM, 0, 1);
-	maze[0][0]     = new Room(x, y - (roomSize.height * 2), START_ROOM, 0, 0);
-	maze[0][2]     = new Room(x, y + (roomSize.height * 2), START_ROOM, 0, 2);
+	maze[0][0]     = new Room(x, y - (room_size.height * 2), START_ROOM, 0, 0);
+	maze[0][2]     = new Room(x, y + (room_size.height * 2), START_ROOM, 0, 2);
 	begin_maze_index = 1;
 	maze[1]        = new Room[1];
-	x             += (roomSize.width * 2);
-	y              = (mazeSize.height / 2) - (roomSize.height / 2);
+	x             += (room_size.width * 2);
+	y              = (maze_size.height / 2) - (room_size.height / 2);
 	maze[1][0]     = new Room(x, y, BEGIN_MAZE, 1, 0);
 	doors          = new Room[3];
 	doors[0]       = null;
@@ -119,24 +119,24 @@ void MazeMouse::Init() {
 	doors[2] = null;
 	maze[0][2].setDoors(doors);
 	maze[2]    = new Room[3];
-	x         += (roomSize.width * 2);
-	y          = (mazeSize.height / 2) - (roomSize.height / 2);
+	x         += (room_size.width * 2);
+	y          = (maze_size.height / 2) - (room_size.height / 2);
 	maze[2][1] = new Room(x, y, MAZE_ROOM, 2, 1);
-	maze[2][0] = new Room(x, y - (roomSize.height * 2), MAZE_ROOM, 2, 0);
-	maze[2][2] = new Room(x, y + (roomSize.height * 2), MAZE_ROOM, 2, 2);
+	maze[2][0] = new Room(x, y - (room_size.height * 2), MAZE_ROOM, 2, 0);
+	maze[2][2] = new Room(x, y + (room_size.height * 2), MAZE_ROOM, 2, 2);
 	doors      = new Room[3];
 	doors[0]   = maze[2][0];
 	doors[1]   = maze[2][1];
 	doors[2]   = maze[2][2];
 	maze[1][0].setDoors(doors);
 	maze[3]    = new Room[5];
-	x         += (roomSize.width * 2);
-	y          = (mazeSize.height / 2) - (roomSize.height / 2);
+	x         += (room_size.width * 2);
+	y          = (maze_size.height / 2) - (room_size.height / 2);
 	maze[3][2] = new Room(x, y, MAZE_ROOM, 3, 2);
-	maze[3][1] = new Room(x, y - (roomSize.height * 2), MAZE_ROOM, 3, 1);
-	maze[3][0] = new Room(x, y - (roomSize.height * 4), MAZE_ROOM, 3, 0);
-	maze[3][3] = new Room(x, y + (roomSize.height * 2), MAZE_ROOM, 3, 3);
-	maze[3][4] = new Room(x, y + (roomSize.height * 4), MAZE_ROOM, 3, 4);
+	maze[3][1] = new Room(x, y - (room_size.height * 2), MAZE_ROOM, 3, 1);
+	maze[3][0] = new Room(x, y - (room_size.height * 4), MAZE_ROOM, 3, 0);
+	maze[3][3] = new Room(x, y + (room_size.height * 2), MAZE_ROOM, 3, 3);
+	maze[3][4] = new Room(x, y + (room_size.height * 4), MAZE_ROOM, 3, 4);
 	doors      = new Room[3];
 	doors[0]   = maze[3][0];
 	doors[1]   = maze[3][1];
@@ -153,11 +153,11 @@ void MazeMouse::Init() {
 	doors[2] = maze[3][4];
 	maze[2][2].setDoors(doors);
 	maze[4]    = new Room[3];
-	x         += (roomSize.width * 2);
-	y          = (mazeSize.height / 2) - (roomSize.height / 2);
+	x         += (room_size.width * 2);
+	y          = (maze_size.height / 2) - (room_size.height / 2);
 	maze[4][1] = new Room(x, y, MAZE_ROOM, 4, 1);
-	maze[4][0] = new Room(x, y - (roomSize.height * 2), MAZE_ROOM, 4, 0);
-	maze[4][2] = new Room(x, y + (roomSize.height * 2), MAZE_ROOM, 4, 2);
+	maze[4][0] = new Room(x, y - (room_size.height * 2), MAZE_ROOM, 4, 0);
+	maze[4][2] = new Room(x, y + (room_size.height * 2), MAZE_ROOM, 4, 2);
 	doors      = new Room[3];
 	doors[0]   = null;
 	doors[1]   = null;
@@ -185,8 +185,8 @@ void MazeMouse::Init() {
 	maze[3][4].setDoors(doors);
 	end_maze_index = 5;
 	maze[5]      = new Room[1];
-	x           += (roomSize.width * 2);
-	y            = (mazeSize.height / 2) - (roomSize.height / 2);
+	x           += (room_size.width * 2);
+	y            = (maze_size.height / 2) - (room_size.height / 2);
 	maze[5][0]   = new Room(x, y, END_MAZE, 5, 0);
 	doors        = new Room[3];
 	doors[0]     = null;
@@ -204,11 +204,11 @@ void MazeMouse::Init() {
 	doors[2] = null;
 	maze[4][2].setDoors(doors);
 	maze[6]    = new Room[3];
-	x         += (roomSize.width * 2);
-	y          = (mazeSize.height / 2) - (roomSize.height / 2);
+	x         += (room_size.width * 2);
+	y          = (maze_size.height / 2) - (room_size.height / 2);
 	maze[6][1] = new Room(x, y, GOAL_ROOM, 6, 1);
-	maze[6][0] = new Room(x, y - (roomSize.height * 2), GOAL_ROOM, 6, 0);
-	maze[6][2] = new Room(x, y + (roomSize.height * 2), GOAL_ROOM, 6, 2);
+	maze[6][0] = new Room(x, y - (room_size.height * 2), GOAL_ROOM, 6, 0);
+	maze[6][2] = new Room(x, y + (room_size.height * 2), GOAL_ROOM, 6, 2);
 	doors      = new Room[3];
 	doors[0]   = maze[6][0];
 	doors[1]   = maze[6][1];
@@ -258,8 +258,8 @@ void MazeMouse::Init() {
 		if ((w1 <= 0) || (h1 <= 0))
 			showStatus("Invalid image: " + MOUSE_IMAGE_FILE);
 		else {
-			w2         = roomSize.width / 2;
-			h2         = roomSize.height / 2;
+			w2         = room_size.width / 2;
+			h2         = room_size.height / 2;
 			mouse_image = createImage(w2, h2);
 			Graphics graphics = mouse_image.getGraphics();
 			graphics.drawImage(mouse, 0, 0, w2 - 1, h2 - 1, 0, 0, w1 - 1,
@@ -274,8 +274,8 @@ void MazeMouse::Init() {
 		if ((w1 <= 0) || (h1 <= 0))
 			showStatus("Invalid image: " + CHEESE_IMAGE_FILE);
 		else {
-			w2          = roomSize.width / 2;
-			h2          = roomSize.height / 2;
+			w2          = room_size.width / 2;
+			h2          = room_size.height / 2;
 			cheese_image = createImage(w2, h2);
 			Graphics graphics = cheese_image.getGraphics();
 			graphics.drawImage(cheese, 0, 0, w2 - 1, h2 - 1, 0, 0, w1 - 1,
@@ -448,7 +448,7 @@ void MazeMouse::Display() {
 
 	// Clear display.
 	imageGraphics.setColor(Color.white);
-	imageGraphics.fillRect(0, 0, mazeSize.width, mazeSize.height);
+	imageGraphics.fillRect(0, 0, maze_size.width, maze_size.height);
 
 	// Draw maze.
 	for (int i = 0; i < maze.length; i++) {
@@ -476,12 +476,12 @@ void MazeMouse::Display() {
 	if (error != null) {
 		imageGraphics.setColor(Color.white);
 		int w = fontMetrics.stringWidth(error);
-		imageGraphics.fillRect(((mazeSize.width - w) / 2) - 2,
-							   (mazeSize.height / 2) - (fontAscent + 2), w + 4, fontHeight +
+		imageGraphics.fillRect(((maze_size.width - w) / 2) - 2,
+							   (maze_size.height / 2) - (fontAscent + 2), w + 4, fontHeight +
 							   4);
 		imageGraphics.setColor(Color.black);
-		imageGraphics.drawString(error, (mazeSize.width - w) / 2,
-								 mazeSize.height / 2);
+		imageGraphics.drawString(error, (maze_size.width - w) / 2,
+								 maze_size.height / 2);
 	}
 
 	// Refresh display.

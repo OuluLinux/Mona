@@ -18,7 +18,7 @@ public class TmazeDisplay extends JPanel {
 	static final int VERTICAL_CONNECTOR_SIZE   = 40;
 	static final int HORIZONTAL_CONNECTOR_SIZE = 160;
 	Size        minSize;
-	Size        mazeSize;
+	Size        maze_size;
 
 	// Font.
 	Font font;
@@ -40,7 +40,7 @@ public class TmazeDisplay extends JPanel {
 		Tmaze.Junction junction;
 		this.mazes = mazes;
 		// Determine maze display size.
-		mazeSize = new Size(HORIZONTAL_CONNECTOR_SIZE, VERTICAL_CONNECTOR_SIZE);
+		maze_size = new Size(HORIZONTAL_CONNECTOR_SIZE, VERTICAL_CONNECTOR_SIZE);
 		j        = (HORIZONTAL_CONNECTOR_SIZE / 2) + (JUNCTION_SIZE / 2);
 
 		for (i = 0; i < mazes.GetCount(); i++) {
@@ -63,24 +63,24 @@ public class TmazeDisplay extends JPanel {
 
 			n = (n * j * 2) + HORIZONTAL_CONNECTOR_SIZE + JUNCTION_SIZE;
 
-			if (mazeSize.width < n)
-				mazeSize.width = n;
+			if (maze_size.width < n)
+				maze_size.width = n;
 		}
 
-		if (mazeSize.width < minSize.width)
-			mazeSize.width = minSize.width;
+		if (maze_size.width < minSize.width)
+			maze_size.width = minSize.width;
 
 		j = VERTICAL_CONNECTOR_SIZE + (JUNCTION_SIZE / 2);
 
 		for (i = 0; i < mazes.GetCount(); i++) {
 			maze             = mazes.Get(i);
-			mazeSize.height += (maze.path.GetCount() * j) + (VERTICAL_CONNECTOR_SIZE * 2);
+			maze_size.height += (maze.path.GetCount() * j) + (VERTICAL_CONNECTOR_SIZE * 2);
 		}
 
-		if (mazeSize.height < minSize.height)
-			mazeSize.height = minSize.height;
+		if (maze_size.height < minSize.height)
+			maze_size.height = minSize.height;
 
-		setPreferredSize(mazeSize);
+		setPreferredSize(maze_size);
 	}
 
 
@@ -95,13 +95,13 @@ public class TmazeDisplay extends JPanel {
 		fw          = fontMetrics.getMaxAdvance() / 8;
 		fh          = fontMetrics.GetHeight() / 4;
 		g.setColor(Color.white);
-		g.fillRect(0, 0, mazeSize.width, mazeSize.height);
+		g.fillRect(0, 0, maze_size.width, maze_size.height);
 		g.setColor(Color.black);
-		x = mazeSize.width / 2;
+		x = maze_size.width / 2;
 		y = VERTICAL_CONNECTOR_SIZE + (JUNCTION_SIZE / 2);
 
 		for (i = 0; i < mazes.GetCount(); i++) {
-			x    = mazeSize.width / 2;
+			x    = maze_size.width / 2;
 			maze = mazes.Get(i);
 
 			for (j = 0; j < maze.path.GetCount(); j++) {

@@ -130,7 +130,7 @@ public:
 	// receptor in a set reserved for the mode. This
 	// provides the network with selective attention
 	// capabilities.
-	Vector<SensorMode> sensor_modes;
+	Array<SensorMode> sensor_modes;
 	void ApplySensorMode(Vector<SENSOR>& in, Vector<SENSOR>& out, SENSOR_MODE);
 	void ApplySensorMode(Vector<SENSOR>& sensors, SENSOR_MODE);
 
@@ -244,7 +244,7 @@ public:
 	int64 event_clock;
 
 	// Learning event lists.
-	Vector<Vector<LearningEvent> > learning_events;
+	Vector<Array<LearningEvent> > learning_events;
 	Vector<GeneralizationEvent>  generalization_events;
 
 	// Mediator generation.

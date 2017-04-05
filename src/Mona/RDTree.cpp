@@ -337,10 +337,10 @@ RDTree::RDSearch* RDTree::Search(const Vector<SENSOR>& pattern, int max_find, in
 	search_ctrl.max_search   = max_search;
 	search_ctrl.search_count = search_ctrl.best_search = 0;
 	search_ctrl.search_stack_sz   = stkMem;
-	search_ctrl.search_stack     = (struct SrchStk*)malloc(search_ctrl.search_stack_sz * sizeof(struct SrchStk));
+	search_ctrl.search_stack     = (struct SrchStk*)MemoryAlloc(search_ctrl.search_stack_sz * sizeof(struct SrchStk));
 	ASSERT(search_ctrl.search_stack != NULL);
 	search_ctrl.search_stack_idx = 0;
-	search_ctrl.search_work.Add((RDSearch*)malloc(SRCHWORKMEM_QUANTUM * sizeof(RDSearch)));
+	search_ctrl.search_work.Add((RDSearch*)MemoryAlloc(SRCHWORKMEM_QUANTUM * sizeof(RDSearch)));
 	ASSERT(search_ctrl.search_work[0] != NULL);
 	memset(search_ctrl.search_work[0], 0, SRCHWORKMEM_QUANTUM * sizeof(RDSearch));
 	search_ctrl.search_work_idx = 0;
@@ -366,10 +366,10 @@ RDTree::RDSearch* RDTree::Search(const Vector<SENSOR>& pattern, int max_find, in
 	}
 
 	/* free search memory */
-	free(search_ctrl.search_stack);
+	MemoryFree(search_ctrl.search_stack);
 
 	for (int i = 0, j = (int)search_ctrl.search_work.GetCount(); i < j; i++)
-		free(search_ctrl.search_work[i]);
+		MemoryFree(search_ctrl.search_work[i]);
 
 	return (search_list);
 }
@@ -591,7 +591,7 @@ RDTree::RDSearch* RDTree::GetSearchWork(struct SearchCtrl* search_ctrl) {
 
 	if (search_ctrl->search_work_use == SRCHWORKMEM_QUANTUM) {
 		search_ctrl->search_work_idx++;
-		search_ctrl->search_work.Add((RDSearch*)malloc(SRCHWORKMEM_QUANTUM * sizeof(RDSearch)));
+		search_ctrl->search_work.Add((RDSearch*)MemoryAlloc(SRCHWORKMEM_QUANTUM * sizeof(RDSearch)));
 		ASSERT(search_ctrl->search_work[search_ctrl->search_work_idx] != NULL);
 		memset(search_ctrl->search_work[search_ctrl->search_work_idx], 0, SRCHWORKMEM_QUANTUM * sizeof(RDSearch));
 		search_ctrl->search_work_use = 0;

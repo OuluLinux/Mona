@@ -30,6 +30,7 @@ RESPONSE Mona::Cycle(Vector<SENSOR>& sensors) {
 	// Clear tracking activity.
 	ClearTracking();
 	#endif
+	
 	Sense();
 	Enable();
 	Learn();
@@ -107,7 +108,7 @@ void Mona::InitEffectEventInterval(int level, int numIntervals) {
 // Initialize the effect event interval weights using
 // the effect event intervals and a simple inverse proportional rule.
 void Mona::InitEffectEventIntervalWeights() {
-	effect_event_interval_weights.SetCount((int)effect_event_intervals.GetCount());
+	effect_event_interval_weights.SetCount(effect_event_intervals.GetCount());
 
 	for (int i = 0; i < effect_event_interval_weights.GetCount(); i++)
 		InitEffectEventIntervalWeight(i);
@@ -312,7 +313,7 @@ void Mona::InflateNeed(int index) {
 	}
 
 	for (int i = 0; i < learning_events.GetCount(); i++) {
-		Vector<LearningEvent>& sub = learning_events[i];
+		Array<LearningEvent>& sub = learning_events[i];
 		
 		for(int j = 0; j < sub.GetCount(); j++) {
 			LearningEvent& learning_event = sub[j];
@@ -439,7 +440,7 @@ Receptor& Mona::NewReceptor(Vector<SENSOR>& centroid, SENSOR_MODE sensor_mode) {
 	Vector<SENSOR> sensors;
 	sensors.SetCount(r.centroid.GetCount());
 	for (int i = 0; i < r.centroid.GetCount(); i++)
-		sensors.Add(r.centroid[i]);
+		sensors[i] = r.centroid[i];
 
 	sensor_centroids[sensor_mode].Insert(sensors, r);
 	
@@ -475,11 +476,12 @@ void Mona::DeleteNeuron(Mediator& neuron) {
 	// Delete parents.
 	while (neuron.notify_list.GetCount() > 0) {
 		Notify& notify = neuron.notify_list[0];
+		ASSERT(notify.mediator);
+		int c = neuron.notify_list.GetCount();
 		DeleteNeuron(*notify.mediator);
-		
-		// Conversion addition:
-		//notify.mediator = NULL;
-		ASSERT(notify.mediator == NULL); // somebody have to clean this
+		ASSERT(c > neuron.notify_list.GetCount());
+		/*if (c == neuron.notify_list.GetCount())
+			neuron.notify_list.Remove(0);*/
 	}
 	
 	ASSERT(neuron.type == MEDIATOR);
@@ -487,7 +489,7 @@ void Mona::DeleteNeuron(Mediator& neuron) {
 	int space = mediator.level + 1;
 		
 	if (space < learning_events.GetCount()) {
-		Vector<LearningEvent>& sub = learning_events[space];
+		Array<LearningEvent>& sub = learning_events[space];
 		
 		for(int j = 0; j < sub.GetCount();) {
 			LearningEvent& learning_event = sub[j];
@@ -514,17 +516,18 @@ void Mona::DeleteNeuron(Receptor& neuron) {
 	// Delete parents.
 	while (neuron.notify_list.GetCount() > 0) {
 		Notify& notify = neuron.notify_list[0];
+		ASSERT(notify.mediator);
+		int c = neuron.notify_list.GetCount();
 		DeleteNeuron(*notify.mediator);
-		
-		// Conversion addition:
-		//notify.mediator = NULL;
-		ASSERT(notify.mediator == NULL); // somebody have to clean this
+		ASSERT(c > neuron.notify_list.GetCount());
+		/*if (c == neuron.notify_list.GetCount())
+			neuron.notify_list.Remove(0);*/
 	}
 	
 	int space = 0;
 	
 	if (space < learning_events.GetCount()) {
-		Vector<LearningEvent>& sub = learning_events[space];
+		Array<LearningEvent>& sub = learning_events[space];
 		
 		for(int j = 0; j < sub.GetCount();) {
 			LearningEvent& learning_event = sub[j];
@@ -599,7 +602,7 @@ void Mona::DeleteNeuron(Receptor& neuron) {
 	}
 
 	if (space < learning_events.GetCount()) {
-		Vector<LearningEvent>& sub = learning_events[space];
+		Array<LearningEvent>& sub = learning_events[space];
 		
 		for(int j = 0; j < sub.GetCount();) {
 			LearningEvent& learning_event = sub[j];
@@ -842,7 +845,7 @@ void Mona::Serialize(Stream& fp) {
 		}
 
 		for (int i = 0; i < learning_events.GetCount(); i++) {
-			Vector<LearningEvent>& sub = learning_events[i];
+			Array<LearningEvent>& sub = learning_events[i];
 			for(int j = 0; j < sub.GetCount(); j++) {
 				LearningEvent& learning_event = sub[j];
 				NeuronID& id = learning_event.neuron;

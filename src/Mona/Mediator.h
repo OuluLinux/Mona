@@ -62,7 +62,7 @@ public:
 	void RetireEnablings(bool force = false);
 
 	// Drive.
-	void DriveCause(MotiveAccum);
+	void DriveCause(MotiveAccum&);
 
 	// Is given mediator a duplicate of this?
 	bool IsDuplicate(Mediator&);
