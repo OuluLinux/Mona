@@ -12,13 +12,7 @@ file
 	MazeMouseApplication.lay,
 	MazeCtrl.cpp,
 	Room.h,
-	images.iml,
-	Obsolete readonly separator,
-	MazeMouse.h,
-	MazeMouse.cpp,
-	Socker.cpp,
-	EvolveMouse.h,
-	EvolveMouse.cpp;
+	images.iml;
 
 mainconfig
 	"" = "GUI MT",

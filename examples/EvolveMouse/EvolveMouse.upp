@@ -1,0 +1,10 @@
+description "Mice evolving in a maze solving cellular automaton environment.\377";
+
+uses
+	Mona,
+	CtrlLib;
+
+file
+	EvolveMouse.h,
+	EvolveMouse.cpp;
+
