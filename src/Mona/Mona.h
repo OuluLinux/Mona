@@ -49,7 +49,7 @@ enum { NULL_RESPONSE = Homeostat::NULL_RESPONSE };
 enum { DEFAULT_RANDOM_SEED = 4517 };
 
 
-#include "Aux.h"
+#include "Utils.h"
 #include "Neuron.h"
 #include "Receptor.h"
 #include "Motor.h"
