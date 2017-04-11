@@ -1,3 +1,5 @@
+#if 0
+
 /******************************************************************************
     glbmp - a library for loading Windows & OS/2 bitmaps for use in OpenGL
     Copyright (C) 2005 Charles Lindsay
@@ -571,3 +573,4 @@ static void _bmp_FreeContext(_bmp_read_context* p_ctx, int leave_rgb_data) {
 	if (!leave_rgb_data && p_ctx->rgb_data)
 		free(p_ctx->rgb_data);
 }
+#endif

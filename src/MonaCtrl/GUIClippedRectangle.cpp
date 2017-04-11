@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIClippedRectangle::GUIClippedRectangle(int size) {
@@ -199,3 +201,6 @@ const Tuple2i* GUIClippedRectangle::getVertices() const {
 const Tuple2f* GUIClippedRectangle::getTexCoords() const {
 	return texCoords;
 }
+
+
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 /*
     Triangle mesh heightmap.
 */
@@ -303,3 +305,4 @@ bool Bounds::intersects(Bounds& bounds) {
 
 	return false;
 }
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 #include "GenUtils.h"
 
 /*******************************************************************************************/
@@ -3400,3 +3402,5 @@ const char* TiXmlBase::errorString[ TIXML_ERROR_STRING_COUNT ] = {
 	"Error document empty.",
 	"Error null (0) or unexpected EOF found in input stream.",
 };
+
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 #include "TextureUtils.h"
 #include <GL/glu.h>
 #include <GL/glpng.h>
@@ -2186,3 +2188,6 @@ bool Image::loadCompressedTrueColorTGA(const char* filename) {
 	deleteArray(colorBuffer);
 	return true;
 }
+
+
+#endif

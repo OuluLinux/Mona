@@ -1,5 +1,8 @@
 description "Neural networks to learn a nondeterministic automata.\377B128,0,0";
 
+uses
+	Core;
+
 file
 	Mona.h,
 	Mona.cpp,
@@ -8,9 +11,9 @@ file
 	Learn.cpp,
 	Respond.cpp,
 	User.cpp,
-	Aux.h,
-	Aux.cpp,
 	Sense.cpp,
+	Utils.h,
+	Utils.cpp,
 	Neuron.h,
 	Neuron.cpp,
 	Receptor.h,

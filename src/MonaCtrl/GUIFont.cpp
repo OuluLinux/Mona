@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 bool GUIFont::Build() {
@@ -30,3 +32,6 @@ bool  GUIFont::operator !=(const GUIFont& compare) {
 GUIFont::~GUIFont() {
 	font.~CFont();
 }
+
+
+#endif

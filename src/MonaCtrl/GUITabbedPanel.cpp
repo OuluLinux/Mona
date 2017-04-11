@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUITabbedPanel::GUITabbedPanel(const String& callback) : GUIRectangle(callback) {
@@ -244,3 +246,6 @@ GUIPanel*  GUITabbedPanel::getLowerPanel() {
 const Tuple3f& GUITabbedPanel::getTabButtonsBordersColor() const {
 	return tabButtonsBordersColor;
 }
+
+
+#endif

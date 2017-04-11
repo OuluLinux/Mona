@@ -1,3 +1,5 @@
+#if 0
+
 //***************************************************************************//
 //* File Name: baseObject.cpp                                               *//
 //* Author:    Tom Portegys, portegys@ilstu.edu                             *//
@@ -498,3 +500,4 @@ void BaseObject::Store(String filename) {
 void BaseObject::Store(Stream& fp) {
 	m_spacial->Store(fp);
 }
+#endif

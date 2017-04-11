@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUILabel::GUILabel(const String& ls,
@@ -67,3 +69,6 @@ const Tuple4i& GUILabel::getWindowBounds() {
 
 	return windowBounds;
 }
+
+
+#endif

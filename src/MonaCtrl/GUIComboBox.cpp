@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIComboBox::GUIComboBox(const String& cbs) : GUIRectangle(cbs)
@@ -335,3 +337,6 @@ bool GUIComboBox::isDeployed() {
 
 	return false;
 }
+
+
+#endif

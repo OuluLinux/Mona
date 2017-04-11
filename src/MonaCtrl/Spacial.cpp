@@ -1,3 +1,5 @@
+#if 0
+
 //***************************************************************************//
 //* File Name: spacial.cpp                                                  *//
 //* Author:    Tom Portegys, portegys@ilstu.edu                             *//
@@ -337,3 +339,4 @@ void cSpacial::Store(Stream& fp) {
 	FWRITE_FLOAT(&m_speed, fp);
 	m_qcalc->Store(fp);
 }
+#endif

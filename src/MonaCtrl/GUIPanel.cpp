@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIPanel::GUIPanel(const String& cbs) : GUIRectangle(cbs), GUIClippedRectangle() {
@@ -523,3 +525,6 @@ GUIPanel::~GUIPanel() {
 	Clear();
 }
 
+
+
+#endif

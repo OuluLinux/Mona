@@ -1,3 +1,5 @@
+#if 0
+
 /////////////////////////////////////////////////////////////////////
 //
 // GLee.c
@@ -15399,3 +15401,6 @@ GLEE_EXTERN GLbool GLeeInit() {
 	__GLeeExtList_clean(&extensionNames);
 	return GL_TRUE;
 }
+
+
+#endif

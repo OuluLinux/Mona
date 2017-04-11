@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIEvent::GUIEvent(GUIRectangle* element) {
@@ -112,3 +114,6 @@ int MouseEvent::getY()        {
 	return y;
 }
 
+
+
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 #include "GenUtils.h"
 
 /*******************************************************************************************/
@@ -453,3 +455,6 @@ double Perlin::noise3D(double x, double y, double z, double alpha, double beta, 
 }
 
 
+
+
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 #include "TimeUtils.h"
 #include "GenUtils.h"
 
@@ -210,3 +212,6 @@ double  Benchmark::getMinFPS()        const {
 double  Benchmark::getMaxFPS()        const {
 	return maxFPS;
 }
+
+
+#endif

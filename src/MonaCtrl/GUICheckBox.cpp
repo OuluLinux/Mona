@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUICheckBox::GUICheckBox(const String& callback) :  GUIAlphaElement(callback) {
@@ -181,3 +183,6 @@ void GUICheckBox::checkMouseEvents(MouseEvent& newEvent, int extraInfo, bool bit
 	released = false;
 	clicked  = false;
 }
+
+
+#endif

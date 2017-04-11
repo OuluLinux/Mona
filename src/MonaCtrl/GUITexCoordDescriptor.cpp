@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 Tuple2i textureGUISizes(256, 256);
@@ -151,3 +153,6 @@ void GUITexCoordDescriptor::setTexCoords(const Tuple4f& texCoordsArg) {
 const Tuple4f& GUITexCoordDescriptor::getTexCoords() {
 	return texCoords;
 }
+
+
+#endif

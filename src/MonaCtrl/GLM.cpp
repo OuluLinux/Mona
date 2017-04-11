@@ -1,3 +1,5 @@
+#if 0
+
 /*
       glm.c
       Nate Robins, 1997, 2000
@@ -2082,4 +2084,5 @@ for (i = 1; i <= model->numvertices; i++) {
 	}
 }
 
+#endif
 #endif

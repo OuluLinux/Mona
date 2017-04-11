@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUISlider::GUISlider(const String& callback, const int   orientation_) :  GUIAlphaElement(callback) {
@@ -208,3 +210,6 @@ void GUISlider::checkMouseEvents(MouseEvent& evt, int extraInfo, bool reservedBi
 	windowBounds.z -= (orientation == OR_HORIZONTAL) ? offset : 0;
 	windowBounds.w -= (orientation != OR_HORIZONTAL) ? offset : 0;
 }
+
+
+#endif

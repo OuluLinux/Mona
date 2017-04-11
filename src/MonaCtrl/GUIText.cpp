@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIText::GUIText(const String& text) {
@@ -247,3 +249,6 @@ const  Tuple2f& GUIText::getScales() {
 const Tuple3f& GUIText::getColor() {
 	return color;
 }
+
+
+#endif

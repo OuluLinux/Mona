@@ -1,3 +1,5 @@
+#if 0
+
 //***************************************************************************//
 //* File Name: frameRate.cpp                                                *//
 //*    Author: Chris McBride chris_a_mcbride@hotmail.com                    *//
@@ -61,3 +63,4 @@ void FrameRate::reset() {
 	m_frameCount = 0;
 	m_lastTime   = gettime();
 }
+#endif

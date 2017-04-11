@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIButton::GUIButton(const String& callback) :  GUIAlphaElement(callback), GUIClippedRectangle() {
@@ -72,3 +74,6 @@ const void GUIButton::computeWindowBounds() {
 		computeClippedBounds(windowBounds);
 	}
 }
+
+
+#endif

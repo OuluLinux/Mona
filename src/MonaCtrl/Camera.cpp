@@ -1,3 +1,5 @@
+#if 0
+
 //***************************************************************************//
 //* File Name: camera.cpp                                                   *//
 //* Author:    Tom Portegys, portegys@ilstu.edu                             *//
@@ -325,3 +327,4 @@ Camera::extractFrustum() {
 	frustum[5][3] /= t;
 	glPopMatrix();
 }
+#endif

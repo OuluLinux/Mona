@@ -1,3 +1,5 @@
+#if 0
+
 // Create texture function.
 
 #include "Texture.h"
@@ -115,3 +117,4 @@ bool LoadTGA(TextureImage* texture, char* filename) {
 	glTexImage2D(GL_TEXTURE_2D, 0, type, texture[0].width, texture[0].height, 0, type, GL_UNSIGNED_BYTE, texture[0].imageData);
 	return true;
 }
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIAlphaElement::GUIAlphaElement(const String& callback) :  GUIRectangle(callback) {
@@ -92,3 +94,6 @@ void GUIAlphaElement::modifyCurrentAlpha(double clockTick) {
 	else
 		setAlpha(color.w + clockTick * alphaFadeScale);
 }
+
+
+#endif

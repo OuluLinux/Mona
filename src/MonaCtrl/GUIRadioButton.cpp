@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIRadioButton::GUIRadioButton(const String& callback) : GUICheckBox(callback) {
@@ -20,3 +22,6 @@ void GUIRadioButton::checkMouseEvents(MouseEvent& newEvent, int extraInfo, bool 
 	released = false;
 	clicked  = false;
 }
+
+
+#endif

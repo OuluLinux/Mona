@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIFrame::GUIFrame() : GUIPanel("GUI MAIN PANEL") {
@@ -132,3 +134,6 @@ const Tuple4i& GUIFrame::getWindowBounds() {
 GUIFrame::~GUIFrame() {
 	Clear();
 }
+
+
+#endif

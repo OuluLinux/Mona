@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 Vector<GUIFont*> GUIFontManager::guiFontList;
@@ -108,3 +110,6 @@ void GUIFontManager::Clear() {
 
 	guiFontList.Clear();
 }
+
+
+#endif

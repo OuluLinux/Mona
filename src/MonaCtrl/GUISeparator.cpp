@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUISeparator::GUISeparator(int orientation_) : GUIRectangle() {
@@ -62,3 +64,6 @@ const Tuple4i& GUISeparator::getWindowBounds() {
 	return windowBounds;
 }
 
+
+
+#endif

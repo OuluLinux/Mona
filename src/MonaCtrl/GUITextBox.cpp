@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUITextBox::GUITextBox(const String& callback, const String& text) : GUIAlphaElement(callback)
@@ -248,3 +250,6 @@ const Tuple4i& GUITextBox::getWindowBounds() {
 
 	return windowBounds;
 }
+
+
+#endif

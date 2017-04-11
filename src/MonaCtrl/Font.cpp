@@ -1,3 +1,5 @@
+#if 0
+
 /*  CFont
 
     Copyright (C) 2003-2004, Alexander Zaprjagaev <frustum@frustum.org>
@@ -236,3 +238,4 @@ const   int* CFont::getCharHorizontalGlyphs() const {
 	return spaces;
 }
 
+#endif

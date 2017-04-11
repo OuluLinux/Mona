@@ -1,3 +1,5 @@
+#if 0
+
 #include "EasyGL.h"
 
 GUIRectangle::GUIRectangle(const String& callback) {
@@ -345,3 +347,6 @@ Tuple2i  GUIRectangle::getCenter() {
 	return Tuple2i((windowBounds.x + windowBounds.z) / 2,
 				   (windowBounds.y + windowBounds.w) / 2);
 }
+
+
+#endif
