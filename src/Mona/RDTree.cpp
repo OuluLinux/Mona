@@ -512,7 +512,7 @@ void RDTree::Search(struct SearchCtrl* search_ctrl, RDTree::RDNode* search_node)
 				stkp->outer_next = bsw2;
 			}
 
-			/* finished with this level? */
+			// finished with this level?
 			if (stkp->outer == NULL) {
 				stkp->current_search->state = SRCHDONE;
 				search_ctrl->search_stack_idx   = stkIdx - 1;
@@ -527,15 +527,24 @@ void RDTree::Search(struct SearchCtrl* search_ctrl, RDTree::RDNode* search_node)
 			}
 		}
 
-		/* expand search deeper */
+		// expand search deeper
 		if (search_ctrl->search_stack_idx >= 0) {
 			search_ctrl->search_stack_idx++;
 
 			if (search_ctrl->search_stack_idx == search_ctrl->search_stack_sz) {
-				stkMem            += STKMEM_QUANTUM;
-				search_ctrl->search_stack_sz = stkMem;
-				search_ctrl->search_stack   = (struct SrchStk*)realloc((void*)(search_ctrl->search_stack), search_ctrl->search_stack_sz * sizeof(struct SrchStk));
+				stkMem += STKMEM_QUANTUM;
+				
+				//search_ctrl->search_stack   = (struct SrchStk*)realloc((void*)(search_ctrl->search_stack), search_ctrl->search_stack_sz * sizeof(struct SrchStk));
+				
+				struct SrchStk* mem = (struct SrchStk*)MemoryAlloc(stkMem * sizeof(struct SrchStk));
+				
+				ASSERT(mem != NULL);
 				ASSERT(search_ctrl->search_stack != NULL);
+				memcpy(mem, search_ctrl->search_stack, search_ctrl->search_stack_sz * sizeof(struct SrchStk));
+				MemoryFree(search_ctrl->search_stack);
+				
+				search_ctrl->search_stack = mem;
+				search_ctrl->search_stack_sz = stkMem;
 			}
 
 			stkp           = &(search_ctrl->search_stack[search_ctrl->search_stack_idx]);
