@@ -5,6 +5,8 @@
 #include <Mona/Log.h>
 
 #include <CtrlLib/CtrlLib.h>
+#include <Docking/Docking.h>
+#include <MonaCtrl/MonaCtrl.h>
 using namespace Upp;
 
 // Evolution parameters.
@@ -18,5 +20,33 @@ using namespace Upp;
 #define DEFAULT_MUTATION_RATE               0.25
 #define SAVE_FREQUENCY                      10
 
+
+
+
+class MazeDraw : public Ctrl {
+	
+	
+	
+};
+
+class PopulationCtrl : public ParentCtrl {
+	
+};
+
+class EvolveMouse : public DockWindow {
+	
+	MazeDraw maze;
+	Label status;
+	TrainingGraph graph;
+	HeatmapTimeView network_view;
+	PopulationCtrl popctrl;
+	
+public:
+	typedef EvolveMouse CLASSNAME;
+	EvolveMouse();
+	
+	virtual void DockInit();
+	
+};
 
 #endif

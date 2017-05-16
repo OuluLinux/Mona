@@ -2,9 +2,15 @@ description "Mice evolving in a maze solving cellular automaton environment.\377
 
 uses
 	Mona,
-	CtrlLib;
+	CtrlLib,
+	Docking,
+	MonaCtrl;
 
 file
+	main.cpp,
 	EvolveMouse.h,
 	EvolveMouse.cpp;
+
+mainconfig
+	"" = "GUI MT";
 

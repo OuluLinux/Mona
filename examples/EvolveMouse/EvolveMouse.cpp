@@ -1,5 +1,33 @@
 #include "EvolveMouse.h"
 
+
+
+EvolveMouse::EvolveMouse() {
+	Title("EvolveMouse");
+	Sizeable().MaximizeBox().MinimizeBox();
+	
+}
+	
+void EvolveMouse::DockInit() {
+	DockLeft(Dockable(maze, "Maze").SizeHint(Size(320, 240)));
+	DockLeft(Dockable(status, "Status").SizeHint(Size(320, 240)));
+	DockLeft(Dockable(graph, "Graph").SizeHint(Size(320, 240)));
+	DockBottom(Dockable(network_view, "Network").SizeHint(Size(640, 240)));
+	DockBottom(Dockable(popctrl, "Population").SizeHint(Size(640, 240)));
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 
 // Usage.
@@ -27,7 +55,7 @@ char* Usage[] = {
 };
 
 // Print and log error.
-void PrintError(char* buf) {
+void //PrintError(char* buf) {
 	fprintf(stderr, "%s\n", buf);
 
 	if (Log::LOGGING_FLAG == LOG_TO_FILE) {
@@ -49,7 +77,7 @@ void printInfo(char* buf) {
 
 
 // Print usage.
-void printUsage() {
+void //printUsage() {
 	for (int i = 0; Usage[i] != NULL; i++)
 		printInfo(Usage[i]);
 }*/
@@ -78,8 +106,6 @@ bool see_all_maze_doors = true;
 double mutation_rate = DEFAULT_MUTATION_RATE;
 
 // Random numbers.
-int RandomSeed  = INVALID_RANDOM;
-Random* randomizer = NULL;
 
 // Print mouse brain parameters.
 bool Print = false;
@@ -140,14 +166,23 @@ public:
 	}
 };*/
 
-// Maze.
-Vector<Room*> maze[7];
-int            begin_maze_index;
-int            end_maze_index;
+int begin_maze_index;
+int end_maze_index;
 
 // Mouse position.
 int mouseX;
 int mouseY;
+
+
+// Maze.
+struct Room {
+	int type, cx, cy;
+	Vector<Room*> doors;
+};
+
+Vector<Room*> maze[7];
+
+#if 0
 
 // Build maze.
 void buildMaze() {
@@ -226,12 +261,13 @@ void buildMaze() {
 	
 	mouseX = mouseY = 0;
 }
+#endif
 
 
 // Initialize mouse brain.
 void InitBrain(Mona* mouse) {
 	Vector<SENSOR> goal_sensors;
-	mouse->InitNet(5, HOP + 1, 1, randomizer->RAND());
+	mouse->InitNet(5, HOP + 1, 1);
 	// Set a long second effect interval
 	// for a higher level mediator.
 	mouse->effect_event_intervals[1].SetCount(2);
@@ -247,8 +283,8 @@ void InitBrain(Mona* mouse) {
 	goal_sensors.Add(0.0);
 	goal_sensors.Add((double)GOAL_ROOM);
 	goal_sensors.Add(1.0);
-	mouse->homeostats[0]->AddGoal(goal_sensors, 0,
-								  Mona::NULL_RESPONSE, CHEESE_GOAL);
+	mouse->homeostats[0].AddGoal(goal_sensors, 0,
+								  NULL_RESPONSE, CHEESE_GOAL);
 }
 
 
@@ -297,17 +333,17 @@ public:
 		double  f;
 		double d;
 
-		if (!randomizer->RAND_CHANCE(mutation_rate))
+		if (!RandomChance(mutation_rate))
 			return;
 
 		switch (type) {
 		case INTEGER_PARM:
-			if (randomizer->RAND_CHANCE(RANDOM_MUTATION))
-				*(int*)parm = (int)randomizer->RAND_INTERVAL(min, max + 0.99);
+			if (RandomChance(RANDOM_MUTATION))
+				*(int*)parm = (int)RandomInterval(min, max + 0.99);
 			else {
 				i = *(int*)parm;
 
-				if (randomizer->RAND_BOOL()) {
+				if (RandomBoolean()) {
 					i += (int)delta;
 
 					if (i > (int)max)
@@ -326,12 +362,12 @@ public:
 			break;
 
 		case FLOAT_PARM:
-			if (randomizer->RAND_CHANCE(RANDOM_MUTATION))
-				*(float*)parm = (float)randomizer->RAND_INTERVAL(min, max);
+			if (RandomChance(RANDOM_MUTATION))
+				*(float*)parm = (float)RandomInterval(min, max);
 			else {
 				f = *(float*)parm;
 
-				if (randomizer->RAND_BOOL()) {
+				if (RandomBoolean()) {
 					f += (float)delta;
 
 					if (f > (float)max)
@@ -350,12 +386,12 @@ public:
 			break;
 
 		case DOUBLE_PARM:
-			if (randomizer->RAND_CHANCE(RANDOM_MUTATION))
-				*(double*)parm = (double)randomizer->RAND_INTERVAL(min, max);
+			if (RandomChance(RANDOM_MUTATION))
+				*(double*)parm = (double)RandomInterval(min, max);
 			else {
 				d = *(double*)parm;
 
-				if (randomizer->RAND_BOOL()) {
+				if (RandomBoolean()) {
 					d += delta;
 
 					if (d > max)
@@ -473,7 +509,7 @@ public:
 	// Randomly merge parameters from given brains.
 	void MindMeld(BrainParmMutator* from1, BrainParmMutator* from2) {
 		for (int i = 0; i < param_mutators.GetCount(); i++) {
-			if (randomizer->RAND_BOOL())
+			if (RandomBoolean())
 				param_mutators[i]->Copy(from1->param_mutators[i]);
 			else
 				param_mutators[i]->Copy(from2->param_mutators[i]);
@@ -551,7 +587,7 @@ public:
 			// Train maze path.
 			for (j = 0; j < maze_training_trial_count; j++) {
 				path.Clear();
-				path = maze_paths[i];
+				path <<= maze_paths[i];
 				path.Add(WAIT);
 				RunTrial(begin_maze_index, 0, path, true);
 			}
@@ -619,7 +655,7 @@ public:
 			// Initiate sensory/response cycle.
 			response = mouse->Cycle(sensors);
 			// Clear override.
-			mouse->response_override = Mona::NULL_RESPONSE;
+			mouse->response_override = NULL_RESPONSE;
 
 			// Successful trial?
 			if (path[i] == WAIT)
@@ -684,7 +720,7 @@ public:
 		fprintf(out, "id=%d, fitness=%f, generation=%d\n",
 				id, getFitness(), generation);
 		fprintf(out, "mouse brain:\n");
-		mouse->PrintParms(out);
+		//mouse->PrintParms(out);
 	}
 };
 int Member::id_dispenser = 0;
@@ -694,7 +730,7 @@ Member* population[POPULATION_SIZE];
 
 // Start/end functions.
 void LogParameters();
-void Print();
+//void Print();
 void Load();
 void Store();
 void LoadPopulation(Stream& fp);
@@ -718,6 +754,7 @@ void Evolve(), Evaluate(), Prune(), Mutate(), DoMating();
 #endif
 
 // Main.
+#if 0
 int main(int argc, char* argv[]) {
 	int i;
 	#if (CHECK_MEMORY == 1)
@@ -745,7 +782,7 @@ int main(int argc, char* argv[]) {
 
 		#endif
 		// Initialize logging..
-		Log::LOGGING_FLAG = LOG_TO_PRINT;
+		//Log::LOGGING_FLAG = LOG_TO_PRINT;
 
 		// Parse arguments.
 		for (i = 1; i < argc; i++) {
@@ -753,14 +790,14 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
 				generation_count = atoi(argv[i]);
 
 				if (generation_count < 0) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
@@ -771,15 +808,15 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
 				maze_test_count = atoi(argv[i]);
 
 				if (maze_test_count < 0) {
-					PrintError((char*)"Invalid number of maze tests");
-					printUsage();
+					//PrintError((char*)"Invalid number of maze tests");
+					//printUsage();
 					exit(1);
 				}
 
@@ -790,15 +827,15 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
 				door_training_trial_count = atoi(argv[i]);
 
 				if (door_training_trial_count < 0) {
-					PrintError((char*)"Invalid number of door association training trials");
-					printUsage();
+					//PrintError((char*)"Invalid number of door association training trials");
+					//printUsage();
 					exit(1);
 				}
 
@@ -809,15 +846,15 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
 				maze_training_trial_count = atoi(argv[i]);
 
 				if (maze_training_trial_count < 0) {
-					PrintError((char*)"Invalid number of maze association training trials");
-					printUsage();
+					//PrintError((char*)"Invalid number of maze association training trials");
+					//printUsage();
 					exit(1);
 				}
 
@@ -828,14 +865,14 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
 				mutation_rate = atof(argv[i]);
 
 				if (mutation_rate < 0.0) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
@@ -846,16 +883,16 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
-				RandomSeed = (RANDOM)atoi(argv[i]);
+				//RandomSeed = (RANDOM)atoi(argv[i]);
 				continue;
 			}
 
 			if (strcmp(argv[i], "-print") == 0) {
-				Print = true;
+				//Print = true;
 				continue;
 			}
 
@@ -863,7 +900,7 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
@@ -875,7 +912,7 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
@@ -887,11 +924,11 @@ int main(int argc, char* argv[]) {
 				i++;
 
 				if (i >= argc) {
-					printUsage();
+					//printUsage();
 					exit(1);
 				}
 
-				Log::LOGGING_FLAG = LOG_TO_FILE;
+				//Log::LOGGING_FLAG = LOG_TO_FILE;
 				Log::setlog_file_name(argv[i]);
 				continue;
 			}
@@ -914,22 +951,22 @@ int main(int argc, char* argv[]) {
 				exit(0);
 			}
 
-			printUsage();
+			//printUsage();
 			exit(1);
 		}
 
 		// Check operation combinations.
 		if (generation_count >= 0) {
 			if (!Print && (output_file_name == NULL)) {
-				PrintError((char*)"No print or file output");
-				printUsage();
+				//PrintError((char*)"No print or file output");
+				//printUsage();
 				exit(1);
 			}
 		}
 		else {
 			if (!Print) {
-				PrintError((char*)"Must run or print");
-				printUsage();
+				//PrintError((char*)"Must run or print");
+				//printUsage();
 				exit(1);
 			}
 		}
@@ -941,8 +978,8 @@ int main(int argc, char* argv[]) {
 		if (input_file_name != NULL) {
 			// Load population.
 			if (RandomSeed != INVALID_RANDOM) {
-				PrintError((char*)"Random seed is loaded from input file");
-				printUsage();
+				//PrintError((char*)"Random seed is loaded from input file");
+				//printUsage();
 				exit(1);
 			}
 
@@ -952,9 +989,6 @@ int main(int argc, char* argv[]) {
 			if (RandomSeed == INVALID_RANDOM)
 				RandomSeed = (RANDOM)time(NULL);
 
-			randomizer = new Random(RandomSeed);
-			ASSERT(randomizer != NULL);
-			randomizer->SRAND(RandomSeed);
 			// Create maze-learning task.
 			createTask();
 
@@ -1120,15 +1154,13 @@ void Load() {
 
 	if ((fp = FOPEN_READ(input_file_name)) == NULL) {
 		sprintf(buf, "Cannot load population file %s", input_file_name);
-		PrintError(buf);
+		//PrintError(buf);
 		exit(1);
 	}
 
 	FREAD_INT(&Member::id_dispenser, fp);
 	FREAD_LONG(&RandomSeed, fp);
-	randomizer = new Random(RandomSeed);
-	ASSERT(randomizer != NULL);
-	randomizer->RAND_LOAD(fp);
+	
 	FREAD_INT(&generation, fp);
 
 	for (i = 0; i < 3; i++)
@@ -1159,13 +1191,11 @@ void Store() {
 
 	if ((fp = FOPEN_WRITE(output_file_name)) == NULL) {
 		sprintf(buf, "Cannot save to population file %s", output_file_name);
-		PrintError(buf);
+		//PrintError(buf);
 		exit(1);
 	}
 
 	FWRITE_INT(&Member::id_dispenser, fp);
-	FWRITE_LONG(&RandomSeed, fp);
-	randomizer->RAND_SAVE(fp);
 	FWRITE_INT(&generation, fp);
 
 	for (i = 0; i < 3; i++)
@@ -1202,31 +1232,32 @@ void StorePopulation(Stream& fp) {
 		population[i]->Store(fp);
 }
 
+#endif
 
 // Create maze-learning task.
 void createTask() {
 	int i, j, k;
-	door_associations[0] = randomizer->RAND_CHOICE(3);
+	door_associations[0] = Random(3);
 	door_associations[1] = door_associations[0];
 
 	while (door_associations[1] == door_associations[0])
-		door_associations[1] = randomizer->RAND_CHOICE(3);
+		door_associations[1] = Random(3);
 
 	door_associations[2] = door_associations[0];
 
 	while (door_associations[2] == door_associations[0] ||
 		   door_associations[2] == door_associations[1])
-		door_associations[2] = randomizer->RAND_CHOICE(3);
+		door_associations[2] = Random(3);
 
 	maze_paths.Clear();
 	maze_paths.SetCount(maze_test_count);
 
 	for (i = 0; i < maze_test_count; i++) {
-		while true {
+		while (true) {
 		maze_paths[i].Clear();
 
 			for (j = k = 0; j < 4; j++) {
-				maze_paths[i].Add(randomizer->RAND_CHOICE(3));
+				maze_paths[i].Add(Random(3));
 				k += (maze_paths[i][j] - 1);
 			}
 
@@ -1256,10 +1287,10 @@ void Evaluate() {
 
 	for (int i = 0; i < POPULATION_SIZE; i++) {
 		population[i]->Evaluate();
-		sprintf(Log::messageBuf, "  Member=%d, Mouse=%d, Fitness=%f, generation=%d",
+		/*sprintf(Log::messageBuf, "  Member=%d, Mouse=%d, Fitness=%f, generation=%d",
 				i, population[i]->id, population[i]->getFitness(),
 				population[i]->generation);
-		Log::logInformation();
+		Log::logInformation();*/
 	}
 }
 
@@ -1290,9 +1321,9 @@ void Prune() {
 		member           = population[m];
 		population[m]    = NULL;
 		fitpopulation[i] = member;
-		sprintf(Log::messageBuf, "  Mouse=%d, Fitness=%f, generation=%d",
+		/*sprintf(Log::messageBuf, "  Mouse=%d, Fitness=%f, generation=%d",
 				member->id, member->getFitness(), member->generation);
-		Log::logInformation();
+		Log::logInformation();*/
 	}
 
 	for (i = 0; i < POPULATION_SIZE; i++) {
@@ -1315,16 +1346,17 @@ void Mutate() {
 
 	for (i = 0; i < NUM_MUTANTS; i++) {
 		// Select a fit member to mutate.
-		j      = randomizer->RAND_CHOICE(FIT_POPULATION_SIZE);
+		j      = Random(FIT_POPULATION_SIZE);
 		member = population[j];
 		// Create mutant member.
 		mutant = new Member(member->generation + 1);
 		ASSERT(mutant != NULL);
 		population[FIT_POPULATION_SIZE + i] = mutant;
-		sprintf(Log::messageBuf, "  Member=%d, Mouse=%d -> Member=%d, Mouse=%d",
+		/*sprintf(Log::messageBuf, "  Member=%d, Mouse=%d -> Member=%d, Mouse=%d",
 				j, member->id, FIT_POPULATION_SIZE + i,
 				mutant->id);
-		Log::logInformation();
+		Log::logInformation();*/
+		
 		// Mutate.
 		mutant->Mutate(member);
 	}
@@ -1342,10 +1374,10 @@ void DoMating() {
 
 	for (i = 0; i < NUM_OFFSPRING; i++) {
 		// Select a pair of fit members to mate.
-		j       = randomizer->RAND_CHOICE(FIT_POPULATION_SIZE);
+		j       = Random(FIT_POPULATION_SIZE);
 		member1 = population[j];
 
-		while ((k = randomizer->RAND_CHOICE(FIT_POPULATION_SIZE)) == j) {
+		while ((k = Random(FIT_POPULATION_SIZE)) == j) {
 		}
 
 		member2 = population[k];
@@ -1354,10 +1386,11 @@ void DoMating() {
 								member1->generation : member2->generation) + 1);
 		ASSERT(offspring != NULL);
 		population[FIT_POPULATION_SIZE + NUM_MUTANTS + i] = offspring;
-		sprintf(Log::messageBuf, "  Members=%d,%d, Mice=%d,%d -> Member=%d, Mouse=%d",
+		/*sprintf(Log::messageBuf, "  Members=%d,%d, Mice=%d,%d -> Member=%d, Mouse=%d",
 				j, k, member1->id, member2->id,
 				FIT_POPULATION_SIZE + NUM_MUTANTS + i, offspring->id);
-		Log::logInformation();
+		Log::logInformation();*/
+		
 		// Combine parent brains into offspring.
 		offspring->MindMeld(member1, member2);
 	}
